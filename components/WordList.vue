@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import type { WordEntry } from '~/types';
 import WordDetail from './WordDetail.vue';
 
@@ -8,7 +8,7 @@ interface Props {
   words: WordEntry[];
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
@@ -19,6 +19,72 @@ const emit = defineEmits<{
 // State
 const expandedWord = ref<string | null>(null);
 const showDeleteConfirm = ref<string | null>(null);
+
+// Virtual scrolling state
+const ITEM_HEIGHT = 70; // Approximate height of collapsed item
+const BUFFER_SIZE = 5; // Number of items to render outside viewport
+const scrollTop = ref(0);
+const containerHeight = ref(500);
+const scrollContainer = ref<HTMLElement | null>(null);
+
+// Enable virtual scrolling only when there are more than 100 words
+const useVirtualScroll = computed(() => props.words.length > 100);
+
+// Calculate visible range for virtual scrolling
+const visibleRange = computed(() => {
+  if (!useVirtualScroll.value) {
+    return { start: 0, end: props.words.length };
+  }
+
+  const start = Math.max(0, Math.floor(scrollTop.value / ITEM_HEIGHT) - BUFFER_SIZE);
+  const visibleCount = Math.ceil(containerHeight.value / ITEM_HEIGHT);
+  const end = Math.min(props.words.length, start + visibleCount + BUFFER_SIZE * 2);
+
+  return { start, end };
+});
+
+// Visible words for virtual scrolling
+const visibleWords = computed(() => {
+  if (!useVirtualScroll.value) {
+    return props.words;
+  }
+  return props.words.slice(visibleRange.value.start, visibleRange.value.end);
+});
+
+// Total height for virtual scrolling
+const totalHeight = computed(() => {
+  if (!useVirtualScroll.value) return 'auto';
+  return `${props.words.length * ITEM_HEIGHT}px`;
+});
+
+// Offset for virtual scrolling
+const offsetY = computed(() => {
+  if (!useVirtualScroll.value) return 0;
+  return visibleRange.value.start * ITEM_HEIGHT;
+});
+
+// Handle scroll event
+function handleScroll(event: Event) {
+  const target = event.target as HTMLElement;
+  scrollTop.value = target.scrollTop;
+}
+
+// Update container height
+function updateContainerHeight() {
+  if (scrollContainer.value) {
+    containerHeight.value = scrollContainer.value.clientHeight;
+  }
+}
+
+// Setup scroll listener
+onMounted(() => {
+  updateContainerHeight();
+  window.addEventListener('resize', updateContainerHeight);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateContainerHeight);
+});
 
 // Toggle word detail expansion
 function toggleExpand(word: string) {
@@ -65,13 +131,15 @@ function formatDate(timestamp: number): string {
 </script>
 
 <template>
-  <div class="word-list">
-    <div
-      v-for="wordEntry in words"
-      :key="wordEntry.word"
-      class="word-item"
-      :class="{ expanded: expandedWord === wordEntry.word }"
-    >
+  <div ref="scrollContainer" class="word-list" @scroll="handleScroll">
+    <div v-if="useVirtualScroll" class="virtual-scroll-spacer" :style="{ height: totalHeight }">
+      <div class="virtual-scroll-content" :style="{ transform: `translateY(${offsetY}px)` }">
+        <div
+          v-for="wordEntry in visibleWords"
+          :key="wordEntry.word"
+          class="word-item"
+          :class="{ expanded: expandedWord === wordEntry.word }"
+        >
       <div class="word-header" @click="toggleExpand(wordEntry.word)">
         <div class="word-info">
           <span class="word-text">{{ wordEntry.word }}</span>
@@ -114,6 +182,58 @@ function formatDate(timestamp: number): string {
           </div>
         </div>
       </div>
+      </div>
+    </div>
+    <div v-else>
+      <div
+        v-for="wordEntry in words"
+        :key="wordEntry.word"
+        class="word-item"
+        :class="{ expanded: expandedWord === wordEntry.word }"
+      >
+        <div class="word-header" @click="toggleExpand(wordEntry.word)">
+          <div class="word-info">
+            <span class="word-text">{{ wordEntry.word }}</span>
+            <div class="word-meta">
+              <span class="count">Count: {{ wordEntry.count }}</span>
+              <span class="date">Last: {{ formatDate(wordEntry.updatedAt) }}</span>
+            </div>
+          </div>
+          <div class="expand-icon">
+            {{ expandedWord === wordEntry.word ? '▼' : '▶' }}
+          </div>
+        </div>
+
+        <div v-if="expandedWord === wordEntry.word" class="word-content">
+          <div class="word-actions">
+            <button class="reset-btn" @click.stop="handleReset(wordEntry.word)">
+              Reset Count
+            </button>
+            <button class="delete-btn" @click.stop="confirmDelete(wordEntry.word)">
+              Delete
+            </button>
+          </div>
+
+          <WordDetail :word-entry="wordEntry" />
+        </div>
+
+        <!-- Delete confirmation dialog -->
+        <div
+          v-if="showDeleteConfirm === wordEntry.word"
+          class="delete-confirm"
+          @click.stop
+        >
+          <div class="confirm-content">
+            <p>Delete "{{ wordEntry.word }}"?</p>
+            <div class="confirm-actions">
+              <button class="cancel-btn" @click="cancelDelete">Cancel</button>
+              <button class="confirm-btn" @click="handleDelete(wordEntry.word)">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -122,6 +242,20 @@ function formatDate(timestamp: number): string {
 .word-list {
   flex: 1;
   overflow-y: auto;
+  position: relative;
+}
+
+.virtual-scroll-spacer {
+  position: relative;
+  width: 100%;
+}
+
+.virtual-scroll-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  will-change: transform;
 }
 
 .word-item {

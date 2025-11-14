@@ -5,13 +5,28 @@
 
 import type { Definition, DictionaryResponse } from '~/types';
 
+interface CacheEntry {
+  definition: Definition;
+  timestamp: number;
+}
+
 export class DictionaryService {
   private readonly API_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en';
   private readonly TIMEOUT_MS = 3000;
   private readonly MAX_RETRIES = 2;
+  private readonly CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+  private cache: Map<string, CacheEntry> = new Map();
+
+  constructor() {
+    // Clean expired cache entries every hour
+    setInterval(() => {
+      this.clearExpiredCache();
+    }, 60 * 60 * 1000);
+  }
 
   /**
    * Get definition for a word from Free Dictionary API
+   * Uses cache to reduce duplicate API requests (24 hour cache)
    * @param word - The word to look up
    * @returns Promise with Definition object
    * @throws Error with user-friendly message
@@ -23,12 +38,21 @@ export class DictionaryService {
       throw new Error('Please provide a valid word');
     }
 
+    // Check cache first
+    const cached = this.getFromCache(normalizedWord);
+    if (cached) {
+      console.log(`Using cached definition for "${normalizedWord}"`);
+      return cached;
+    }
+
     let lastError: Error | null = null;
     
     // Retry logic
     for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
       try {
         const definition = await this.fetchDefinition(normalizedWord);
+        // Store in cache
+        this.saveToCache(normalizedWord, definition);
         return definition;
       } catch (error) {
         lastError = error as Error;
@@ -48,6 +72,54 @@ export class DictionaryService {
     }
     
     throw lastError || new Error('Failed to fetch definition');
+  }
+
+  /**
+   * Get definition from cache if available and not expired
+   * @param word - The word to look up
+   * @returns Definition if cached and valid, null otherwise
+   */
+  private getFromCache(word: string): Definition | null {
+    const entry = this.cache.get(word);
+    if (!entry) {
+      return null;
+    }
+
+    const now = Date.now();
+    const age = now - entry.timestamp;
+
+    // Check if cache entry is still valid (within 24 hours)
+    if (age > this.CACHE_DURATION_MS) {
+      this.cache.delete(word);
+      return null;
+    }
+
+    return entry.definition;
+  }
+
+  /**
+   * Save definition to cache
+   * @param word - The word
+   * @param definition - The definition to cache
+   */
+  private saveToCache(word: string, definition: Definition): void {
+    this.cache.set(word, {
+      definition,
+      timestamp: Date.now(),
+    });
+  }
+
+  /**
+   * Clear expired cache entries
+   * Called periodically to prevent memory leaks
+   */
+  private clearExpiredCache(): void {
+    const now = Date.now();
+    for (const [word, entry] of this.cache.entries()) {
+      if (now - entry.timestamp > this.CACHE_DURATION_MS) {
+        this.cache.delete(word);
+      }
+    }
   }
 
   /**

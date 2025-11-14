@@ -18,7 +18,8 @@ export class StorageService {
       const words = await storage.getItem<WordEntry[]>(this.STORAGE_KEY);
       return words || [];
     } catch (error) {
-      console.error('Failed to get all words:', error);
+      console.error('Storage read error:', error);
+      this.handleStorageError(error);
       throw new Error('Failed to load words from storage');
     }
   }
@@ -35,7 +36,8 @@ export class StorageService {
       const foundWord = words.find(w => w.word.toLowerCase() === normalizedWord);
       return foundWord || null;
     } catch (error) {
-      console.error('Failed to get word:', error);
+      console.error('Storage read error:', error);
+      this.handleStorageError(error);
       throw new Error('Failed to load word from storage');
     }
   }
@@ -97,7 +99,8 @@ export class StorageService {
       await storage.setItem(this.STORAGE_KEY, words);
       return updatedWord;
     } catch (error) {
-      console.error('Failed to save word:', error);
+      console.error('Storage write error:', error);
+      this.handleStorageError(error);
       throw new Error('Failed to save word to storage');
     }
   }
@@ -117,7 +120,8 @@ export class StorageService {
 
       await storage.setItem(this.STORAGE_KEY, filteredWords);
     } catch (error) {
-      console.error('Failed to delete word:', error);
+      console.error('Storage write error:', error);
+      this.handleStorageError(error);
       throw new Error('Failed to delete word from storage');
     }
   }
@@ -147,7 +151,8 @@ export class StorageService {
 
       await storage.setItem(this.STORAGE_KEY, words);
     } catch (error) {
-      console.error('Failed to reset count:', error);
+      console.error('Storage write error:', error);
+      this.handleStorageError(error);
       throw new Error('Failed to reset word count');
     }
   }
@@ -217,11 +222,35 @@ export class StorageService {
       const mergedWords = Array.from(wordMap.values());
       await storage.setItem(this.STORAGE_KEY, mergedWords);
     } catch (error) {
-      console.error('Failed to import data:', error);
+      console.error('Storage import error:', error);
       if (error instanceof SyntaxError) {
         throw new Error('Invalid JSON format');
       }
+      this.handleStorageError(error);
       throw new Error('Failed to import data');
+    }
+  }
+
+  /**
+   * Handle storage errors with specific error messages
+   * @param error - The error object
+   */
+  private handleStorageError(error: unknown): void {
+    if (error instanceof Error) {
+      // Check for quota exceeded error
+      if (error.name === 'QuotaExceededError' || 
+          error.message.includes('quota') || 
+          error.message.includes('storage')) {
+        console.error('Storage quota exceeded. Please export your data and clear some words.');
+      }
+      // Check for read/write errors
+      else if (error.message.includes('read') || error.message.includes('write')) {
+        console.error('Storage read/write error. Please try again.');
+      }
+      // Generic storage error
+      else {
+        console.error('Storage error:', error.message);
+      }
     }
   }
 }

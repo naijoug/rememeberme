@@ -33,7 +33,7 @@ async function loadWords() {
     words.value = await storageService.getAllWords();
   } catch (err) {
     console.error('Failed to load words:', err);
-    error.value = 'Failed to load words';
+    error.value = err instanceof Error ? err.message : 'Failed to load words';
   } finally {
     loading.value = false;
   }
@@ -48,6 +48,7 @@ function handleSortChange(event: Event) {
 // Handle export
 async function handleExport() {
   try {
+    error.value = null;
     const jsonData = await storageService.exportData();
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -61,7 +62,7 @@ async function handleExport() {
     URL.revokeObjectURL(url);
   } catch (err) {
     console.error('Failed to export data:', err);
-    error.value = 'Failed to export data';
+    error.value = err instanceof Error ? err.message : 'Failed to export data';
   }
 }
 
@@ -107,22 +108,24 @@ async function handleImport(event: Event) {
 // Handle word deletion
 async function handleDeleteWord(word: string) {
   try {
+    error.value = null;
     await storageService.deleteWord(word);
     await loadWords();
   } catch (err) {
     console.error('Failed to delete word:', err);
-    error.value = 'Failed to delete word';
+    error.value = err instanceof Error ? err.message : 'Failed to delete word';
   }
 }
 
 // Handle count reset
 async function handleResetCount(word: string) {
   try {
+    error.value = null;
     await storageService.resetCount(word);
     await loadWords();
   } catch (err) {
     console.error('Failed to reset count:', err);
-    error.value = 'Failed to reset count';
+    error.value = err instanceof Error ? err.message : 'Failed to reset count';
   }
 }
 </script>

@@ -156,18 +156,24 @@ async function requestDefinition(word: string): Promise<Definition> {
 
 /**
  * 更新弹窗组件的 props
+ * Uses requestAnimationFrame to minimize reflows and repaints
  */
 function updatePopupProps(): void {
   if (popupApp && popupContainer) {
-    // 卸载并重新挂载以更新 props
-    popupApp.unmount();
-    popupApp = createApp(SelectionPopup, {
-      ...popupState,
-      onRemember: handleRemember,
-      onForget: handleForget,
-      onClose: hidePopup,
+    // Use requestAnimationFrame to batch DOM updates
+    requestAnimationFrame(() => {
+      if (popupApp && popupContainer) {
+        // 卸载并重新挂载以更新 props
+        popupApp.unmount();
+        popupApp = createApp(SelectionPopup, {
+          ...popupState,
+          onRemember: handleRemember,
+          onForget: handleForget,
+          onClose: hidePopup,
+        });
+        popupApp.mount(popupContainer);
+      }
     });
-    popupApp.mount(popupContainer);
   }
 }
 
@@ -203,23 +209,32 @@ async function handleForget(): Promise<void> {
     hidePopup();
   } catch (error) {
     console.error('Failed to save word:', error);
-    popupState.error = 'Failed to save word';
+    const errorMessage = error instanceof Error ? error.message : 'Failed to save word';
+    popupState.error = errorMessage;
     updatePopupProps();
+    
+    // Show error notification
+    showNotification(`Error: ${errorMessage}`, 'error');
   }
 }
 
 /**
  * 显示通知消息
+ * @param message - 通知消息内容
+ * @param type - 通知类型 ('success' | 'error')
  */
-function showNotification(message: string): void {
+function showNotification(message: string, type: 'success' | 'error' = 'success'): void {
   const notification = document.createElement('div');
   notification.className = 'vocab-counter-notification';
   notification.textContent = message;
+  
+  const backgroundColor = type === 'error' ? '#d32f2f' : '#323232';
+  
   notification.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
-    background: #323232;
+    background: ${backgroundColor};
     color: white;
     padding: 12px 20px;
     border-radius: 4px;
@@ -287,11 +302,16 @@ function calculatePopupPosition(event: MouseEvent, selection: Selection): Positi
 
 /**
  * 隐藏弹窗
+ * Uses requestAnimationFrame to minimize reflows
  */
 function hidePopup(): void {
   popupState.visible = false;
   if (popupContainer) {
-    popupContainer.style.display = 'none';
+    requestAnimationFrame(() => {
+      if (popupContainer) {
+        popupContainer.style.display = 'none';
+      }
+    });
   }
 }
 
