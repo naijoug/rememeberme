@@ -7,11 +7,13 @@
 ## Glossary
 
 - **VocabularyCounter**: 词汇量计数器系统，指整个浏览器插件
-- **WordEntry**: 单词条目，包含单词文本、计数和时间戳的数据结构
+- **WordEntry**: 单词条目，包含单词文本、总计数和历史记录列表的数据结构
+- **HistoryRecord**: 历史记录，包含时间戳、上下文句子、页面 URL 和单词释义的数据结构
 - **SelectionPopup**: 选词弹窗，用户选中文本后显示的操作界面，包含 remember 和 forget 按钮
 - **WordList**: 单词列表，显示所有已收藏单词的界面
-- **Storage**: 存储系统，用于持久化保存单词数据
+- **LocalStorage**: 浏览器本地存储，使用 IndexedDB 或 localStorage 持久化保存单词数据
 - **Dictionary**: 词典服务，用于查询单词释义的外部 API 或内置词典
+- **ContextSentence**: 上下文句子，包含选中单词的完整句子文本
 
 ## Requirements
 
@@ -29,19 +31,20 @@
 
 ### Requirement 2
 
-**User Story:** 作为英语学习者，我想要标记我不认识的单词并追踪忘记次数，以便了解哪些单词需要重点学习
+**User Story:** 作为英语学习者，我想要标记我不认识的单词并追踪忘记次数和上下文，以便了解哪些单词需要重点学习以及在什么场景下遇到
 
 #### Acceptance Criteria
 
 1. WHEN 用户在 SelectionPopup 中点击 "forget" 按钮且该单词不存在, THE VocabularyCounter SHALL 创建一个 WordEntry 并设置计数为 1
-2. WHEN 用户在 SelectionPopup 中点击 "forget" 按钮且该单词已存在, THE VocabularyCounter SHALL 将该 WordEntry 的计数增加 1
-3. WHEN 用户点击 "forget" 按钮且该单词已存在, THE VocabularyCounter SHALL 在 SelectionPopup 中显示提示信息，告知这是第几次忘记该单词
-4. WHEN 用户在 SelectionPopup 中点击 "remember" 按钮, THE VocabularyCounter SHALL 关闭 SelectionPopup 而不修改任何数据
-5. THE VocabularyCounter SHALL 记录每次点击 "forget" 的时间戳
+2. WHEN 用户在 SelectionPopup 中点击 "forget" 按钮, THE VocabularyCounter SHALL 创建一个 HistoryRecord 包含当前时间戳、ContextSentence、页面 URL 和单词释义
+3. WHEN 用户在 SelectionPopup 中点击 "forget" 按钮且该单词已存在, THE VocabularyCounter SHALL 将该 WordEntry 的计数增加 1 并添加新的 HistoryRecord
+4. WHEN 用户点击 "forget" 按钮且该单词已存在, THE VocabularyCounter SHALL 在 SelectionPopup 中显示提示信息，告知这是第几次忘记该单词
+5. WHEN 用户在 SelectionPopup 中点击 "remember" 按钮, THE VocabularyCounter SHALL 关闭 SelectionPopup 而不修改任何数据
+6. THE VocabularyCounter SHALL 将 WordEntry 和所有 HistoryRecord 保存到 LocalStorage
 
 ### Requirement 3
 
-**User Story:** 作为英语学习者，我想要查看我收藏的所有单词列表，以便复习和管理我的词汇本
+**User Story:** 作为英语学习者，我想要查看我收藏的所有单词列表和历史记录，以便复习和管理我的词汇本
 
 #### Acceptance Criteria
 
@@ -49,7 +52,9 @@
 2. THE VocabularyCounter SHALL 在 WordList 中显示所有 WordEntry，包含单词文本、计数和最后收藏时间
 3. THE VocabularyCounter SHALL 支持按计数从高到低排序 WordList
 4. THE VocabularyCounter SHALL 支持按最后收藏时间排序 WordList
-5. WHEN 用户在 WordList 中点击某个 WordEntry, THE VocabularyCounter SHALL 显示该单词的详细信息和释义
+5. WHEN 用户在 WordList 中点击某个 WordEntry, THE VocabularyCounter SHALL 显示该单词的所有 HistoryRecord
+6. THE VocabularyCounter SHALL 在 HistoryRecord 中显示时间戳、ContextSentence、页面 URL 和单词释义
+7. WHEN 用户在 HistoryRecord 中点击页面 URL, THE VocabularyCounter SHALL 在新标签页中打开该 URL
 
 ### Requirement 4
 
@@ -68,7 +73,19 @@
 
 #### Acceptance Criteria
 
-1. WHEN 用户在 WordList 界面点击导出按钮, THE VocabularyCounter SHALL 生成包含所有 WordEntry 的 JSON 文件
-2. THE VocabularyCounter SHALL 在导出文件中包含单词文本、计数、时间戳和释义
+1. WHEN 用户在 WordList 界面点击导出按钮, THE VocabularyCounter SHALL 生成包含所有 WordEntry 和 HistoryRecord 的 JSON 文件
+2. THE VocabularyCounter SHALL 在导出文件中包含单词文本、计数、所有历史记录（时间戳、上下文句子、页面 URL、释义）
 3. WHEN 用户选择导入功能并提供有效的 JSON 文件, THE VocabularyCounter SHALL 将文件中的 WordEntry 合并到现有数据中
-4. WHEN 导入的单词已存在, THE VocabularyCounter SHALL 保留较高的计数值
+4. WHEN 导入的单词已存在, THE VocabularyCounter SHALL 合并 HistoryRecord 列表并更新总计数
+
+### Requirement 6
+
+**User Story:** 作为英语学习者，我想要系统自动提取选中单词所在的完整句子，以便记录学习上下文
+
+#### Acceptance Criteria
+
+1. WHEN 用户选中单词, THE VocabularyCounter SHALL 自动识别并提取包含该单词的完整 ContextSentence
+2. THE VocabularyCounter SHALL 使用句子边界检测（句号、问号、感叹号）来确定 ContextSentence 的范围
+3. WHEN ContextSentence 超过 200 个字符, THE VocabularyCounter SHALL 截取选中单词前后各 100 个字符作为上下文
+4. THE VocabularyCounter SHALL 在 ContextSentence 中高亮显示选中的单词
+5. WHEN 无法提取有效的 ContextSentence, THE VocabularyCounter SHALL 保存空字符串作为上下文
