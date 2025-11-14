@@ -6,14 +6,14 @@
   - 配置 wxt.config.ts，设置插件名称、权限（storage、activeTab、host_permissions）
   - _Requirements: 1.1, 2.1, 2.2, 3.1_
 
-- [ ] 2. 实现词典服务（Dictionary Service）
-  - [ ] 2.1 创建 dictionary.ts 服务类
+- [x] 2. 实现词典服务（Dictionary Service）
+  - [x] 2.1 创建 dictionary.ts 服务类
     - 实现 getDefinition 方法调用 Free Dictionary API
     - 解析 API 响应，提取 word、phonetic、phonetics、meanings 等完整信息
     - 返回符合 Definition 接口的数据结构
     - _Requirements: 1.2_
   
-  - [ ] 2.2 实现错误处理和重试机制
+  - [x] 2.2 实现错误处理和重试机制
     - 处理网络错误、404、429 等 HTTP 状态码
     - 实现 3 秒超时和最多 2 次重试
     - 返回友好的错误消息
