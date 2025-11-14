@@ -99,13 +99,13 @@
     - 确保在不同网站上的样式隔离（使用 Shadow DOM 或唯一类名前缀）
     - _Requirements: 1.1_
 
-- [ ] 7. 实现 Background Service Worker
-  - [ ] 7.1 创建 background.ts 入口文件
+- [x] 7. 实现 Background Service Worker
+  - [x] 7.1 创建 background.ts 入口文件
     - 监听来自 content script 的消息
     - 定义消息类型：GET_DEFINITION、SAVE_WORD、GET_WORDS、DELETE_WORD
     - _Requirements: 1.2_
   
-  - [ ] 7.2 实现 API 请求代理
+  - [x] 7.2 实现 API 请求代理
     - 接收 GET_DEFINITION 消息，调用 dictionary.getDefinition
     - 返回释义数据或错误信息给 content script
     - 避免 CORS 问题

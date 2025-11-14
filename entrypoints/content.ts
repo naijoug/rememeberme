@@ -143,12 +143,12 @@ async function requestDefinition(word: string): Promise<Definition> {
           return;
         }
 
-        if (response.error) {
-          reject(new Error(response.error));
+        if (!response.success) {
+          reject(new Error(response.error || 'Failed to fetch definition'));
           return;
         }
 
-        resolve(response.definition);
+        resolve(response.data);
       }
     );
   });

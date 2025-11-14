@@ -72,3 +72,21 @@ export interface DictionaryResponse {
     }>;
   }>;
 }
+
+/**
+ * Message types for communication between content script and background
+ */
+export type BackgroundMessage =
+  | { type: 'GET_DEFINITION'; word: string }
+  | { type: 'SAVE_WORD'; data: { word: string; definition: Definition; context: string; url: string } }
+  | { type: 'GET_WORDS' }
+  | { type: 'DELETE_WORD'; word: string };
+
+/**
+ * Response types for background messages
+ */
+export type BackgroundResponse =
+  | { success: true; data: Definition }
+  | { success: true; data: WordEntry[] }
+  | { success: true }
+  | { success: false; error: string };
