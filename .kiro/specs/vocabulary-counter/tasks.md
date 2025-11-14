@@ -43,13 +43,13 @@
     - 处理重复单词：合并 history 数组，更新 count
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 4. 实现上下文提取服务（Context Extractor）
-  - [ ] 4.1 创建 context-extractor.ts 服务类
+- [x] 4. 实现上下文提取服务（Context Extractor）
+  - [x] 4.1 创建 context-extractor.ts 服务类
     - 实现 extractSentence 方法从 Selection 对象提取完整句子
     - 使用句子边界检测（. ! ? \n）查找句子起止位置
     - _Requirements: 6.1, 6.2_
   
-  - [ ] 4.2 实现上下文截断和高亮逻辑
+  - [x] 4.2 实现上下文截断和高亮逻辑
     - 当句子超过 200 字符时，截取选中单词前后各 100 字符
     - 在上下文中标记选中单词的位置（用于高亮显示）
     - 处理无法提取句子的情况，返回空字符串
