@@ -80,20 +80,20 @@
     - 监听页面点击事件，点击弹窗外区域时关闭
     - _Requirements: 1.4, 2.5_
 
-- [ ] 6. 实现 SelectionPopup 组件
-  - [ ] 6.1 创建 SelectionPopup.vue 组件
+- [x] 6. 实现 SelectionPopup 组件
+  - [x] 6.1 创建 SelectionPopup.vue 组件
     - 定义 props：word、position、visible、definition、error
     - 实现弹窗定位逻辑（根据 position 计算 CSS）
     - 显示单词、音标、释义（词性、定义、例句）
     - _Requirements: 1.1, 1.2, 1.3_
   
-  - [ ] 6.2 实现操作按钮和事件
+  - [x] 6.2 实现操作按钮和事件
     - 添加 Remember 和 Forget 按钮
     - 触发 @remember、@forget、@close 事件
     - 显示加载状态和错误提示
     - _Requirements: 1.3, 1.4, 1.5_
   
-  - [ ] 6.3 添加样式和动画
+  - [x] 6.3 添加样式和动画
     - 编写 content.css 样式文件
     - 实现弹窗阴影、圆角、过渡动画
     - 确保在不同网站上的样式隔离（使用 Shadow DOM 或唯一类名前缀）

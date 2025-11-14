@@ -18,7 +18,8 @@
             <span class="part-of-speech">{{ meaning.partOfSpeech }}</span>
             <ol class="definitions-list">
               <li v-for="(def, defIdx) in meaning.definitions.slice(0, 2)" :key="defIdx">
-                {{ def.definition }}
+                <span class="definition-text">{{ def.definition }}</span>
+                <span v-if="def.example" class="example">"{{ def.example }}"</span>
               </li>
             </ol>
           </div>
@@ -53,16 +54,25 @@ defineEmits<{
   close: [];
 }>();
 
-const popupStyle = computed(() => ({
-  left: `${props.position.x}px`,
-  top: `${props.position.y}px`,
-}));
+const popupStyle = computed(() => {
+  // Calculate popup position with viewport boundary detection
+  const x = props.position.x;
+  const y = props.position.y;
+  
+  // Add offset below the selected text
+  const offsetY = 10;
+  
+  return {
+    left: `${x}px`,
+    top: `${y + offsetY}px`,
+  };
+});
 </script>
 
 <style scoped>
 .vocab-counter-popup {
   position: absolute;
-  z-index: 999999;
+  z-index: 2147483647;
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -74,6 +84,18 @@ const popupStyle = computed(() => ({
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 14px;
   line-height: 1.5;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .popup-content {
@@ -141,6 +163,18 @@ const popupStyle = computed(() => ({
   margin: 4px 0;
 }
 
+.definition-text {
+  display: block;
+}
+
+.example {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+  margin-top: 4px;
+}
+
 .actions {
   display: flex;
   gap: 8px;
@@ -155,7 +189,11 @@ const popupStyle = computed(() => ({
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.95);
 }
 
 .btn-remember {
