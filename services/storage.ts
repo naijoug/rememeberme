@@ -3,7 +3,7 @@
  * Handles persistent storage of word entries using WXT storage API
  */
 
-import { storage } from 'wxt/storage';
+import { storage } from 'wxt/utils/storage';
 import type { WordEntry, Definition, HistoryRecord } from '~/types';
 
 export class StorageService {

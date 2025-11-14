@@ -135,14 +135,14 @@
     - 在上下文句子中高亮显示单词
     - _Requirements: 3.6, 3.7, 6.4_
 
-- [ ] 9. 实现删除和重置功能
-  - [ ] 9.1 在 WordList 组件中添加删除按钮
+- [x] 9. 实现删除和重置功能
+  - [x] 9.1 在 WordList 组件中添加删除按钮
     - 点击删除按钮显示确认对话框
     - 确认后调用 storage.deleteWord
     - 更新 UI，从列表中移除该单词
     - _Requirements: 4.1, 4.3, 4.4_
   
-  - [ ] 9.2 在 WordList 组件中添加重置按钮
+  - [x] 9.2 在 WordList 组件中添加重置按钮
     - 点击重置按钮调用 storage.resetCount
     - 更新 UI，显示 count=0
     - _Requirements: 4.2_
