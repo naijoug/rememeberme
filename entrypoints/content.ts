@@ -3,6 +3,7 @@ import { contextExtractor } from '~/services/context-extractor';
 import { storageService } from '~/services/storage';
 import type { Definition, Position } from '~/types';
 import SelectionPopup from '../components/SelectionPopup.vue';
+import '~/assets/content.css';
 
 // 英文单词验证正则（基本验证：字母、连字符、撇号）
 const ENGLISH_WORD_REGEX = /^[a-zA-Z][a-zA-Z'\-]*[a-zA-Z]$|^[a-zA-Z]$/;

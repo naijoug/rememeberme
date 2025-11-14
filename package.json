@@ -1,6 +1,6 @@
 {
-  "name": "vocabulary-counter",
-  "description": "英语学习词汇追踪工具",
+  "name": "remember-me",
+  "description": "Words remember you, too.",
   "private": true,
   "version": "0.0.0",
   "type": "module",

@@ -183,6 +183,7 @@ function formatDate(timestamp: number): string {
         </div>
       </div>
       </div>
+      </div>
     </div>
     <div v-else>
       <div
