@@ -111,25 +111,25 @@
     - 避免 CORS 问题
     - _Requirements: 1.2, 1.5_
 
-- [ ] 8. 实现 Popup UI - 单词列表界面
-  - [ ] 8.1 创建 popup/App.vue 主组件
+- [x] 8. 实现 Popup UI - 单词列表界面
+  - [x] 8.1 创建 popup/App.vue 主组件
     - 实现顶部工具栏：排序选择器（按 count、按 updatedAt）、导出按钮
     - 调用 storage.getAllWords 加载所有单词
     - 根据选择的排序方式对单词列表排序
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
   
-  - [ ] 8.2 创建 WordList.vue 组件
+  - [x] 8.2 创建 WordList.vue 组件
     - 显示单词列表，每项包含：单词文本、count、最后收藏时间
     - 实现点击单词展开详情的交互
     - 添加删除和重置按钮
     - _Requirements: 3.2, 3.5_
   
-  - [ ] 8.3 创建 WordDetail.vue 组件
+  - [x] 8.3 创建 WordDetail.vue 组件
     - 显示单词的完整释义（音标、词性、定义、例句）
     - 显示所有 HistoryRecord 列表
     - _Requirements: 3.5, 3.6_
   
-  - [ ] 8.4 创建 HistoryItem.vue 组件
+  - [x] 8.4 创建 HistoryItem.vue 组件
     - 显示单条历史记录：时间戳、上下文句子、页面 URL、释义
     - 实现点击 URL 在新标签页打开链接
     - 在上下文句子中高亮显示单词
