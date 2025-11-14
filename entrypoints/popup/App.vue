@@ -65,6 +65,45 @@ async function handleExport() {
   }
 }
 
+// Handle import
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const importSuccess = ref<string | null>(null);
+
+function triggerFileInput() {
+  fileInputRef.value?.click();
+}
+
+async function handleImport(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  
+  if (!file) {
+    return;
+  }
+
+  try {
+    error.value = null;
+    importSuccess.value = null;
+    
+    const text = await file.text();
+    await storageService.importData(text);
+    await loadWords();
+    
+    importSuccess.value = 'Data imported successfully!';
+    setTimeout(() => {
+      importSuccess.value = null;
+    }, 3000);
+  } catch (err) {
+    console.error('Failed to import data:', err);
+    error.value = err instanceof Error ? err.message : 'Failed to import data';
+  } finally {
+    // Reset file input
+    if (target) {
+      target.value = '';
+    }
+  }
+}
+
 // Handle word deletion
 async function handleDeleteWord(word: string) {
   try {
@@ -101,9 +140,18 @@ async function handleResetCount(word: string) {
           </select>
         </div>
         <button class="export-btn" @click="handleExport">Export</button>
+        <button class="import-btn" @click="triggerFileInput">Import</button>
+        <input
+          ref="fileInputRef"
+          type="file"
+          accept=".json"
+          style="display: none"
+          @change="handleImport"
+        />
       </div>
     </header>
 
+    <div v-if="importSuccess" class="success">{{ importSuccess }}</div>
     <div v-if="loading" class="loading">Loading...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="sortedWords.length === 0" class="empty">
@@ -173,9 +221,9 @@ async function handleResetCount(word: string) {
   border-color: #999;
 }
 
-.export-btn {
+.export-btn,
+.import-btn {
   padding: 6px 16px;
-  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;
@@ -184,21 +232,47 @@ async function handleResetCount(word: string) {
   transition: background-color 0.2s;
 }
 
+.export-btn {
+  background-color: #4CAF50;
+}
+
 .export-btn:hover {
   background-color: #45a049;
 }
 
+.import-btn {
+  background-color: #2196F3;
+}
+
+.import-btn:hover {
+  background-color: #0b7dda;
+}
+
 .loading,
 .error,
-.empty {
-  padding: 32px 16px;
+.empty,
+.success {
+  padding: 12px 16px;
   text-align: center;
-  color: #666;
   font-size: 14px;
+}
+
+.loading,
+.empty {
+  color: #666;
+  padding: 32px 16px;
 }
 
 .error {
   color: #d32f2f;
+  background-color: #ffebee;
+  border-bottom: 1px solid #ef9a9a;
+}
+
+.success {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  border-bottom: 1px solid #81c784;
 }
 
 .empty {

@@ -147,14 +147,14 @@
     - 更新 UI，显示 count=0
     - _Requirements: 4.2_
 
-- [ ] 10. 实现导出和导入功能
-  - [ ] 10.1 在 Popup UI 中添加导出按钮
+- [x] 10. 实现导出和导入功能
+  - [x] 10.1 在 Popup UI 中添加导出按钮
     - 点击导出按钮调用 storage.exportData
     - 生成 JSON 文件并触发浏览器下载
     - 文件名格式：vocabulary-counter-YYYY-MM-DD.json
     - _Requirements: 5.1, 5.2_
   
-  - [ ] 10.2 在 Popup UI 中添加导入按钮
+  - [x] 10.2 在 Popup UI 中添加导入按钮
     - 点击导入按钮打开文件选择对话框
     - 读取 JSON 文件内容
     - 调用 storage.importData 合并数据
