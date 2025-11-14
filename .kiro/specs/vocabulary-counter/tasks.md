@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. 初始化项目结构和核心类型定义
+- [x] 1. 初始化项目结构和核心类型定义
   - 使用 WXT 创建浏览器插件项目，配置 Vue 3 和 TypeScript
   - 创建 types/index.ts 定义 WordEntry、HistoryRecord、Definition、Position 等核心接口
   - 配置 wxt.config.ts，设置插件名称、权限（storage、activeTab、host_permissions）
