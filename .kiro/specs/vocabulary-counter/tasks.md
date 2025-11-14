@@ -19,25 +19,25 @@
     - 返回友好的错误消息
     - _Requirements: 1.5_
 
-- [ ] 3. 实现存储服务（Storage Service）
-  - [ ] 3.1 创建 storage.ts 服务类
+- [x] 3. 实现存储服务（Storage Service）
+  - [x] 3.1 创建 storage.ts 服务类
     - 使用 WXT storage API 封装 IndexedDB 操作
     - 实现 getAllWords、getWord 方法读取数据
     - _Requirements: 2.6, 3.2_
   
-  - [ ] 3.2 实现单词保存和更新逻辑
+  - [x] 3.2 实现单词保存和更新逻辑
     - 实现 saveWord 方法：创建或更新 WordEntry
     - 新单词：创建 WordEntry，count=1，添加第一条 HistoryRecord
     - 已存在单词：count+=1，追加新的 HistoryRecord
     - 更新 createdAt 和 updatedAt 时间戳
     - _Requirements: 2.1, 2.2, 2.3, 2.6_
   
-  - [ ] 3.3 实现删除和重置功能
+  - [x] 3.3 实现删除和重置功能
     - 实现 deleteWord 方法从存储中移除单词
     - 实现 resetCount 方法将计数重置为 0
     - _Requirements: 4.1, 4.2_
   
-  - [ ] 3.4 实现导出和导入功能
+  - [x] 3.4 实现导出和导入功能
     - 实现 exportData 方法生成包含所有 WordEntry 和 HistoryRecord 的 JSON 字符串
     - 实现 importData 方法解析 JSON 并合并数据
     - 处理重复单词：合并 history 数组，更新 count
