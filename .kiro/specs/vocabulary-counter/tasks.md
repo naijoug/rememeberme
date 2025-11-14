@@ -55,27 +55,27 @@
     - 处理无法提取句子的情况，返回空字符串
     - _Requirements: 6.3, 6.4, 6.5_
 
-- [ ] 5. 实现 Content Script 和文本选择功能
-  - [ ] 5.1 创建 content.ts 入口文件
+- [x] 5. 实现 Content Script 和文本选择功能
+  - [x] 5.1 创建 content.ts 入口文件
     - 监听 mouseup 事件检测文本选择
     - 使用防抖（300ms）优化性能
     - 验证选中文本是否为英文单词（基本正则验证）
     - _Requirements: 1.1_
   
-  - [ ] 5.2 实现弹窗显示逻辑
+  - [x] 5.2 实现弹窗显示逻辑
     - 计算选中文本的位置，确定弹窗坐标
     - 调用 context-extractor 提取上下文句子
     - 通过消息通信向 background 请求单词释义
     - 动态创建或更新 SelectionPopup 组件实例
     - _Requirements: 1.1, 1.2, 6.1_
   
-  - [ ] 5.3 实现单词保存功能
+  - [x] 5.3 实现单词保存功能
     - 监听 SelectionPopup 的 forget 事件
     - 调用 storage.saveWord 保存单词、释义、上下文、URL
     - 显示"第 N 次忘记该单词"的提示消息
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
   
-  - [ ] 5.4 实现弹窗关闭逻辑
+  - [x] 5.4 实现弹窗关闭逻辑
     - 监听 remember 事件和 close 事件关闭弹窗
     - 监听页面点击事件，点击弹窗外区域时关闭
     - _Requirements: 1.4, 2.5_
