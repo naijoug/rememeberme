@@ -35,6 +35,12 @@ export default defineContentScript({
     
     // 监听页面点击事件，点击弹窗外区域时关闭
     document.addEventListener('click', handleDocumentClick);
+
+    // 监听来自 background 的消息
+    browser.runtime.onMessage.addListener((message: any, sender: any, sendResponse: any) => {
+      handleBackgroundMessage(message, sender, sendResponse);
+      return true; // 表示异步响应
+    });
   },
 });
 
@@ -97,6 +103,9 @@ async function showPopup(word: string, position: Position): Promise<void> {
     popupContainer.id = 'vocab-counter-popup-root';
     document.body.appendChild(popupContainer);
   }
+
+  // 确保容器可见（重置之前可能设置的 display: none）
+  popupContainer.style.removeProperty('display');
 
   // 更新状态：显示加载中
   popupState.visible = true;
@@ -303,17 +312,10 @@ function calculatePopupPosition(event: MouseEvent, selection: Selection): Positi
 
 /**
  * 隐藏弹窗
- * Uses requestAnimationFrame to minimize reflows
  */
 function hidePopup(): void {
   popupState.visible = false;
-  if (popupContainer) {
-    requestAnimationFrame(() => {
-      if (popupContainer) {
-        popupContainer.style.display = 'none';
-      }
-    });
-  }
+  updatePopupProps();
 }
 
 /**
@@ -327,5 +329,27 @@ function handleDocumentClick(event: MouseEvent): void {
   // 检查点击是否在弹窗内
   if (popupContainer && !popupContainer.contains(event.target as Node)) {
     hidePopup();
+  }
+}
+
+/**
+ * 处理来自 background 的消息
+ */
+function handleBackgroundMessage(message: any, sender: any, sendResponse: any): void {
+  if (message.type === 'EXTRACT_CONTEXT') {
+    // 提取当前页面的上下文
+    const selection = window.getSelection();
+    let context = '';
+
+    if (selection && selection.rangeCount > 0) {
+      const contextResult = contextExtractor.extractSentence(selection);
+      context = contextResult.context;
+    }
+
+    sendResponse({ success: true, context });
+  } else if (message.type === 'SHOW_NOTIFICATION') {
+    // 显示通知消息
+    showNotification(message.message, message.notificationType || 'success');
+    sendResponse({ success: true });
   }
 }

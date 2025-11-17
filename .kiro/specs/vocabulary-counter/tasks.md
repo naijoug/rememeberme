@@ -204,3 +204,69 @@
     - 单词列表超过 100 条时使用虚拟滚动
     - 最小化 DOM 操作和重绘
     - _Requirements: 1.1, 3.2_
+
+- [x] 13. 修复第二次选词无反应的 Bug
+  - [x] 13.1 修复 hidePopup 函数
+    - 在 content.ts 的 hidePopup 函数中，移除直接设置 `popupContainer.style.display = 'none'` 的代码
+    - 仅更新 popupState.visible 为 false，让 Vue 组件通过响应式系统控制显示
+    - _Requirements: 7.1, 7.2, 7.4_
+  
+  - [x] 13.2 修复 showPopup 函数
+    - 在 showPopup 函数开始时，确保 popupContainer 的 display 样式被重置（如果之前被设置为 none）
+    - 添加 `popupContainer.style.display = 'block'` 或移除 display 样式属性
+    - _Requirements: 7.2, 7.3, 7.4_
+  
+  - [x] 13.3 更新 SelectionPopup 组件
+    - 在 SelectionPopup.vue 中，使用 v-show 或 v-if 指令根据 visible prop 控制组件显示
+    - 确保组件在 visible 为 false 时隐藏，为 true 时显示
+    - _Requirements: 7.3, 7.4_
+  
+  - [x] 13.4 测试多次选词功能
+    - 在测试页面上连续选中 3-5 个不同的单词
+    - 验证每次选词都能正常显示弹窗
+    - 验证弹窗位置和内容都正确更新
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+
+- [x] 14. 实现右键菜单功能
+  - [x] 14.1 在 Background 中创建右键菜单
+    - 在 background.ts 中使用 browser.contextMenus.create 创建 "Remember Me" 菜单项
+    - 设置 contexts 为 ['selection']，仅在选中文本时显示
+    - 设置菜单项 ID 为 'remember-me'
+    - _Requirements: 8.1, 8.5, 8.6_
+  
+  - [x] 14.2 实现右键菜单点击处理
+    - 监听 browser.contextMenus.onClicked 事件
+    - 获取选中的文本（info.selectionText）
+    - 验证选中文本是否为有效的英文单词
+    - _Requirements: 8.1, 8.5_
+  
+  - [x] 14.3 实现右键菜单的单词保存逻辑
+    - 调用 dictionary.getDefinition 获取单词释义
+    - 向当前标签页的 content script 发送消息，请求提取上下文句子
+    - 调用 storage.saveWord 保存单词、释义、上下文、URL
+    - _Requirements: 8.2, 8.3_
+  
+  - [x] 14.4 添加右键菜单的通知功能
+    - 保存成功后，向 content script 发送消息显示成功通知
+    - 显示"第 N 次忘记该单词"的提示消息
+    - 如果获取释义失败或保存失败，显示错误通知
+    - _Requirements: 8.4_
+  
+  - [x] 14.5 在 Content Script 中添加上下文提取消息处理
+    - 在 content.ts 中监听来自 background 的 'EXTRACT_CONTEXT' 消息
+    - 使用 contextExtractor.extractSentence 提取当前页面的上下文
+    - 返回上下文句子给 background
+    - _Requirements: 8.2, 8.3_
+  
+  - [x] 14.6 更新 manifest 权限
+    - 在 wxt.config.ts 的 manifest.permissions 中添加 'contextMenus'
+    - 确保插件有权限创建和管理右键菜单
+    - _Requirements: 8.1_
+  
+  - [x] 14.7 测试右键菜单功能
+    - 在测试页面上选中单词，右键点击验证菜单显示
+    - 点击 "Remember Me" 菜单项，验证单词被保存
+    - 验证通知消息正确显示
+    - 验证未选中文本时菜单不显示
+    - 验证选中非英文文本时的处理
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_

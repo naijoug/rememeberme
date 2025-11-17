@@ -89,3 +89,28 @@
 3. WHEN ContextSentence 超过 200 个字符, THE VocabularyCounter SHALL 截取选中单词前后各 100 个字符作为上下文
 4. THE VocabularyCounter SHALL 在 ContextSentence 中高亮显示选中的单词
 5. WHEN 无法提取有效的 ContextSentence, THE VocabularyCounter SHALL 保存空字符串作为上下文
+
+### Requirement 7
+
+**User Story:** 作为英语学习者，我想要在多次选词时都能正常显示弹窗，以便连续查询多个单词
+
+#### Acceptance Criteria
+
+1. WHEN 用户第一次选中单词, THE VocabularyCounter SHALL 显示 SelectionPopup 并加载释义
+2. WHEN 用户关闭 SelectionPopup 后再次选中单词, THE VocabularyCounter SHALL 重新显示 SelectionPopup 并加载新单词的释义
+3. THE VocabularyCounter SHALL 在每次显示 SelectionPopup 时正确更新弹窗的位置和内容
+4. THE VocabularyCounter SHALL 确保弹窗容器在隐藏后仍可被重新显示
+5. WHEN 用户连续选中多个不同单词, THE VocabularyCounter SHALL 每次都正确响应并显示对应单词的信息
+
+### Requirement 8
+
+**User Story:** 作为英语学习者，我想要通过右键菜单快速标记单词，以便在不显示释义的情况下快速收藏单词
+
+#### Acceptance Criteria
+
+1. WHEN 用户在网页上选中英文单词, THE VocabularyCounter SHALL 在浏览器右键菜单中显示 "Remember Me" 选项
+2. WHEN 用户点击右键菜单中的 "Remember Me" 选项, THE VocabularyCounter SHALL 查询该单词的释义
+3. WHEN 右键菜单操作成功获取释义, THE VocabularyCounter SHALL 保存该单词到 LocalStorage 并增加计数
+4. WHEN 右键菜单操作完成, THE VocabularyCounter SHALL 显示通知消息告知用户保存成功或失败
+5. THE VocabularyCounter SHALL 仅在选中文本为有效英文单词时显示 "Remember Me" 菜单项
+6. WHEN 用户未选中任何文本, THE VocabularyCounter SHALL 不显示 "Remember Me" 菜单项

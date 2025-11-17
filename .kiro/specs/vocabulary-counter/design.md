@@ -63,6 +63,7 @@ graph TB
 - 显示/隐藏 SelectionPopup
 - 提取上下文句子
 - 与 Background 通信获取释义
+- 管理弹窗生命周期，确保多次选词正常工作
 
 **关键功能：**
 ```typescript
@@ -72,12 +73,20 @@ document.addEventListener('mouseup', handleTextSelection);
 // 显示弹窗
 function showPopup(selectedText: string, position: Position): void;
 
+// 隐藏弹窗（不销毁容器，保持可重用）
+function hidePopup(): void;
+
 // 提取上下文
 function extractContext(selection: Selection): string;
 
 // 保存单词
 async function saveWord(word: string, definition: Definition, context: string): Promise<void>;
 ```
+
+**Bug 修复说明（Requirement 7）：**
+- 问题原因：`hidePopup()` 函数将 `popupContainer.style.display` 设置为 'none'，但没有在 `showPopup()` 中重置为可见状态
+- 解决方案：在 `showPopup()` 函数中添加 `popupContainer.style.display = 'block'` 来确保容器可见
+- 或者：在 `updatePopupProps()` 中通过 Vue 的响应式系统控制显示状态，而不是直接操作 DOM
 
 ### 2. SelectionPopup Component
 
@@ -129,6 +138,7 @@ async function saveWord(word: string, definition: Definition, context: string): 
 - 处理 API 请求（避免 CORS 问题）
 - 管理插件生命周期
 - 处理消息通信
+- 管理右键菜单（Context Menu）
 
 **消息类型：**
 ```typescript
@@ -136,7 +146,29 @@ type MessageType =
   | { type: 'GET_DEFINITION', word: string }
   | { type: 'SAVE_WORD', data: WordData }
   | { type: 'GET_WORDS' }
-  | { type: 'DELETE_WORD', word: string };
+  | { type: 'DELETE_WORD', word: string }
+  | { type: 'SAVE_FROM_CONTEXT_MENU', word: string, url: string };
+```
+
+**右键菜单功能（Requirement 8）：**
+```typescript
+// 创建右键菜单项
+browser.contextMenus.create({
+  id: 'remember-me',
+  title: 'Remember Me',
+  contexts: ['selection'],
+});
+
+// 监听菜单点击事件
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId === 'remember-me' && info.selectionText) {
+    // 1. 验证选中文本是否为英文单词
+    // 2. 获取单词释义
+    // 3. 提取上下文（通过向 content script 发送消息）
+    // 4. 保存单词
+    // 5. 显示通知
+  }
+});
 ```
 
 ## Data Models
@@ -449,6 +481,43 @@ class ContextExtractor {
 - 使用 Vue 的自动转义功能
 - 避免使用 v-html
 
+## Context Menu Integration Details
+
+### 右键菜单工作流程
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ContextMenu
+    participant Background
+    participant ContentScript
+    participant Dictionary
+    participant Storage
+
+    User->>ContextMenu: 右键点击选中文本
+    User->>ContextMenu: 点击 "Remember Me"
+    ContextMenu->>Background: onClicked 事件
+    Background->>Background: 验证选中文本
+    Background->>Dictionary: 获取释义
+    Dictionary-->>Background: 返回释义
+    Background->>ContentScript: 请求提取上下文
+    ContentScript-->>Background: 返回上下文句子
+    Background->>Storage: 保存单词
+    Storage-->>Background: 保存成功
+    Background->>ContentScript: 显示通知
+    ContentScript->>User: 显示成功消息
+```
+
+### 右键菜单与选词弹窗的区别
+
+| 特性 | 选词弹窗 | 右键菜单 |
+|------|---------|---------|
+| 显示释义 | ✅ 是 | ❌ 否 |
+| 保存单词 | ✅ 可选（点击 Forget） | ✅ 自动保存 |
+| 用户交互 | 需要点击按钮 | 一键操作 |
+| 使用场景 | 想查看释义 | 快速收藏 |
+| 上下文提取 | ✅ 自动 | ✅ 自动 |
+
 ## Future Enhancements
 
 ### Phase 2 Features
@@ -485,12 +554,14 @@ export default defineConfig({
   manifest: {
     name: 'Vocabulary Counter',
     description: '英语学习词汇追踪工具',
-    permissions: ['storage', 'activeTab'],
+    permissions: ['storage', 'activeTab', 'contextMenus'],
     host_permissions: ['<all_urls>'],
   },
   modules: ['@wxt-dev/module-vue'],
 });
 ```
+
+**注意：** 添加了 `contextMenus` 权限以支持右键菜单功能（Requirement 8）
 
 ### Development Workflow
 

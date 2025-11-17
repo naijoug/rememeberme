@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Multiple Word Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.8;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        .test-word {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .instructions {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        <h2>Testing Instructions</h2>
+        <h3>Selection Popup Test:</h3>
+        <ol>
+            <li>Load this extension in your browser</li>
+            <li>Select each highlighted word below one by one</li>
+            <li>Verify that the popup appears for each selection</li>
+            <li>Close the popup and select the next word</li>
+            <li>Confirm that all selections work correctly</li>
+        </ol>
+        
+        <h3>Context Menu Test:</h3>
+        <ol>
+            <li>Select any highlighted word below</li>
+            <li>Right-click on the selected text</li>
+            <li>Verify that "Remember Me" appears in the context menu</li>
+            <li>Click "Remember Me" and verify the notification appears</li>
+            <li>Try selecting non-English text or multiple words and verify the menu behavior</li>
+            <li>Try without selecting any text and verify the menu doesn't appear</li>
+        </ol>
+    </div>
+
+    <h1>Multiple Word Selection Test</h1>
+    
+    <p>
+        The <span class="test-word">serendipity</span> of discovering this ancient manuscript was truly remarkable. 
+        The archaeologist's <span class="test-word">meticulous</span> approach to excavation revealed layers of history 
+        that had been hidden for centuries.
+    </p>
+
+    <p>
+        Her <span class="test-word">eloquent</span> speech captivated the audience, demonstrating her 
+        <span class="test-word">profound</span> understanding of the subject matter. The 
+        <span class="test-word">ephemeral</span> nature of the moment made it all the more precious.
+    </p>
+
+    <p>
+        Scientists continue to study the <span class="test-word">enigmatic</span> properties of quantum mechanics, 
+        hoping to unlock its secrets. The <span class="test-word">ubiquitous</span> presence of technology in 
+        modern life has transformed how we communicate and work.
+    </p>
+
+    <p>
+        The artist's <span class="test-word">aesthetic</span> vision was both innovative and controversial, 
+        challenging conventional notions of beauty and form.
+    </p>
+</body>
+</html>
