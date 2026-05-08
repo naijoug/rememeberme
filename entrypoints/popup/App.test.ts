@@ -3,11 +3,28 @@
  * Tests Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 4.1, 4.2
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { mockStorageService } from '~/services/__mocks__/storage-mock';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { StorageService } from '~/services/storage';
 import type { Definition } from '~/types';
 
+const storageApiMock = vi.hoisted(() => {
+  const values = new Map<string, unknown>();
+  const storage = {
+    getItem: vi.fn(async (key: string) => values.get(key) ?? null),
+    setItem: vi.fn(async (key: string, value: unknown) => {
+      values.set(key, value);
+    }),
+  };
+
+  return { values, storage };
+});
+
+vi.mock('wxt/utils/storage', () => ({
+  storage: storageApiMock.storage,
+}));
+
 describe('Popup UI - Word List Functionality', () => {
+  const storageService = new StorageService();
   const mockDefinition: Definition = {
     word: 'test',
     phonetics: [],
@@ -20,8 +37,8 @@ describe('Popup UI - Word List Functionality', () => {
   };
 
   beforeEach(() => {
-    // Clear storage before each test
-    mockStorageService.clear();
+    storageApiMock.values.clear();
+    vi.clearAllMocks();
   });
 
   it('should display all saved words', async () => {
@@ -29,10 +46,10 @@ describe('Popup UI - Word List Functionality', () => {
     const word1 = 'apple';
     const word2 = 'banana';
 
-    await mockStorageService.saveWord(word1, mockDefinition, 'context1', 'url1');
-    await mockStorageService.saveWord(word2, mockDefinition, 'context2', 'url2');
+    await storageService.saveWord(word1, mockDefinition, 'context1', 'url1');
+    await storageService.saveWord(word2, mockDefinition, 'context2', 'url2');
 
-    const words = await mockStorageService.getAllWords();
+    const words = await storageService.getAllWords();
     
     expect(words).toHaveLength(2);
     expect(words.find(w => w.word === word1)).toBeDefined();
@@ -53,14 +70,14 @@ describe('Popup UI - Word List Functionality', () => {
     const word2 = 'rare';
 
     // Save word1 three times
-    await mockStorageService.saveWord(word1, mockDefinition, 'context1', 'url1');
-    await mockStorageService.saveWord(word1, mockDefinition, 'context2', 'url2');
-    await mockStorageService.saveWord(word1, mockDefinition, 'context3', 'url3');
+    await storageService.saveWord(word1, mockDefinition, 'context1', 'url1');
+    await storageService.saveWord(word1, mockDefinition, 'context2', 'url2');
+    await storageService.saveWord(word1, mockDefinition, 'context3', 'url3');
 
     // Save word2 once
-    await mockStorageService.saveWord(word2, mockDefinition, 'context4', 'url4');
+    await storageService.saveWord(word2, mockDefinition, 'context4', 'url4');
 
-    const words = await mockStorageService.getAllWords();
+    const words = await storageService.getAllWords();
     const sortedByCount = [...words].sort((a, b) => b.count - a.count);
 
     expect(sortedByCount[0].word).toBe(word1);
@@ -75,15 +92,15 @@ describe('Popup UI - Word List Functionality', () => {
     const word2 = 'new';
 
     // Save word1 first
-    await mockStorageService.saveWord(word1, mockDefinition, 'context1', 'url1');
+    await storageService.saveWord(word1, mockDefinition, 'context1', 'url1');
     
     // Wait a bit to ensure different timestamps
     await new Promise(resolve => setTimeout(resolve, 10));
     
     // Save word2 later
-    await mockStorageService.saveWord(word2, mockDefinition, 'context2', 'url2');
+    await storageService.saveWord(word2, mockDefinition, 'context2', 'url2');
 
-    const words = await mockStorageService.getAllWords();
+    const words = await storageService.getAllWords();
     const sortedByTime = [...words].sort((a, b) => b.updatedAt - a.updatedAt);
 
     expect(sortedByTime[0].word).toBe(word2);
@@ -99,10 +116,10 @@ describe('Popup UI - Word List Functionality', () => {
     const url1 = 'https://example.com/page1';
     const url2 = 'https://example.com/page2';
 
-    await mockStorageService.saveWord(word, mockDefinition, context1, url1);
-    await mockStorageService.saveWord(word, mockDefinition, context2, url2);
+    await storageService.saveWord(word, mockDefinition, context1, url1);
+    await storageService.saveWord(word, mockDefinition, context2, url2);
 
-    const savedWord = await mockStorageService.getWord(word);
+    const savedWord = await storageService.getWord(word);
     
     expect(savedWord).toBeDefined();
     expect(savedWord!.history).toHaveLength(2);
@@ -126,14 +143,14 @@ describe('Popup UI - Word List Functionality', () => {
     // Requirement 4.1: Remove WordEntry from storage
     const word = 'deleteme';
 
-    await mockStorageService.saveWord(word, mockDefinition, 'context', 'url');
+    await storageService.saveWord(word, mockDefinition, 'context', 'url');
     
-    let words = await mockStorageService.getAllWords();
+    let words = await storageService.getAllWords();
     expect(words.find(w => w.word === word)).toBeDefined();
 
-    await mockStorageService.deleteWord(word);
+    await storageService.deleteWord(word);
     
-    words = await mockStorageService.getAllWords();
+    words = await storageService.getAllWords();
     expect(words.find(w => w.word === word)).toBeUndefined();
   });
 
@@ -142,16 +159,16 @@ describe('Popup UI - Word List Functionality', () => {
     const word = 'resetme';
 
     // Save word multiple times
-    await mockStorageService.saveWord(word, mockDefinition, 'context1', 'url1');
-    await mockStorageService.saveWord(word, mockDefinition, 'context2', 'url2');
-    await mockStorageService.saveWord(word, mockDefinition, 'context3', 'url3');
+    await storageService.saveWord(word, mockDefinition, 'context1', 'url1');
+    await storageService.saveWord(word, mockDefinition, 'context2', 'url2');
+    await storageService.saveWord(word, mockDefinition, 'context3', 'url3');
 
-    let savedWord = await mockStorageService.getWord(word);
+    let savedWord = await storageService.getWord(word);
     expect(savedWord!.count).toBe(3);
 
-    await mockStorageService.resetCount(word);
+    await storageService.resetCount(word);
 
-    savedWord = await mockStorageService.getWord(word);
+    savedWord = await storageService.getWord(word);
     expect(savedWord!.count).toBe(0);
     // History should still be preserved
     expect(savedWord!.history).toHaveLength(3);

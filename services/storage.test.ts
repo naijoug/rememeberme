@@ -3,11 +3,28 @@
  * Tests Requirements: 5.1, 5.2, 5.3, 5.4
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { mockStorageService } from '~/services/__mocks__/storage-mock';
-import type { Definition } from '~/types';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { StorageService } from '~/services/storage';
+import type { Definition, WordEntry } from '~/types';
+
+const storageApiMock = vi.hoisted(() => {
+  const values = new Map<string, unknown>();
+  const storage = {
+    getItem: vi.fn(async (key: string) => values.get(key) ?? null),
+    setItem: vi.fn(async (key: string, value: unknown) => {
+      values.set(key, value);
+    }),
+  };
+
+  return { values, storage };
+});
+
+vi.mock('wxt/utils/storage', () => ({
+  storage: storageApiMock.storage,
+}));
 
 describe('Storage Service - Export/Import Functionality', () => {
+  const storageService = new StorageService();
   const mockDefinition: Definition = {
     word: 'test',
     phonetics: [],
@@ -20,8 +37,8 @@ describe('Storage Service - Export/Import Functionality', () => {
   };
 
   beforeEach(() => {
-    // Clear storage before each test
-    mockStorageService.clear();
+    storageApiMock.values.clear();
+    vi.clearAllMocks();
   });
 
   it('should export data as valid JSON', async () => {
@@ -33,20 +50,20 @@ describe('Storage Service - Export/Import Functionality', () => {
     const url1 = 'https://example.com/page1';
     const url2 = 'https://example.com/page2';
 
-    await mockStorageService.saveWord(word1, mockDefinition, context1, url1);
-    await mockStorageService.saveWord(word2, mockDefinition, context2, url2);
+    await storageService.saveWord(word1, mockDefinition, context1, url1);
+    await storageService.saveWord(word2, mockDefinition, context2, url2);
 
-    const exportedData = await mockStorageService.exportData();
+    const exportedData = await storageService.exportData();
     
     // Verify it's valid JSON
     expect(() => JSON.parse(exportedData)).not.toThrow();
     
-    const parsed = JSON.parse(exportedData);
+    const parsed = JSON.parse(exportedData) as WordEntry[];
     expect(Array.isArray(parsed)).toBe(true);
     expect(parsed).toHaveLength(2);
     
     // Verify exported data structure
-    parsed.forEach((word: any) => {
+    parsed.forEach(word => {
       expect(word.word).toBeDefined();
       expect(word.count).toBeDefined();
       expect(word.history).toBeDefined();
@@ -55,7 +72,7 @@ describe('Storage Service - Export/Import Functionality', () => {
       expect(word.updatedAt).toBeDefined();
       
       // Verify history records
-      word.history.forEach((record: any) => {
+      word.history.forEach(record => {
         expect(record.timestamp).toBeDefined();
         expect(record.context).toBeDefined();
         expect(record.url).toBeDefined();
@@ -70,7 +87,7 @@ describe('Storage Service - Export/Import Functionality', () => {
     const newWord = 'imported';
 
     // Save existing word
-    await mockStorageService.saveWord(existingWord, mockDefinition, 'existing context', 'url1');
+    await storageService.saveWord(existingWord, mockDefinition, 'existing context', 'url1');
 
     // Create import data with new word
     const importData = JSON.stringify([
@@ -96,9 +113,9 @@ describe('Storage Service - Export/Import Functionality', () => {
       },
     ]);
 
-    await mockStorageService.importData(importData);
+    await storageService.importData(importData);
 
-    const words = await mockStorageService.getAllWords();
+    const words = await storageService.getAllWords();
     expect(words).toHaveLength(2);
     
     const importedWordEntry = words.find(w => w.word === newWord);
@@ -116,9 +133,9 @@ describe('Storage Service - Export/Import Functionality', () => {
     const url2 = 'url2';
 
     // Save word locally
-    await mockStorageService.saveWord(word, mockDefinition, context1, url1);
+    await storageService.saveWord(word, mockDefinition, context1, url1);
 
-    const localWord = await mockStorageService.getWord(word);
+    const localWord = await storageService.getWord(word);
     expect(localWord!.count).toBe(1);
     expect(localWord!.history).toHaveLength(1);
 
@@ -146,9 +163,9 @@ describe('Storage Service - Export/Import Functionality', () => {
       },
     ]);
 
-    await mockStorageService.importData(importData);
+    await storageService.importData(importData);
 
-    const mergedWord = await mockStorageService.getWord(word);
+    const mergedWord = await storageService.getWord(word);
     
     // Count should be sum of both
     expect(mergedWord!.count).toBe(3); // 1 + 2
@@ -167,14 +184,52 @@ describe('Storage Service - Export/Import Functionality', () => {
     // Test error handling for invalid JSON
     const invalidJson = 'this is not valid json';
 
-    await expect(mockStorageService.importData(invalidJson)).rejects.toThrow('Invalid JSON format');
+    await expect(storageService.importData(invalidJson)).rejects.toThrow('Invalid JSON format');
   });
 
   it('should handle invalid data format during import', async () => {
     // Test error handling for invalid data structure
     const invalidData = JSON.stringify({ not: 'an array' });
 
-    await expect(mockStorageService.importData(invalidData)).rejects.toThrow('Invalid data format');
+    await expect(storageService.importData(invalidData)).rejects.toThrow('Invalid data format');
+  });
+
+  it('should reject malformed word entries during import', async () => {
+    const malformedData = JSON.stringify([
+      {
+        word: '',
+        count: 1,
+        history: [],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      },
+    ]);
+
+    await expect(storageService.importData(malformedData)).rejects.toThrow(
+      'Invalid data format: invalid word entry at index 0'
+    );
+  });
+
+  it('should reject malformed history records during import', async () => {
+    const malformedData = JSON.stringify([
+      {
+        word: 'broken',
+        count: 1,
+        history: [
+          {
+            timestamp: Date.now(),
+            context: 'missing definition',
+            url: 'https://example.com',
+          },
+        ],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      },
+    ]);
+
+    await expect(storageService.importData(malformedData)).rejects.toThrow(
+      'Invalid data format: invalid word entry at index 0'
+    );
   });
 
   it('should preserve all word data during export-import cycle', async () => {
@@ -183,25 +238,25 @@ describe('Storage Service - Export/Import Functionality', () => {
     const word2 = 'cycle2';
 
     // Save multiple words with history
-    await mockStorageService.saveWord(word1, mockDefinition, 'context1', 'url1');
-    await mockStorageService.saveWord(word1, mockDefinition, 'context2', 'url2');
-    await mockStorageService.saveWord(word2, mockDefinition, 'context3', 'url3');
+    await storageService.saveWord(word1, mockDefinition, 'context1', 'url1');
+    await storageService.saveWord(word1, mockDefinition, 'context2', 'url2');
+    await storageService.saveWord(word2, mockDefinition, 'context3', 'url3');
 
-    const originalWords = await mockStorageService.getAllWords();
+    const originalWords = await storageService.getAllWords();
     
     // Export data
-    const exportedData = await mockStorageService.exportData();
+    const exportedData = await storageService.exportData();
     
     // Clear storage
-    mockStorageService.clear();
+    storageApiMock.values.clear();
     
-    let clearedWords = await mockStorageService.getAllWords();
+    let clearedWords = await storageService.getAllWords();
     expect(clearedWords).toHaveLength(0);
     
     // Import data back
-    await mockStorageService.importData(exportedData);
+    await storageService.importData(exportedData);
     
-    const importedWords = await mockStorageService.getAllWords();
+    const importedWords = await storageService.getAllWords();
     
     // Verify all data is preserved
     expect(importedWords).toHaveLength(originalWords.length);

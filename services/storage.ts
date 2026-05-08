@@ -179,11 +179,7 @@ export class StorageService {
    */
   async importData(jsonData: string): Promise<void> {
     try {
-      const importedWords: WordEntry[] = JSON.parse(jsonData);
-
-      if (!Array.isArray(importedWords)) {
-        throw new Error('Invalid data format: expected array of word entries');
-      }
+      const importedWords = this.parseImportedWords(jsonData);
 
       const existingWords = await this.getAllWords();
       const wordMap = new Map<string, WordEntry>();
@@ -222,13 +218,117 @@ export class StorageService {
       const mergedWords = Array.from(wordMap.values());
       await storage.setItem(this.STORAGE_KEY, mergedWords);
     } catch (error) {
-      console.error('Storage import error:', error);
-      if (error instanceof SyntaxError) {
-        throw new Error('Invalid JSON format');
+      if (error instanceof Error) {
+        if (
+          error.message === 'Invalid JSON format' ||
+          error.message.startsWith('Invalid data format')
+        ) {
+          throw error;
+        }
+
+        if (error instanceof SyntaxError) {
+          throw new Error('Invalid JSON format');
+        }
       }
+      console.error('Storage import error:', error);
       this.handleStorageError(error);
       throw new Error('Failed to import data');
     }
+  }
+
+  private parseImportedWords(jsonData: string): WordEntry[] {
+    let importedData: unknown;
+
+    try {
+      importedData = JSON.parse(jsonData);
+    } catch {
+      throw new Error('Invalid JSON format');
+    }
+
+    if (!Array.isArray(importedData)) {
+      throw new Error('Invalid data format: expected array of word entries');
+    }
+
+    return importedData.map((entry, index) => {
+      if (!this.isWordEntry(entry)) {
+        throw new Error(`Invalid data format: invalid word entry at index ${index}`);
+      }
+
+      return {
+        ...entry,
+        word: entry.word.trim().toLowerCase(),
+      };
+    });
+  }
+
+  private isWordEntry(value: unknown): value is WordEntry {
+    if (!this.isRecord(value)) {
+      return false;
+    }
+
+    return (
+      typeof value.word === 'string' &&
+      value.word.trim().length > 0 &&
+      this.isNonNegativeNumber(value.count) &&
+      Array.isArray(value.history) &&
+      value.history.every(record => this.isHistoryRecord(record)) &&
+      this.isNonNegativeNumber(value.createdAt) &&
+      this.isNonNegativeNumber(value.updatedAt)
+    );
+  }
+
+  private isHistoryRecord(value: unknown): value is HistoryRecord {
+    if (!this.isRecord(value)) {
+      return false;
+    }
+
+    return (
+      this.isNonNegativeNumber(value.timestamp) &&
+      typeof value.context === 'string' &&
+      typeof value.url === 'string' &&
+      this.isDefinition(value.definition)
+    );
+  }
+
+  private isDefinition(value: unknown): value is Definition {
+    if (!this.isRecord(value)) {
+      return false;
+    }
+
+    return (
+      typeof value.word === 'string' &&
+      Array.isArray(value.phonetics) &&
+      Array.isArray(value.meanings) &&
+      value.meanings.every(meaning => this.isMeaning(meaning))
+    );
+  }
+
+  private isMeaning(value: unknown): boolean {
+    if (!this.isRecord(value)) {
+      return false;
+    }
+
+    return (
+      typeof value.partOfSpeech === 'string' &&
+      Array.isArray(value.definitions) &&
+      value.definitions.every(definition => this.isDefinitionItem(definition))
+    );
+  }
+
+  private isDefinitionItem(value: unknown): boolean {
+    if (!this.isRecord(value)) {
+      return false;
+    }
+
+    return typeof value.definition === 'string';
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
+  }
+
+  private isNonNegativeNumber(value: unknown): value is number {
+    return typeof value === 'number' && Number.isFinite(value) && value >= 0;
   }
 
   /**
