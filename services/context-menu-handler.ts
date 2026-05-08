@@ -1,7 +1,8 @@
 import type { Definition, WordEntry } from '~/types';
+import { getOrdinal, isEnglishWord } from './word-utils';
 
 export const CONTEXT_MENU_ID = 'remember-me';
-export const ENGLISH_WORD_REGEX = /^[a-zA-Z][a-zA-Z'\-]*[a-zA-Z]$|^[a-zA-Z]$/;
+export { getOrdinal, isEnglishWord };
 
 export interface ContextMenuClickInfo {
   menuItemId?: string | number;
@@ -46,22 +47,6 @@ export function createContextMenu(contextMenus: ContextMenuCreateApi): void {
     title: 'Remember Me',
     contexts: ['selection'],
   });
-}
-
-export function isEnglishWord(text: string): boolean {
-  const trimmed = text.trim();
-
-  if (!trimmed || /\s/.test(trimmed)) {
-    return false;
-  }
-
-  return ENGLISH_WORD_REGEX.test(trimmed);
-}
-
-export function getOrdinal(n: number): string {
-  const suffixes = ['th', 'st', 'nd', 'rd'];
-  const value = n % 100;
-  return n + (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
 }
 
 export async function handleContextMenuClick(

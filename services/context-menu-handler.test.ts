@@ -3,9 +3,7 @@ import type { Definition, WordEntry } from '~/types';
 import {
   CONTEXT_MENU_ID,
   createContextMenu,
-  getOrdinal,
   handleContextMenuClick,
-  isEnglishWord,
 } from './context-menu-handler';
 
 describe('context-menu-handler', () => {
@@ -58,24 +56,6 @@ describe('context-menu-handler', () => {
       title: 'Remember Me',
       contexts: ['selection'],
     });
-  });
-
-  it('validates English words consistently', () => {
-    expect(isEnglishWord('hello')).toBe(true);
-    expect(isEnglishWord("rock'n'roll")).toBe(true);
-    expect(isEnglishWord('self-aware')).toBe(true);
-    expect(isEnglishWord('two words')).toBe(false);
-    expect(isEnglishWord('123')).toBe(false);
-    expect(isEnglishWord(' hello ')).toBe(true);
-  });
-
-  it('formats ordinals for notifications', () => {
-    expect(getOrdinal(1)).toBe('1st');
-    expect(getOrdinal(2)).toBe('2nd');
-    expect(getOrdinal(3)).toBe('3rd');
-    expect(getOrdinal(4)).toBe('4th');
-    expect(getOrdinal(11)).toBe('11th');
-    expect(getOrdinal(22)).toBe('22nd');
   });
 
   it('saves a valid selected word and shows a success notification', async () => {

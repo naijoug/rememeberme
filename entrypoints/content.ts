@@ -1,12 +1,10 @@
 import { createApp, type App as VueApp } from 'vue';
 import { contextExtractor } from '~/services/context-extractor';
 import { storageService } from '~/services/storage';
+import { getOrdinal, isEnglishWord } from '~/services/word-utils';
 import type { Definition, Position } from '~/types';
 import SelectionPopup from '../components/SelectionPopup.vue';
 import '~/assets/content.css';
-
-// 英文单词验证正则（基本验证：字母、连字符、撇号）
-const ENGLISH_WORD_REGEX = /^[a-zA-Z][a-zA-Z'\-]*[a-zA-Z]$|^[a-zA-Z]$/;
 
 // 防抖延迟时间（毫秒）
 const DEBOUNCE_DELAY = 300;
@@ -264,33 +262,6 @@ function showNotification(message: string, type: 'success' | 'error' = 'success'
       notification.remove();
     }, 300);
   }, 3000);
-}
-
-/**
- * 获取序数词（1st, 2nd, 3rd, 4th, etc.）
- */
-function getOrdinal(n: number): string {
-  const s = ['th', 'st', 'nd', 'rd'];
-  const v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
-
-/**
- * 验证文本是否为英文单词
- * @param text - 要验证的文本
- * @returns 是否为有效的英文单词
- */
-function isEnglishWord(text: string): boolean {
-  // 移除首尾空格
-  const trimmed = text.trim();
-  
-  // 检查是否为空或包含空格（多个单词）
-  if (!trimmed || /\s/.test(trimmed)) {
-    return false;
-  }
-
-  // 使用正则验证是否为英文单词
-  return ENGLISH_WORD_REGEX.test(trimmed);
 }
 
 /**
