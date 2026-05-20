@@ -1,32 +1,19 @@
 {
-  "name": "remember-me",
-  "description": "Words remember you, too.",
+  "name": "rememberme-workspace",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "frontend/browser-extension"
+  ],
   "scripts": {
-    "dev": "wxt",
-    "dev:firefox": "wxt -b firefox",
-    "build": "wxt build",
-    "build:firefox": "wxt build -b firefox",
-    "zip": "wxt zip",
-    "zip:firefox": "wxt zip -b firefox",
-    "compile": "vue-tsc --noEmit",
-    "postinstall": "wxt prepare",
-    "test": "vitest --run",
-    "test:watch": "vitest"
-  },
-  "dependencies": {
-    "vue": "^3.5.21"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1",
-    "@vitest/ui": "^4.0.8",
-    "@wxt-dev/module-vue": "^1.0.2",
-    "happy-dom": "^20.0.10",
-    "typescript": "^5.9.2",
-    "vitest": "^4.0.8",
-    "vue-tsc": "^3.0.6",
-    "wxt": "^0.20.6"
+    "dev": "npm --prefix frontend/browser-extension run dev",
+    "dev:firefox": "npm --prefix frontend/browser-extension run dev:firefox",
+    "build": "npm --prefix frontend/browser-extension run build",
+    "build:firefox": "npm --prefix frontend/browser-extension run build:firefox",
+    "zip": "npm --prefix frontend/browser-extension run zip",
+    "zip:firefox": "npm --prefix frontend/browser-extension run zip:firefox",
+    "compile": "npm --prefix frontend/browser-extension run compile",
+    "test": "npm --prefix frontend/browser-extension test",
+    "test:watch": "npm --prefix frontend/browser-extension run test:watch"
   }
 }
