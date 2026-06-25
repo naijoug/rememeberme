@@ -13,16 +13,15 @@ The browser extension frontend for Remember Me. It helps you track and manage un
 
 ## Local Development
 
-From the repository root, you can run browser-extension commands through the root scripts:
+Run browser-extension commands from this directory:
 
 ```bash
+cd frontend/browser-extension
 npm test
 npm run compile
 npm run build
 npm run dev
 ```
-
-You can also run the same commands from this `frontend/browser-extension/` directory.
 
 ### Requirements
 
@@ -32,7 +31,7 @@ You can also run the same commands from this `frontend/browser-extension/` direc
 ### Install Dependencies
 
 ```bash
-cd frontend
+cd frontend/browser-extension
 npm install
 ```
 

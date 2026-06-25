@@ -13,18 +13,19 @@ rememberme/
 
 The current browser extension lives in `frontend/browser-extension/`. Future mobile and desktop clients should be added as sibling directories under `frontend/`.
 
-## Common Commands
+## Browser Extension Commands
 
-Run these from the repository root:
+Run extension commands from `frontend/browser-extension/`:
 
 ```bash
+cd frontend/browser-extension
 npm test
 npm run compile
 npm run build
 npm run dev
 ```
 
-The root scripts delegate to the browser extension package in `frontend/browser-extension/`.
+The repository root intentionally does not contain a Node package manifest. The current package boundary is the browser extension.
 
 ## Frontend
 
