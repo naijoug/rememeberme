@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页选词查词卡片</title>
+    <style id="theme-vars">
+/* ============================================================
+   Remember Me · Brand CSS (Free-Explore)
+   Tone: 活力游戏化 · 记忆激励 (energetic, motivational, game-like)
+   Single primary hue (warm ember orange) + neutral system.
+   Light + Dark dual mode.
+   Brand prefix: rm-
+   ============================================================ */
+
+:root {
+  /* ---- Primary brand hue: ember orange (energy / streak / motivation) ---- */
+  --rm-primary-50:  #FFF3EC;
+  --rm-primary-100: #FFE2D1;
+  --rm-primary-200: #FFC4A6;
+  --rm-primary-300: #FFA176;
+  --rm-primary-400: #FF8A52;
+  --rm-primary-500: #FF7A3D;  /* core brand */
+  --rm-primary-600: #ED5F22;
+  --rm-primary-700: #C84A18;
+  --rm-primary-800: #9E3A14;
+  --rm-primary-900: #7A2E12;
+
+  /* ---- Neutral scale (warm-tinted grays for cohesion) ---- */
+  --rm-neutral-0:   #FFFFFF;
+  --rm-neutral-50:  #FAF7F4;
+  --rm-neutral-100: #F2EDE8;
+  --rm-neutral-200: #E6DFD8;
+  --rm-neutral-300: #D2C9C0;
+  --rm-neutral-400: #A89E94;
+  --rm-neutral-500: #7C7268;
+  --rm-neutral-600: #5C534B;
+  --rm-neutral-700: #423B35;
+  --rm-neutral-800: #2A2521;
+  --rm-neutral-900: #1A1613;
+
+  /* ---- Semantic state colors (status only, not identity) ---- */
+  --rm-state-success: #2FB67A;
+  --rm-state-warning: #F2B23E;
+  --rm-state-error:   #E5544B;
+  --rm-state-info:    #4C8DD6;
+
+  /* ---- Radius scale (restrained) ---- */
+  --rm-radius-sm: 4px;
+  --rm-radius-md: 8px;
+  --rm-radius-lg: 16px;
+  --rm-radius-full: 9999px;
+
+  /* ---- Spacing base ---- */
+  --rm-space-1: 4px;
+  --rm-space-2: 8px;
+  --rm-space-3: 12px;
+  --rm-space-4: 16px;
+  --rm-space-5: 24px;
+  --rm-space-6: 32px;
+
+  /* ---- Shadows (static surfaces <= 0.05 alpha) ---- */
+  --rm-shadow-card: 0 1px 2px rgba(26, 22, 19, 0.04), 0 1px 1px rgba(26, 22, 19, 0.03);
+  --rm-shadow-float: 0 12px 32px rgba(26, 22, 19, 0.16), 0 4px 12px rgba(26, 22, 19, 0.10);
+
+  /* ============================================================
+     LIGHT MODE (default) — semantic surface tokens
+     ============================================================ */
+  --rm-bg:            var(--rm-neutral-50);
+  --rm-bg-elevated:   var(--rm-neutral-0);
+  --rm-surface:       var(--rm-neutral-0);
+  --rm-surface-soft:  var(--rm-neutral-100);
+  --rm-surface-sunk:  var(--rm-neutral-100);
+  --rm-border:        var(--rm-neutral-200);
+  --rm-border-strong: var(--rm-neutral-300);
+
+  --rm-text-strong:   var(--rm-neutral-900);
+  --rm-text:          var(--rm-neutral-700);
+  --rm-text-muted:    var(--rm-neutral-500);
+  --rm-text-faint:    var(--rm-neutral-400);
+  --rm-text-on-primary: #FFFFFF;
+
+  --rm-primary:       var(--rm-primary-500);
+  --rm-primary-hover: var(--rm-primary-600);
+  --rm-primary-soft:  var(--rm-primary-50);
+  --rm-primary-soft-border: var(--rm-primary-200);
+
+  --rm-streak-bg:     var(--rm-primary-50);
+  --rm-streak-fg:     var(--rm-primary-700);
+}
+
+/* ============================================================
+   DARK MODE — applied via <html class="dark">
+   ============================================================ */
+.dark {
+  --rm-bg:            #14110E;
+  --rm-bg-elevated:   #1F1A16;
+  --rm-surface:       #1F1A16;
+  --rm-surface-soft:  #272019;
+  --rm-surface-sunk:  #18130F;
+  --rm-border:        #332B23;
+  --rm-border-strong: #4A3F33;
+
+  --rm-text-strong:   #FBF6F0;
+  --rm-text:          #E0D6CB;
+  --rm-text-muted:    #A09385;
+  --rm-text-faint:    #6E6258;
+  --rm-text-on-primary: #1A1613;
+
+  --rm-primary:       var(--rm-primary-400);
+  --rm-primary-hover: var(--rm-primary-300);
+  --rm-primary-soft:  rgba(255, 122, 61, 0.14);
+  --rm-primary-soft-border: rgba(255, 122, 61, 0.30);
+
+  --rm-streak-bg:     rgba(255, 122, 61, 0.14);
+  --rm-streak-fg:     var(--rm-primary-300);
+
+  --rm-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.30), 0 1px 1px rgba(0, 0, 0, 0.20);
+  --rm-shadow-float: 0 12px 32px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.40);
+}
+
+/* ============================================================
+   Typography system
+   Display: Sora (geometric, energetic) · Body: Inter
+   Numerals (counts/streaks): Sora for tabular punch.
+   ============================================================ */
+:root {
+  --rm-font-display: 'Sora', 'Noto Sans SC', system-ui, sans-serif;
+  --rm-font-body: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+}
+
+.rm-display {
+  font-family: var(--rm-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--rm-text-strong);
+}
+.rm-h1 { font-family: var(--rm-font-display); font-weight: 700; font-size: 28px; line-height: 1.2; letter-spacing: -0.02em; color: var(--rm-text-strong); }
+.rm-h2 { font-family: var(--rm-font-display); font-weight: 700; font-size: 22px; line-height: 1.25; letter-spacing: -0.015em; color: var(--rm-text-strong); }
+.rm-h3 { font-family: var(--rm-font-display); font-weight: 600; font-size: 17px; line-height: 1.3; color: var(--rm-text-strong); }
+.rm-body { font-family: var(--rm-font-body); font-weight: 400; font-size: 15px; line-height: 1.55; color: var(--rm-text); }
+.rm-body-sm { font-family: var(--rm-font-body); font-weight: 400; font-size: 13px; line-height: 1.5; color: var(--rm-text-muted); }
+.rm-caption { font-family: var(--rm-font-body); font-weight: 500; font-size: 11px; line-height: 1.4; letter-spacing: 0.02em; color: var(--rm-text-faint); }
+.rm-num { font-family: var(--rm-font-display); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+
+body { background-color: var(--rm-bg); color: var(--rm-text); font-family: var(--rm-font-body); }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-primary: var(--rm-primary);
+    --color-border: var(--rm-border);
+  }
+  @layer base {
+    body { background: var(--rm-surface); color: var(--rm-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main class="min-h-screen w-full" style="background-color:#e9e6e2;">
+      <div class="mx-auto max-w-[980px] px-4 py-10 sm:py-14">
+
+        <!-- Page intro (design-stage caption, neutral canvas) -->
+        <div class="mb-8 text-center">
+          <p class="rm-caption" style="color:#8a8178;">REMEMBER ME · 阅读选词</p>
+          <h1 class="rm-h2 mt-1" style="color:#2a2521; font-size:24px; text-wrap:balance;">网页选词查词卡片</h1>
+        </div>
+
+        <!-- Two phones side by side: left light / right dark -->
+        <div class="flex flex-col items-center justify-center gap-12 md:flex-row md:items-start md:gap-[48px]">
+
+          <!-- ============ LEFT PHONE · LIGHT ============ -->
+          <figure class="m-0 flex flex-col items-center gap-3">
+            <div class="light relative w-[390px] max-w-full shrink-0 overflow-hidden rounded-[40px] border-[6px] p-0"
+                 style="height:844px; border-color:#20201f; background-color:var(--rm-bg); box-shadow:0 24px 60px -20px rgba(26,22,19,0.30);">
+
+              <!-- App root (LIGHT — no .dark) -->
+              <div class="relative flex h-full w-full flex-col" style="background-color:var(--rm-bg);">
+
+                <!-- status bar spacer -->
+                <div class="flex h-11 shrink-0 items-center justify-between px-6"
+                     style="color:var(--rm-text-strong);">
+                  <span class="rm-num" style="font-size:14px;">9:41</span>
+                  <span class="flex items-center gap-1.5" style="color:var(--rm-text-strong);">
+                    <i data-lucide="signal" class="h-3.5 w-3.5"></i>
+                    <i data-lucide="wifi" class="h-3.5 w-3.5"></i>
+                    <i data-lucide="battery-full" class="h-4 w-4"></i>
+                  </span>
+                </div>
+
+                <!-- faux browser chrome -->
+                <div class="flex h-11 shrink-0 items-center gap-2 border-b px-3"
+                     style="border-color:var(--rm-border); background-color:var(--rm-surface-soft);">
+                  <button type="button" data-dom-id="close-card" aria-label="返回"
+                          class="inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
+                          style="color:var(--rm-text-muted);">
+                    <i data-lucide="chevron-left" class="h-5 w-5"></i>
+                  </button>
+                  <div class="flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-full px-3"
+                       style="background-color:var(--rm-bg-elevated); border:1px solid var(--rm-border);">
+                    <i data-lucide="lock" class="h-3 w-3 shrink-0" style="color:var(--rm-text-faint);"></i>
+                    <span class="truncate rm-body-sm" style="font-size:12px;">medium.com/read</span>
+                  </div>
+                  <button type="button" aria-label="菜单"
+                          class="inline-flex h-8 w-8 items-center justify-center rounded-lg"
+                          style="color:var(--rm-text-muted);">
+                    <i data-lucide="more-horizontal" class="h-5 w-5"></i>
+                  </button>
+                </div>
+
+                <!-- ARTICLE (scroll look) + overlay card -->
+                <div class="relative min-h-0 flex-1 overflow-hidden">
+                  <!-- article body -->
+                  <article class="h-full overflow-hidden px-5 pt-6">
+                    <p class="rm-caption mb-2" style="color:var(--rm-primary);">TECHNOLOGY · 7 MIN READ</p>
+                    <h2 class="rm-h2" style="font-size:24px; line-height:1.2; text-wrap:balance; word-break:keep-all;">The Future of Remote Work</h2>
+                    <div class="mt-3 flex items-center gap-2 rm-body-sm" style="font-size:12px;">
+                      <span class="inline-block h-6 w-6 rounded-full" style="background-color:var(--rm-primary-soft);"></span>
+                      <span style="color:var(--rm-text);">Elena Park</span>
+                      <span style="color:var(--rm-text-faint);">·</span>
+                      <span style="color:var(--rm-text-muted);">Mar 12, 2025</span>
+                    </div>
+                    <!-- thin neutral header image placeholder -->
+                    <div class="mt-4 h-28 w-full rounded-[12px]" style="background-color:var(--rm-surface-soft); border:1px solid var(--rm-border);"></div>
+
+                    <div class="mt-5 space-y-4">
+                      <p class="rm-body" style="line-height:1.65;">Over the past few years, distributed teams have moved from a temporary arrangement to a permanent operating model. Companies that once resisted flexible schedules now compete to offer them.</p>
+                      <p class="rm-body" style="line-height:1.65;">High-speed connectivity and cloud collaboration tools have become&nbsp;<span class="relative rounded-[3px] px-0.5 font-medium" style="background-color:var(--rm-primary-soft); color:var(--rm-text-strong); box-shadow:inset 0 -2px 0 var(--rm-primary);">ubiquitous</span>, letting knowledge workers contribute from almost anywhere in the world.</p>
+                      <p class="rm-body" style="line-height:1.65;">Yet the transition raises new questions about culture, focus, and the boundaries between work and home life that leaders are only beginning to answer.</p>
+                    </div>
+                  </article>
+
+                  <!-- dim scrim over article -->
+                  <div class="pointer-events-none absolute inset-0" style="background-color:rgba(26,22,19,0.28);"></div>
+
+                  <!-- FLOATING LOOKUP CARD -->
+                  <div class="absolute left-1/2 top-[300px] w-[318px] -translate-x-1/2">
+                    <!-- pointer toward selected word -->
+                    <div class="absolute -top-1.5 left-16 h-3 w-3 rotate-45 rounded-[2px]" style="background-color:var(--rm-surface); border-left:1px solid var(--rm-border); border-top:1px solid var(--rm-border);"></div>
+                    <div class="relative rounded-[16px] p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border); box-shadow:var(--rm-shadow-float);">
+
+                      <!-- header row -->
+                      <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                          <h3 class="rm-display truncate" style="font-size:22px; line-height:1.15;">ubiquitous</h3>
+                          <p class="rm-body-sm mt-0.5 truncate" style="font-size:13px;">/juːˈbɪkwɪtəs/</p>
+                        </div>
+                        <div class="flex shrink-0 items-center gap-1.5">
+                          <button type="button" data-dom-id="pronounce" aria-label="朗读"
+                                  class="inline-flex h-9 w-9 items-center justify-center rounded-full transition-transform active:scale-95"
+                                  style="background-color:var(--rm-primary); color:var(--rm-text-on-primary);">
+                            <i data-lucide="volume-2" class="h-4 w-4"></i>
+                          </button>
+                          <button type="button" data-dom-id="close-card" aria-label="关闭"
+                                  class="inline-flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+                                  style="color:var(--rm-text-muted); background-color:var(--rm-surface-soft);">
+                            <i data-lucide="x" class="h-4 w-4"></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- meaning row -->
+                      <div class="mt-3 flex items-start gap-2">
+                        <span class="inline-flex shrink-0 items-center rounded-md px-2 py-0.5 rm-caption"
+                              style="background-color:var(--rm-primary-soft); color:var(--rm-primary); font-size:11px; letter-spacing:0; white-space:nowrap;">adj.</span>
+                        <p class="rm-body" style="font-size:14px; line-height:1.5;">无处不在的；普遍存在的</p>
+                      </div>
+
+                      <!-- motivational note -->
+                      <div class="mt-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1"
+                           style="background-color:var(--rm-streak-bg); color:var(--rm-streak-fg);">
+                        <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+                        <span class="rm-body-sm" style="font-size:12px; color:var(--rm-streak-fg);">已忘记 <span class="rm-num">5</span> 次</span>
+                      </div>
+
+                      <!-- action row -->
+                      <div class="mt-4 flex items-center gap-2.5">
+                        <button type="button" data-dom-id="mark-remember"
+                                class="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full font-semibold transition-transform active:scale-[0.98]"
+                                style="background-color:var(--rm-primary); color:var(--rm-text-on-primary); font-family:var(--rm-font-display); font-size:15px;">
+                          <i data-lucide="check" class="h-4 w-4"></i>记住了
+                        </button>
+                        <button type="button" data-dom-id="mark-forget"
+                                class="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full font-semibold transition-colors"
+                                style="background-color:transparent; color:var(--rm-text); border:1px solid var(--rm-border-strong); font-family:var(--rm-font-display); font-size:15px;">
+                          <i data-lucide="rotate-ccw" class="h-4 w-4"></i>没记住
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <figcaption class="rm-body-sm" style="color:#6f665d;">浅色 Light</figcaption>
+          </figure>
+
+          <!-- ============ RIGHT PHONE · DARK ============ -->
+          <figure class="m-0 flex flex-col items-center gap-3">
+            <div class="dark relative w-[390px] max-w-full shrink-0 overflow-hidden rounded-[40px] border-[6px] p-0"
+                 style="height:844px; border-color:#0c0a08; background-color:var(--rm-bg); box-shadow:0 24px 60px -20px rgba(0,0,0,0.55);">
+
+              <!-- App root (DARK) -->
+              <div class="relative flex h-full w-full flex-col" style="background-color:var(--rm-bg);">
+
+                <div class="flex h-11 shrink-0 items-center justify-between px-6" style="color:var(--rm-text-strong);">
+                  <span class="rm-num" style="font-size:14px;">9:41</span>
+                  <span class="flex items-center gap-1.5" style="color:var(--rm-text-strong);">
+                    <i data-lucide="signal" class="h-3.5 w-3.5"></i>
+                    <i data-lucide="wifi" class="h-3.5 w-3.5"></i>
+                    <i data-lucide="battery-full" class="h-4 w-4"></i>
+                  </span>
+                </div>
+
+                <div class="flex h-11 shrink-0 items-center gap-2 border-b px-3" style="border-color:var(--rm-border); background-color:var(--rm-surface-soft);">
+                  <button type="button" aria-label="返回" class="inline-flex h-8 w-8 items-center justify-center rounded-lg" style="color:var(--rm-text-muted);">
+                    <i data-lucide="chevron-left" class="h-5 w-5"></i>
+                  </button>
+                  <div class="flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-full px-3" style="background-color:var(--rm-bg-elevated); border:1px solid var(--rm-border);">
+                    <i data-lucide="lock" class="h-3 w-3 shrink-0" style="color:var(--rm-text-faint);"></i>
+                    <span class="truncate rm-body-sm" style="font-size:12px;">medium.com/read</span>
+                  </div>
+                  <button type="button" aria-label="菜单" class="inline-flex h-8 w-8 items-center justify-center rounded-lg" style="color:var(--rm-text-muted);">
+                    <i data-lucide="more-horizontal" class="h-5 w-5"></i>
+                  </button>
+                </div>
+
+                <div class="relative min-h-0 flex-1 overflow-hidden">
+                  <article class="h-full overflow-hidden px-5 pt-6">
+                    <p class="rm-caption mb-2" style="color:var(--rm-primary);">TECHNOLOGY · 7 MIN READ</p>
+                    <h2 class="rm-h2" style="font-size:24px; line-height:1.2; text-wrap:balance; word-break:keep-all;">The Future of Remote Work</h2>
+                    <div class="mt-3 flex items-center gap-2 rm-body-sm" style="font-size:12px;">
+                      <span class="inline-block h-6 w-6 rounded-full" style="background-color:var(--rm-primary-soft);"></span>
+                      <span style="color:var(--rm-text);">Elena Park</span>
+                      <span style="color:var(--rm-text-faint);">·</span>
+                      <span style="color:var(--rm-text-muted);">Mar 12, 2025</span>
+                    </div>
+                    <div class="mt-4 h-28 w-full rounded-[12px]" style="background-color:var(--rm-surface-soft); border:1px solid var(--rm-border);"></div>
+
+                    <div class="mt-5 space-y-4">
+                      <p class="rm-body" style="line-height:1.65;">Over the past few years, distributed teams have moved from a temporary arrangement to a permanent operating model. Companies that once resisted flexible schedules now compete to offer them.</p>
+                      <p class="rm-body" style="line-height:1.65;">High-speed connectivity and cloud collaboration tools have become&nbsp;<span class="relative rounded-[3px] px-0.5 font-medium" style="background-color:var(--rm-primary-soft); color:var(--rm-text-strong); box-shadow:inset 0 -2px 0 var(--rm-primary);">ubiquitous</span>, letting knowledge workers contribute from almost anywhere in the world.</p>
+                      <p class="rm-body" style="line-height:1.65;">Yet the transition raises new questions about culture, focus, and the boundaries between work and home life that leaders are only beginning to answer.</p>
+                    </div>
+                  </article>
+
+                  <div class="pointer-events-none absolute inset-0" style="background-color:rgba(0,0,0,0.45);"></div>
+
+                  <div class="absolute left-1/2 top-[300px] w-[318px] -translate-x-1/2">
+                    <div class="absolute -top-1.5 left-16 h-3 w-3 rotate-45 rounded-[2px]" style="background-color:var(--rm-surface); border-left:1px solid var(--rm-border); border-top:1px solid var(--rm-border);"></div>
+                    <div class="relative rounded-[16px] p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border); box-shadow:var(--rm-shadow-float);">
+
+                      <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                          <h3 class="rm-display truncate" style="font-size:22px; line-height:1.15;">ubiquitous</h3>
+                          <p class="rm-body-sm mt-0.5 truncate" style="font-size:13px;">/juːˈbɪkwɪtəs/</p>
+                        </div>
+                        <div class="flex shrink-0 items-center gap-1.5">
+                          <button type="button" aria-label="朗读" class="inline-flex h-9 w-9 items-center justify-center rounded-full active:scale-95" style="background-color:var(--rm-primary); color:var(--rm-text-on-primary);">
+                            <i data-lucide="volume-2" class="h-4 w-4"></i>
+                          </button>
+                          <button type="button" aria-label="关闭" class="inline-flex h-8 w-8 items-center justify-center rounded-full" style="color:var(--rm-text-muted); background-color:var(--rm-surface-soft);">
+                            <i data-lucide="x" class="h-4 w-4"></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="mt-3 flex items-start gap-2">
+                        <span class="inline-flex shrink-0 items-center rounded-md px-2 py-0.5 rm-caption" style="background-color:var(--rm-primary-soft); color:var(--rm-primary); font-size:11px; letter-spacing:0; white-space:nowrap;">adj.</span>
+                        <p class="rm-body" style="font-size:14px; line-height:1.5;">无处不在的；普遍存在的</p>
+                      </div>
+
+                      <div class="mt-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1" style="background-color:var(--rm-streak-bg); color:var(--rm-streak-fg);">
+                        <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+                        <span class="rm-body-sm" style="font-size:12px; color:var(--rm-streak-fg);">已忘记 <span class="rm-num">5</span> 次</span>
+                      </div>
+
+                      <div class="mt-4 flex items-center gap-2.5">
+                        <button type="button" class="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full font-semibold active:scale-[0.98]" style="background-color:var(--rm-primary); color:var(--rm-text-on-primary); font-family:var(--rm-font-display); font-size:15px;">
+                          <i data-lucide="check" class="h-4 w-4"></i>记住了
+                        </button>
+                        <button type="button" class="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full font-semibold" style="background-color:transparent; color:var(--rm-text); border:1px solid var(--rm-border-strong); font-family:var(--rm-font-display); font-size:15px;">
+                          <i data-lucide="rotate-ccw" class="h-4 w-4"></i>没记住
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <figcaption class="rm-body-sm" style="color:#6f665d;">深色 Dark</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </main>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+      /* interaction polish — CSS-first, transform/opacity/color only */
+      [data-dom-id="mark-remember"]:hover { background-color: var(--rm-primary-hover); }
+      [data-dom-id="mark-forget"]:hover { background-color: var(--rm-surface-soft); }
+      [data-dom-id="pronounce"]:hover { background-color: var(--rm-primary-hover); }
+      button[data-dom-id]:focus-visible,
+      button[aria-label]:focus-visible {
+        outline: 2px solid var(--rm-primary);
+        outline-offset: 2px;
+      }
+      /* selected word micro-cue: gentle pulse of the ember underline */
+      @keyframes rm-select-cue {
+        0%, 100% { box-shadow: inset 0 -2px 0 var(--rm-primary); }
+        50% { box-shadow: inset 0 -3px 0 var(--rm-primary-hover); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        article .relative[style*="inset 0 -2px"] { animation: rm-select-cue 2.4s ease-in-out infinite; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      }
+    </style>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "project": {
+    "name": "Remember Me · Mobile UI",
+    "device": "mobile",
+    "operatingMode": "free-explore",
+    "businessTheme": "English vocabulary memorization app — capture words while reading, track forget-count, review and retain",
+    "themeMode": "dual (light + dark)",
+    "designRead": "mobile product UI / language learners on the go / motivational-playful yet focused / medium density / avoid clinical material-design tool feel",
+    "designDials": { "layoutVariance": 3, "motionIntensity": 3, "visualDensity": 3 },
+    "styleDefinitionBrief": "活力游戏化·记忆激励。Single ember-orange brand hue energizing a warm-neutral canvas. Forget-count and streaks reframed as motivational progress (rings, badges, sparkline). Big Sora display numerals, rounded 16px cards, restrained borders over heavy shadow. Light + dark dual mode. Playful but readable, never childish.",
+    "styleContinuityAnchors": {
+      "colorSystem": "Single brand hue: ember orange --rm-primary-500 #FF7A3D (dark mode uses --rm-primary-400). Warm-neutral surfaces (--rm-bg, --rm-surface). Semantic state colors only for success/warning/error/info. No secondary/accent brand colors.",
+      "shapeSystem": "Radius: cards/sheets 16px (--rm-radius-lg), controls/chips 8px, pills/avatars full. Consistent rounded language; no sharp corners on interactive surfaces.",
+      "typographySystem": "Display & numerals: Sora (700/600, tight -0.02em tracking). Body: Inter. Counts/streaks always Sora tabular-nums via .rm-num. Headings short (<=8 CJK / 1-3 EN words).",
+      "spacingSystem": "4px base scale; screen padding 16px; card inner padding 16px; section gap 24px.",
+      "componentLanguage": "Rounded cards with 1px --rm-border, soft surface layering. Pill chips for tags/POS. Circular progress ring for mastery. Sticky bottom tab bar (4 tabs). Primary CTA = solid ember pill. Forget-count rendered as a warm badge, not an alarm.",
+      "surfaceAndDepth": "Border-first + surface layering. Static shadow alpha <=0.05 (--rm-shadow-card). Only floating layers (sheets, popovers) use --rm-shadow-float.",
+      "imageryAndIconography": "Minimal flat line/duotone icons in currentColor or primary. One celebratory mascot/badge illustration for stats/empty states. No photographic imagery in core list/detail screens.",
+      "interactionTone": "Encouraging and snappy: tap feedback, count-up on numerals, ring fill animation on mastery, gentle entrance on first screen. Motion supportive, never distracting."
+    },
+    "sharedProjectShellContract": "Mobile 390px-wide frame. Status-bar-safe top area. Sticky bottom tab bar with 4 tabs (生词本 / 复习 / 统计 / 我的) using ember-orange active state. Single ember primary; Sora display + Inter body; 16px card radius; border-first depth. Each screen shown in BOTH light and dark side by side.",
+    "generationTree": null
+  },
+  "pages": [
+    {
+      "nodeId": "page-vocab-home",
+      "pageIndex": 1,
+      "slug": "vocab-home",
+      "title": "生词本首页",
+      "businessScenario": "Vocabulary list home — daily streak header, mastery progress, sortable word cards each showing word, phonetic, brief meaning, forget-count badge, and mastery ring. Search + sort + add. Bottom tab bar.",
+      "visualNorthStar": "A motivating daily learning hub: a bold streak/progress header up top, then a scannable feed of word cards where the forget-count feels like a friendly nudge, not a red error.",
+      "themeMode": "light + dark side by side"
+    },
+    {
+      "nodeId": "page-word-detail",
+      "pageIndex": 2,
+      "slug": "word-detail",
+      "title": "单词详情",
+      "businessScenario": "Single word detail — large word + phonetic + pronounce button, POS-grouped definitions, mastery ring, forget-count history timeline showing the web pages/contexts where it was forgotten with timestamps, Remember/Forget action buttons.",
+      "visualNorthStar": "A focused study card: the word is the hero, definitions are clean and grouped, and the forget-history reads as a personal memory journal of where you met this word.",
+      "themeMode": "light + dark side by side"
+    },
+    {
+      "nodeId": "page-lookup-card",
+      "pageIndex": 3,
+      "slug": "lookup-card",
+      "title": "网页选词查词卡片",
+      "businessScenario": "In-page selection lookup card — overlay floating card that appears when a user selects an English word while reading a web article. Shows word, phonetic, pronounce, concise meaning, and prominent Remember / Forget actions. Rendered above a dimmed mock article context.",
+      "visualNorthStar": "A delightful pop-up moment: a compact floating card over a real reading context, making capture-while-reading feel instant and rewarding.",
+      "themeMode": "light + dark side by side"
+    },
+    {
+      "nodeId": "page-review-stats",
+      "pageIndex": 4,
+      "slug": "review-stats",
+      "title": "复习统计",
+      "businessScenario": "Review & stats — celebratory header with mascot/badge, key metrics (total words, mastered, due for review, current streak), weekly activity sparkline/bar chart, most-forgotten words leaderboard, and a Start Review CTA.",
+      "visualNorthStar": "A rewarding progress dashboard: numbers celebrated as achievements, a clear weekly rhythm chart, and an inviting call to start today's review.",
+      "themeMode": "light + dark side by side"
+    }
+  ],
+  "designSource": { "libraryIdentity": null }
+}

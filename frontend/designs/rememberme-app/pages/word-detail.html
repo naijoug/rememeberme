@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词详情</title>
+    <style id="theme-vars">
+/* ============================================================
+   Remember Me · Brand CSS (Free-Explore)
+   Tone: 活力游戏化 · 记忆激励 (energetic, motivational, game-like)
+   Single primary hue (warm ember orange) + neutral system.
+   Light + Dark dual mode.
+   Brand prefix: rm-
+   ============================================================ */
+
+:root {
+  /* ---- Primary brand hue: ember orange (energy / streak / motivation) ---- */
+  --rm-primary-50:  #FFF3EC;
+  --rm-primary-100: #FFE2D1;
+  --rm-primary-200: #FFC4A6;
+  --rm-primary-300: #FFA176;
+  --rm-primary-400: #FF8A52;
+  --rm-primary-500: #FF7A3D;  /* core brand */
+  --rm-primary-600: #ED5F22;
+  --rm-primary-700: #C84A18;
+  --rm-primary-800: #9E3A14;
+  --rm-primary-900: #7A2E12;
+
+  /* ---- Neutral scale (warm-tinted grays for cohesion) ---- */
+  --rm-neutral-0:   #FFFFFF;
+  --rm-neutral-50:  #FAF7F4;
+  --rm-neutral-100: #F2EDE8;
+  --rm-neutral-200: #E6DFD8;
+  --rm-neutral-300: #D2C9C0;
+  --rm-neutral-400: #A89E94;
+  --rm-neutral-500: #7C7268;
+  --rm-neutral-600: #5C534B;
+  --rm-neutral-700: #423B35;
+  --rm-neutral-800: #2A2521;
+  --rm-neutral-900: #1A1613;
+
+  /* ---- Semantic state colors (status only, not identity) ---- */
+  --rm-state-success: #2FB67A;
+  --rm-state-warning: #F2B23E;
+  --rm-state-error:   #E5544B;
+  --rm-state-info:    #4C8DD6;
+
+  /* ---- Radius scale (restrained) ---- */
+  --rm-radius-sm: 4px;
+  --rm-radius-md: 8px;
+  --rm-radius-lg: 16px;
+  --rm-radius-full: 9999px;
+
+  /* ---- Spacing base ---- */
+  --rm-space-1: 4px;
+  --rm-space-2: 8px;
+  --rm-space-3: 12px;
+  --rm-space-4: 16px;
+  --rm-space-5: 24px;
+  --rm-space-6: 32px;
+
+  /* ---- Shadows (static surfaces <= 0.05 alpha) ---- */
+  --rm-shadow-card: 0 1px 2px rgba(26, 22, 19, 0.04), 0 1px 1px rgba(26, 22, 19, 0.03);
+  --rm-shadow-float: 0 12px 32px rgba(26, 22, 19, 0.16), 0 4px 12px rgba(26, 22, 19, 0.10);
+
+  /* ============================================================
+     LIGHT MODE (default) — semantic surface tokens
+     ============================================================ */
+  --rm-bg:            var(--rm-neutral-50);
+  --rm-bg-elevated:   var(--rm-neutral-0);
+  --rm-surface:       var(--rm-neutral-0);
+  --rm-surface-soft:  var(--rm-neutral-100);
+  --rm-surface-sunk:  var(--rm-neutral-100);
+  --rm-border:        var(--rm-neutral-200);
+  --rm-border-strong: var(--rm-neutral-300);
+
+  --rm-text-strong:   var(--rm-neutral-900);
+  --rm-text:          var(--rm-neutral-700);
+  --rm-text-muted:    var(--rm-neutral-500);
+  --rm-text-faint:    var(--rm-neutral-400);
+  --rm-text-on-primary: #FFFFFF;
+
+  --rm-primary:       var(--rm-primary-500);
+  --rm-primary-hover: var(--rm-primary-600);
+  --rm-primary-soft:  var(--rm-primary-50);
+  --rm-primary-soft-border: var(--rm-primary-200);
+
+  --rm-streak-bg:     var(--rm-primary-50);
+  --rm-streak-fg:     var(--rm-primary-700);
+}
+
+/* ============================================================
+   DARK MODE — applied via <html class="dark">
+   ============================================================ */
+.dark {
+  --rm-bg:            #14110E;
+  --rm-bg-elevated:   #1F1A16;
+  --rm-surface:       #1F1A16;
+  --rm-surface-soft:  #272019;
+  --rm-surface-sunk:  #18130F;
+  --rm-border:        #332B23;
+  --rm-border-strong: #4A3F33;
+
+  --rm-text-strong:   #FBF6F0;
+  --rm-text:          #E0D6CB;
+  --rm-text-muted:    #A09385;
+  --rm-text-faint:    #6E6258;
+  --rm-text-on-primary: #1A1613;
+
+  --rm-primary:       var(--rm-primary-400);
+  --rm-primary-hover: var(--rm-primary-300);
+  --rm-primary-soft:  rgba(255, 122, 61, 0.14);
+  --rm-primary-soft-border: rgba(255, 122, 61, 0.30);
+
+  --rm-streak-bg:     rgba(255, 122, 61, 0.14);
+  --rm-streak-fg:     var(--rm-primary-300);
+
+  --rm-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.30), 0 1px 1px rgba(0, 0, 0, 0.20);
+  --rm-shadow-float: 0 12px 32px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.40);
+}
+
+/* ============================================================
+   Typography system
+   Display: Sora (geometric, energetic) · Body: Inter
+   Numerals (counts/streaks): Sora for tabular punch.
+   ============================================================ */
+:root {
+  --rm-font-display: 'Sora', 'Noto Sans SC', system-ui, sans-serif;
+  --rm-font-body: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+}
+
+.rm-display {
+  font-family: var(--rm-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--rm-text-strong);
+}
+.rm-h1 { font-family: var(--rm-font-display); font-weight: 700; font-size: 28px; line-height: 1.2; letter-spacing: -0.02em; color: var(--rm-text-strong); }
+.rm-h2 { font-family: var(--rm-font-display); font-weight: 700; font-size: 22px; line-height: 1.25; letter-spacing: -0.015em; color: var(--rm-text-strong); }
+.rm-h3 { font-family: var(--rm-font-display); font-weight: 600; font-size: 17px; line-height: 1.3; color: var(--rm-text-strong); }
+.rm-body { font-family: var(--rm-font-body); font-weight: 400; font-size: 15px; line-height: 1.55; color: var(--rm-text); }
+.rm-body-sm { font-family: var(--rm-font-body); font-weight: 400; font-size: 13px; line-height: 1.5; color: var(--rm-text-muted); }
+.rm-caption { font-family: var(--rm-font-body); font-weight: 500; font-size: 11px; line-height: 1.4; letter-spacing: 0.02em; color: var(--rm-text-faint); }
+.rm-num { font-family: var(--rm-font-display); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+
+body { background-color: var(--rm-bg); color: var(--rm-text); font-family: var(--rm-font-body); }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-primary: var(--rm-primary);
+    --color-border: var(--rm-border);
+  }
+  @layer base {
+    body { background: var(--rm-surface); color: var(--rm-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <!-- Google Fonts: Sora (display) + Inter (body) — placed in body to avoid touching the script-managed <head> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <main class="min-h-screen w-full py-10 px-4" style="background-color:#e9e6e2;">
+      <!-- Dual-theme stage: two 390px phones side by side (light / dark) -->
+      <div class="mx-auto flex max-w-[900px] flex-col items-center gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-12">
+
+        <!-- ===================== LEFT PHONE — LIGHT ===================== -->
+        <figure class="m-0 flex flex-col items-center gap-3">
+          <div class="light" style="width:390px; max-width:100%;">
+            <div class="overflow-hidden" style="border-radius:40px; padding:6px; background:#c9c3bc; box-shadow: var(--rm-shadow-float);">
+              <div class="relative overflow-y-auto no-scrollbar" style="border-radius:34px; height:844px; background-color:var(--rm-bg);">
+                <!-- SCREEN CONTENT (light) — data-dom-id wiring lives here -->
+
+                <!-- Top bar -->
+                <header class="sticky top-0 z-20 flex items-center justify-between px-4 h-14" style="background-color:color-mix(in srgb, var(--rm-bg) 88%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--rm-border);">
+                  <button data-dom-id="back-home" aria-label="返回生词本" class="inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-[var(--rm-surface-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--rm-primary)]" style="color:var(--rm-text-strong);">
+                    <i data-lucide="chevron-left" class="h-5 w-5"></i>
+                  </button>
+                  <span class="rm-h3 truncate max-w-[180px]">ubiquitous</span>
+                  <button aria-label="收藏单词" class="inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-[var(--rm-surface-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--rm-primary)]" style="color:var(--rm-primary);">
+                    <i data-lucide="bookmark" class="h-5 w-5"></i>
+                  </button>
+                </header>
+
+                <div class="px-4 pb-28 pt-5">
+
+                  <!-- Hero block -->
+                  <section class="mb-5">
+                    <div class="flex items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                          <h1 class="rm-display" style="font-size:34px; line-height:1.1;">ubiquitous</h1>
+                          <span class="inline-flex h-6 shrink-0 items-center rounded-md px-2 rm-caption" style="background-color:var(--rm-primary-soft); color:var(--rm-primary); border:1px solid var(--rm-primary-soft-border);">adj.</span>
+                        </div>
+                        <p class="rm-body-sm mt-1.5" style="font-family:var(--rm-font-body);">/juːˈbɪkwɪtəs/</p>
+                      </div>
+                      <button data-dom-id="pronounce" aria-label="播放读音" class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-transform duration-150 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rm-primary)]" style="background-color:var(--rm-primary); color:var(--rm-text-on-primary); box-shadow:var(--rm-shadow-card);">
+                        <i data-lucide="volume-2" class="h-5 w-5"></i>
+                      </button>
+                    </div>
+                  </section>
+
+                  <!-- Stat row -->
+                  <section class="mb-5 flex items-center gap-4 rounded-2xl p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border);">
+                    <div class="relative shrink-0" style="width:60px; height:60px;">
+                      <svg viewBox="0 0 60 60" width="60" height="60" class="-rotate-90">
+                        <circle cx="30" cy="30" r="26" fill="none" stroke="var(--rm-surface-soft)" stroke-width="6"></circle>
+                        <circle cx="30" cy="30" r="26" fill="none" stroke="var(--rm-primary)" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="98" style="transition:stroke-dashoffset .8s cubic-bezier(.3,0,0,1);"></circle>
+                      </svg>
+                      <span class="absolute inset-0 flex items-center justify-center rm-num" style="font-size:15px; color:var(--rm-text-strong);">40%</span>
+                    </div>
+                    <div class="flex min-w-0 flex-1 flex-col gap-2">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="rm-body-sm" style="color:var(--rm-text-muted);">掌握度</span>
+                        <span class="rm-num" style="font-size:14px; color:var(--rm-text-strong);">40%</span>
+                      </div>
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="inline-flex h-6 items-center gap-1 rounded-md px-2" style="background-color:var(--rm-streak-bg); color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+                          <span class="rm-caption" style="color:inherit;">忘记 <span class="rm-num" style="font-size:12px;">5</span> 次</span>
+                        </span>
+                        <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">复习 2 天前</span>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- Definitions card -->
+                  <section class="mb-5">
+                    <h2 class="rm-h3 mb-3 px-0.5">释义</h2>
+                    <div class="rounded-2xl p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border);">
+                      <!-- Sense 1 -->
+                      <div>
+                        <div class="mb-1 flex items-center gap-2">
+                          <span class="inline-flex h-5 items-center rounded-md px-1.5 rm-caption" style="background-color:var(--rm-surface-soft); color:var(--rm-text-muted);">adj.</span>
+                          <span class="rm-body" style="color:var(--rm-text-strong); font-weight:600;">无处不在的；普遍存在的</span>
+                        </div>
+                        <p class="rm-body-sm mb-2" style="color:var(--rm-text-muted);">present, appearing, or found everywhere</p>
+                        <p class="rm-body-sm" style="font-style:italic; color:var(--rm-text);">"Smartphones have become <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> in modern life."</p>
+                      </div>
+                      <div class="my-3 h-px" style="background-color:var(--rm-border);"></div>
+                      <!-- Sense 2 -->
+                      <div>
+                        <div class="mb-1 flex items-center gap-2">
+                          <span class="inline-flex h-5 items-center rounded-md px-1.5 rm-caption" style="background-color:var(--rm-surface-soft); color:var(--rm-text-muted);">adj.</span>
+                          <span class="rm-body" style="color:var(--rm-text-strong); font-weight:600;">随处可见的（近义强调）</span>
+                        </div>
+                        <p class="rm-body-sm mb-2" style="color:var(--rm-text-muted);">so common that it seems to be everywhere</p>
+                        <p class="rm-body-sm" style="font-style:italic; color:var(--rm-text);">"The <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> logo appeared on every street corner."</p>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- Forget-history timeline -->
+                  <section>
+                    <h2 class="rm-h3 mb-3 px-0.5">遗忘记录</h2>
+                    <div class="rounded-2xl p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border);">
+                      <ol class="relative m-0 list-none p-0" style="padding-left:22px;">
+                        <!-- left rail -->
+                        <span aria-hidden="true" class="absolute" style="left:5px; top:6px; bottom:6px; width:2px; background-color:var(--rm-border);"></span>
+
+                        <!-- Entry 1 -->
+                        <li class="relative pb-4">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-primary); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5" style="color:var(--rm-text-strong);">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">The Economist · Tech column</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>3 天前 14:22
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"…AI assistants are becoming <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> across devices."</p>
+                        </li>
+
+                        <!-- Entry 2 -->
+                        <li class="relative pb-4">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-primary); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">Wired · Feature</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>6 天前 09:10
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"Sensors are now <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> in the smart home."</p>
+                        </li>
+
+                        <!-- Entry 3 -->
+                        <li class="relative pb-4">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-primary); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">Medium · 阅读文章</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>11 天前 21:47
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"Plastic waste has become <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> in the ocean."</p>
+                        </li>
+
+                        <!-- Entry 4 -->
+                        <li class="relative">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-border-strong); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">BBC · News</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>18 天前 08:05
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"The brand aims to be <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> worldwide."</p>
+                        </li>
+                      </ol>
+                    </div>
+                  </section>
+
+                </div>
+
+                <!-- Sticky bottom action bar -->
+                <div class="sticky bottom-0 z-20 flex items-center gap-3 px-4 py-3" style="background-color:color-mix(in srgb, var(--rm-bg) 92%, transparent); backdrop-filter:blur(12px); border-top:1px solid var(--rm-border);">
+                  <button data-dom-id="mark-remember" class="inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-full transition-transform duration-150 active:scale-[.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rm-primary)]" style="background-color:var(--rm-primary); color:var(--rm-text-on-primary); font-family:var(--rm-font-display); font-weight:600; font-size:15px;">
+                    <i data-lucide="check" class="h-4 w-4"></i>记住了
+                  </button>
+                  <button data-dom-id="mark-forget" class="inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-full transition-colors duration-150 hover:bg-[var(--rm-surface-soft)] active:scale-[.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rm-primary)]" style="background-color:transparent; color:var(--rm-text-strong); border:1px solid var(--rm-border-strong); font-family:var(--rm-font-display); font-weight:600; font-size:15px;">
+                    还没记住
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <figcaption class="rm-caption" style="color:#6b625a;">浅色 Light</figcaption>
+        </figure>
+
+        <!-- ===================== RIGHT PHONE — DARK ===================== -->
+        <figure class="m-0 flex flex-col items-center gap-3">
+          <div class="dark" style="width:390px; max-width:100%;">
+            <div class="overflow-hidden" style="border-radius:40px; padding:6px; background:#2a241f; box-shadow: var(--rm-shadow-float);">
+              <div class="relative overflow-y-auto no-scrollbar" style="border-radius:34px; height:844px; background-color:var(--rm-bg);">
+                <!-- SCREEN CONTENT (dark) — no data-dom-id (mirror of light) -->
+
+                <!-- Top bar -->
+                <header class="sticky top-0 z-20 flex items-center justify-between px-4 h-14" style="background-color:color-mix(in srgb, var(--rm-bg) 88%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--rm-border);">
+                  <button aria-label="返回生词本" class="inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-[var(--rm-surface-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--rm-primary)]" style="color:var(--rm-text-strong);">
+                    <i data-lucide="chevron-left" class="h-5 w-5"></i>
+                  </button>
+                  <span class="rm-h3 truncate max-w-[180px]">ubiquitous</span>
+                  <button aria-label="收藏单词" class="inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150 hover:bg-[var(--rm-surface-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--rm-primary)]" style="color:var(--rm-primary);">
+                    <i data-lucide="bookmark" class="h-5 w-5"></i>
+                  </button>
+                </header>
+
+                <div class="px-4 pb-28 pt-5">
+
+                  <!-- Hero block -->
+                  <section class="mb-5">
+                    <div class="flex items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                          <h1 class="rm-display" style="font-size:34px; line-height:1.1;">ubiquitous</h1>
+                          <span class="inline-flex h-6 shrink-0 items-center rounded-md px-2 rm-caption" style="background-color:var(--rm-primary-soft); color:var(--rm-primary); border:1px solid var(--rm-primary-soft-border);">adj.</span>
+                        </div>
+                        <p class="rm-body-sm mt-1.5" style="font-family:var(--rm-font-body);">/juːˈbɪkwɪtəs/</p>
+                      </div>
+                      <button aria-label="播放读音" class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-transform duration-150 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rm-primary)]" style="background-color:var(--rm-primary); color:var(--rm-text-on-primary); box-shadow:var(--rm-shadow-card);">
+                        <i data-lucide="volume-2" class="h-5 w-5"></i>
+                      </button>
+                    </div>
+                  </section>
+
+                  <!-- Stat row -->
+                  <section class="mb-5 flex items-center gap-4 rounded-2xl p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border);">
+                    <div class="relative shrink-0" style="width:60px; height:60px;">
+                      <svg viewBox="0 0 60 60" width="60" height="60" class="-rotate-90">
+                        <circle cx="30" cy="30" r="26" fill="none" stroke="var(--rm-surface-soft)" stroke-width="6"></circle>
+                        <circle cx="30" cy="30" r="26" fill="none" stroke="var(--rm-primary)" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="98" style="transition:stroke-dashoffset .8s cubic-bezier(.3,0,0,1);"></circle>
+                      </svg>
+                      <span class="absolute inset-0 flex items-center justify-center rm-num" style="font-size:15px; color:var(--rm-text-strong);">40%</span>
+                    </div>
+                    <div class="flex min-w-0 flex-1 flex-col gap-2">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="rm-body-sm" style="color:var(--rm-text-muted);">掌握度</span>
+                        <span class="rm-num" style="font-size:14px; color:var(--rm-text-strong);">40%</span>
+                      </div>
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="inline-flex h-6 items-center gap-1 rounded-md px-2" style="background-color:var(--rm-streak-bg); color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+                          <span class="rm-caption" style="color:inherit;">忘记 <span class="rm-num" style="font-size:12px;">5</span> 次</span>
+                        </span>
+                        <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">复习 2 天前</span>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- Definitions card -->
+                  <section class="mb-5">
+                    <h2 class="rm-h3 mb-3 px-0.5">释义</h2>
+                    <div class="rounded-2xl p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border);">
+                      <!-- Sense 1 -->
+                      <div>
+                        <div class="mb-1 flex items-center gap-2">
+                          <span class="inline-flex h-5 items-center rounded-md px-1.5 rm-caption" style="background-color:var(--rm-surface-soft); color:var(--rm-text-muted);">adj.</span>
+                          <span class="rm-body" style="color:var(--rm-text-strong); font-weight:600;">无处不在的；普遍存在的</span>
+                        </div>
+                        <p class="rm-body-sm mb-2" style="color:var(--rm-text-muted);">present, appearing, or found everywhere</p>
+                        <p class="rm-body-sm" style="font-style:italic; color:var(--rm-text);">"Smartphones have become <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> in modern life."</p>
+                      </div>
+                      <div class="my-3 h-px" style="background-color:var(--rm-border);"></div>
+                      <!-- Sense 2 -->
+                      <div>
+                        <div class="mb-1 flex items-center gap-2">
+                          <span class="inline-flex h-5 items-center rounded-md px-1.5 rm-caption" style="background-color:var(--rm-surface-soft); color:var(--rm-text-muted);">adj.</span>
+                          <span class="rm-body" style="color:var(--rm-text-strong); font-weight:600;">随处可见的（近义强调）</span>
+                        </div>
+                        <p class="rm-body-sm mb-2" style="color:var(--rm-text-muted);">so common that it seems to be everywhere</p>
+                        <p class="rm-body-sm" style="font-style:italic; color:var(--rm-text);">"The <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> logo appeared on every street corner."</p>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- Forget-history timeline -->
+                  <section>
+                    <h2 class="rm-h3 mb-3 px-0.5">遗忘记录</h2>
+                    <div class="rounded-2xl p-4" style="background-color:var(--rm-surface); border:1px solid var(--rm-border);">
+                      <ol class="relative m-0 list-none p-0" style="padding-left:22px;">
+                        <span aria-hidden="true" class="absolute" style="left:5px; top:6px; bottom:6px; width:2px; background-color:var(--rm-border);"></span>
+
+                        <li class="relative pb-4">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-primary); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5" style="color:var(--rm-text-strong);">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">The Economist · Tech column</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>3 天前 14:22
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"…AI assistants are becoming <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> across devices."</p>
+                        </li>
+
+                        <li class="relative pb-4">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-primary); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">Wired · Feature</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>6 天前 09:10
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"Sensors are now <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> in the smart home."</p>
+                        </li>
+
+                        <li class="relative pb-4">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-primary); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">Medium · 阅读文章</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>11 天前 21:47
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"Plastic waste has become <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> in the ocean."</p>
+                        </li>
+
+                        <li class="relative">
+                          <span aria-hidden="true" class="absolute" style="left:-22px; top:4px; width:12px; height:12px; border-radius:9999px; background-color:var(--rm-border-strong); border:2px solid var(--rm-surface);"></span>
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="globe" class="h-3.5 w-3.5 shrink-0" style="color:var(--rm-text-muted);"></i>
+                            <span class="rm-body-sm truncate" style="color:var(--rm-text-strong); font-weight:600;">BBC · News</span>
+                          </div>
+                          <p class="rm-caption mt-0.5 flex items-center gap-1" style="color:var(--rm-text-faint);">
+                            <i data-lucide="clock" class="h-3 w-3"></i>18 天前 08:05
+                          </p>
+                          <p class="rm-body-sm mt-1.5" style="font-style:italic; color:var(--rm-text);">"The brand aims to be <span style="color:var(--rm-primary); font-weight:600; font-style:normal;">ubiquitous</span> worldwide."</p>
+                        </li>
+                      </ol>
+                    </div>
+                  </section>
+
+                </div>
+
+                <!-- Sticky bottom action bar -->
+                <div class="sticky bottom-0 z-20 flex items-center gap-3 px-4 py-3" style="background-color:color-mix(in srgb, var(--rm-bg) 92%, transparent); backdrop-filter:blur(12px); border-top:1px solid var(--rm-border);">
+                  <button class="inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-full transition-transform duration-150 active:scale-[.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rm-primary)]" style="background-color:var(--rm-primary); color:var(--rm-text-on-primary); font-family:var(--rm-font-display); font-weight:600; font-size:15px;">
+                    <i data-lucide="check" class="h-4 w-4"></i>记住了
+                  </button>
+                  <button class="inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-full transition-colors duration-150 hover:bg-[var(--rm-surface-soft)] active:scale-[.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rm-primary)]" style="background-color:transparent; color:var(--rm-text-strong); border:1px solid var(--rm-border-strong); font-family:var(--rm-font-display); font-weight:600; font-size:15px;">
+                    还没记住
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <figcaption class="rm-caption" style="color:#6b625a;">深色 Dark</figcaption>
+        </figure>
+
+      </div>
+    </main>
+    <style>
+      /* Reduced-motion: downgrade all transitions/animations to near-zero */
+      @media (prefers-reduced-motion: reduce) {
+        * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      }
+    </style>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

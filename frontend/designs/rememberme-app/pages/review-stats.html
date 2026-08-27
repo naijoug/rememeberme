@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复习统计</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style id="theme-vars">
+/* ============================================================
+   Remember Me · Brand CSS (Free-Explore)
+   Tone: 活力游戏化 · 记忆激励 (energetic, motivational, game-like)
+   Single primary hue (warm ember orange) + neutral system.
+   Light + Dark dual mode.
+   Brand prefix: rm-
+   ============================================================ */
+
+:root {
+  /* ---- Primary brand hue: ember orange (energy / streak / motivation) ---- */
+  --rm-primary-50:  #FFF3EC;
+  --rm-primary-100: #FFE2D1;
+  --rm-primary-200: #FFC4A6;
+  --rm-primary-300: #FFA176;
+  --rm-primary-400: #FF8A52;
+  --rm-primary-500: #FF7A3D;  /* core brand */
+  --rm-primary-600: #ED5F22;
+  --rm-primary-700: #C84A18;
+  --rm-primary-800: #9E3A14;
+  --rm-primary-900: #7A2E12;
+
+  /* ---- Neutral scale (warm-tinted grays for cohesion) ---- */
+  --rm-neutral-0:   #FFFFFF;
+  --rm-neutral-50:  #FAF7F4;
+  --rm-neutral-100: #F2EDE8;
+  --rm-neutral-200: #E6DFD8;
+  --rm-neutral-300: #D2C9C0;
+  --rm-neutral-400: #A89E94;
+  --rm-neutral-500: #7C7268;
+  --rm-neutral-600: #5C534B;
+  --rm-neutral-700: #423B35;
+  --rm-neutral-800: #2A2521;
+  --rm-neutral-900: #1A1613;
+
+  /* ---- Semantic state colors (status only, not identity) ---- */
+  --rm-state-success: #2FB67A;
+  --rm-state-warning: #F2B23E;
+  --rm-state-error:   #E5544B;
+  --rm-state-info:    #4C8DD6;
+
+  /* ---- Radius scale (restrained) ---- */
+  --rm-radius-sm: 4px;
+  --rm-radius-md: 8px;
+  --rm-radius-lg: 16px;
+  --rm-radius-full: 9999px;
+
+  /* ---- Spacing base ---- */
+  --rm-space-1: 4px;
+  --rm-space-2: 8px;
+  --rm-space-3: 12px;
+  --rm-space-4: 16px;
+  --rm-space-5: 24px;
+  --rm-space-6: 32px;
+
+  /* ---- Shadows (static surfaces <= 0.05 alpha) ---- */
+  --rm-shadow-card: 0 1px 2px rgba(26, 22, 19, 0.04), 0 1px 1px rgba(26, 22, 19, 0.03);
+  --rm-shadow-float: 0 12px 32px rgba(26, 22, 19, 0.16), 0 4px 12px rgba(26, 22, 19, 0.10);
+
+  /* ============================================================
+     LIGHT MODE (default) — semantic surface tokens
+     ============================================================ */
+  --rm-bg:            var(--rm-neutral-50);
+  --rm-bg-elevated:   var(--rm-neutral-0);
+  --rm-surface:       var(--rm-neutral-0);
+  --rm-surface-soft:  var(--rm-neutral-100);
+  --rm-surface-sunk:  var(--rm-neutral-100);
+  --rm-border:        var(--rm-neutral-200);
+  --rm-border-strong: var(--rm-neutral-300);
+
+  --rm-text-strong:   var(--rm-neutral-900);
+  --rm-text:          var(--rm-neutral-700);
+  --rm-text-muted:    var(--rm-neutral-500);
+  --rm-text-faint:    var(--rm-neutral-400);
+  --rm-text-on-primary: #FFFFFF;
+
+  --rm-primary:       var(--rm-primary-500);
+  --rm-primary-hover: var(--rm-primary-600);
+  --rm-primary-soft:  var(--rm-primary-50);
+  --rm-primary-soft-border: var(--rm-primary-200);
+
+  --rm-streak-bg:     var(--rm-primary-50);
+  --rm-streak-fg:     var(--rm-primary-700);
+}
+
+/* ============================================================
+   DARK MODE — applied via <html class="dark">
+   ============================================================ */
+.dark {
+  --rm-bg:            #14110E;
+  --rm-bg-elevated:   #1F1A16;
+  --rm-surface:       #1F1A16;
+  --rm-surface-soft:  #272019;
+  --rm-surface-sunk:  #18130F;
+  --rm-border:        #332B23;
+  --rm-border-strong: #4A3F33;
+
+  --rm-text-strong:   #FBF6F0;
+  --rm-text:          #E0D6CB;
+  --rm-text-muted:    #A09385;
+  --rm-text-faint:    #6E6258;
+  --rm-text-on-primary: #1A1613;
+
+  --rm-primary:       var(--rm-primary-400);
+  --rm-primary-hover: var(--rm-primary-300);
+  --rm-primary-soft:  rgba(255, 122, 61, 0.14);
+  --rm-primary-soft-border: rgba(255, 122, 61, 0.30);
+
+  --rm-streak-bg:     rgba(255, 122, 61, 0.14);
+  --rm-streak-fg:     var(--rm-primary-300);
+
+  --rm-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.30), 0 1px 1px rgba(0, 0, 0, 0.20);
+  --rm-shadow-float: 0 12px 32px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.40);
+}
+
+/* ============================================================
+   Typography system
+   Display: Sora (geometric, energetic) · Body: Inter
+   Numerals (counts/streaks): Sora for tabular punch.
+   ============================================================ */
+:root {
+  --rm-font-display: 'Sora', 'Noto Sans SC', system-ui, sans-serif;
+  --rm-font-body: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+}
+
+.rm-display {
+  font-family: var(--rm-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--rm-text-strong);
+}
+.rm-h1 { font-family: var(--rm-font-display); font-weight: 700; font-size: 28px; line-height: 1.2; letter-spacing: -0.02em; color: var(--rm-text-strong); }
+.rm-h2 { font-family: var(--rm-font-display); font-weight: 700; font-size: 22px; line-height: 1.25; letter-spacing: -0.015em; color: var(--rm-text-strong); }
+.rm-h3 { font-family: var(--rm-font-display); font-weight: 600; font-size: 17px; line-height: 1.3; color: var(--rm-text-strong); }
+.rm-body { font-family: var(--rm-font-body); font-weight: 400; font-size: 15px; line-height: 1.55; color: var(--rm-text); }
+.rm-body-sm { font-family: var(--rm-font-body); font-weight: 400; font-size: 13px; line-height: 1.5; color: var(--rm-text-muted); }
+.rm-caption { font-family: var(--rm-font-body); font-weight: 500; font-size: 11px; line-height: 1.4; letter-spacing: 0.02em; color: var(--rm-text-faint); }
+.rm-num { font-family: var(--rm-font-display); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+
+body { background-color: var(--rm-bg); color: var(--rm-text); font-family: var(--rm-font-body); }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-primary: var(--rm-primary);
+    --color-border: var(--rm-border);
+  }
+  @layer base {
+    body { background: var(--rm-surface); color: var(--rm-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased" style="background:#e9e6e2;">
+    <main class="min-h-screen w-full py-10 px-4" style="font-family:var(--rm-font-body);">
+
+      <!-- Dual-theme stage: two phone frames side by side (left light / right dark) -->
+      <div class="mx-auto flex w-full max-w-[900px] flex-col items-center gap-8 lg:flex-row lg:items-start lg:justify-center lg:gap-12">
+
+        <!-- ============================================================
+             LEFT PHONE — LIGHT MODE (interactive data-dom-id attributes live here)
+             ============================================================ -->
+        <div class="flex flex-col items-center gap-3">
+          <div class="relative shrink-0 rounded-[40px] p-[3px]" style="width:390px;background:#c9c3bc;box-shadow:var(--rm-shadow-float);">
+            <div class="relative overflow-hidden rounded-[37px]" style="height:838px;background:var(--rm-bg);color:var(--rm-text);">
+              <div class="no-scrollbar h-full overflow-y-auto">
+                <div class="relative min-h-full pb-[92px]">
+
+                  <!-- Faux status bar -->
+                  <div class="flex items-center justify-between px-5 pt-3 pb-1" style="color:var(--rm-text);">
+                    <span class="rm-num" style="font-size:13px;">9:41</span>
+                    <div class="flex items-center gap-1.5" style="color:var(--rm-text-muted);">
+                      <i data-lucide="signal" class="h-3.5 w-3.5"></i>
+                      <i data-lucide="wifi" class="h-3.5 w-3.5"></i>
+                      <i data-lucide="battery-full" class="h-4 w-4"></i>
+                    </div>
+                  </div>
+
+                  <!-- Top app bar -->
+                  <div class="flex items-center justify-between gap-3 px-4 pt-2 pb-3">
+                    <h1 class="rm-h1 min-w-0 truncate" style="font-size:26px;">复习统计</h1>
+                    <button aria-label="设置" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors duration-150" style="background:var(--rm-surface-soft);color:var(--rm-text);border:1px solid var(--rm-border);">
+                      <i data-lucide="settings-2" class="h-[18px] w-[18px]"></i>
+                    </button>
+                  </div>
+
+                  <!-- 1 · Celebratory header card -->
+                  <div class="mx-4 mt-1 flex items-center gap-4 rounded-2xl p-4" style="background:var(--rm-primary-soft);border:1px solid var(--rm-primary-soft-border);">
+                    <img src="../assets/celebrate-badge.jpg" alt="学习成就徽章：戴学士帽的猫头鹰" class="h-[110px] w-[110px] shrink-0 object-contain" style="filter:drop-shadow(0 4px 10px rgba(237,95,34,0.18));">
+                    <div class="min-w-0 flex-1">
+                      <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5" style="background:var(--rm-surface);color:var(--rm-streak-fg);border:1px solid var(--rm-primary-soft-border);">
+                        <i data-lucide="sparkles" class="h-3 w-3"></i>
+                        <span class="rm-caption" style="color:var(--rm-streak-fg);">本周成就</span>
+                      </span>
+                      <h2 class="rm-h2 mt-2" style="font-size:24px;color:var(--rm-text-strong);text-wrap:balance;word-break:keep-all;">本周很棒！</h2>
+                      <p class="rm-body-sm mt-1 flex items-center gap-1.5" style="color:var(--rm-streak-fg);font-weight:600;">
+                        <i data-lucide="flame" class="h-4 w-4" style="color:var(--rm-primary);"></i>
+                        已连续学习 <span class="rm-num" style="font-size:14px;">12</span> 天
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- 2 · Metric tiles (2x2 grid) -->
+                  <div class="mx-4 mt-3 grid grid-cols-2 gap-2.5">
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num" style="font-size:30px;line-height:1;color:var(--rm-text-strong);">128</span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">生词总数</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num" style="font-size:30px;line-height:1;color:var(--rm-state-success);">46</span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">已掌握</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num" style="font-size:30px;line-height:1;color:var(--rm-primary);">12</span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">待复习</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num flex items-baseline gap-1" style="font-size:30px;line-height:1;color:var(--rm-text-strong);">12<span class="rm-body-sm" style="color:var(--rm-text-muted);font-weight:600;">天</span></span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">连续天数</span>
+                    </div>
+                  </div>
+
+                  <!-- 3 · Weekly activity chart card -->
+                  <div class="mx-4 mt-3 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                    <div class="flex items-center justify-between gap-3">
+                      <h2 class="rm-h3" style="font-size:15px;">本周复习</h2>
+                      <span class="rm-body-sm shrink-0" style="color:var(--rm-text-muted);">本周复习 <span class="rm-num" style="font-size:13px;color:var(--rm-primary);">86</span> 词</span>
+                    </div>
+                    <!-- Bars share one baseline; heights vary; today highlighted -->
+                    <div class="mt-4 flex items-end justify-between gap-2" style="height:104px;">
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:48%;background:var(--rm-primary);opacity:0.35;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">一</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:70%;background:var(--rm-primary);opacity:0.5;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">二</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:40%;background:var(--rm-primary);opacity:0.35;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">三</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:88%;background:var(--rm-primary);opacity:0.6;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">四</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:60%;background:var(--rm-primary);opacity:0.45;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">五</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:30%;background:var(--rm-primary);opacity:0.3;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">六</span>
+                      </div>
+                      <!-- Today -->
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:100%;background:var(--rm-primary);"></div>
+                        <span class="rm-caption" style="color:var(--rm-primary);font-weight:700;">今</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 4 · Most-forgotten leaderboard card -->
+                  <div class="mx-4 mt-3 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                    <div class="flex items-center justify-between gap-3 pb-1">
+                      <h2 class="rm-h3" style="font-size:15px;">最易忘记</h2>
+                      <span class="rm-caption shrink-0" style="color:var(--rm-text-faint);">按忘记次数</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <!-- Row 1 (interactive → word detail) -->
+                      <a href="#" data-dom-id="open-word-detail" class="flex items-center gap-3 border-t py-2.5 transition-colors duration-150" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-primary);">1</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">ubiquitous</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/juːˈbɪkwɪtəs/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 8 次</span>
+                        </span>
+                      </a>
+                      <!-- Row 2 -->
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">2</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">ephemeral</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/ɪˈfɛm(ə)rəl/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 6 次</span>
+                        </span>
+                      </div>
+                      <!-- Row 3 -->
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">3</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">meticulous</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/məˈtɪkjələs/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 5 次</span>
+                        </span>
+                      </div>
+                      <!-- Row 4 -->
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">4</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">nuance</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/ˈnjuːɑːns/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 4 次</span>
+                        </span>
+                      </div>
+                      <!-- Row 5 -->
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">5</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">pragmatic</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/præɡˈmætɪk/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 3 次</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 5 · Start Review CTA (sticky above tab bar) -->
+                  <div class="pointer-events-none absolute inset-x-0 bottom-[68px] px-4">
+                    <button data-dom-id="start-review" class="pointer-events-auto inline-flex h-12 w-full items-center justify-center gap-2 rounded-full transition-transform duration-150 active:translate-y-px" style="background:var(--rm-primary);color:var(--rm-text-on-primary);box-shadow:var(--rm-shadow-float);">
+                      <i data-lucide="play" class="h-5 w-5"></i>
+                      <span style="font-family:var(--rm-font-display);font-weight:700;font-size:15px;letter-spacing:-0.01em;">开始复习 <span class="rm-num">12</span> 词</span>
+                    </button>
+                  </div>
+
+                  <!-- 6 · Sticky bottom tab bar (统计 active) -->
+                  <nav class="absolute inset-x-0 bottom-0 flex items-center justify-around px-2 pb-4 pt-2" style="background:var(--rm-bg-elevated);border-top:1px solid var(--rm-border);">
+                    <a href="#" data-dom-id="tab-home" data-tab-key="vocab" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-text-muted);">
+                      <i data-lucide="book-marked" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-text-muted);">生词本</span>
+                    </a>
+                    <a href="#" data-tab-key="review" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-text-muted);">
+                      <i data-lucide="repeat" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-text-muted);">复习</span>
+                    </a>
+                    <a href="#" data-tab-key="stats" data-active="true" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-primary);">
+                      <i data-lucide="bar-chart-3" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-primary);font-weight:600;">统计</span>
+                    </a>
+                    <a href="#" data-tab-key="me" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-text-muted);">
+                      <i data-lucide="user" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-text-muted);">我的</span>
+                    </a>
+                  </nav>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="rm-caption" style="color:#7c7268;">浅色 Light</span>
+        </div>
+
+        <!-- ============================================================
+             RIGHT PHONE — DARK MODE (.dark wrapper scopes dark tokens)
+             ============================================================ -->
+        <div class="flex flex-col items-center gap-3">
+          <div class="dark relative shrink-0 rounded-[40px] p-[3px]" style="width:390px;background:#000;box-shadow:var(--rm-shadow-float);">
+            <div class="relative overflow-hidden rounded-[37px]" style="height:838px;background:var(--rm-bg);color:var(--rm-text);">
+              <div class="no-scrollbar h-full overflow-y-auto">
+                <div class="relative min-h-full pb-[92px]">
+
+                  <!-- Faux status bar -->
+                  <div class="flex items-center justify-between px-5 pt-3 pb-1" style="color:var(--rm-text);">
+                    <span class="rm-num" style="font-size:13px;">9:41</span>
+                    <div class="flex items-center gap-1.5" style="color:var(--rm-text-muted);">
+                      <i data-lucide="signal" class="h-3.5 w-3.5"></i>
+                      <i data-lucide="wifi" class="h-3.5 w-3.5"></i>
+                      <i data-lucide="battery-full" class="h-4 w-4"></i>
+                    </div>
+                  </div>
+
+                  <!-- Top app bar -->
+                  <div class="flex items-center justify-between gap-3 px-4 pt-2 pb-3">
+                    <h1 class="rm-h1 min-w-0 truncate" style="font-size:26px;">复习统计</h1>
+                    <button aria-label="设置" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors duration-150" style="background:var(--rm-surface-soft);color:var(--rm-text);border:1px solid var(--rm-border);">
+                      <i data-lucide="settings-2" class="h-[18px] w-[18px]"></i>
+                    </button>
+                  </div>
+
+                  <!-- 1 · Celebratory header card -->
+                  <div class="mx-4 mt-1 flex items-center gap-4 rounded-2xl p-4" style="background:var(--rm-primary-soft);border:1px solid var(--rm-primary-soft-border);">
+                    <img src="../assets/celebrate-badge.jpg" alt="学习成就徽章：戴学士帽的猫头鹰" class="h-[110px] w-[110px] shrink-0 object-contain" style="filter:drop-shadow(0 4px 10px rgba(0,0,0,0.35));">
+                    <div class="min-w-0 flex-1">
+                      <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5" style="background:var(--rm-surface);color:var(--rm-streak-fg);border:1px solid var(--rm-primary-soft-border);">
+                        <i data-lucide="sparkles" class="h-3 w-3"></i>
+                        <span class="rm-caption" style="color:var(--rm-streak-fg);">本周成就</span>
+                      </span>
+                      <h2 class="rm-h2 mt-2" style="font-size:24px;color:var(--rm-text-strong);text-wrap:balance;word-break:keep-all;">本周很棒！</h2>
+                      <p class="rm-body-sm mt-1 flex items-center gap-1.5" style="color:var(--rm-streak-fg);font-weight:600;">
+                        <i data-lucide="flame" class="h-4 w-4" style="color:var(--rm-primary);"></i>
+                        已连续学习 <span class="rm-num" style="font-size:14px;">12</span> 天
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- 2 · Metric tiles (2x2 grid) -->
+                  <div class="mx-4 mt-3 grid grid-cols-2 gap-2.5">
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num" style="font-size:30px;line-height:1;color:var(--rm-text-strong);">128</span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">生词总数</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num" style="font-size:30px;line-height:1;color:var(--rm-state-success);">46</span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">已掌握</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num" style="font-size:30px;line-height:1;color:var(--rm-primary);">12</span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">待复习</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                      <span class="rm-num flex items-baseline gap-1" style="font-size:30px;line-height:1;color:var(--rm-text-strong);">12<span class="rm-body-sm" style="color:var(--rm-text-muted);font-weight:600;">天</span></span>
+                      <span class="rm-body-sm truncate" style="color:var(--rm-text-muted);">连续天数</span>
+                    </div>
+                  </div>
+
+                  <!-- 3 · Weekly activity chart card -->
+                  <div class="mx-4 mt-3 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                    <div class="flex items-center justify-between gap-3">
+                      <h2 class="rm-h3" style="font-size:15px;">本周复习</h2>
+                      <span class="rm-body-sm shrink-0" style="color:var(--rm-text-muted);">本周复习 <span class="rm-num" style="font-size:13px;color:var(--rm-primary);">86</span> 词</span>
+                    </div>
+                    <div class="mt-4 flex items-end justify-between gap-2" style="height:104px;">
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:48%;background:var(--rm-primary);opacity:0.35;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">一</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:70%;background:var(--rm-primary);opacity:0.5;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">二</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:40%;background:var(--rm-primary);opacity:0.35;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">三</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:88%;background:var(--rm-primary);opacity:0.6;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">四</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:60%;background:var(--rm-primary);opacity:0.45;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">五</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:30%;background:var(--rm-primary);opacity:0.3;"></div>
+                        <span class="rm-caption" style="color:var(--rm-text-faint);">六</span>
+                      </div>
+                      <div class="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                        <div class="w-full rounded-t-md" style="height:100%;background:var(--rm-primary);"></div>
+                        <span class="rm-caption" style="color:var(--rm-primary);font-weight:700;">今</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 4 · Most-forgotten leaderboard card -->
+                  <div class="mx-4 mt-3 rounded-2xl p-4" style="background:var(--rm-surface);border:1px solid var(--rm-border);">
+                    <div class="flex items-center justify-between gap-3 pb-1">
+                      <h2 class="rm-h3" style="font-size:15px;">最易忘记</h2>
+                      <span class="rm-caption shrink-0" style="color:var(--rm-text-faint);">按忘记次数</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-primary);">1</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">ubiquitous</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/juːˈbɪkwɪtəs/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 8 次</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">2</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">ephemeral</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/ɪˈfɛm(ə)rəl/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 6 次</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">3</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">meticulous</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/məˈtɪkjələs/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 5 次</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">4</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">nuance</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/ˈnjuːɑːns/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 4 次</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-3 border-t py-2.5" style="border-color:var(--rm-border);">
+                        <span class="rm-num w-5 shrink-0 text-center" style="font-size:15px;color:var(--rm-text-strong);">5</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="truncate" style="font-family:var(--rm-font-display);font-weight:700;font-size:16px;letter-spacing:-0.02em;color:var(--rm-text-strong);">pragmatic</p>
+                          <p class="rm-body-sm truncate" style="color:var(--rm-text-muted);font-style:italic;">/præɡˈmætɪk/</p>
+                        </div>
+                        <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1" style="background:var(--rm-streak-bg);color:var(--rm-streak-fg);">
+                          <i data-lucide="rotate-ccw" class="h-3 w-3"></i>
+                          <span class="rm-num" style="font-size:11px;">忘 3 次</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 5 · Start Review CTA -->
+                  <div class="pointer-events-none absolute inset-x-0 bottom-[68px] px-4">
+                    <button class="pointer-events-auto inline-flex h-12 w-full items-center justify-center gap-2 rounded-full transition-transform duration-150 active:translate-y-px" style="background:var(--rm-primary);color:var(--rm-text-on-primary);box-shadow:var(--rm-shadow-float);">
+                      <i data-lucide="play" class="h-5 w-5"></i>
+                      <span style="font-family:var(--rm-font-display);font-weight:700;font-size:15px;letter-spacing:-0.01em;">开始复习 <span class="rm-num">12</span> 词</span>
+                    </button>
+                  </div>
+
+                  <!-- 6 · Sticky bottom tab bar (统计 active) -->
+                  <nav class="absolute inset-x-0 bottom-0 flex items-center justify-around px-2 pb-4 pt-2" style="background:var(--rm-bg-elevated);border-top:1px solid var(--rm-border);">
+                    <a href="#" data-tab-key="vocab" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-text-muted);">
+                      <i data-lucide="book-marked" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-text-muted);">生词本</span>
+                    </a>
+                    <a href="#" data-tab-key="review" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-text-muted);">
+                      <i data-lucide="repeat" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-text-muted);">复习</span>
+                    </a>
+                    <a href="#" data-tab-key="stats" data-active="true" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-primary);">
+                      <i data-lucide="bar-chart-3" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-primary);font-weight:600;">统计</span>
+                    </a>
+                    <a href="#" data-tab-key="me" class="flex flex-1 flex-col items-center gap-0.5 py-1" style="color:var(--rm-text-muted);">
+                      <i data-lucide="user" class="h-[22px] w-[22px]"></i>
+                      <span class="rm-caption" style="color:var(--rm-text-muted);">我的</span>
+                    </a>
+                  </nav>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="rm-caption" style="color:#7c7268;">深色 Dark</span>
+        </div>
+
+      </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

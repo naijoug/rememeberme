@@ -1,0 +1,83 @@
+{
+  "version": "1.0",
+  "name": "Remember Me · Mobile UI",
+  "config": {
+    "autoLayout": true,
+    "deviceType": "mobile",
+    "projectName": "Remember Me · 生词记忆",
+    "designLibrary": null
+  },
+  "data": [
+    {
+      "id": "page-vocab-home",
+      "title": "生词本首页",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1782923000000,
+      "devMetadata": {
+        "htmlSrc": "pages/vocab-home.html",
+        "interactions": [
+          { "domId": "open-word-detail", "targetPageId": "page-word-detail", "transitionLabel": "查看详情" },
+          { "domId": "tab-stats", "targetPageId": "page-review-stats", "transitionLabel": "统计" },
+          { "domId": "tab-review", "targetPageId": "page-review-stats", "hideEdge": true, "transitionLabel": "复习" }
+        ]
+      },
+      "canvasData": { "x": 0, "y": 0, "group": 0 }
+    },
+    {
+      "id": "page-word-detail",
+      "title": "单词详情",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1782923000000,
+      "devMetadata": {
+        "htmlSrc": "pages/word-detail.html",
+        "interactions": [
+          { "domId": "back-home", "targetPageId": "page-vocab-home", "hideEdge": true, "transitionLabel": "返回" }
+        ]
+      },
+      "canvasData": { "x": 1000, "y": 0, "group": 0 }
+    },
+    {
+      "id": "page-lookup-card",
+      "title": "网页选词查词卡片",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1782923000000,
+      "devMetadata": {
+        "htmlSrc": "pages/lookup-card.html",
+        "interactions": [
+          { "domId": "mark-remember", "targetPageId": "page-word-detail", "transitionLabel": "记住了" }
+        ]
+      },
+      "canvasData": { "x": 2000, "y": 0, "group": 0 }
+    },
+    {
+      "id": "page-review-stats",
+      "title": "复习统计",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1782923000000,
+      "devMetadata": {
+        "htmlSrc": "pages/review-stats.html",
+        "interactions": [
+          { "domId": "start-review", "targetPageId": "page-word-detail", "transitionLabel": "开始复习" },
+          { "domId": "open-word-detail", "targetPageId": "page-word-detail", "hideEdge": true, "transitionLabel": "查看详情" },
+          { "domId": "tab-home", "targetPageId": "page-vocab-home", "hideEdge": true, "transitionLabel": "生词本" }
+        ]
+      },
+      "canvasData": { "x": 3000, "y": 0, "group": 0 }
+    },
+    {
+      "id": "image-001",
+      "title": "庆祝徽章插画",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1782923000000,
+      "devMetadata": {
+        "imageSrc": "assets/celebrate-badge.jpg"
+      },
+      "canvasData": { "x": 3000, "y": 1760 }
+    }
+  ]
+}
