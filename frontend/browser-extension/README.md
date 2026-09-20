@@ -1,167 +1,73 @@
-# Remember Me Frontend
-> "Words remember you, too."
+# Remember Me browser extension
 
-The browser extension frontend for Remember Me. It helps you track and manage unfamiliar English words to improve your language learning efficiency.
+Select an English word to look up its definition and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-## Features
+Vocabulary is stored in the browser's local extension storage. Dictionary lookups send the selected word to the external Free Dictionary API. Saved contexts and full source URLs are included in exports; there is no cloud vocabulary sync.
 
-- 📝 **Smart Word Selection** - Select any English word on any webpage to automatically display its definition
-- 📚 **Vocabulary Management** - Record unfamiliar words with complete context and source information
-- 🔄 **Repetition Tracking** - Automatically count how many times you've forgotten each word
-- 💾 **Local Storage** - All data is stored locally to protect your privacy
-- 🎯 **Quick Access** - View your saved vocabulary list through a convenient popup interface
+## Setup
 
-## Local Development
+Run these commands from the repository root:
 
-Run browser-extension commands from this directory:
-
-```bash
+```sh
 cd frontend/browser-extension
-npm test
-npm run compile
-npm run build
-npm run dev
+nvm install
+nvm use
+npm ci
 ```
 
-### Requirements
+The package uses Node 22 (minimum 22.12.0); `.nvmrc` pins the tested development version, 22.22.3. If you use another Node manager, select that version before `npm ci`. Use npm and the committed `package-lock.json`. Installation runs `wxt prepare` to generate `.wxt/` types. The repository root has no Node package.
 
-- Node.js 16+
-- npm or yarn
+## Develop and verify
 
-### Install Dependencies
+Run subsequent commands from this package directory:
 
-```bash
-cd frontend/browser-extension
-npm install
+```sh
+npm run dev             # Chrome development, with reload support
+npm run dev:firefox     # Firefox development
+npm test               # Automated tests with mocked browser APIs
+npm run test:watch      # Watch affected tests during development
+npm run compile        # TypeScript and Vue checks
 ```
 
-### Start Development Server
+Choose the checks needed for a change using [testing.md](docs/testing.md). Unit/component test success does not establish installed-extension or native-menu compatibility.
 
-```bash
-# Chrome/Edge development mode
-npm run dev
+## Build, load and package
 
-# Firefox development mode
-npm run dev:firefox
+```sh
+npm run build          # Chrome/Edge MV3
+npm run build:firefox  # Firefox MV2
+npm run zip            # Chrome distribution archive
+npm run zip:firefox    # Firefox distribution archive
 ```
 
-### Load Extension in Browser
+For a production build:
 
-#### Chrome/Edge
+- Chrome/Edge: open `chrome://extensions/` or `edge://extensions/`, enable Developer mode, select Load unpacked, and choose this package's `.output/chrome-mv3/`.
+- Firefox: open `about:debugging#/runtime/this-firefox`, select Load Temporary Add-on, and choose this package's `.output/firefox-mv2/manifest.json`.
 
-1. Open your browser and navigate to `chrome://extensions/` (Chrome) or `edge://extensions/` (Edge)
-2. Enable "Developer mode" in the top right corner
-3. Click "Load unpacked"
-4. Select the `frontend/browser-extension/.output/chrome-mv3` directory from the project root, or `.output/chrome-mv3` from this directory
+Development output paths can differ from production paths. Use the path printed by `npm run dev` or `npm run dev:firefox`; do not load stale output from the repository root. Zip commands print the actual artifact name under this package's `.output/`; names include package/version/browser information.
 
-#### Firefox
+Use [the browser checklist](docs/testing.md) before claiming a browser target has been verified. Selection and page notifications require pages where the browser permits content scripts. Firefox build support alone does not prove Firefox runtime behavior.
 
-1. Navigate to `about:debugging#/runtime/this-firefox`
-2. Click "Load Temporary Add-on"
-3. Select the `manifest.json` file from the `frontend/browser-extension/.output/firefox-mv2` directory from the project root, or `.output/firefox-mv2` from this directory
+## Documentation and source map
 
-### Development Features
+| Task | Start here |
+| --- | --- |
+| Product behavior and original-specification gaps | [Behavior](docs/behavior.md) |
+| Messaging, storage, import compatibility or privacy | [Architecture](docs/architecture.md) |
+| Tests and browser verification | [Testing](docs/testing.md) |
+| Historical implementation context | [Archive](docs/archive/README.md) |
+| Content selection / page card | [content.ts](entrypoints/content.ts), [SelectionPopup.vue](components/SelectionPopup.vue) |
+| Dictionary messages / context menu | [background.ts](entrypoints/background.ts), [services](services/) |
+| Vocabulary popup | [App.vue](entrypoints/popup/App.vue), [components](components/) |
+| Data types and permissions | [types/index.ts](types/index.ts), [wxt.config.ts](wxt.config.ts) |
 
-- 🔥 **Hot Reload** - Automatic rebuild and reload on code changes
-- 🐛 **Debug Support** - Full Source Maps support
-- ⚡ **Fast Build** - Lightning-fast development experience powered by Vite
-
-### Testing the Extension
-
-Test the extension on any webpage:
-
-1. Visit any webpage with English content
-2. Select an English word
-3. View the popup definition card
-4. Click the "Forget" button to save the word
-5. Click the extension icon in the browser toolbar to view your saved vocabulary list
-
-### Run Tests
-
-```bash
-# Run all tests
-npm test
-
-# Watch mode (for development)
-npm run test:watch
-```
-
-### Type Checking
-
-```bash
-npm run compile
-```
-
-## Build and Release
-
-### Build for Production
-
-```bash
-# Build Chrome/Edge version
-npm run build
-
-# Build Firefox version
-npm run build:firefox
-
-# Package as zip files (for uploading to extension stores)
-npm run zip
-npm run zip:firefox
-```
-
-Build output locations:
-- Chrome/Edge: `frontend/browser-extension/.output/chrome-mv3.zip`
-- Firefox: `frontend/browser-extension/.output/firefox-mv2.zip`
-
-## Tech Stack
-
-- **Framework**: [WXT](https://wxt.dev/) - Modern browser extension development framework
-- **UI**: Vue 3 - Reactive user interface
-- **Language**: TypeScript - Type safety
-- **Build Tool**: Vite - Fast development and build experience
-- **Testing**: Vitest - Unit and integration testing
-
-## Project Structure
-
-```
-frontend/browser-extension/
-├── entrypoints/          # Extension entry points
-│   ├── background.ts     # Background script
-│   ├── content.ts        # Content script
-│   └── popup/            # Popup interface
-├── components/           # Vue components
-│   ├── SelectionPopup.vue    # Word selection popup
-│   ├── WordList.vue          # Vocabulary list
-│   └── WordDetail.vue        # Word details
-├── services/             # Business logic
-│   ├── storage.ts        # Storage service
-│   ├── dictionary.ts     # Dictionary API
-│   └── context-extractor.ts  # Context extraction
-├── types/                # TypeScript type definitions
-├── assets/               # Static assets
-└── public/               # Public resources (icons, etc.)
-```
+Generated `.wxt/` and `.output/` directories are disposable. Static reference designs live outside this package under `frontend/designs/`.
 
 ## Troubleshooting
 
-### Development Server Fails to Start
-
-Make sure no other process is using port 3000, or modify the port configuration in `wxt.config.ts`.
-
-### Extension Won't Load
-
-1. Confirm that "Developer mode" is enabled in your browser
-2. Check if build output exists in the `.output` directory
-3. Try running `npm run dev` again
-
-### Hot Reload Not Working
-
-1. Click the "Reload" button on the browser's extension management page
-2. Or restart the development server
-
-## License
-
-MIT
-
-## Contributing
-
-Issues and Pull Requests are welcome!
+- Missing generated types: run `npm ci` to prepare the package, then retry the type check.
+- Development server conflict: inspect the address/port in the actual WXT output and resolve the conflicting process or configure the dev server.
+- Extension does not load: build the intended target, select its package-local output, and inspect browser extension errors.
+- Selection does not work: verify the extension is enabled, the page allows content scripts, and the dictionary request is reachable. Browser-internal pages are restricted.
+- Hot reload does not update: reload the extension or restart the development command.

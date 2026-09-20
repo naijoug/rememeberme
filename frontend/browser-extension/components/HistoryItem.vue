@@ -23,27 +23,23 @@ function formatTimestamp(timestamp: number): string {
 }
 
 // Highlight word in context
-const highlightedContext = computed(() => {
-  if (!props.record.context) {
-    return '';
-  }
-
+const contextParts = computed(() => {
   const context = props.record.context;
-  const word = props.word;
-  
-  // Create a case-insensitive regex to find the word
-  const regex = new RegExp(`\\b(${word})\\b`, 'gi');
-  
-  // Replace with highlighted version
-  return context.replace(regex, '<mark>$1</mark>');
+  if (!props.word) return [context];
+
+  // Imported words are data, not regular expressions or HTML.
+  const escapedWord = props.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return context.split(new RegExp(`\\b(${escapedWord})\\b`, 'gi'));
 });
 
-// Open URL in new tab
-function openUrl() {
-  if (props.record.url) {
-    window.open(props.record.url, '_blank');
+const sourceUrl = computed(() => {
+  try {
+    const url = new URL(props.record.url);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+  } catch {
+    return null;
   }
-}
+});
 
 // Get short URL for display
 function getShortUrl(url: string): string {
@@ -61,18 +57,26 @@ function getShortUrl(url: string): string {
     <div class="history-header">
       <span class="timestamp">{{ formatTimestamp(record.timestamp) }}</span>
       <a
-        v-if="record.url"
+        v-if="sourceUrl"
         class="url-link"
-        @click.prevent="openUrl"
+        :href="sourceUrl"
+        target="_blank"
+        rel="noopener noreferrer"
         :title="record.url"
       >
         {{ getShortUrl(record.url) }}
       </a>
+      <span v-else-if="record.url" class="source-text">{{ record.url }}</span>
     </div>
 
     <div v-if="record.context" class="context">
       <div class="context-label">Context:</div>
-      <div class="context-text" v-html="highlightedContext"></div>
+      <div class="context-text">
+        <template v-for="(part, index) in contextParts" :key="index">
+          <mark v-if="index % 2 === 1">{{ part }}</mark>
+          <template v-else>{{ part }}</template>
+        </template>
+      </div>
     </div>
 
     <div v-if="record.definition" class="definition-summary">

@@ -1,3 +1,5 @@
+> Archived on 2026-09-20 from `.kiro/specs/vocabulary-counter/tasks.md`. Historical planning material only: implementation claims and checked boxes are not verified test results. For current behavior, architecture and verification, see [the archive index](README.md).
+
 # Implementation Plan
 
 - [x] 1. 初始化项目结构和核心类型定义

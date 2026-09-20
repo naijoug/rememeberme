@@ -1,3 +1,5 @@
+> Archived on 2026-09-20 from `CONTEXT_MENU_TEST_RESULTS.md`. Historical planning material only: implementation claims and checked boxes are not verified test results. For current behavior, architecture and verification, see [the archive index](README.md).
+
 # Context Menu Testing Results
 
 ## Test Environment

@@ -19,6 +19,9 @@ Run extension commands from `frontend/browser-extension/`:
 
 ```bash
 cd frontend/browser-extension
+nvm install
+nvm use
+npm ci
 npm test
 npm run compile
 npm run build
@@ -30,3 +33,7 @@ The repository root intentionally does not contain a Node package manifest. The 
 ## Frontend
 
 See [frontend/README.md](frontend/README.md) for frontend layout, and [frontend/browser-extension/README.md](frontend/browser-extension/README.md) for browser extension setup, loading instructions, and release commands.
+
+## Working on the Project
+
+[AGENTS.md](AGENTS.md) contains concise project boundaries and task-specific documentation pointers. Read the extension's [behavior](frontend/browser-extension/docs/behavior.md), [architecture](frontend/browser-extension/docs/architecture.md), or [verification guide](frontend/browser-extension/docs/testing.md) when the task needs them. Previous specifications and implementation reports are kept in the [historical archive](frontend/browser-extension/docs/archive/README.md).

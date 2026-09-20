@@ -1,3 +1,5 @@
+> Archived on 2026-09-20 from `CONTEXT_MENU_IMPLEMENTATION_SUMMARY.md`. Historical planning material only: implementation claims and checked boxes are not verified test results. For current behavior, architecture and verification, see [the archive index](README.md).
+
 # Context Menu Implementation Summary
 
 ## Overview

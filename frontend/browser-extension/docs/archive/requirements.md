@@ -1,3 +1,5 @@
+> Archived on 2026-09-20 from `.kiro/specs/vocabulary-counter/requirements.md`. Historical planning material only: implementation claims and checked boxes are not verified test results. For current behavior, architecture and verification, see [the archive index](README.md).
+
 # Requirements Document
 
 ## Introduction

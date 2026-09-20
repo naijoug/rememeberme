@@ -2,7 +2,7 @@ import { createApp, type App as VueApp } from 'vue';
 import { contextExtractor } from '~/services/context-extractor';
 import { storageService } from '~/services/storage';
 import { getOrdinal, isEnglishWord } from '~/services/word-utils';
-import type { Definition, Position } from '~/types';
+import type { BackgroundMessage, BackgroundResponse, Definition, Position } from '~/types';
 import SelectionPopup from '../components/SelectionPopup.vue';
 import '~/assets/content.css';
 
@@ -12,6 +12,7 @@ const DEBOUNCE_DELAY = 300;
 let debounceTimer: number | null = null;
 let popupContainer: HTMLElement | null = null;
 let popupApp: VueApp | null = null;
+let lookupVersion = 0;
 let popupState = {
   word: '',
   position: { x: 0, y: 0 },
@@ -95,6 +96,7 @@ async function processTextSelection(event: MouseEvent): Promise<void> {
  * 显示弹窗并请求单词释义
  */
 async function showPopup(word: string, position: Position): Promise<void> {
+  const requestVersion = ++lookupVersion;
   // 创建或更新弹窗容器
   if (!popupContainer) {
     popupContainer = document.createElement('div');
@@ -128,10 +130,13 @@ async function showPopup(word: string, position: Position): Promise<void> {
   // 通过消息通信向 background 请求单词释义
   try {
     const definition = await requestDefinition(word);
+    // A previous selection must not overwrite the current word or its error state.
+    if (requestVersion !== lookupVersion) return;
     popupState.definition = definition;
     popupState.loading = false;
     updatePopupProps();
   } catch (error) {
+    if (requestVersion !== lookupVersion) return;
     popupState.loading = false;
     popupState.error = error instanceof Error ? error.message : 'Failed to load definition';
     updatePopupProps();
@@ -144,15 +149,15 @@ async function showPopup(word: string, position: Position): Promise<void> {
 async function requestDefinition(word: string): Promise<Definition> {
   return new Promise((resolve, reject) => {
     browser.runtime.sendMessage(
-      { type: 'GET_DEFINITION', word },
-      (response: any) => {
+      { type: 'GET_DEFINITION', word } satisfies BackgroundMessage,
+      (response: BackgroundResponse | undefined) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
           return;
         }
 
-        if (!response.success) {
-          reject(new Error(response.error || 'Failed to fetch definition'));
+        if (!response || !response.success) {
+          reject(new Error(response?.error || 'Failed to fetch definition'));
           return;
         }
 
@@ -285,6 +290,7 @@ function calculatePopupPosition(event: MouseEvent, selection: Selection): Positi
  * 隐藏弹窗
  */
 function hidePopup(): void {
+  lookupVersion++;
   popupState.visible = false;
   updatePopupProps();
 }
