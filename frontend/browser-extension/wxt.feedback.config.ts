@@ -1,8 +1,15 @@
-import { defineConfig, type ReloadContentScriptPayload } from 'wxt';
+import { defineConfig, type ReloadContentScriptPayload, type WxtDevServer } from 'wxt';
 import baseConfig from './wxt.config';
-import { LOCAL_FEEDBACK_EVENT, LOCAL_FEEDBACK_ORIGIN, LOCAL_FEEDBACK_PORT, LOCAL_FEEDBACK_READY } from './config/local-feedback';
+import { LOCAL_FEEDBACK_AVAILABLE, LOCAL_FEEDBACK_EVENT, LOCAL_FEEDBACK_ORIGIN, LOCAL_FEEDBACK_PORT, LOCAL_FEEDBACK_READY } from './config/local-feedback';
 
-// Load the output once in your normal Chrome profile. No separate browser opens.
+type FeedbackServer = WxtDevServer & {
+  rememberMe?: { ready: boolean; latest: Map<string, ReloadContentScriptPayload> };
+};
+function state(server: WxtDevServer) {
+  return (server as FeedbackServer).rememberMe ??= { ready: false, latest: new Map() };
+}
+
+// Load this fixed output once in the normal Chrome profile.
 export default defineConfig({
   ...baseConfig,
   browser: 'chrome',
@@ -13,21 +20,30 @@ export default defineConfig({
   dev: { server: { host: '127.0.0.1', port: LOCAL_FEEDBACK_PORT, origin: LOCAL_FEEDBACK_ORIGIN } },
   hooks: {
     'config:resolved': wxt => {
-      // WXT 0.20 uses leading-only debounce, which can drop the last save in a
-      // burst. Its existing build mutex already serializes and coalesces work.
       if (wxt.config.dev.server) wxt.config.dev.server.watchDebounce = 0;
     },
     'server:created': (_wxt, server) => {
-      const latest = new Map<string, ReloadContentScriptPayload>();
-      // WXT's default handler reloads entire matching tabs. The local feedback
-      // build instead registers and reinjects scripts, preserving page state.
       server.reloadContentScript = payload => {
-        latest.set(payload.contentScript.js?.join(',') ?? '', payload);
+        state(server).latest.set(payload.contentScript.js?.join(',') ?? '', payload);
         server.ws.send(LOCAL_FEEDBACK_EVENT, payload);
       };
+    },
+    'server:started': (_wxt, server) => {
+      const current = state(server);
+      current.ready = false;
+      current.latest.clear();
+      // Register on each new socket server, including config-triggered restarts.
       server.ws.on(LOCAL_FEEDBACK_READY, () => {
-        for (const payload of latest.values()) server.ws.send(LOCAL_FEEDBACK_EVENT, payload);
+        if (!current.ready) return;
+        server.ws.send(LOCAL_FEEDBACK_AVAILABLE, {});
+        for (const payload of current.latest.values()) server.ws.send(LOCAL_FEEDBACK_EVENT, payload);
       });
+    },
+    'build:before': wxt => { if (wxt.server) state(wxt.server).ready = false; },
+    'build:done': wxt => {
+      if (!wxt.server) return;
+      state(wxt.server).ready = true;
+      wxt.server.ws.send(LOCAL_FEEDBACK_AVAILABLE, {});
     },
   },
 });

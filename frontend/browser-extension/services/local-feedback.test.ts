@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { reconnectLocalPage, refreshLocalContent, startLocalFeedback } from './local-feedback';
-import { LOCAL_FEEDBACK_READY } from '~/config/local-feedback';
+import { LOCAL_FEEDBACK_AVAILABLE, LOCAL_FEEDBACK_READY } from '~/config/local-feedback';
 
 const payload = { contentScript: { matches: ['<all_urls>'], js: ['content-scripts/content.js'], css: ['content-scripts/content.css'] } };
 const api = {
@@ -61,6 +61,10 @@ describe('local feedback updates', () => {
     await vi.advanceTimersByTimeAsync(2000);
     expect(sockets).toHaveLength(2);
     sockets[1].dispatchEvent(new Event('open'));
+    expect(api.runtime.reload).not.toHaveBeenCalled();
+    sockets[1].dispatchEvent(new MessageEvent('message', { data: JSON.stringify({ type: 'custom', event: LOCAL_FEEDBACK_AVAILABLE }) }));
+    expect(api.runtime.reload).toHaveBeenCalledTimes(1);
+    sockets[1].dispatchEvent(new MessageEvent('message', { data: JSON.stringify({ type: 'custom', event: LOCAL_FEEDBACK_AVAILABLE }) }));
     expect(api.runtime.reload).toHaveBeenCalledTimes(1);
     stop();
     await vi.advanceTimersByTimeAsync(4000);

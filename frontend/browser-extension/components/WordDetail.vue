@@ -1,153 +1,37 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import type { WordEntry } from '~/types';
 import HistoryItem from './HistoryItem.vue';
+import HighlightedText from './HighlightedText.vue';
 
-// Props
-interface Props {
-  wordEntry: WordEntry;
-}
-
-const props = defineProps<Props>();
-
-// Get the most recent definition for display
-const latestDefinition = props.wordEntry.history.length > 0
-  ? props.wordEntry.history[props.wordEntry.history.length - 1].definition
-  : null;
+const props = defineProps<{ wordEntry: WordEntry }>();
+const latestDefinition = computed(() => props.wordEntry.history.at(-1)?.definition);
+const history = computed(() => [...props.wordEntry.history].reverse());
 </script>
 
 <template>
   <div class="word-detail">
-    <!-- Definition Section -->
-    <div v-if="latestDefinition" class="definition-section">
-      <h3 class="section-title">Definition</h3>
-      <div class="definition-content">
-        <div v-if="latestDefinition.phonetic" class="phonetic">
-          {{ latestDefinition.phonetic }}
-        </div>
-
-        <div
-          v-for="(meaning, index) in latestDefinition.meanings"
-          :key="index"
-          class="meaning"
-        >
+    <h2 class="word-title rm-word">{{ wordEntry.word }}</h2>
+    <div class="word-meta">
+      <span class="phonetic">{{ latestDefinition?.phonetic || latestDefinition?.phonetics.find(item => item?.text)?.text || '' }}</span>
+      <span class="count">Forgotten {{ wordEntry.count }} {{ wordEntry.count === 1 ? 'time' : 'times' }}</span>
+    </div>
+    <div class="definition-section">
+      <template v-if="latestDefinition?.meanings.length">
+        <div v-for="(meaning, index) in latestDefinition.meanings" :key="index" class="meaning">
           <div class="part-of-speech">{{ meaning.partOfSpeech }}</div>
-          <ol class="definitions-list">
-            <li
-              v-for="(def, defIndex) in meaning.definitions"
-              :key="defIndex"
-              class="definition-item"
-            >
-              <div class="definition-text">{{ def.definition }}</div>
-              <div v-if="def.example" class="example">
-                <em>"{{ def.example }}"</em>
-              </div>
-            </li>
-          </ol>
+          <div v-for="(item, itemIndex) in meaning.definitions" :key="itemIndex" class="definition-item">
+            <p class="definition-text">{{ item.definition }}</p>
+            <p v-if="item.example" class="example"><HighlightedText :text="item.example" :word="wordEntry.word" /></p>
+          </div>
         </div>
-      </div>
+      </template>
+      <p v-else class="definition-text">No definition saved for this word.</p>
     </div>
-
-    <!-- History Section -->
-    <div class="history-section">
-      <h3 class="section-title">
-        History ({{ wordEntry.history.length }} record{{ wordEntry.history.length !== 1 ? 's' : '' }})
-      </h3>
-      <div class="history-list">
-        <HistoryItem
-          v-for="(record, index) in wordEntry.history"
-          :key="index"
-          :record="record"
-          :word="wordEntry.word"
-        />
-      </div>
-    </div>
+    <section class="history-section" aria-label="Word history">
+      <h3 class="section-title">Where you found it <span v-if="history.length > 1">· {{ history.length }} records</span></h3>
+      <HistoryItem v-for="(record, index) in history" :key="index" :record="record" :word="wordEntry.word" :show-definition="index > 0" />
+      <p v-if="!history.length" class="context-text">No saved context yet.</p>
+    </section>
   </div>
 </template>
-
-<style scoped>
-.word-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.section-title {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #555;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Definition Section */
-.definition-section {
-  padding: 12px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  border: 1px solid #e0e0e0;
-}
-
-.definition-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.phonetic {
-  font-size: 14px;
-  color: #666;
-  font-style: italic;
-}
-
-.meaning {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.part-of-speech {
-  font-size: 13px;
-  font-weight: 600;
-  color: #2196F3;
-  font-style: italic;
-}
-
-.definitions-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.definition-item {
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.definition-text {
-  color: #333;
-}
-
-.example {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #666;
-  padding-left: 8px;
-  border-left: 2px solid #e0e0e0;
-}
-
-/* History Section */
-.history-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-</style>

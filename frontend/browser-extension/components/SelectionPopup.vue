@@ -1,216 +1,79 @@
-<template>
-  <div
-    v-if="visible"
-    class="vocab-counter-popup"
-    :style="popupStyle"
-    @click.stop
-  >
-    <div class="popup-content">
-      <div v-if="loading" class="loading">Loading...</div>
-      <div v-else-if="error" class="error">{{ error }}</div>
-      <div v-else-if="definition" class="definition">
-        <div class="word-header">
-          <span class="word">{{ definition.word }}</span>
-          <span v-if="definition.phonetic" class="phonetic">{{ definition.phonetic }}</span>
-        </div>
-        <div class="meanings">
-          <div v-for="(meaning, idx) in definition.meanings.slice(0, 2)" :key="idx" class="meaning">
-            <span class="part-of-speech">{{ meaning.partOfSpeech }}</span>
-            <ol class="definitions-list">
-              <li v-for="(def, defIdx) in meaning.definitions.slice(0, 2)" :key="defIdx">
-                <span class="definition-text">{{ def.definition }}</span>
-                <span v-if="def.example" class="example">"{{ def.example }}"</span>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </div>
-      <div class="actions">
-        <button @click="$emit('remember')" class="btn btn-remember">Remember</button>
-        <button @click="$emit('forget')" class="btn btn-forget">Forget</button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { Refresh, WarningTriangle, Xmark , IconoirProvider } from '@iconoir/vue';
 import type { Definition, Position } from '~/types';
+import HighlightedText from './HighlightedText.vue';
 
-interface Props {
-  word: string;
-  position: Position;
-  visible: boolean;
-  definition?: Definition;
-  loading?: boolean;
-  error?: string;
-}
-
-const props = defineProps<Props>();
-
-defineEmits<{
-  remember: [];
-  forget: [];
-  close: [];
+const props = defineProps<{
+  word: string; position: Position; visible: boolean; definition?: Definition;
+  loading?: boolean; error?: string; saving?: boolean; saveError?: string; inline?: boolean;
 }>();
+const emit = defineEmits<{ remember: []; forget: []; close: []; retry: [] }>();
+const card = ref<HTMLElement>();
+const coords = ref({ left: 12, top: 12 });
+let observer: ResizeObserver | undefined;
+const phonetic = computed(() => props.definition?.phonetic || props.definition?.phonetics.find(item => item?.text)?.text);
+const popupStyle = computed(() => props.inline
+  ? { position: 'relative' as const, left: 'auto', top: 'auto' }
+  : { left: coords.value.left + 'px', top: coords.value.top + 'px' });
 
-const popupStyle = computed(() => {
-  // Calculate popup position with viewport boundary detection
-  const x = props.position.x;
-  const y = props.position.y;
-  
-  // Add offset below the selected text
-  const offsetY = 10;
-  
-  return {
-    left: `${x}px`,
-    top: `${y + offsetY}px`,
-  };
+function positionCard() {
+  if (!props.visible || !card.value || props.inline) return;
+  const box = card.value.getBoundingClientRect();
+  const width = box.width || Math.min(340, innerWidth - 24);
+  const height = box.height || 220;
+  const left = Math.max(12, Math.min(props.position.x - width / 2, innerWidth - width - 12));
+  let top = props.position.y;
+  if (top + height > innerHeight - 12) top = (props.position.anchorTop ?? props.position.y) - height - 10;
+  coords.value = { left, top: Math.max(12, Math.min(top, innerHeight - height - 12)) };
+}
+watch(card, value => { observer?.disconnect(); if (value) observer?.observe(value); positionCard(); }, { flush: 'post' });
+watch(() => [props.visible, props.position.x, props.position.y, props.loading, props.error], async () => { await nextTick(); positionCard(); });
+onMounted(() => {
+  observer = new ResizeObserver(positionCard);
+  if (card.value) observer.observe(card.value);
+  window.addEventListener('resize', positionCard);
+  positionCard();
 });
+onUnmounted(() => { observer?.disconnect(); window.removeEventListener('resize', positionCard); });
 </script>
 
-<style scoped>
-.vocab-counter-popup {
-  position: absolute;
-  z-index: 2147483647;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 16px;
-  min-width: 300px;
-  max-width: 400px;
-  transform: translateX(-50%);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-.popup-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.loading,
-.error {
-  padding: 8px;
-  text-align: center;
-  color: #666;
-}
-
-.error {
-  color: #d32f2f;
-}
-
-.word-header {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.word {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-.phonetic {
-  font-size: 14px;
-  color: #666;
-  font-style: italic;
-}
-
-.meanings {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.meaning {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.part-of-speech {
-  font-size: 12px;
-  font-style: italic;
-  color: #1976d2;
-  font-weight: 500;
-}
-
-.definitions-list {
-  margin: 0;
-  padding-left: 20px;
-  color: #333;
-}
-
-.definitions-list li {
-  margin: 4px 0;
-}
-
-.definition-text {
-  display: block;
-}
-
-.example {
-  display: block;
-  font-size: 12px;
-  color: #666;
-  font-style: italic;
-  margin-top: 4px;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-
-.btn {
-  padding: 6px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.btn:active {
-  transform: scale(0.95);
-}
-
-.btn-remember {
-  background: #e0e0e0;
-  color: #333;
-}
-
-.btn-remember:hover {
-  background: #d0d0d0;
-}
-
-.btn-forget {
-  background: #1976d2;
-  color: white;
-}
-
-.btn-forget:hover {
-  background: #1565c0;
-}
-</style>
+<template>
+  <IconoirProvider :icon-props="{ color: 'currentColor', 'stroke-width': 1.5 }">
+  <section v-if="visible" ref="card" class="vocab-counter-popup" :style="popupStyle" role="dialog" :aria-label="'Definition of ' + word" :aria-busy="loading || saving" @click.stop @mouseup.stop @keydown.esc.stop="emit('close')">
+    <div class="lookup-header">
+      <h2 class="word rm-word">{{ definition?.word || word }}</h2>
+      <button class="rm-icon-btn" aria-label="Close definition" @click="emit('close')"><Xmark width="20" height="20" aria-hidden="true" /></button>
+    </div>
+    <div v-if="phonetic" class="phonetic">{{ phonetic }}</div>
+    <div v-if="loading" class="lookup-status loading" role="status">
+      <Refresh class="rm-spinner" width="18" height="18" aria-hidden="true" />
+      <div><h3>Looking up this word…</h3><p>Connecting to the dictionary. You can close this at any time.</p></div>
+    </div>
+    <div v-else-if="error" class="lookup-status is-error" role="alert">
+      <WarningTriangle width="18" height="18" aria-hidden="true" />
+      <div><h3>We couldn't load this word</h3><p>{{ error }}</p></div>
+    </div>
+    <div v-else-if="definition" class="definition">
+      <div v-for="(meaning, index) in definition.meanings.slice(0, 2)" :key="index" class="lookup-meaning">
+        <div class="part-of-speech">{{ meaning.partOfSpeech }}</div>
+        <div v-for="(item, itemIndex) in meaning.definitions.slice(0, 2)" :key="itemIndex" class="definition-item">
+          <p class="definition-text">{{ item.definition }}</p>
+          <p v-if="item.example" class="example"><HighlightedText :text="item.example" :word="word" /></p>
+        </div>
+      </div>
+    </div>
+    <p v-if="saveError" class="save-error" role="alert">{{ saveError }}</p>
+    <div class="lookup-actions">
+      <template v-if="error">
+        <button class="rm-button rm-secondary" @click="emit('close')">Close</button>
+        <button class="rm-button rm-primary retry-btn" @click="emit('retry')">Try again</button>
+      </template>
+      <template v-else>
+        <button class="rm-button rm-secondary btn-remember" :disabled="saving" @click="loading ? emit('close') : emit('remember')">{{ loading ? 'Cancel' : 'Remember' }}</button>
+        <button class="rm-button rm-primary btn-forget" :disabled="loading || saving || !definition" @click="emit('forget')">{{ saving ? 'Saving…' : 'Forget' }}</button>
+      </template>
+    </div>
+  </section>
+  </IconoirProvider>
+</template>

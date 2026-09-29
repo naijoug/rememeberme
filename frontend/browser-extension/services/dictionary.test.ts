@@ -53,21 +53,21 @@ describe('dictionary requests (mock network)', () => {
 
   it('times out a stalled response body as well as stalled response headers', async () => {
     delayedResponse(100000, true);
-    const assertion = expect(dictionary.getDefinition('apple')).rejects.toThrow(/timed out.*dictionaryapi\.dev/i);
-    await vi.advanceTimersByTimeAsync(26000);
+    const assertion = expect(dictionary.getDefinition('apple')).rejects.toThrow(/taking too long/i);
+    await vi.advanceTimersByTimeAsync(10000);
     await assertion;
-    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('reports a network failure clearly and allows a fresh request after failure', async () => {
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
-    const assertion = expect(dictionary.getDefinition('apple')).rejects.toThrow(/Cannot reach.*dictionaryapi\.dev/i);
+    const assertion = expect(dictionary.getDefinition('apple')).rejects.toThrow(/Cannot reach the dictionary/i);
     await vi.advanceTimersByTimeAsync(2000);
     await assertion;
-    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
     fetchMock.mockResolvedValue(new Response(JSON.stringify(result)));
     expect(await dictionary.getDefinition('apple')).toMatchObject({ word: 'apple' });
-    expect(fetchMock).toHaveBeenCalledTimes(4);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
   it.each([404, 429])('does not retry HTTP %s', async status => {

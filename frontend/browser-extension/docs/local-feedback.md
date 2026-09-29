@@ -7,12 +7,14 @@ The local feedback build watches this checkout and updates the unpacked extensio
 From `frontend/browser-extension/`, using the Node version in `.nvmrc` and installed dependencies:
 
 ```sh
-npm run local:start    # macOS: start in the background and at login
-npm run local:status   # registration, process state, output directory and log path
+npm run local:start    # macOS: start/recover in the background and at login
+npm run local:status   # process + development-asset health, output directory and log path
 npm run local:stop     # stop and remove login startup; retain browser vocabulary
 ```
 
-The macOS helper creates a checkout-specific LaunchAgent in `~/Library/LaunchAgents/`, using the absolute Node and checkout paths. Logs live in this package's ignored `.local-feedback/service.log`. If Node or the checkout moves, run stop/start again. Stop the service before removing the checkout. A registered service is not proof of a healthy build: inspect the printed log for the latest successful output.
+The macOS helper creates a checkout-specific LaunchAgent in `~/Library/LaunchAgents/`, using the absolute Node and checkout paths. Logs live in this package's ignored `.local-feedback/service.log`. If Node or the checkout moves, run stop/start again. Stop the service before removing the checkout.
+
+`local:start` repairs a registered-but-stopped job, updates older startup settings, and waits for both development scripts used by the popup to respond. It reuses a running service with matching settings instead of starting a second watcher. The job restarts after any process exit, including a clean exit; use `local:stop` to intentionally stop it and remove login startup. `local:status` returns a nonzero status for stopped/unhealthy services and does not confuse registration with a running process. A healthy server still does not prove the extension is enabled in Chrome.
 
 For a foreground session (including other operating systems), use `npm run dev:local` and keep the terminal running. Do not run it alongside the background service: both use `127.0.0.1:3937`. The listener is loopback-only.
 
@@ -26,16 +28,26 @@ This directory gives Chrome a separate extension identity from the release build
 
 Browser automation may block `chrome://extensions/`; the initial loading step is then manual. The local service cannot confirm installation by itself.
 
+## Quick check in Chrome
+
+With the service running, open [the local selection test page](http://127.0.0.1:3937/test-selection.html) and double-click a highlighted English word. A working extension shows the definition card. **Remember** closes the card without saving; **Forget** and the context-menu shortcut save into the vocabulary of the currently loaded extension, so use Remember for a check that does not change your vocabulary.
+
+If no card appears, check Chrome's puzzle-piece extension menu for **Remember Me · Local**. If it is absent, use the extension manager yourself to enable the existing entry or load the fixed directory above if it has never been loaded. Do not reinstall or create a second copy just to refresh an already-enabled extension. If the popup is blank, first run `npm run local:status` and `npm run local:start`; the local build needs its server even when the generated folder exists.
+
 ## What updates automatically
 
 - Popup Vue changes use WXT/Vite updates. Background changes reload the extension.
 - Content changes register the new scripts and reinject them into eligible open tabs. The local mode replaces WXT's default whole-tab refresh, preserving page input and scroll position. Old content contexts remove their listeners, popup, notifications and pending timers to avoid duplicate saves.
 - New eligible pages use the latest registered script. Browser-internal/restricted pages remain unsupported; pages that close or reject injection during an update can be refreshed manually.
-- After the development server restarts, the local update client reconnects and reloads the extension to restore its WXT connection.
+- After the development server restarts, the local update client reconnects, waits for a build-complete signal, then reloads the extension to restore its WXT connection. This avoids reloading while the manifest is temporarily absent during a build.
 - The current WXT 0.20 leading-only debounce can skip the last rapid save; feedback mode disables that debounce and retains WXT's serialized build queue.
 
 Keep the service running while using this build: its popup loads development assets from localhost. Source errors must be fixed before a new build can succeed. This workflow does not mean automated tests run or pass on each save. Run the checks in [testing.md](testing.md) before declaring a change complete.
 
-The feedback build adds WXT's development-only `tabs` and `scripting` permissions and localhost access for updates. Release builds omit the local update connection and retain their original permissions. It does not publish anything or sync vocabulary to a server.
+The feedback build adds WXT's development-only `tabs` and `scripting` permissions and localhost access for updates. Release builds omit the local update connection and use the permissions documented in [architecture.md](architecture.md). It does not publish anything or sync vocabulary to a server.
 
 WXT references: [browser startup/manual profiles](https://wxt.dev/guide/essentials/config/browser-startup), [content-script lifecycle](https://wxt.dev/guide/essentials/content-scripts).
+
+## Design preview
+
+The [Paper & Sage component preview](http://127.0.0.1:3937/preview/paper-sage.html) uses disposable in-memory sample vocabulary and simulated lookup states. It renders the same UI components as the extension without accessing browser vocabulary. Use it to compare light/dark, empty/loading/error and reading/list states. It is not an installed-extension or live dictionary check. The preview files are outside extension entrypoints and are not shipped in production output.

@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readLaunchAgentState, checkFeedbackAssets, serviceStartAction } from './local-feedback-health.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const label = `com.rememberme.local-feedback-${createHash('sha256').update(root).digest('hex').slice(0, 8)}`;
@@ -30,38 +31,64 @@ function check(result) {
 function xml(value) {
   return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 }
-function showStatus() {
-  const result = launchctl('print', `${domain}/${label}`);
-  if (result.status !== 0) {
+function getState() {
+  return readLaunchAgentState(launchctl('print', `${domain}/${label}`));
+}
+async function showStatus() {
+  const current = getState();
+  let healthy = false;
+  if (!current.registered) {
     console.log('Local feedback service is stopped. Start it with npm run local:start.');
+  } else if (!current.running) {
+    console.log(`Local feedback service is registered but ${current.state}. Run npm run local:start to recover it.`);
   } else {
-    console.log('Local feedback service is registered with macOS:');
-    console.log(result.stdout.split('\n').filter(line => /^\s*(state|pid|last exit code) =/.test(line)).map(line => line.trim()).join('\n'));
+    try {
+      await checkFeedbackAssets();
+      healthy = true;
+      console.log('Local feedback service is running; Chrome development assets are reachable.');
+    } catch (error) {
+      console.log(`Local feedback process is running but not ready: ${error.message}`);
+    }
   }
   console.log(`Extension directory: ${join(root, '.output', 'chrome-mv3-feedback')}`);
   console.log(`Log: ${logFile}`);
+  return healthy;
+}
+
+async function waitUntilReady() {
+  const deadline = Date.now() + 20000;
+  let lastError;
+  while (Date.now() < deadline) {
+    try {
+      if (!getState().running) throw new Error('The watcher process is not running');
+      await checkFeedbackAssets();
+      return;
+    } catch (error) {
+      lastError = error;
+      await new Promise(resolve => setTimeout(resolve, 250));
+    }
+  }
+  throw new Error(`Local feedback did not become ready: ${lastError?.message}. Check ${logFile}`);
 }
 
 try {
   if (command === 'status') {
-    showStatus();
+    if (!await showStatus()) process.exitCode = 1;
   } else if (command === 'stop') {
-    if (launchctl('print', `${domain}/${label}`).status === 0) check(launchctl('bootout', `${domain}/${label}`));
+    if (getState().registered) check(launchctl('bootout', `${domain}/${label}`));
     rmSync(agentFile, { force: true });
     console.log('Stopped local feedback and removed its login startup entry. Browser vocabulary was not changed.');
   } else {
     const binary = join(root, 'node_modules', 'wxt', 'bin', 'wxt.mjs');
     if (!existsSync(binary)) throw new Error('Run npm ci before starting local feedback.');
-    if (launchctl('print', `${domain}/${label}`).status === 0) {
-      showStatus();
-    } else {
-      if (existsSync(agentFile) && !readFileSync(agentFile, 'utf8').includes(xml(root))) {
-        throw new Error(`Existing startup entry belongs to a different checkout: ${agentFile}`);
-      }
-      mkdirSync(dirname(agentFile), { recursive: true });
-      mkdirSync(dirname(logFile), { recursive: true });
-      const args = [process.execPath, binary, '--config', 'wxt.feedback.config.ts', '--mode', 'feedback'];
-      writeFileSync(agentFile, `<?xml version="1.0" encoding="UTF-8"?>
+    const current = getState();
+    if (existsSync(agentFile) && !readFileSync(agentFile, 'utf8').includes(xml(root))) {
+      throw new Error(`Existing startup entry belongs to a different checkout: ${agentFile}`);
+    }
+    mkdirSync(dirname(agentFile), { recursive: true });
+    mkdirSync(dirname(logFile), { recursive: true });
+    const args = [process.execPath, binary, '--config', 'wxt.feedback.config.ts', '--mode', 'feedback'];
+    const configuration = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>Label</key><string>${label}</string>
@@ -69,16 +96,21 @@ try {
 <key>WorkingDirectory</key><string>${xml(root)}</string>
 <key>EnvironmentVariables</key><dict><key>PATH</key><string>${xml(dirname(process.execPath))}:/usr/bin:/bin:/usr/sbin:/sbin</string></dict>
 <key>RunAtLoad</key><true/>
-<key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
+<key>KeepAlive</key><true/>
 <key>ThrottleInterval</key><integer>10</integer>
 <key>StandardOutPath</key><string>${xml(logFile)}</string>
 <key>StandardErrorPath</key><string>${xml(logFile)}</string>
-</dict></plist>\n`, { mode: 0o600 });
-      check(spawnSync('/usr/bin/plutil', ['-lint', agentFile], { encoding: 'utf8' }));
-      check(launchctl('bootstrap', domain, agentFile));
-      showStatus();
-      console.log('It will also start at login. Use npm run local:stop to disable it.');
-    }
+</dict></plist>\n`;
+    const configChanged = !existsSync(agentFile) || readFileSync(agentFile, 'utf8') !== configuration;
+    if (configChanged) writeFileSync(agentFile, configuration, { mode: 0o600 });
+    check(spawnSync('/usr/bin/plutil', ['-lint', agentFile], { encoding: 'utf8' }));
+    const action = serviceStartAction(current, configChanged);
+    if (action === 'replace') check(launchctl('bootout', `${domain}/${label}`));
+    if (action === 'replace' || action === 'bootstrap') check(launchctl('bootstrap', domain, agentFile));
+    if (action === 'kickstart') check(launchctl('kickstart', `${domain}/${label}`));
+    await waitUntilReady();
+    await showStatus();
+    console.log('It will also start at login. Use npm run local:stop to disable it.');
   }
 } catch (error) {
   console.error(error.message);

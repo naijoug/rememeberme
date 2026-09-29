@@ -14,7 +14,8 @@ interface CacheEntry {
 export class DictionaryService {
   private readonly API_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en';
   private readonly TIMEOUT_MS = 8000;
-  private readonly MAX_RETRIES = 2;
+  private readonly MAX_RETRIES = 1;
+  private readonly TOTAL_TIMEOUT_MS = 10000;
   private readonly CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
   private cache: Map<string, CacheEntry> = new Map();
   private pending = new Map<string, Promise<Definition>>();
@@ -59,12 +60,15 @@ export class DictionaryService {
   }
 
   private async lookupWithRetries(normalizedWord: string): Promise<Definition> {
+    const deadline = Date.now() + this.TOTAL_TIMEOUT_MS;
     let lastError: Error | null = null;
     
     // Retry logic
     for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
       try {
-        const definition = await this.fetchDefinition(normalizedWord);
+        const remaining = deadline - Date.now();
+        if (remaining <= 0) throw new Error('The dictionary is taking too long. Please try again.');
+        const definition = await this.fetchDefinition(normalizedWord, Math.min(this.TIMEOUT_MS, remaining));
         // Store in cache
         this.saveToCache(normalizedWord, definition);
         return definition;
@@ -74,13 +78,16 @@ export class DictionaryService {
         // Don't retry on 404 or 429
         if (error instanceof Error && 
             (error.message.includes('not found') || 
-             error.message.includes('Too many requests'))) {
+             error.message.includes('Too many requests') ||
+             error.message.includes('invalid definition'))) {
           throw error;
         }
         
         // Wait before retry (exponential backoff)
-        if (attempt < this.MAX_RETRIES) {
-          await this.delay(Math.pow(2, attempt) * 500);
+        if (attempt < this.MAX_RETRIES && deadline - Date.now() > 400) {
+          await this.delay(400);
+        } else {
+          break;
         }
       }
     }
@@ -139,9 +146,9 @@ export class DictionaryService {
   /**
    * Fetch definition from API with timeout
    */
-  private async fetchDefinition(word: string): Promise<Definition> {
+  private async fetchDefinition(word: string, timeoutMs: number): Promise<Definition> {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT_MS);
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch(`${this.API_URL}/${encodeURIComponent(word)}`, {
@@ -164,15 +171,15 @@ export class DictionaryService {
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          throw new Error('Dictionary request timed out (8s). Check access to api.dictionaryapi.dev and try again.');
+          throw new Error('The dictionary is taking too long. Please try again.');
         }
         if (error instanceof TypeError) {
-          throw new Error('Cannot reach api.dictionaryapi.dev. Check your network or proxy and try again.');
+          throw new Error('Cannot reach the dictionary. Check your connection and try again.');
         }
         throw error;
       }
       
-      throw new Error('Cannot reach api.dictionaryapi.dev. Check your network or proxy and try again.');
+      throw new Error('Cannot reach the dictionary. Check your connection and try again.');
     } finally {
       // The response body can stall too; keep the deadline until JSON is read.
       clearTimeout(timeoutId);

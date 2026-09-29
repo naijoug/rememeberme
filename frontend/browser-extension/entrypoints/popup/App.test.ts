@@ -12,6 +12,7 @@ const storageApiMock = vi.hoisted(() => {
     storage: {
       getItem: vi.fn(async (key: string) => structuredClone(values.get(key) ?? null)),
       setItem: vi.fn(async (key: string, value: unknown) => { values.set(key, structuredClone(value)); }),
+      watch: vi.fn(() => () => {}),
     },
   };
 });
@@ -112,9 +113,8 @@ describe('mounted vocabulary popup', () => {
     click('.word-header');
     await vi.waitFor(() => expect(container.querySelector('.reset-btn')).not.toBeNull());
     click('.reset-btn');
-    await vi.waitFor(() => expect(container.querySelector('.count')?.textContent).toBe('Count: 0'));
+    await vi.waitFor(() => expect(container.querySelector('.count')?.textContent).toBe('Forgotten 0 times'));
     expect((await storageService.getWord('apple'))?.history).toHaveLength(1);
-    click('.word-header');
     await vi.waitFor(() => expect(container.querySelector('.context-text')?.textContent).toBe('An apple in context.'));
   });
 
@@ -127,7 +127,7 @@ describe('mounted vocabulary popup', () => {
     expect(container.querySelector('.word-text')?.textContent).toBe('apple');
     click('.word-header');
     await vi.waitFor(() => expect(container.querySelector('.context-text')?.textContent).toBe(imported.history[0].context));
-    expect(container.querySelector('img')).toBeNull();
+    expect(container.querySelector('.context-text img')).toBeNull();
     expect(container.querySelector('mark')?.textContent).toBe('apple');
   });
 
@@ -135,7 +135,28 @@ describe('mounted vocabulary popup', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     await mount([entry('apple', 1, 1)]);
     importFile('{invalid json');
-    await vi.waitFor(() => expect(container.querySelector('.error')?.textContent).toBe('Invalid JSON format'));
+    await vi.waitFor(() => expect(container.querySelector('.error')?.textContent?.trim()).toBe('Invalid JSON format'));
     expect((await storageService.getAllWords()).map(word => word.word)).toEqual(['apple']);
+  });
+
+  it('searches the vocabulary and opens a word in its reading view', async () => {
+    await mount([entry('apple', 3, 1), entry('banana', 1, 2)]);
+    const input = container.querySelector<HTMLInputElement>('input[type=search]')!;
+    input.value = 'BAN';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await vi.waitFor(() => expect(container.querySelectorAll('.word-item')).toHaveLength(1));
+    click('.word-header');
+    await vi.waitFor(() => expect(container.querySelector('.word-title')?.textContent).toBe('banana'));
+    expect(container.querySelector('.word-list')).toBeNull();
+    click('.back-link');
+    await vi.waitFor(() => expect(container.querySelector('.word-text')?.textContent).toBe('banana'));
+  });
+
+  it('persists the theme separately without changing vocabulary', async () => {
+    await mount([entry('apple', 3, 1)]);
+    click('[aria-label="Use dark theme"]');
+    await vi.waitFor(() => expect(container.querySelector('.rm-theme')?.getAttribute('data-theme')).toBe('dark'));
+    expect(storageApiMock.values.get('local:appearance')).toBe('dark');
+    expect((await storageService.getWord('apple'))?.count).toBe(3);
   });
 });

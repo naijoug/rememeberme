@@ -82,3 +82,11 @@ Generated `.wxt/` and `.output/` directories are disposable. Static reference de
 - Dictionary timeout or connection failure: check whether `https://api.dictionaryapi.dev/api/v2/entries/en/apple` opens in the same Chrome network environment. The extension requires this external service for new definitions. Changing timeout settings cannot repair an unavailable network route.
 - Page connection/notification failure: refresh the source webpage and retry. Local feedback builds also try one targeted script reinjection. If page notifications are unavailable, hover the toolbar icon's `!` badge for the error; `OK` means a save completed despite the missing page notification.
 - Hot reload does not update: reload the extension or restart the development command.
+
+## Paper & Sage interface
+
+The popup now has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Choose System, Light or Dark in the footer; open page cards follow the same saved preference. Lookup waits end after 10 seconds with a retry action, and Forget is unavailable until a definition is ready.
+
+Light mode uses paper-white and sage; dark mode uses the user's selected Codex-inspired charcoal gray palette. See the [dark palette comparison](http://127.0.0.1:3937/preview/paper-sage.html?compare=codex) for the supplied reference beside the actual components.
+
+For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual new definitions still depend on the external dictionary API.

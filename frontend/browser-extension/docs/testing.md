@@ -25,10 +25,14 @@ For example: `npm test -- components/HistoryItem.test.ts`. Run `npm test` for sh
 - `services/dictionary.test.ts`: mocked slow responses, deadlines covering stalled JSON bodies, coalesced requests, network-error recovery and non-retried 404/429 responses. Live service access is a separate diagnostic, not part of automated tests.
 - `services/background-handler.test.ts`: lookup success/failure, vocabulary request validation and legacy imported-word compatibility.
 - `components/HistoryItem.test.ts`: real Vue rendering of untrusted text, literal matching and source-link protocols.
-- `entrypoints/popup/App.test.ts`: mounted popup and child components, including sorting, delete/cancel, reset and import, using the real background handler with mocked transport and storage.
-- `components/WordList.test.ts`: long expanded history, resizing, changing expansion, sorting/shrinking lists and deletion confirmation outside translated rows. Layout sizes and ResizeObserver callbacks are mocked; browser layout requires a separate check.
-- `tests/content.test.ts`: content entrypoint with real DOM selection and popup components, but a mocked browser runtime; reopening, saving and out-of-order lookup responses. Keep entrypoint tests outside the top level of `entrypoints/` so WXT does not discover them as extension entrypoints.
+- `entrypoints/popup/App.test.ts`: mounted popup and child components, including sorting, search, reading-view navigation, theme persistence, delete/cancel, reset and import, using the real background handler with mocked transport and storage.
+- `components/WordList.test.ts`: bounded virtual rows, scrolling to the final word, selection into a separate reading view and list replacement. Details no longer expand within virtual rows.
+- `components/SelectionPopup.test.ts`: viewport clamping/flipping, loading-save restrictions and retry affordances using mocked geometry.
+- `services/theme.test.ts`: system preference changes, cross-surface storage notifications, stale initial-read protection, separate preference storage and cleanup after extension invalidation.
+- `components/HighlightedText.test.ts`: literal untrusted examples and malformed legacy optional example values.
+- `tests/content.test.ts`: content entrypoint with real DOM selection and popup components, but a mocked browser runtime; ShadowRoot isolation, reopening, saving, out-of-order responses, UI deadline/retry, Escape, duplicate-save protection and theme updates. Keep entrypoint tests outside the top level of `entrypoints/` so WXT does not discover them as extension entrypoints.
 - Content tests also exercise the real WXT context's invalidation and reinjection cleanup (with deterministic postMessage delivery). `services/local-feedback.test.ts` covers script registration/replacement without tab reloads, restricted-tab failures and server reconnection with mocked browser/WebSocket APIs.
+- `scripts/local-feedback-health.test.mjs`: a registered job with `state = not running` / exit code 0 is recovered, healthy jobs are reused, permission failures are not mistaken for absent jobs, and both popup development assets must be reachable as JavaScript. These tests do not start real LaunchAgents or enable browser extensions.
 
 These are not installed-extension E2E tests. A successful build also does not prove runtime browser compatibility, native menu behavior, live API availability or real storage quotas. The project currently has no Playwright or MSW test setup.
 
@@ -50,8 +54,10 @@ Mark each case **Not run**, **Pass**, **Fail**, or **Blocked**, with evidence. T
 | Open the context menu without selected text | Remember Me selection item is absent |
 | Look up an unknown word or simulate a network failure | Error shown, no word saved |
 | Right-click on a page without a receiving script, or navigate away during lookup | Connection checked before lookup; feedback mode retries page connection once; toolbar fallback preserves the original failure or completed-save result |
-| Open the toolbar popup, sort, expand, reset, cancel deletion, confirm deletion | Display and stored data agree; reset preserves history and cancel preserves the word |
-| Load over 100 fixture words, expand a long history and scroll through it and to the last row | No missing detail or gaps; collapse/switching expansion keeps the clicked header in place |
+| Open the toolbar popup, sort, open a word, reset, cancel deletion, confirm deletion | Display and stored data agree; reset preserves history and cancel preserves the word |
+| Load over 100 fixture words, open a long history, go back and scroll to the final word | Detail scroll does not affect virtual rows; list position restores on back and the last word is reachable |
+| Switch System / Light / Dark in the toolbar | Toolbar and open page card update consistently; the choice persists without changing vocabulary |
+| Stop a lookup response or simulate a timeout | Within 10 seconds the loading UI becomes a retryable error; Forget remains unavailable without a definition |
 | Delete a word after scrolling deep into a large vocabulary list | Confirmation covers the viewport; cancel preserves the entry and confirm deletes it |
 | Export fixtures, import into an empty disposable profile | Counts and history survive the round trip |
 | Import a malformed file | Clear error and existing vocabulary remains intact |
@@ -74,3 +80,7 @@ The [archived test template](archive/context-menu-test-template.md) has an unfil
 Recorded runs: [2026-09-20 documentation and safety changes](verification/2026-09-20-documentation-and-safety.md), [2026-09-22 concurrency and large lists](verification/2026-09-22-concurrency-and-large-lists.md), [2026-09-22 local feedback](verification/2026-09-22-local-feedback.md).
 
 Latest error-handling run: [2026-09-29 dictionary and page-connection errors](verification/2026-09-29-dictionary-and-page-errors.md).
+
+Local service recovery: [2026-09-29 local Chrome service recovery](verification/2026-09-29-local-service-recovery.md), including real everyday-Chrome observations and the remaining extension-enable step.
+
+Paper & Sage redesign: [2026-09-29 UI, themes and lookup states](verification/2026-09-29-paper-sage.md), including actual light/dark visual comparisons, automated checks and remaining installed-extension browser gaps.

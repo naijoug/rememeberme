@@ -6,8 +6,8 @@ Reviewed against the source on 2026-09-29. This describes the current product co
 
 - On pages where the browser permits content scripts, selecting a single English word opens the definition card after a 300 ms debounce. The shared [word validator](../services/word-utils.ts) accepts ASCII letters with internal apostrophes or hyphens; it rejects whitespace, numbers and non-English selections.
 - A successful lookup shows the definition. Remember closes the card without changing vocabulary. Forget saves the definition, sentence context, full page URL and timestamp, increments the count and reports the new count.
-- Repeated selections reuse the popup container. Only the latest lookup may update its definition or error; late results from earlier selections are ignored.
-- Lookup errors are shown in the card. A word without a retrieved definition is not saved by the current implementation.
+- Repeated selections reuse one Vue application inside a ShadowRoot. Only the latest lookup may update its definition or error; late results from earlier selections are ignored. Escape, outside clicks and page scrolling close the card. The card flips above the selection or clamps within the viewport when needed.
+- Lookup has a 10-second total budget, including at most one retry. The card also enforces its own 10-second response deadline, retains the selected word while loading, and offers Try again / Close on failure. Forget is disabled until a definition is available and while saving. A word without a retrieved definition is not saved.
 - Context extraction uses sentence boundaries and a bounded window around the selected word for long sentences. See [the extractor and its tests](../services/context-extractor.ts) for exact truncation behavior.
 
 ## Right-click shortcut
@@ -19,13 +19,17 @@ Reviewed against the source on 2026-09-29. This describes the current product co
 
 ## Vocabulary and backups
 
-- The toolbar popup lists saved words with counts and dates, initially sorted by count. The sort control can switch to last-updated time. Expanding a word shows its definition and history.
-- Above 100 words the list uses virtual scrolling. Collapsed rows have a fixed height; the open row is measured as its content changes, so scrolling inside long history keeps it visible. Replacing/sorting the list starts at the top. Delete confirmation stays outside the translated rows.
+- The Paper & Sage toolbar popup lists saved words with a brief definition and count, initially sorted by count. Search filters by word; the sort control can switch to last-updated time. Opening a word shows a dedicated reading view with definition and history, and a Vocabulary back button. Import/export are in More options. Empty and error states remain actionable.
+- Above 100 words the list uses fixed-height virtual rows. Details and long histories are outside that virtual list, so scrolling inside a definition cannot remove it. Returning to the list restores its position; replacing/sorting/filtering the list starts at the top. Delete confirmation stays outside translated rows, initially focuses Cancel and supports Escape.
 - Saves from pages and the context menu, imports, deletes and resets share the background's operation queue. Reads and exports wait for earlier queued operations. A failed operation reports an error and does not block later requests.
 - Deletion requires confirmation; cancelling preserves the word. Reset sets count to zero and retains history. Count therefore need not equal history length.
 - Export downloads a JSON array of all entries, including contexts and full source URLs. Treat exports as potentially sensitive browsing data.
 - Import validates the entire input before writing and merges by normalized word. Existing counts are added and histories concatenated and sorted. Reimporting the same file adds it again; import is not idempotent.
 - History text, including imported markup, is rendered as text. Matches are highlighted with `mark` elements. Only HTTP(S) source URLs become links; other URL strings remain visible as text.
+
+## Appearance
+
+Both the toolbar and page card use the selected Paper & Sage layout: paper-white/sage in light mode, with a Codex-inspired neutral charcoal palette in dark mode at the user's request. Dark surfaces use `#1e1e1e` / `#29292a`, gray-white text and `#303030` selections; buttons, highlights and overlays share the neutral palette. Errors retain a distinct red tone. System / Light / Dark choices persist separately from vocabulary and sync to open extension surfaces. System follows the OS/browser media preference; it does not infer the webpage's own theme. Word headings use a local serif font; UI controls use the system sans-serif stack. Imported text and examples remain literal text, including highlighted matches.
 
 ## Original specification differences requiring a product decision
 

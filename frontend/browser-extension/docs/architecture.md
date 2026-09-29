@@ -11,7 +11,9 @@ Use this document for changes to messaging, persistence or external data flow. S
 | [background-handler.ts](../services/background-handler.ts) | Validate and dispatch dictionary and vocabulary requests; report completed operations or errors |
 | [context-menu-handler.ts](../services/context-menu-handler.ts) | Validate selection, retrieve definition/context, save and notify |
 | [context-menu-status.ts](../services/context-menu-status.ts) | Toolbar badge/title fallback when page notifications cannot be delivered |
-| [popup/App.vue](../entrypoints/popup/App.vue) | List loading, sorting, import/export, deletion and reset |
+| [popup/App.vue](../entrypoints/popup/App.vue) | Storage/theme integration, import/export, deletion and reset |
+| [VocabularyPanel.vue](../components/VocabularyPanel.vue) | Pure UI: word search/list, reading view, menus, themes and confirmation |
+| [theme.ts](../services/theme.ts) | Watch/persist System / Light / Dark under local:appearance, separately from vocabulary |
 | [storage-client.ts](../services/storage-client.ts) | Content/popup vocabulary client, using background messages only |
 | [storage.ts](../services/storage.ts) | Background-owned vocabulary operation queue, persistence and JSON validation/merge |
 | [dictionary.ts](../services/dictionary.ts) | External dictionary requests, retries and in-memory cache |
@@ -19,7 +21,7 @@ Use this document for changes to messaging, persistence or external data flow. S
 
 There is no backend runtime. The runnable package is this directory; generated `.wxt/` and `.output/` directories are not sources. WXT configuration is in [wxt.config.ts](../wxt.config.ts), and shared data types are in [types/index.ts](../types/index.ts).
 
-The separate [feedback configuration](../wxt.feedback.config.ts) uses a loopback development server and `.output/chrome-mv3-feedback/`. Its script-refresh messages replace WXT's whole-tab reload behavior. Content contexts dispose their DOM, listeners and timers when a new script replaces them. The optional macOS LaunchAgent runs that watcher at login; it is not a backend or vocabulary sync service. See [local-feedback.md](local-feedback.md) for setup and lifecycle limits.
+The separate [feedback configuration](../wxt.feedback.config.ts) uses a loopback development server and `.output/chrome-mv3-feedback/`. Its script-refresh messages replace WXT's whole-tab reload behavior. Reconnected clients wait for an explicit build-complete signal before reloading, because WXT temporarily removes the output directory during a full build. Server-start hooks re-register the handshake after configuration restarts. Content contexts dispose their DOM, listeners, lookup deadlines and theme subscriptions when a new script replaces them. The page UI uses one reactive Vue app in an open ShadowRoot with an inline copy of the same token/component stylesheet used by the popup; only host positioning CSS is injected into the webpage. The optional macOS LaunchAgent runs that watcher at login; it is not a backend or vocabulary sync service. See [local-feedback.md](local-feedback.md) for setup and lifecycle limits.
 
 ## Messaging
 
@@ -45,7 +47,7 @@ Context-menu requests address the clicked `frameId` and capture context before w
 
 The background uses HTTPS requests to `api.dictionaryapi.dev`, sending the selected word in the request URL. Vocabulary, source URLs and contexts are stored locally; the dictionary request itself is external. There is no vocabulary cloud sync or first-party server.
 
-Dictionary requests use an 8-second deadline covering both response headers and JSON body, with up to two retries and backoff; 404 and 429 responses are not retried. Concurrent requests for the same normalized word share the in-flight request, including retries, and failed requests are removed so later attempts can recover. Network/timeout errors name the dictionary host and suggest checking connectivity. The provider is unchanged: extending the deadline cannot fix an unreachable endpoint. The cache is an in-memory map with a 24-hour TTL, not a durable promise to avoid requests for 24 hours after service-worker restarts.
+Dictionary requests have a 10-second overall budget covering headers, body and at most one retry with 400ms backoff. Each attempt is capped at 8 seconds and the remaining total budget. 404, 429 and invalid-definition responses are not retried. The content-side lookup client independently times out unresponsive background messaging after 10 seconds and cancels stale UI waits. Concurrent requests for the same normalized word share the in-flight request, including retries, and failed requests are removed so later attempts can recover. Network/timeout errors suggest checking connectivity or retrying, and the page card provides the recovery action. The provider is unchanged: extending the deadline cannot fix an unreachable endpoint. The cache is an in-memory map with a 24-hour TTL, not a durable promise to avoid requests for 24 hours after service-worker restarts.
 
 Source URLs and contexts may contain sensitive information and are included in backups. History rendering must preserve text without interpreting it as HTML. Navigable source links are restricted to HTTP(S), with `noopener noreferrer` for new tabs.
 

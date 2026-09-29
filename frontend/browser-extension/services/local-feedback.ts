@@ -1,5 +1,5 @@
 import type { ReloadContentScriptPayload } from 'wxt';
-import { LOCAL_FEEDBACK_EVENT, LOCAL_FEEDBACK_ORIGIN, LOCAL_FEEDBACK_READY } from '~/config/local-feedback';
+import { LOCAL_FEEDBACK_AVAILABLE, LOCAL_FEEDBACK_EVENT, LOCAL_FEEDBACK_ORIGIN, LOCAL_FEEDBACK_READY } from '~/config/local-feedback';
 
 export async function reconnectLocalPage(tabId: number, frameId: number): Promise<void> {
   const target = { tabId, frameIds: [frameId] };
@@ -49,16 +49,18 @@ export function startLocalFeedback(): () => void {
   const connect = () => {
     socket = new WebSocket(LOCAL_FEEDBACK_ORIGIN.replace('http:', 'ws:'), 'vite-hmr');
     socket.addEventListener('open', () => {
-      if (disconnected) {
-        // Reconnect WXT's own channel too after the local server restarts.
-        browser.runtime.reload();
-        return;
-      }
       socket.send(JSON.stringify({ type: 'custom', event: LOCAL_FEEDBACK_READY }));
     });
     socket.addEventListener('message', event => {
       let message;
       try { message = JSON.parse(event.data); } catch { return; }
+      if (message?.type === 'custom' && message.event === LOCAL_FEEDBACK_AVAILABLE && disconnected) {
+        // A WebSocket can open while WXT is still replacing the output folder.
+        // Reload only after the server confirms the manifest has been written.
+        disconnected = false;
+        browser.runtime.reload();
+        return;
+      }
       if (message?.type !== 'custom' || message.event !== LOCAL_FEEDBACK_EVENT ||
           !Array.isArray(message.data?.contentScript?.js) ||
           !Array.isArray(message.data?.contentScript?.matches)) return;
