@@ -4,6 +4,7 @@
  */
 
 import type { Definition, DictionaryResponse } from '~/types';
+import { isDefinition } from './definition-utils';
 
 interface CacheEntry {
   definition: Definition;
@@ -12,10 +13,11 @@ interface CacheEntry {
 
 export class DictionaryService {
   private readonly API_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en';
-  private readonly TIMEOUT_MS = 3000;
+  private readonly TIMEOUT_MS = 8000;
   private readonly MAX_RETRIES = 2;
   private readonly CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
   private cache: Map<string, CacheEntry> = new Map();
+  private pending = new Map<string, Promise<Definition>>();
 
   constructor() {
     // Clean expired cache entries every hour
@@ -45,6 +47,18 @@ export class DictionaryService {
       return cached;
     }
 
+    const existing = this.pending.get(normalizedWord);
+    if (existing) return existing;
+    const request = this.lookupWithRetries(normalizedWord);
+    this.pending.set(normalizedWord, request);
+    try {
+      return await request;
+    } finally {
+      this.pending.delete(normalizedWord);
+    }
+  }
+
+  private async lookupWithRetries(normalizedWord: string): Promise<Definition> {
     let lastError: Error | null = null;
     
     // Retry logic
@@ -134,30 +148,34 @@ export class DictionaryService {
         signal: controller.signal,
       });
 
-      clearTimeout(timeoutId);
-
       if (!response.ok) {
         throw await this.handleHttpError(response);
       }
 
       const data: DictionaryResponse[] = await response.json();
       
-      if (!data || data.length === 0) {
+      if (!Array.isArray(data) || data.length === 0) {
         throw new Error('Definition not found');
       }
 
-      return this.parseApiResponse(data[0]);
+      const entry = { ...data[0], phonetics: data[0]?.phonetics ?? [] };
+      if (!isDefinition(entry)) throw new Error('Dictionary returned an invalid definition. Please try again.');
+      return this.parseApiResponse(entry);
     } catch (error) {
-      clearTimeout(timeoutId);
-      
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          throw new Error('Request timeout - please try again');
+          throw new Error('Dictionary request timed out (8s). Check access to api.dictionaryapi.dev and try again.');
+        }
+        if (error instanceof TypeError) {
+          throw new Error('Cannot reach api.dictionaryapi.dev. Check your network or proxy and try again.');
         }
         throw error;
       }
       
-      throw new Error('Network error - please check your connection');
+      throw new Error('Cannot reach api.dictionaryapi.dev. Check your network or proxy and try again.');
+    } finally {
+      // The response body can stall too; keep the deadline until JSON is read.
+      clearTimeout(timeoutId);
     }
   }
 

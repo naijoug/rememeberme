@@ -7,6 +7,7 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     globals: true,
+    server: { deps: { inline: ['wxt'] } },
   },
   resolve: {
     alias: {

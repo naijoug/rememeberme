@@ -24,5 +24,6 @@
 
 - Continue authorized local edits and checks through completion. Current automated tests use disposable mocks with no production access; fix failures caused by the change and rerun affected checks without repeated approval.
 - Match verification to the change using the extension's verification guide above. Do not run every browser or add tests for prose-only edits. Expand checks when shared contracts change or failures justify it.
+- This checkout supports automatic local Chrome feedback via `npm run local:start` / `local:status` (see `docs/local-feedback.md` in the extension). When an already-running local service is in use, let it rebuild source edits and check for build errors; do not edit generated output, reinstall the extension, or start a second watcher. Do not claim the browser loaded an update solely because the build succeeded.
 - Finish when the requested scope is implemented, relevant checks pass, and affected current docs are updated. Report what changed, what was tested and any unverified behavior; do not claim a browser check from a mocked test.
 - Follow explicit user scope over repository workflow preferences. Use existing authorization for external actions; prepare a reviewable result before asking for missing authorization. Never substitute real vocabulary for test fixtures.

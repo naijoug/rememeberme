@@ -1,6 +1,6 @@
 # Browser extension behavior
 
-Reviewed against the source on 2026-09-20. This describes the current product contract and explicitly tracks differences from the original specification. Historical plans are in [archive/](archive/README.md).
+Reviewed against the source on 2026-09-29. This describes the current product contract and explicitly tracks differences from the original specification. Historical plans are in [archive/](archive/README.md).
 
 ## Selection and saving
 
@@ -12,13 +12,16 @@ Reviewed against the source on 2026-09-20. This describes the current product co
 
 ## Right-click shortcut
 
-- Remember Me is registered for text-selection context menus. With no selection it is not offered. With an invalid selection it may be visible, but clicking it reports an error without a dictionary request or storage write.
-- With a valid word, the handler retrieves a definition, requests context from the page, saves the word, and sends a page notification. Lookup, messaging or storage failures are reported where the page can receive notifications.
-- Restricted pages and pages without a content script cannot be assumed to support context extraction or notifications.
+- Remember Me is registered for text-selection context menus on HTTP(S) and file pages (file access still requires browser permission). It is excluded from browser-internal and extension-management pages. With no selection it is not offered. With an invalid selection it may be visible, but clicking it reports an error without a dictionary request or storage write.
+- With a valid word, the handler first captures context from the clicked frame, then retrieves a definition and saves the word. A missing page connection prevents lookup/save work. Local feedback builds attempt one targeted script reinjection before reporting the limitation; release builds ask the user to refresh the page.
+- Messages target the clicked frame, and history uses its URL when available. If an error cannot be shown inside the page, the toolbar icon shows `!`; hovering it reveals the error and next step. A completed save whose page notification fails instead shows `OK` and the saved count. Notification failure never retries a save. The status clears on the next context-menu action in that tab.
+- Restricted pages and pages without a content script cannot be assumed to support context extraction or notifications. Opening the Chrome extension error page displays past errors; it is not a supported page for testing word selection.
 
 ## Vocabulary and backups
 
 - The toolbar popup lists saved words with counts and dates, initially sorted by count. The sort control can switch to last-updated time. Expanding a word shows its definition and history.
+- Above 100 words the list uses virtual scrolling. Collapsed rows have a fixed height; the open row is measured as its content changes, so scrolling inside long history keeps it visible. Replacing/sorting the list starts at the top. Delete confirmation stays outside the translated rows.
+- Saves from pages and the context menu, imports, deletes and resets share the background's operation queue. Reads and exports wait for earlier queued operations. A failed operation reports an error and does not block later requests.
 - Deletion requires confirmation; cancelling preserves the word. Reset sets count to zero and retains history. Count therefore need not equal history length.
 - Export downloads a JSON array of all entries, including contexts and full source URLs. Treat exports as potentially sensitive browsing data.
 - Import validates the entire input before writing and merges by normalized word. Existing counts are added and histories concatenated and sorted. Reimporting the same file adds it again; import is not idempotent.

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createApp, type App as VueApp } from 'vue';
 import { storageService } from '~/services/storage';
+import { handleBackgroundRequest } from '~/services/background-handler';
 import type { WordEntry } from '~/types';
 import App from './App.vue';
 
@@ -56,6 +57,9 @@ function importFile(text: string) {
 beforeEach(() => {
   vi.useFakeTimers();
   vi.clearAllMocks();
+  vi.stubGlobal('browser', { runtime: {
+    sendMessage: (message: unknown) => handleBackgroundRequest(message, { getDefinition: vi.fn() }, storageService),
+  } });
   storageApiMock.values.clear();
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -67,6 +71,7 @@ afterEach(() => {
   vi.clearAllTimers();
   vi.useRealTimers();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe('mounted vocabulary popup', () => {

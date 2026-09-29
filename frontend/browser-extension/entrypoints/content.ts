@@ -1,6 +1,7 @@
 import { createApp, type App as VueApp } from 'vue';
+import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import { contextExtractor } from '~/services/context-extractor';
-import { storageService } from '~/services/storage';
+import { storageClient } from '~/services/storage-client';
 import { getOrdinal, isEnglishWord } from '~/services/word-utils';
 import type { BackgroundMessage, BackgroundResponse, Definition, Position } from '~/types';
 import SelectionPopup from '../components/SelectionPopup.vue';
@@ -13,6 +14,8 @@ let debounceTimer: number | null = null;
 let popupContainer: HTMLElement | null = null;
 let popupApp: VueApp | null = null;
 let lookupVersion = 0;
+let contentContext: ContentScriptContext | null = null;
+const notifications = new Set<HTMLElement>();
 let popupState = {
   word: '',
   position: { x: 0, y: 0 },
@@ -26,19 +29,36 @@ let popupState = {
 
 export default defineContentScript({
   matches: ['<all_urls>'],
-  main() {
+  main(ctx) {
+    contentContext = ctx;
     console.log('Vocabulary Counter content script loaded');
     
     // 监听 mouseup 事件检测文本选择
-    document.addEventListener('mouseup', handleTextSelection);
+    ctx.addEventListener(document, 'mouseup', handleTextSelection);
     
     // 监听页面点击事件，点击弹窗外区域时关闭
-    document.addEventListener('click', handleDocumentClick);
+    ctx.addEventListener(document, 'click', handleDocumentClick);
 
     // 监听来自 background 的消息
-    browser.runtime.onMessage.addListener((message: any, sender: any, sendResponse: any) => {
+    const onMessage = (message: any, sender: any, sendResponse: any) => {
+      if (ctx.isInvalid) return false;
       handleBackgroundMessage(message, sender, sendResponse);
       return true; // 表示异步响应
+    };
+    browser.runtime.onMessage.addListener(onMessage);
+    ctx.onInvalidated(() => {
+      lookupVersion++;
+      if (debounceTimer !== null) clearTimeout(debounceTimer);
+      debounceTimer = null;
+      popupApp?.unmount();
+      popupApp = null;
+      popupContainer?.remove();
+      popupContainer = null;
+      popupState.visible = false;
+      popupState.selection = null;
+      for (const notification of notifications) notification.remove();
+      notifications.clear();
+      try { browser.runtime.onMessage.removeListener(onMessage); } catch { /* Context already gone. */ }
     });
   },
 });
@@ -47,13 +67,15 @@ export default defineContentScript({
  * 处理文本选择事件（带防抖）
  */
 function handleTextSelection(event: MouseEvent): void {
+  if (!contentContext?.isValid) return;
+  if (popupContainer?.contains(event.target as Node)) return;
   // 清除之前的防抖计时器
   if (debounceTimer !== null) {
     clearTimeout(debounceTimer);
   }
 
   // 设置新的防抖计时器
-  debounceTimer = window.setTimeout(() => {
+  debounceTimer = contentContext.setTimeout(() => {
     processTextSelection(event);
   }, DEBOUNCE_DELAY);
 }
@@ -174,7 +196,7 @@ async function requestDefinition(word: string): Promise<Definition> {
 function updatePopupProps(): void {
   if (popupApp && popupContainer) {
     // Use requestAnimationFrame to batch DOM updates
-    requestAnimationFrame(() => {
+    contentContext?.requestAnimationFrame(() => {
       if (popupApp && popupContainer) {
         // 卸载并重新挂载以更新 props
         popupApp.unmount();
@@ -201,6 +223,8 @@ function handleRemember(): void {
  * 处理 Forget 按钮点击 - 保存单词
  */
 async function handleForget(): Promise<void> {
+  const ctx = contentContext;
+  if (!ctx?.isValid) return;
   if (!popupState.definition) {
     console.error('No definition available to save');
     return;
@@ -208,12 +232,14 @@ async function handleForget(): Promise<void> {
 
   try {
     // 调用 storage.saveWord 保存单词、释义、上下文、URL
-    const updatedWord = await storageService.saveWord(
+    const updatedWord = await storageClient.saveWord(
       popupState.word,
       popupState.definition,
       popupState.context,
       window.location.href
     );
+
+    if (ctx.isInvalid) return;
 
     // 显示"第 N 次忘记该单词"的提示消息
     showNotification(`This is the ${getOrdinal(updatedWord.count)} time you forgot "${updatedWord.word}"`);
@@ -221,6 +247,7 @@ async function handleForget(): Promise<void> {
     // 关闭弹窗
     hidePopup();
   } catch (error) {
+    if (ctx.isInvalid) return;
     console.error('Failed to save word:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to save word';
     popupState.error = errorMessage;
@@ -237,6 +264,7 @@ async function handleForget(): Promise<void> {
  * @param type - 通知类型 ('success' | 'error')
  */
 function showNotification(message: string, type: 'success' | 'error' = 'success'): void {
+  if (!contentContext?.isValid) return;
   const notification = document.createElement('div');
   notification.className = 'vocab-counter-notification';
   notification.textContent = message;
@@ -259,12 +287,14 @@ function showNotification(message: string, type: 'success' | 'error' = 'success'
   `;
 
   document.body.appendChild(notification);
+  notifications.add(notification);
 
   // 3 秒后自动移除
-  setTimeout(() => {
+  contentContext.setTimeout(() => {
     notification.style.animation = 'slideOut 0.3s ease-out';
-    setTimeout(() => {
+    contentContext?.setTimeout(() => {
       notification.remove();
+      notifications.delete(notification);
     }, 300);
   }, 3000);
 }

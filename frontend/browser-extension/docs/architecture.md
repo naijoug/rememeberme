@@ -6,23 +6,30 @@ Use this document for changes to messaging, persistence or external data flow. S
 
 | Source | Responsibility |
 | --- | --- |
-| [content.ts](../entrypoints/content.ts) | Selection events, definition card, context extraction, local saves, page notifications |
+| [content.ts](../entrypoints/content.ts) | Selection events, definition card, context extraction, save requests, page notifications |
 | [background.ts](../entrypoints/background.ts) | Dictionary request listener and context-menu lifecycle |
-| [background-handler.ts](../services/background-handler.ts) | Runtime validation and dictionary response/error handling |
+| [background-handler.ts](../services/background-handler.ts) | Validate and dispatch dictionary and vocabulary requests; report completed operations or errors |
 | [context-menu-handler.ts](../services/context-menu-handler.ts) | Validate selection, retrieve definition/context, save and notify |
+| [context-menu-status.ts](../services/context-menu-status.ts) | Toolbar badge/title fallback when page notifications cannot be delivered |
 | [popup/App.vue](../entrypoints/popup/App.vue) | List loading, sorting, import/export, deletion and reset |
-| [storage.ts](../services/storage.ts) | Vocabulary persistence and JSON validation/merge |
+| [storage-client.ts](../services/storage-client.ts) | Content/popup vocabulary client, using background messages only |
+| [storage.ts](../services/storage.ts) | Background-owned vocabulary operation queue, persistence and JSON validation/merge |
 | [dictionary.ts](../services/dictionary.ts) | External dictionary requests, retries and in-memory cache |
+| [local-feedback.ts](../services/local-feedback.ts) | Local feedback builds only: development-server reconnection and script replacement without reloading tabs |
 
 There is no backend runtime. The runnable package is this directory; generated `.wxt/` and `.output/` directories are not sources. WXT configuration is in [wxt.config.ts](../wxt.config.ts), and shared data types are in [types/index.ts](../types/index.ts).
 
+The separate [feedback configuration](../wxt.feedback.config.ts) uses a loopback development server and `.output/chrome-mv3-feedback/`. Its script-refresh messages replace WXT's whole-tab reload behavior. Content contexts dispose their DOM, listeners and timers when a new script replaces them. The optional macOS LaunchAgent runs that watcher at login; it is not a backend or vocabulary sync service. See [local-feedback.md](local-feedback.md) for setup and lifecycle limits.
+
 ## Messaging
 
-Content-to-background requests support `GET_DEFINITION` only, with a valid single English word. The response is either `{ success: true, data: Definition }` or `{ success: false, error: string }`. Malformed or unsupported messages return failure.
+`GET_DEFINITION` accepts a valid single English word. Vocabulary requests are `GET_WORDS`, `SAVE_WORD`, `DELETE_WORD`, `RESET_COUNT`, `IMPORT_DATA` and `EXPORT_DATA`. Responses are `{ success: true, data }` or `{ success: false, error: string }`; operations without a result return `data: null`. Malformed or unsupported messages return failure before accessing storage.
 
-`SAVE_WORD`, `GET_WORDS` and `DELETE_WORD` are not supported messages. Their former success-only handlers did no work and have been removed. Content and popup code call the storage service directly; the context-menu handler also calls that service.
+Content and popup code use the storage client, never direct storage writes. The background dispatches vocabulary requests to its storage service, which is also used by the context-menu handler. A successful write response is sent only after persistence completes. Messaging failures are surfaced to the caller without retrying or falling back to local writes. Delete/reset accept any nonempty word so older imported vocabulary remains manageable; selection saves still require a valid single English word and a definition. Import validation remains in the storage service.
 
 Background-to-content messages are `EXTRACT_CONTEXT` (returns the current context) and `SHOW_NOTIFICATION` (renders a page notification). These require a reachable content script. They are separate from the dictionary request contract.
+
+Context-menu requests address the clicked `frameId` and capture context before waiting for the dictionary. The local feedback build can reinject its existing content script once into that frame if connection fails, using its existing development permissions. Browser-internal pages are rejected before lookup/injection. Page notifications can fall back to the existing toolbar action/browserAction badge and title; no new manifest permissions are needed, and a notification failure does not cause a storage retry.
 
 ## Persistence and compatibility
 
@@ -31,13 +38,14 @@ Background-to-content messages are `EXTRACT_CONTEXT` (returns the current contex
 - Saving increments count and appends history. Reset retains history. Preserve both fields independently when changing data formats.
 - Export is a plain JSON array with no version envelope. Existing backups must continue to import unless a requested migration defines compatibility and recovery.
 - Import validates entries before writing, merges counts additively and concatenates histories. It does not deduplicate repeated imports. See [storage.test.ts](../services/storage.test.ts) for round-trip and validation coverage.
-- Writes read and replace the entire array. There is no transaction or cross-context lock; concurrent writes can race. Do not describe this storage as transactional. A concurrency or storage-engine change needs its own targeted tests.
+- The background owns one promise queue for all read/modify/write operations, including context-menu saves, imports, deletes and resets. Reads/exports wait for earlier queued writes. Failed operations reject to their caller without blocking later work. Clients in different tabs share this queue through runtime messaging.
+- Writes still replace the entire array. This is serialization within the running background, not a transactional database or durable job queue. Browser/process termination can interrupt pending work; a disconnected caller must not assume a failed response means a write was never committed. Do not automatically retry mutations. Reload existing webpages after updating the extension so old content scripts cannot keep writing directly.
 
 ## Dictionary and privacy
 
 The background uses HTTPS requests to `api.dictionaryapi.dev`, sending the selected word in the request URL. Vocabulary, source URLs and contexts are stored locally; the dictionary request itself is external. There is no vocabulary cloud sync or first-party server.
 
-Dictionary requests use a 3-second request timeout and up to two retries with backoff; 404 and 429 responses are not retried. The cache is an in-memory map with a 24-hour TTL, not a durable promise to avoid requests for 24 hours after service-worker restarts.
+Dictionary requests use an 8-second deadline covering both response headers and JSON body, with up to two retries and backoff; 404 and 429 responses are not retried. Concurrent requests for the same normalized word share the in-flight request, including retries, and failed requests are removed so later attempts can recover. Network/timeout errors name the dictionary host and suggest checking connectivity. The provider is unchanged: extending the deadline cannot fix an unreachable endpoint. The cache is an in-memory map with a 24-hour TTL, not a durable promise to avoid requests for 24 hours after service-worker restarts.
 
 Source URLs and contexts may contain sensitive information and are included in backups. History rendering must preserve text without interpreting it as HTML. Navigable source links are restricted to HTTP(S), with `noopener noreferrer` for new tabs.
 

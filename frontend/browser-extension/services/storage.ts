@@ -4,7 +4,18 @@
  */
 
 import { storage } from 'wxt/utils/storage';
+import { isDefinition } from './definition-utils';
 import type { WordEntry, Definition, HistoryRecord } from '~/types';
+
+// Only the background runtime imports this service. Its callers share one queue,
+// including context-menu saves and requests from every tab and popup.
+let pendingOperation: Promise<void> = Promise.resolve();
+
+function enqueueStorageOperation<T>(operation: () => Promise<T>): Promise<T> {
+  const result = pendingOperation.then(operation);
+  pendingOperation = result.then(() => undefined, () => undefined);
+  return result;
+}
 
 export class StorageService {
   private readonly STORAGE_KEY = 'local:words';
@@ -14,6 +25,10 @@ export class StorageService {
    * @returns Promise with array of WordEntry objects
    */
   async getAllWords(): Promise<WordEntry[]> {
+    return enqueueStorageOperation(() => this.readWords());
+  }
+
+  private async readWords(): Promise<WordEntry[]> {
     try {
       const words = await storage.getItem<WordEntry[]>(this.STORAGE_KEY);
       return words || [];
@@ -57,52 +72,54 @@ export class StorageService {
     context: string,
     url: string
   ): Promise<WordEntry> {
-    try {
-      const normalizedWord = word.trim().toLowerCase();
-      const words = await this.getAllWords();
-      const existingWordIndex = words.findIndex(
-        w => w.word.toLowerCase() === normalizedWord
-      );
+    return enqueueStorageOperation(async () => {
+      try {
+        const normalizedWord = word.trim().toLowerCase();
+        const words = await this.readWords();
+        const existingWordIndex = words.findIndex(
+          w => w.word.toLowerCase() === normalizedWord
+        );
 
-      const timestamp = Date.now();
-      const historyRecord: HistoryRecord = {
-        timestamp,
-        context,
-        url,
-        definition,
-      };
-
-      let updatedWord: WordEntry;
-
-      if (existingWordIndex === -1) {
-        // Create new word entry
-        updatedWord = {
-          word: normalizedWord,
-          count: 1,
-          history: [historyRecord],
-          createdAt: timestamp,
-          updatedAt: timestamp,
+        const timestamp = Date.now();
+        const historyRecord: HistoryRecord = {
+          timestamp,
+          context,
+          url,
+          definition,
         };
-        words.push(updatedWord);
-      } else {
-        // Update existing word entry
-        const existingWord = words[existingWordIndex];
-        updatedWord = {
-          ...existingWord,
-          count: existingWord.count + 1,
-          history: [...existingWord.history, historyRecord],
-          updatedAt: timestamp,
-        };
-        words[existingWordIndex] = updatedWord;
+
+        let updatedWord: WordEntry;
+
+        if (existingWordIndex === -1) {
+          // Create new word entry
+          updatedWord = {
+            word: normalizedWord,
+            count: 1,
+            history: [historyRecord],
+            createdAt: timestamp,
+            updatedAt: timestamp,
+          };
+          words.push(updatedWord);
+        } else {
+          // Update existing word entry
+          const existingWord = words[existingWordIndex];
+          updatedWord = {
+            ...existingWord,
+            count: existingWord.count + 1,
+            history: [...existingWord.history, historyRecord],
+            updatedAt: timestamp,
+          };
+          words[existingWordIndex] = updatedWord;
+        }
+
+        await storage.setItem(this.STORAGE_KEY, words);
+        return updatedWord;
+      } catch (error) {
+        console.error('Storage write error:', error);
+        this.handleStorageError(error);
+        throw new Error('Failed to save word to storage');
       }
-
-      await storage.setItem(this.STORAGE_KEY, words);
-      return updatedWord;
-    } catch (error) {
-      console.error('Storage write error:', error);
-      this.handleStorageError(error);
-      throw new Error('Failed to save word to storage');
-    }
+    });
   }
 
   /**
@@ -111,19 +128,21 @@ export class StorageService {
    * @returns Promise that resolves when deletion is complete
    */
   async deleteWord(word: string): Promise<void> {
-    try {
-      const normalizedWord = word.trim().toLowerCase();
-      const words = await this.getAllWords();
-      const filteredWords = words.filter(
-        w => w.word.toLowerCase() !== normalizedWord
-      );
+    return enqueueStorageOperation(async () => {
+      try {
+        const normalizedWord = word.trim().toLowerCase();
+        const words = await this.readWords();
+        const filteredWords = words.filter(
+          w => w.word.toLowerCase() !== normalizedWord
+        );
 
-      await storage.setItem(this.STORAGE_KEY, filteredWords);
-    } catch (error) {
-      console.error('Storage write error:', error);
-      this.handleStorageError(error);
-      throw new Error('Failed to delete word from storage');
-    }
+        await storage.setItem(this.STORAGE_KEY, filteredWords);
+      } catch (error) {
+        console.error('Storage write error:', error);
+        this.handleStorageError(error);
+        throw new Error('Failed to delete word from storage');
+      }
+    });
   }
 
   /**
@@ -132,29 +151,31 @@ export class StorageService {
    * @returns Promise that resolves when reset is complete
    */
   async resetCount(word: string): Promise<void> {
-    try {
-      const normalizedWord = word.trim().toLowerCase();
-      const words = await this.getAllWords();
-      const wordIndex = words.findIndex(
-        w => w.word.toLowerCase() === normalizedWord
-      );
+    return enqueueStorageOperation(async () => {
+      try {
+        const normalizedWord = word.trim().toLowerCase();
+        const words = await this.readWords();
+        const wordIndex = words.findIndex(
+          w => w.word.toLowerCase() === normalizedWord
+        );
 
-      if (wordIndex === -1) {
-        throw new Error('Word not found');
+        if (wordIndex === -1) {
+          throw new Error('Word not found');
+        }
+
+        words[wordIndex] = {
+          ...words[wordIndex],
+          count: 0,
+          updatedAt: Date.now(),
+        };
+
+        await storage.setItem(this.STORAGE_KEY, words);
+      } catch (error) {
+        console.error('Storage write error:', error);
+        this.handleStorageError(error);
+        throw new Error('Failed to reset word count');
       }
-
-      words[wordIndex] = {
-        ...words[wordIndex],
-        count: 0,
-        updatedAt: Date.now(),
-      };
-
-      await storage.setItem(this.STORAGE_KEY, words);
-    } catch (error) {
-      console.error('Storage write error:', error);
-      this.handleStorageError(error);
-      throw new Error('Failed to reset word count');
-    }
+    });
   }
 
   /**
@@ -178,62 +199,64 @@ export class StorageService {
    * @returns Promise that resolves when import is complete
    */
   async importData(jsonData: string): Promise<void> {
-    try {
-      const importedWords = this.parseImportedWords(jsonData);
+    return enqueueStorageOperation(async () => {
+      try {
+        const importedWords = this.parseImportedWords(jsonData);
 
-      const existingWords = await this.getAllWords();
-      const wordMap = new Map<string, WordEntry>();
+        const existingWords = await this.readWords();
+        const wordMap = new Map<string, WordEntry>();
 
-      // Add existing words to map
-      existingWords.forEach(word => {
-        wordMap.set(word.word.toLowerCase(), word);
-      });
+        // Add existing words to map
+        existingWords.forEach(word => {
+          wordMap.set(word.word.toLowerCase(), word);
+        });
 
-      // Merge imported words
-      importedWords.forEach(importedWord => {
-        const normalizedWord = importedWord.word.toLowerCase();
-        const existing = wordMap.get(normalizedWord);
+        // Merge imported words
+        importedWords.forEach(importedWord => {
+          const normalizedWord = importedWord.word.toLowerCase();
+          const existing = wordMap.get(normalizedWord);
 
-        if (existing) {
-          // Merge history and update count
-          const mergedHistory = [...existing.history, ...importedWord.history];
-          // Sort history by timestamp
-          mergedHistory.sort((a, b) => a.timestamp - b.timestamp);
+          if (existing) {
+            // Merge history and update count
+            const mergedHistory = [...existing.history, ...importedWord.history];
+            // Sort history by timestamp
+            mergedHistory.sort((a, b) => a.timestamp - b.timestamp);
 
-          wordMap.set(normalizedWord, {
-            ...existing,
-            count: existing.count + importedWord.count,
-            history: mergedHistory,
-            updatedAt: Date.now(),
-          });
-        } else {
-          // Add new word
-          wordMap.set(normalizedWord, {
-            ...importedWord,
-            word: normalizedWord,
-          });
+            wordMap.set(normalizedWord, {
+              ...existing,
+              count: existing.count + importedWord.count,
+              history: mergedHistory,
+              updatedAt: Date.now(),
+            });
+          } else {
+            // Add new word
+            wordMap.set(normalizedWord, {
+              ...importedWord,
+              word: normalizedWord,
+            });
+          }
+        });
+
+        const mergedWords = Array.from(wordMap.values());
+        await storage.setItem(this.STORAGE_KEY, mergedWords);
+      } catch (error) {
+        if (error instanceof Error) {
+          if (
+            error.message === 'Invalid JSON format' ||
+            error.message.startsWith('Invalid data format')
+          ) {
+            throw error;
+          }
+
+          if (error instanceof SyntaxError) {
+            throw new Error('Invalid JSON format');
+          }
         }
-      });
-
-      const mergedWords = Array.from(wordMap.values());
-      await storage.setItem(this.STORAGE_KEY, mergedWords);
-    } catch (error) {
-      if (error instanceof Error) {
-        if (
-          error.message === 'Invalid JSON format' ||
-          error.message.startsWith('Invalid data format')
-        ) {
-          throw error;
-        }
-
-        if (error instanceof SyntaxError) {
-          throw new Error('Invalid JSON format');
-        }
+        console.error('Storage import error:', error);
+        this.handleStorageError(error);
+        throw new Error('Failed to import data');
       }
-      console.error('Storage import error:', error);
-      this.handleStorageError(error);
-      throw new Error('Failed to import data');
-    }
+    });
   }
 
   private parseImportedWords(jsonData: string): WordEntry[] {
@@ -286,41 +309,8 @@ export class StorageService {
       this.isNonNegativeNumber(value.timestamp) &&
       typeof value.context === 'string' &&
       typeof value.url === 'string' &&
-      this.isDefinition(value.definition)
+      isDefinition(value.definition)
     );
-  }
-
-  private isDefinition(value: unknown): value is Definition {
-    if (!this.isRecord(value)) {
-      return false;
-    }
-
-    return (
-      typeof value.word === 'string' &&
-      Array.isArray(value.phonetics) &&
-      Array.isArray(value.meanings) &&
-      value.meanings.every(meaning => this.isMeaning(meaning))
-    );
-  }
-
-  private isMeaning(value: unknown): boolean {
-    if (!this.isRecord(value)) {
-      return false;
-    }
-
-    return (
-      typeof value.partOfSpeech === 'string' &&
-      Array.isArray(value.definitions) &&
-      value.definitions.every(definition => this.isDefinitionItem(definition))
-    );
-  }
-
-  private isDefinitionItem(value: unknown): boolean {
-    if (!this.isRecord(value)) {
-      return false;
-    }
-
-    return typeof value.definition === 'string';
   }
 
   private isRecord(value: unknown): value is Record<string, unknown> {

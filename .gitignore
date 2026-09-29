@@ -12,6 +12,7 @@ node_modules
 stats.html
 stats-*.json
 .wxt
+.local-feedback
 .omx
 web-ext.config.ts
 

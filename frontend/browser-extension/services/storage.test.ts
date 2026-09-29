@@ -10,9 +10,9 @@ import type { Definition, WordEntry } from '~/types';
 const storageApiMock = vi.hoisted(() => {
   const values = new Map<string, unknown>();
   const storage = {
-    getItem: vi.fn(async (key: string) => values.get(key) ?? null),
+    getItem: vi.fn(async (key: string) => structuredClone(values.get(key) ?? null)),
     setItem: vi.fn(async (key: string, value: unknown) => {
-      values.set(key, value);
+      values.set(key, structuredClone(value));
     }),
   };
 

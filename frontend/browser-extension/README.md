@@ -24,12 +24,18 @@ Run subsequent commands from this package directory:
 ```sh
 npm run dev             # Chrome development, with reload support
 npm run dev:firefox     # Firefox development
+npm run local:start     # macOS background auto-updates for your everyday Chrome
+npm run local:status    # Show local service state and paths
+npm run local:stop      # Stop local updates and disable login startup
+npm run dev:local       # Foreground alternative; don't run beside local:start
 npm test               # Automated tests with mocked browser APIs
 npm run test:watch      # Watch affected tests during development
 npm run compile        # TypeScript and Vue checks
 ```
 
 Choose the checks needed for a change using [testing.md](docs/testing.md). Unit/component test success does not establish installed-extension or native-menu compatibility.
+
+For ongoing usage and feedback, follow [automatic local updates](docs/local-feedback.md): load `.output/chrome-mv3-feedback/` once as **Remember Me · Local**, then keep the local service running. Subsequent source edits update that build without reinstalling or refreshing all your tabs. This is a separate extension identity; the guide explains transferring existing vocabulary once.
 
 ## Build, load and package
 
@@ -46,6 +52,8 @@ For a production build:
 - Firefox: open `about:debugging#/runtime/this-firefox`, select Load Temporary Add-on, and choose this package's `.output/firefox-mv2/manifest.json`.
 
 Development output paths can differ from production paths. Use the path printed by `npm run dev` or `npm run dev:firefox`; do not load stale output from the repository root. Zip commands print the actual artifact name under this package's `.output/`; names include package/version/browser information.
+
+After updating/reloading the extension, reload existing webpages as well. Vocabulary operations now go through the background queue; old content scripts must be replaced to stop using the previous direct-write path.
 
 Use [the browser checklist](docs/testing.md) before claiming a browser target has been verified. Selection and page notifications require pages where the browser permits content scripts. Firefox build support alone does not prove Firefox runtime behavior.
 
@@ -70,4 +78,7 @@ Generated `.wxt/` and `.output/` directories are disposable. Static reference de
 - Development server conflict: inspect the address/port in the actual WXT output and resolve the conflicting process or configure the dev server.
 - Extension does not load: build the intended target, select its package-local output, and inspect browser extension errors.
 - Selection does not work: verify the extension is enabled, the page allows content scripts, and the dictionary request is reachable. Browser-internal pages are restricted.
+- Do not test selection on `chrome://extensions/` or another browser-internal page. Use a normal webpage. The extension's error page contains past errors; displaying one there does not mean that page was where it originated.
+- Dictionary timeout or connection failure: check whether `https://api.dictionaryapi.dev/api/v2/entries/en/apple` opens in the same Chrome network environment. The extension requires this external service for new definitions. Changing timeout settings cannot repair an unavailable network route.
+- Page connection/notification failure: refresh the source webpage and retry. Local feedback builds also try one targeted script reinjection. If page notifications are unavailable, hover the toolbar icon's `!` badge for the error; `OK` means a save completed despite the missing page notification.
 - Hot reload does not update: reload the extension or restart the development command.

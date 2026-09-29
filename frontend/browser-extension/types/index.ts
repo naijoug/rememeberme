@@ -78,9 +78,17 @@ export interface DictionaryResponse {
  */
 export type BackgroundMessage = { type: 'GET_DEFINITION'; word: string };
 
+export type VocabularyMessage =
+  | { type: 'GET_WORDS' }
+  | { type: 'SAVE_WORD'; word: string; definition: Definition; context: string; url: string }
+  | { type: 'DELETE_WORD'; word: string }
+  | { type: 'RESET_COUNT'; word: string }
+  | { type: 'IMPORT_DATA'; jsonData: string }
+  | { type: 'EXPORT_DATA' };
+
 /**
  * Response types for background messages
  */
-export type BackgroundResponse =
-  | { success: true; data: Definition }
+export type BackgroundResponse<T = Definition> =
+  | { success: true; data: T }
   | { success: false; error: string };

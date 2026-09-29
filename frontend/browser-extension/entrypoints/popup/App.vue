@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue';
-import { storageService } from '~/services/storage';
+import { storageClient } from '~/services/storage-client';
 import type { WordEntry } from '~/types';
 import WordList from '~/components/WordList.vue';
 
@@ -30,7 +30,7 @@ async function loadWords() {
   try {
     loading.value = true;
     error.value = null;
-    words.value = await storageService.getAllWords();
+    words.value = await storageClient.getAllWords();
   } catch (err) {
     console.error('Failed to load words:', err);
     error.value = err instanceof Error ? err.message : 'Failed to load words';
@@ -49,7 +49,7 @@ function handleSortChange(event: Event) {
 async function handleExport() {
   try {
     error.value = null;
-    const jsonData = await storageService.exportData();
+    const jsonData = await storageClient.exportData();
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -87,7 +87,7 @@ async function handleImport(event: Event) {
     importSuccess.value = null;
     
     const text = await file.text();
-    await storageService.importData(text);
+    await storageClient.importData(text);
     await loadWords();
     
     importSuccess.value = 'Data imported successfully!';
@@ -109,7 +109,7 @@ async function handleImport(event: Event) {
 async function handleDeleteWord(word: string) {
   try {
     error.value = null;
-    await storageService.deleteWord(word);
+    await storageClient.deleteWord(word);
     await loadWords();
   } catch (err) {
     console.error('Failed to delete word:', err);
@@ -121,7 +121,7 @@ async function handleDeleteWord(word: string) {
 async function handleResetCount(word: string) {
   try {
     error.value = null;
-    await storageService.resetCount(word);
+    await storageClient.resetCount(word);
     await loadWords();
   } catch (err) {
     console.error('Failed to reset count:', err);

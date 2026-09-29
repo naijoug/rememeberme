@@ -1,11 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
+import { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type { BackgroundResponse } from '~/types';
 
+vi.mock('wxt/browser', () => ({ browser: { runtime: { id: 'disposable-extension' } } }));
 const saveWord = vi.hoisted(() => vi.fn());
-vi.mock('~/services/storage', () => ({ storageService: { saveWord } }));
+vi.mock('~/services/storage-client', () => ({ storageClient: { saveWord } }));
 
 type Lookup = { word: string; respond: (response: BackgroundResponse) => void };
 let lookups: Lookup[];
+let ctx: ContentScriptContext;
 let eventSpy: MockInstance<Document['addEventListener']>;
 
 async function select(word: string) {
@@ -34,18 +37,25 @@ beforeEach(async () => {
   document.body.innerHTML = '<p>An apple and a banana.</p>';
   vi.stubGlobal('defineContentScript', (definition: unknown) => definition);
   vi.stubGlobal('browser', { runtime: {
-    onMessage: { addListener: vi.fn() },
+    onMessage: { addListener: vi.fn(), removeListener: vi.fn() },
     sendMessage: vi.fn((message: { word: string }, respond: Lookup['respond']) => {
       lookups.push({ word: message.word, respond });
     }),
   } });
   vi.spyOn(console, 'log').mockImplementation(() => {});
+  vi.spyOn(console, 'debug').mockImplementation(() => {});
+  // Deliver WXT's replacement notification deterministically in happy-dom.
+  vi.spyOn(window, 'postMessage').mockImplementation(message => {
+    window.dispatchEvent(new MessageEvent('message', { data: message }));
+  });
   eventSpy = vi.spyOn(document, 'addEventListener');
-  const content = (await import('../entrypoints/content')).default as { main: () => void };
-  content.main();
+  const content = (await import('../entrypoints/content')).default as { main: (ctx: ContentScriptContext) => void };
+  ctx = new ContentScriptContext('content');
+  content.main(ctx);
 });
 
 afterEach(() => {
+  ctx.notifyInvalidated();
   for (const [type, listener, options] of eventSpy.mock.calls) {
     document.removeEventListener(type, listener, options);
   }
@@ -91,4 +101,50 @@ describe('content selection flow (mock browser runtime)', () => {
     expect(document.querySelector('.word')?.textContent).toBe('banana');
     expect(document.querySelector('.error')).toBeNull();
   });
+
+  it('removes listeners, popup and notifications when replaced by an update', async () => {
+    await select('apple');
+    await resolve(lookups[0]);
+    saveWord.mockResolvedValue({ word: 'apple', count: 1 });
+    document.querySelector<HTMLButtonElement>('.btn-forget')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(document.querySelector('.vocab-counter-notification')).not.toBeNull();
+    ctx.notifyInvalidated();
+    expect(document.querySelector('#vocab-counter-popup-root')).toBeNull();
+    expect(document.querySelector('.vocab-counter-notification')).toBeNull();
+    expect(browser.runtime.onMessage.removeListener).toHaveBeenCalled();
+    await select('banana');
+    expect(lookups).toHaveLength(1);
+  });
+
+  it('ignores lookup completion and pending selection after invalidation', async () => {
+    await select('apple');
+    document.querySelector('p')!.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+    ctx.notifyInvalidated();
+    await resolve(lookups[0]);
+    await vi.advanceTimersByTimeAsync(300);
+    expect(document.querySelector('#vocab-counter-popup-root')).toBeNull();
+    expect(lookups).toHaveLength(1);
+  });
+
+  it('registers only one selection/save handler after reinjection', async () => {
+    await select('apple');
+    await resolve(lookups[0]);
+    vi.resetModules();
+    const replacement = (await import('../entrypoints/content')).default as { main: (ctx: ContentScriptContext) => void };
+    const previous = ctx;
+    ctx = new ContentScriptContext('content');
+    replacement.main(ctx);
+    await vi.advanceTimersByTimeAsync(20);
+    expect(previous.isInvalid).toBe(true);
+    await select('banana');
+    expect(lookups).toHaveLength(2);
+    await resolve(lookups[1]);
+    expect(document.querySelectorAll('#vocab-counter-popup-root')).toHaveLength(1);
+    saveWord.mockResolvedValue({ word: 'banana', count: 1 });
+    document.querySelector<HTMLButtonElement>('.btn-forget')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledTimes(1);
+  });
+
 });

@@ -9,6 +9,10 @@
   },
   "scripts": {
     "dev": "wxt",
+    "dev:local": "wxt --config wxt.feedback.config.ts --mode feedback",
+    "local:start": "node scripts/local-feedback-service.mjs start",
+    "local:stop": "node scripts/local-feedback-service.mjs stop",
+    "local:status": "node scripts/local-feedback-service.mjs status",
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
     "build:firefox": "wxt build -b firefox",
