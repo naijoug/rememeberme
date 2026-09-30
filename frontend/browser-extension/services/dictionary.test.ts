@@ -9,7 +9,8 @@ beforeEach(() => {
   vi.useFakeTimers();
   vi.resetAllMocks();
   vi.stubGlobal('fetch', fetchMock);
-  dictionary = new DictionaryService();
+  // These cases exercise only the online fallback, with a local dictionary miss.
+  dictionary = new DictionaryService(async () => null);
 });
 afterEach(() => {
   vi.clearAllTimers();
@@ -33,6 +34,23 @@ function delayedResponse(delay: number, bodyOnly = false) {
 }
 
 describe('dictionary requests (mock network)', () => {
+  it('returns a local hit without contacting the online provider', async () => {
+    const local = { word: 'apple', source: 'wordnet' as const, phonetics: [], meanings: [{ partOfSpeech: 'noun', definitions: [{ definition: 'A fruit.' }] }] };
+    const lookup = vi.fn(async () => local);
+    dictionary = new DictionaryService(lookup);
+    expect(await dictionary.getDefinition('apple')).toEqual(local);
+    expect(await dictionary.getDefinition('apple')).toEqual(local);
+    expect(lookup).toHaveBeenCalledTimes(1);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('falls back online after a local asset failure', async () => {
+    dictionary = new DictionaryService(async () => { throw new Error('Missing shard'); });
+    fetchMock.mockResolvedValue(new Response(JSON.stringify(result)));
+    expect(await dictionary.getDefinition('apple')).toMatchObject({ word: 'apple', source: 'dictionary-api' });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it('accepts a response taking longer than the old three-second timeout', async () => {
     delayedResponse(4500);
     const lookup = dictionary.getDefinition('apple');

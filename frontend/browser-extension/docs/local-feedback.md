@@ -34,6 +34,10 @@ With the service running, open [the local selection test page](http://127.0.0.1:
 
 If no card appears, check Chrome's puzzle-piece extension menu for **Remember Me · Local**. If it is absent, use the extension manager yourself to enable the existing entry or load the fixed directory above if it has never been loaded. Do not reinstall or create a second copy just to refresh an already-enabled extension. If the popup is blank, first run `npm run local:status` and `npm run local:start`; the local build needs its server even when the generated folder exists.
 
+Chrome's **Errors** view retains historical warnings and exceptions. After enabling/reloading an existing entry, refresh the affected test page to replace scripts left behind by a disabled or reloaded extension, then reproduce the action and check for new errors. Older `Extraneous non-props attributes (context, theme)` warnings came from passing popup state to the fragment-root icon provider; the content entrypoint now passes only declared popup props and applies theme to its wrapper. An older `Extension context invalidated` stack at the storage listener's removal came from teardown after an extension reload; theme cleanup now tolerates an already-invalid browser context. Neither historical entry alone proves that the current build is still failing.
+
+To distinguish retained records from a new failure: refresh the specific affected webpage, then open the extension's Errors view yourself and use **Clear all** after retaining any diagnostic details you need. Select a word again and look for newly added records. Clearing this diagnostic list does not erase vocabulary. Source fixes and hot updates do not automatically clear Chrome's historical error list. A definition timeout is a separate issue from the Vue attribute warning; check the lookup's source/coverage as described in [dictionary.md](dictionary.md).
+
 ## What updates automatically
 
 - Popup Vue changes use WXT/Vite updates. Background changes reload the extension.

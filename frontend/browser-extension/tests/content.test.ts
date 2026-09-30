@@ -81,6 +81,25 @@ afterEach(() => {
 });
 
 describe('content selection flow (mock browser runtime)', () => {
+  it('renders lookup and theme changes without leaking state as component attributes', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    document.body.innerHTML = '<p>Having trouble?</p>';
+    await select('Having');
+    lookups[0].respond({ success: true, data: { word: 'have', source: 'wordnet', phonetics: [], meanings: [{ partOfSpeech: 'verb', definitions: [{ definition: 'have or possess' }] }] } });
+    themeCallbacks[0]({ preference: 'dark', resolved: 'dark' });
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.rm-theme')?.getAttribute('data-theme')).toBe('dark');
+    expect(ui('.vocab-counter-popup')?.hasAttribute('context')).toBe(false);
+    expect(ui('.vocab-counter-popup')?.hasAttribute('theme')).toBe(false);
+    expect(ui('.word')?.textContent).toBe('Having');
+    expect(ui('.base-form')?.textContent).toBe('Base form: have');
+    expect(warn).not.toHaveBeenCalled();
+    saveWord.mockResolvedValue({ word: 'having', count: 1 });
+    ui<HTMLButtonElement>('.btn-forget')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledWith('Having', expect.objectContaining({ word: 'have' }), 'Having trouble?', window.location.href);
+  });
+
   it('closes and reopens the popup, then saves the second selected word', async () => {
     await select('apple');
     await resolve(lookups[0]);

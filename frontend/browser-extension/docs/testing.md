@@ -22,7 +22,8 @@ For example: `npm test -- components/HistoryItem.test.ts`. Run `npm test` for sh
 - `services/word-utils.test.ts` and `services/context-extractor.test.ts`: validation, ordinals and sentence extraction.
 - `services/context-menu-handler.test.ts`: handler behavior using fake dictionary, storage and tab-message dependencies. This does not exercise a browser's native context menu.
 - Context-menu regression tests cover connection checks before dictionary requests, frame/URL targeting, one local reconnect attempt, restricted-page rejection, and toolbar fallback without duplicate saves. `services/context-menu-status.test.ts` checks action/browserAction badge/title calls using mocks.
-- `services/dictionary.test.ts`: mocked slow responses, deadlines covering stalled JSON bodies, coalesced requests, network-error recovery and non-retried 404/429 responses. Live service access is a separate diagnostic, not part of automated tests.
+- `services/dictionary.test.ts`: local-hit network avoidance, online fallback after local failure, mocked slow responses, deadlines covering stalled JSON bodies, coalesced requests, network-error recovery and non-retried 404/429 responses. Live service access is a separate diagnostic, not part of automated tests.
+- `services/offline-dictionary.test.ts`: real packaged data for the reported word and other fixtures, verified regular word forms, exact-match priority, part-of-speech checks, index/shard completeness, sense ordering/examples, bounded full local lookup and failed-read recovery; fetch reads disposable local fixtures with no external network access.
 - `services/background-handler.test.ts`: lookup success/failure, vocabulary request validation and legacy imported-word compatibility.
 - `components/HistoryItem.test.ts`: real Vue rendering of untrusted text, literal matching and source-link protocols.
 - `entrypoints/popup/App.test.ts`: mounted popup and child components, including sorting, search, reading-view navigation, theme persistence, delete/cancel, reset and import, using the real background handler with mocked transport and storage.
@@ -38,7 +39,7 @@ These are not installed-extension E2E tests. A successful build also does not pr
 
 ## Manual browser checklist
 
-Use a disposable browser profile and fixture vocabulary. Build the target and load the path documented in [README](../README.md). Serve this package locally with `python3 -m http.server 8000 --bind 127.0.0.1`, then open `http://127.0.0.1:8000/test-selection.html`. Live definition checks need internet access. Stop the local server when finished.
+Use a disposable browser profile and fixture vocabulary. Build the target and load the path documented in [README](../README.md). Serve this package locally with `python3 -m http.server 8000 --bind 127.0.0.1`, then open `http://127.0.0.1:8000/test-selection.html`. Packaged definitions need no external network; live online-fallback checks need internet access. Stop the local server when finished.
 
 Mark each case **Not run**, **Pass**, **Fail**, or **Blocked**, with evidence. The checklist itself does not mean any case passed.
 
@@ -52,12 +53,14 @@ Mark each case **Not run**, **Pass**, **Fail**, or **Blocked**, with evidence. T
 | Select text and open its right-click menu | Remember Me appears; a valid word saves and reports the new count |
 | Select multiple words or non-English text, then use the menu | Validation error; no lookup or save |
 | Open the context menu without selected text | Remember Me selection item is absent |
-| Look up an unknown word or simulate a network failure | Error shown, no word saved |
+| Select `serendipity` when the external dictionary is unavailable | Real packaged definition with Offline dictionary · WordNet attribution; no remote dictionary request |
+| Select Having, then close and select it again | Offline `have` verb definition, Having title and Base form: have caption; no Vue attribute warning; saving retains the selected word |
+| Look up a word absent from the local index and fail its online request | Retryable error shown, no word saved |
 | Right-click on a page without a receiving script, or navigate away during lookup | Connection checked before lookup; feedback mode retries page connection once; toolbar fallback preserves the original failure or completed-save result |
 | Open the toolbar popup, sort, open a word, reset, cancel deletion, confirm deletion | Display and stored data agree; reset preserves history and cancel preserves the word |
 | Load over 100 fixture words, open a long history, go back and scroll to the final word | Detail scroll does not affect virtual rows; list position restores on back and the last word is reachable |
-| Switch System / Light / Dark in the toolbar | Toolbar and open page card update consistently; the choice persists without changing vocabulary |
-| Stop a lookup response or simulate a timeout | Within 10 seconds the loading UI becomes a retryable error; Forget remains unavailable without a definition |
+| Switch Light / Dark using the toolbar header sun/moon button | Toolbar and open page card update consistently; the choice persists without changing vocabulary; no footer theme selector appears |
+| Stop an online fallback response for a word absent from the local index | Within 10 seconds the loading UI becomes a retryable error; Forget remains unavailable without a definition |
 | Delete a word after scrolling deep into a large vocabulary list | Confirmation covers the viewport; cancel preserves the entry and confirm deletes it |
 | Export fixtures, import into an empty disposable profile | Counts and history survive the round trip |
 | Import a malformed file | Clear error and existing vocabulary remains intact |
@@ -84,3 +87,7 @@ Latest error-handling run: [2026-09-29 dictionary and page-connection errors](ve
 Local service recovery: [2026-09-29 local Chrome service recovery](verification/2026-09-29-local-service-recovery.md), including real everyday-Chrome observations and the remaining extension-enable step.
 
 Paper & Sage redesign: [2026-09-29 UI, themes and lookup states](verification/2026-09-29-paper-sage.md), including actual light/dark visual comparisons, automated checks and remaining installed-extension browser gaps.
+
+Local-first dictionary: [2026-09-29 packaged WordNet and online fallback](verification/2026-09-29-offline-dictionary.md), including real installed-Chrome lookups for serendipity/meticulous, packaged-data checks and legacy backup compatibility.
+
+Repeated warning inspection: [2026-09-30 GitHub warning records and Having lookup](verification/2026-09-30-warning-records-and-word-forms.md).

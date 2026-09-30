@@ -63,4 +63,10 @@ The complete popup and lookup card visibly share the reference's neutral charcoa
 
 Verification: Chrome production build and TypeScript check passed; the existing local watcher rebuilt successfully and `local:status` confirmed reachable development assets. Browser verification covers the sample components, not activation in the installed extension. No additional behavior tests were added for this token-only change.
 
+## Header-only theme control refinement
+
+At the user's request, removed the footer Theme / System / Light / Dark row and its unused component/styles. The header sun/moon button remains the manual control. The existing system default and saved preferences remain supported by the theme service.
+
+Chrome's sample preview at `?compare=codex&state=empty` was captured after the change: the empty popup ends after Import a backup without a footer row or leftover gap. The detail-view accessibility tree likewise has no theme group. Clicking the header button in both directions changed its action label between Use dark theme and Use light theme. This intentional layout simplification supersedes the original reference footer. No new visual defects were observed. The eight existing popup tests, TypeScript check and whitespace check passed; the existing local watcher rebuilt successfully. These observations cover sample components, not installed-extension activation.
+
 final result: passed

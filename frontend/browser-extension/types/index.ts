@@ -16,6 +16,8 @@ export interface Position {
  */
 export interface Definition {
   word: string;
+  /** Optional provenance; old vocabulary and backups need no migration. */
+  source?: 'wordnet' | 'dictionary-api';
   phonetic?: string;
   phonetics: Array<{
     text?: string;

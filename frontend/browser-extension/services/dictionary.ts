@@ -1,10 +1,11 @@
 /**
  * Dictionary Service
- * Handles API calls to Free Dictionary API for word definitions
+ * Looks up packaged WordNet entries before the optional online fallback.
  */
 
 import type { Definition, DictionaryResponse } from '~/types';
 import { isDefinition } from './definition-utils';
+import { offlineDictionary } from './offline-dictionary';
 
 interface CacheEntry {
   definition: Definition;
@@ -20,7 +21,7 @@ export class DictionaryService {
   private cache: Map<string, CacheEntry> = new Map();
   private pending = new Map<string, Promise<Definition>>();
 
-  constructor() {
+  constructor(private readonly localLookup = (word: string) => offlineDictionary.getDefinition(word)) {
     // Clean expired cache entries every hour
     setInterval(() => {
       this.clearExpiredCache();
@@ -28,7 +29,7 @@ export class DictionaryService {
   }
 
   /**
-   * Get definition for a word from Free Dictionary API
+   * Get a local definition first; use Free Dictionary API only on a local miss.
    * Uses cache to reduce duplicate API requests (24 hour cache)
    * @param word - The word to look up
    * @returns Promise with Definition object
@@ -50,7 +51,7 @@ export class DictionaryService {
 
     const existing = this.pending.get(normalizedWord);
     if (existing) return existing;
-    const request = this.lookupWithRetries(normalizedWord);
+    const request = this.lookup(normalizedWord);
     this.pending.set(normalizedWord, request);
     try {
       return await request;
@@ -59,8 +60,21 @@ export class DictionaryService {
     }
   }
 
-  private async lookupWithRetries(normalizedWord: string): Promise<Definition> {
+  private async lookup(normalizedWord: string): Promise<Definition> {
     const deadline = Date.now() + this.TOTAL_TIMEOUT_MS;
+    try {
+      const local = await this.localLookup(normalizedWord);
+      if (local) {
+        this.saveToCache(normalizedWord, local);
+        return local;
+      }
+    } catch {
+      // A damaged/missing packaged shard should still allow online recovery.
+    }
+    return this.lookupWithRetries(normalizedWord, deadline);
+  }
+
+  private async lookupWithRetries(normalizedWord: string, deadline: number): Promise<Definition> {
     let lastError: Error | null = null;
     
     // Retry logic
@@ -80,7 +94,7 @@ export class DictionaryService {
             (error.message.includes('not found') || 
              error.message.includes('Too many requests') ||
              error.message.includes('invalid definition'))) {
-          throw error;
+          break;
         }
         
         // Wait before retry (exponential backoff)
@@ -92,7 +106,8 @@ export class DictionaryService {
       }
     }
     
-    throw lastError || new Error('Failed to fetch definition');
+    const reason = lastError?.message || 'The online dictionary is unavailable.';
+    throw new Error(`This word isn't available in the local dictionary. ${reason}`);
   }
 
   /**
@@ -210,6 +225,7 @@ export class DictionaryService {
   private parseApiResponse(data: DictionaryResponse): Definition {
     return {
       word: data.word,
+      source: 'dictionary-api',
       phonetic: data.phonetic,
       phonetics: data.phonetics || [],
       meanings: data.meanings.map(meaning => ({

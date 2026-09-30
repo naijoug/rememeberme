@@ -2,7 +2,7 @@
 
 Select an English word to look up its definition and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-Vocabulary is stored in the browser's local extension storage. Dictionary lookups send the selected word to the external Free Dictionary API. Saved contexts and full source URLs are included in exports; there is no cloud vocabulary sync.
+Vocabulary is stored in the browser's local extension storage. Dictionary lookups first use a packaged English WordNet dictionary; missing words fall back to the external Free Dictionary API, sending the selected word. Saved contexts and full source URLs are included in exports; there is no cloud vocabulary sync. See [dictionary coverage and sources](docs/dictionary.md).
 
 ## Setup
 
@@ -79,14 +79,14 @@ Generated `.wxt/` and `.output/` directories are disposable. Static reference de
 - Extension does not load: build the intended target, select its package-local output, and inspect browser extension errors.
 - Selection does not work: verify the extension is enabled, the page allows content scripts, and the dictionary request is reachable. Browser-internal pages are restricted.
 - Do not test selection on `chrome://extensions/` or another browser-internal page. Use a normal webpage. The extension's error page contains past errors; displaying one there does not mean that page was where it originated.
-- Dictionary timeout or connection failure: check whether `https://api.dictionaryapi.dev/api/v2/entries/en/apple` opens in the same Chrome network environment. The extension requires this external service for new definitions. Changing timeout settings cannot repair an unavailable network route.
+- Dictionary timeout or connection failure: packaged words such as `serendipity` should show **Offline dictionary · WordNet** without reaching the external provider. If these still time out, confirm the latest build is active and includes `dictionary/wordnet/`. Words outside the local index require the online fallback; changing its timeout cannot repair an unavailable network route. See [coverage and recovery](docs/dictionary.md).
 - Page connection/notification failure: refresh the source webpage and retry. Local feedback builds also try one targeted script reinjection. If page notifications are unavailable, hover the toolbar icon's `!` badge for the error; `OK` means a save completed despite the missing page notification.
 - Hot reload does not update: reload the extension or restart the development command.
 
 ## Paper & Sage interface
 
-The popup now has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Choose System, Light or Dark in the footer; open page cards follow the same saved preference. Lookup waits end after 10 seconds with a retry action, and Forget is unavailable until a definition is ready.
+The popup now has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Use the sun/moon button in the header to switch Light / Dark; open page cards follow the same saved preference. New installations follow the system theme until manually switched. Lookup waits end after 10 seconds with a retry action, and Forget is unavailable until a definition is ready.
 
 Light mode uses paper-white and sage; dark mode uses the user's selected Codex-inspired charcoal gray palette. See the [dark palette comparison](http://127.0.0.1:3937/preview/paper-sage.html?compare=codex) for the supplied reference beside the actual components.
 
-For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual new definitions still depend on the external dictionary API.
+For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual lookups use the packaged dictionary first and the external dictionary API only as a fallback.

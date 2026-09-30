@@ -70,6 +70,8 @@
 .rm-theme .example { margin-top: 10px; padding-left: 12px; border-left: 2px solid var(--rm-primary); font: italic 16px/1.55 var(--rm-word-font); color: var(--rm-muted); overflow-wrap: anywhere; }
 .rm-theme .example mark { font: inherit; font-weight: 600; color: var(--rm-primary); background: transparent; padding: 0; }
 .rm-theme .meaning + .meaning { margin-top: 18px; }
+.rm-theme .definition-source { margin-top: 14px; color: var(--rm-muted); font-size: 11px; line-height: 1.5; }
+.rm-theme .definition-source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .rm-theme .definition-item + .definition-item { margin-top: 14px; }
 .rm-theme .rm-banner { margin: 12px 20px 0; padding: 10px 12px; border-radius: 7px; font-size: 13px; line-height: 1.5; }
 .rm-theme .error { color: var(--rm-error); background: var(--rm-error-soft); }
@@ -131,11 +133,6 @@
 .rm-theme .history-definition summary { cursor: pointer; }
 .rm-theme .history-definition p { padding-top: 6px; }
 .rm-theme .word-actions { display: flex; gap: 22px; padding: 11px 0 6px; border-top: 1px solid var(--rm-border); }
-.rm-theme .theme-switch { display: flex; align-items: center; gap: 8px; padding: 10px 22px 12px; flex-shrink: 0; font-size: 12px; }
-.rm-theme .theme-label { color: var(--rm-muted); margin-right: 4px; }
-.rm-theme .theme-option { padding: 5px 10px; background: transparent; color: var(--rm-muted); border: 0; border-radius: 14px; font-size: 12px; }
-.rm-theme .theme-option[aria-pressed='true'] { color: var(--rm-primary); background: var(--rm-primary-soft); font-weight: 500; }
-.rm-theme .theme-option:hover { color: var(--rm-text); }
 .rm-theme .delete-confirm { position: absolute; inset: 0; z-index: 20; background: var(--rm-overlay); display: flex; align-items: center; justify-content: center; padding: 24px; }
 .rm-theme .confirm-content { padding: 22px; background: var(--rm-surface); border: 1px solid var(--rm-border); border-radius: 11px; box-shadow: var(--rm-shadow); width: 100%; }
 .rm-theme .confirm-content h2 { font-size: 18px; margin-bottom: 8px; overflow-wrap: anywhere; }

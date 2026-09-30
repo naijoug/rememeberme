@@ -3,15 +3,14 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Bookmark, Download, HalfMoon, MoreVert, NavArrowLeft, Refresh, Search, SunLight, Trash, Upload , IconoirProvider } from '@iconoir/vue';
 import type { WordEntry } from '~/types';
 import type { ResolvedTheme, ThemePreference } from '~/types/theme';
-import ThemeSwitch from './ThemeSwitch.vue';
 import WordList from './WordList.vue';
 import WordDetail from './WordDetail.vue';
 import ConfirmDelete from './ConfirmDelete.vue';
 
 const props = withDefaults(defineProps<{
   words: WordEntry[]; loading?: boolean; busy?: boolean; error?: string; success?: string;
-  theme?: ResolvedTheme; themePreference?: ThemePreference; initialWord?: string; logoUrl?: string;
-}>(), { theme: 'light', themePreference: 'system', logoUrl: '/icon/48.png' });
+  theme?: ResolvedTheme; initialWord?: string; logoUrl?: string;
+}>(), { theme: 'light', logoUrl: '/icon/48.png' });
 const emit = defineEmits<{
   delete: [word: string]; reset: [word: string]; import: [text: string]; export: [];
   'theme-change': [theme: ThemePreference]; retry: [];
@@ -111,7 +110,6 @@ async function importFile(event: Event) {
         <button class="rm-button rm-secondary" @click="triggerImport">Import a backup</button>
       </div>
     </main>
-    <ThemeSwitch :model-value="themePreference" @update:model-value="emit('theme-change', $event)" />
     <ConfirmDelete v-if="confirmWord" :word="confirmWord" :busy="busy" @cancel="confirmWord = null" @confirm="emit('delete', confirmWord); confirmWord = null" />
   </div>
   </IconoirProvider>

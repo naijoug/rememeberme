@@ -1,0 +1,8 @@
+WordNet 3.1 lexical data, redistributed in compact lookup shards.
+Source: https://wordnet.princeton.edu/
+George A. Miller (1995). WordNet: A Lexical Database for English.
+Communications of the ACM Vol. 38, No. 11: 39-41.
+See LICENSE.txt and DATA-LICENSE.txt for the original notices and disclaimer.
+Modified for Remember Me: single-word selection filter, indexed JSON shards,
+definition/example separation; lexical sense order preserved.
+No endorsement by the original data provider is implied.

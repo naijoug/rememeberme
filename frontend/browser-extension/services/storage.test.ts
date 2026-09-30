@@ -41,6 +41,18 @@ describe('Storage Service - Export/Import Functionality', () => {
     vi.clearAllMocks();
   });
 
+  it('round-trips offline source attribution alongside legacy definitions without migration', async () => {
+    const localDefinition: Definition = { ...mockDefinition, source: 'wordnet' };
+    await storageService.saveWord('offline', localDefinition, 'Offline fixture context.', 'https://example.com/fixture');
+    await storageService.saveWord('legacy', mockDefinition, 'Legacy fixture context.', 'https://example.com/fixture');
+    const backup = await storageService.exportData();
+    storageApiMock.values.clear();
+    await storageService.importData(backup);
+    const words = await storageService.getAllWords();
+    expect(words.find(entry => entry.word === 'offline')?.history[0].definition).toEqual(localDefinition);
+    expect(words.find(entry => entry.word === 'legacy')?.history[0].definition).toEqual(mockDefinition);
+  });
+
   it('should export data as valid JSON', async () => {
     // Requirement 5.1, 5.2: Generate JSON file with all WordEntry and HistoryRecord
     const word1 = 'export1';

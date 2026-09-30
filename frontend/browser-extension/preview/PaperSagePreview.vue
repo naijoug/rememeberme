@@ -83,7 +83,7 @@ function importData(text: string) {
       <section v-for="theme in themes" :key="theme" class="preview-column">
         <h2>{{ compare ? 'Implementation' : theme === 'light' ? 'Light mode' : 'Dark mode' }}</h2>
         <div class="popup-stage">
-          <VocabularyPanel :key="version" :words="words" :theme="preference === 'system' ? theme : preference" :theme-preference="preference" :initial-word="mode === 'detail' ? 'multiple' : undefined"
+          <VocabularyPanel :key="version" :words="words" :theme="preference === 'system' ? theme : preference" :initial-word="mode === 'detail' ? 'multiple' : undefined"
             @theme-change="preference = $event" @reset="reset" @delete="remove" @import="importData" @export="exportData" />
         </div>
         <h2>In-page lookup</h2>
