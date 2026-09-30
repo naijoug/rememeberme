@@ -1,5 +1,7 @@
 # Paper & Sage design QA
 
+Subsequent user-requested popup action placement and scrolling changes are recorded in [the interaction verification](docs/verification/2026-09-30-popup-interactions.md); the original source comparisons below describe the earlier layout.
+
 Latest update: the user replaced the original green dark palette with a neutral Codex-inspired palette. The earlier comparison below documents the selected layout; the final section records the superseding dark-color check.
 
 Selected target: the second displayed concept, saved at `../designs/rememberme-extension/paper-sage-reference.png`. Implementation: existing extension components; disposable comparison harness at `http://127.0.0.1:3937/preview/paper-sage.html?compare=light` and `?compare=dark`.

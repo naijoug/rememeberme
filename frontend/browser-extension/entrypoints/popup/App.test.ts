@@ -76,6 +76,16 @@ afterEach(() => {
 });
 
 describe('mounted vocabulary popup', () => {
+  it('shows saved Chinese-only translations in the list and reading view', async () => {
+    const word = entry('curated', 1, 1);
+    word.history[0].definition.translation = { text: '精选', target: 'zh-CN', source: 'mymemory' };
+    await mount([word]);
+    expect(container.querySelector('.word-summary')?.textContent).toBe('精选');
+    click('.word-header');
+    await vi.waitFor(() => expect(container.querySelector('.translation-text')?.textContent).toBe('精选'));
+    expect(container.querySelector('.definition-section')?.textContent).toContain('No English definition saved');
+  });
+
   it('shows the empty state when no words are saved', async () => {
     await mount();
     expect(container.querySelector('.empty')?.textContent).toContain('No words saved yet');

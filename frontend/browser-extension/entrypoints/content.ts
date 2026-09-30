@@ -2,7 +2,8 @@ import { createApp, h, reactive, type App as VueApp } from 'vue';
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import { contextExtractor } from '~/services/context-extractor';
 import { storageClient } from '~/services/storage-client';
-import { requestDefinition } from '~/services/lookup-client';
+import { requestDefinition, requestTranslation } from '~/services/lookup-client';
+import { isTranslation } from '~/services/definition-utils';
 import { watchTheme } from '~/services/theme';
 import { getOrdinal, isEnglishWord } from '~/services/word-utils';
 import type { Definition, Position } from '~/types';
@@ -15,6 +16,9 @@ let context: ContentScriptContext;
 let host: HTMLElement | null = null;
 let popupApp: VueApp | null = null;
 let debounceTimer: number | undefined;
+let pendingSelection: { word: string; context: string; position: Position; range: Range } | undefined;
+let selectedRange: Range | undefined;
+let pointerStartedInside = false;
 let activeLookup: AbortController | undefined;
 let lookupVersion = 0;
 let notificationId = 0;
@@ -23,6 +27,7 @@ const state = reactive({
   word: '', position: { x: 12, y: 12 } as Position, visible: false,
   definition: undefined as Definition | undefined, loading: false,
   error: '', saveError: '', saving: false, context: '', theme: 'light' as ResolvedTheme,
+  englishLoading: false, translationLoading: false, englishError: '', translationError: '',
 });
 
 export default defineContentScript({
@@ -30,12 +35,20 @@ export default defineContentScript({
   main(ctx) {
     context = ctx;
     console.log('Vocabulary Counter content script loaded');
+    ctx.addEventListener(document, 'pointerdown', event => {
+      pointerStartedInside = isInsidePopup(event);
+      cancelPendingSelection();
+    }, { capture: true });
     ctx.addEventListener(document, 'mouseup', selectText);
     ctx.addEventListener(document, 'click', event => {
-      if (state.visible && host && !event.composedPath().includes(host)) hidePopup();
+      const startedInside = pointerStartedInside;
+      pointerStartedInside = false;
+      // Releasing a selection/scrollbar drag outside is not an outside click.
+      // The click ending a new word selection must not dismiss its pending card.
+      if (state.visible && host && !isInsidePopup(event) && !startedInside && !pendingSelection) hidePopup();
     });
-    ctx.addEventListener(document, 'keydown', event => { if (event.key === 'Escape' && state.visible) hidePopup(); });
-    ctx.addEventListener(window, 'scroll', () => { if (state.visible) hidePopup(); });
+    ctx.addEventListener(document, 'pointercancel', () => { pointerStartedInside = false; }, { capture: true });
+    ctx.addEventListener(document, 'keydown', event => { if (event.key === 'Escape' && (state.visible || pendingSelection)) hidePopup(); });
     const stopTheme = watchTheme(theme => { state.theme = theme.resolved; });
     const onMessage = (message: any, _sender: unknown, sendResponse: (response: unknown) => void) => {
       if (ctx.isInvalid) return false;
@@ -52,7 +65,9 @@ export default defineContentScript({
     ctx.onInvalidated(() => {
       lookupVersion++;
       activeLookup?.abort();
-      if (debounceTimer !== undefined) clearTimeout(debounceTimer);
+      cancelPendingSelection();
+      selectedRange = undefined;
+      pointerStartedInside = false;
       stopTheme();
       popupApp?.unmount();
       popupApp = null;
@@ -80,6 +95,8 @@ function ensureUi() {
       h(SelectionPopup, {
         word: state.word, position: state.position, visible: state.visible, definition: state.definition,
         loading: state.loading, error: state.error, saving: state.saving, saveError: state.saveError,
+        englishLoading: state.englishLoading, translationLoading: state.translationLoading,
+        englishError: state.englishError, translationError: state.translationError,
         onRemember: hidePopup, onForget: forgetWord, onClose: hidePopup, onRetry: lookupWord,
       }),
       ...notices.map(notice => h('div', {
@@ -92,18 +109,42 @@ function ensureUi() {
 }
 
 function selectText(event: MouseEvent) {
-  if (!context.isValid || (host && event.composedPath().includes(host))) return;
-  if (debounceTimer !== undefined) clearTimeout(debounceTimer);
+  if (!context.isValid || event.button !== 0) return;
+  if (isInsidePopup(event) || pointerStartedInside) { cancelPendingSelection(); return; }
+  cancelPendingSelection();
+  const selection = window.getSelection();
+  if (!selection?.rangeCount || !isEnglishWord(selection.toString())) return;
+  const range = selection.getRangeAt(0);
+  if (host?.shadowRoot && (selection.anchorNode?.getRootNode() === host.shadowRoot || selection.focusNode?.getRootNode() === host.shadowRoot)) return;
+  if (state.visible && selectedRange && range.startContainer === selectedRange.startContainer && range.endContainer === selectedRange.endContainer &&
+      range.startOffset === selectedRange.startOffset && range.endOffset === selectedRange.endOffset) return;
+  const rect = range.getBoundingClientRect();
+  // Snapshot at mouseup. Later focus/copy/selection changes must not dismiss or
+  // replace this lookup while the debounce timer is waiting.
+  const captured = {
+    word: selection.toString().trim(), context: contextExtractor.extractSentence(selection).context,
+    position: { x: rect.left + rect.width / 2, y: rect.bottom + 10, anchorTop: rect.top }, range: range.cloneRange(),
+  };
+  pendingSelection = captured;
   debounceTimer = context.setTimeout(() => {
-    const selection = window.getSelection();
-    if (!selection?.rangeCount || !isEnglishWord(selection.toString())) { hidePopup(); return; }
-    const rect = selection.getRangeAt(0).getBoundingClientRect();
-    state.word = selection.toString().trim();
-    state.context = contextExtractor.extractSentence(selection).context;
-    state.position = { x: rect.left + rect.width / 2, y: rect.bottom + 10, anchorTop: rect.top };
+    if (pendingSelection !== captured) return;
+    pendingSelection = undefined;
+    debounceTimer = undefined;
+    selectedRange = captured.range;
+    state.word = captured.word;
+    state.context = captured.context;
+    state.position = captured.position;
     state.saving = false;
     void lookupWord();
   }, 300);
+}
+
+function isInsidePopup(event: Event): boolean { return !!host && event.composedPath().includes(host); }
+
+function cancelPendingSelection() {
+  if (debounceTimer !== undefined) clearTimeout(debounceTimer);
+  debounceTimer = undefined;
+  pendingSelection = undefined;
 }
 
 async function lookupWord() {
@@ -117,25 +158,50 @@ async function lookupWord() {
   state.error = '';
   state.saveError = '';
   state.definition = undefined;
+  state.englishLoading = true;
+  state.translationLoading = true;
+  state.englishError = '';
+  state.translationError = '';
   ensureUi();
-  try {
-    const definition = await requestDefinition(state.word, controller.signal);
-    if (version !== lookupVersion || context.isInvalid) return;
-    state.definition = definition;
-  } catch (error) {
-    if (version !== lookupVersion || context.isInvalid) return;
-    state.error = error instanceof Error ? error.message : 'Please try again.';
-  } finally {
-    if (version === lookupVersion) { state.loading = false; activeLookup = undefined; }
-  }
+  const word = state.word;
+  const current = () => version === lookupVersion && context.isValid;
+  const updateStatus = () => {
+    if (!current()) return;
+    state.loading = !state.definition && (state.englishLoading || state.translationLoading);
+    if (!state.definition && !state.loading) state.error = [state.translationError, state.englishError].filter(Boolean).join(' ');
+    if (!state.englishLoading && !state.translationLoading) activeLookup = undefined;
+  };
+  await Promise.all([
+    requestDefinition(word, controller.signal).then(definition => {
+      if (!current()) return;
+      state.definition = { ...definition, ...(state.definition?.translation ? { translation: state.definition.translation } : {}) };
+    }).catch(error => {
+      if (current()) state.englishError = error instanceof Error ? error.message : 'English definition unavailable.';
+    }).finally(() => {
+      if (current()) { state.englishLoading = false; updateStatus(); }
+    }),
+    requestTranslation(word, controller.signal).then(translation => {
+      if (!current()) return;
+      if (!isTranslation(translation)) throw new Error('Chinese translation is unavailable. Please retry.');
+      state.definition = { ...(state.definition ?? { word, phonetics: [], meanings: [] }), translation };
+    }).catch(error => {
+      if (current()) state.translationError = error instanceof Error ? error.message : 'Chinese translation unavailable.';
+    }).finally(() => {
+      if (current()) { state.translationLoading = false; updateStatus(); }
+    }),
+  ]);
 }
 
 function hidePopup() {
+  cancelPendingSelection();
+  selectedRange = undefined;
   lookupVersion++;
   activeLookup?.abort();
   activeLookup = undefined;
   state.visible = false;
   state.loading = false;
+  state.englishLoading = false;
+  state.translationLoading = false;
 }
 
 async function forgetWord() {

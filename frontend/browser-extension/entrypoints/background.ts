@@ -4,6 +4,8 @@
  */
 
 import { dictionaryService } from '~/services/dictionary';
+import { translationService } from '~/services/translation';
+import { lookupForSave } from '~/services/bilingual-lookup';
 import {
   createContextMenu,
   handleContextMenuClick,
@@ -30,7 +32,7 @@ export default defineBackground(() => {
   browser.contextMenus.onClicked.addListener((info, tab) => {
     handleContextMenuClick(
       {
-        dictionaryService,
+        dictionaryService: { getDefinition: word => lookupForSave(word, dictionaryService, translationService) },
         storageService,
         tabs: browser.tabs,
         status: contextMenuStatus,
@@ -48,7 +50,7 @@ export default defineBackground(() => {
     _sender,
     sendResponse: (response: BackgroundResponse<unknown>) => void
   ) => {
-    handleBackgroundRequest(message, dictionaryService, storageService)
+    handleBackgroundRequest(message, dictionaryService, storageService, translationService)
       .then(response => sendResponse(response))
       .catch(error => {
         console.error('Background message handler error:', error);

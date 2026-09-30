@@ -1,12 +1,20 @@
-import type { BackgroundMessage, BackgroundResponse, Definition } from '~/types';
+import type { BackgroundMessage, BackgroundResponse, Definition, Translation } from '~/types';
 
 export const LOOKUP_DEADLINE_MS = 10_000;
 
 // A UI deadline also covers a disconnected background with no response.
 export function requestDefinition(word: string, signal?: AbortSignal): Promise<Definition> {
+  return request<Definition>('GET_DEFINITION', word, LOOKUP_DEADLINE_MS, signal);
+}
+
+export function requestTranslation(word: string, signal?: AbortSignal): Promise<Translation> {
+  return request<Translation>('GET_TRANSLATION', word, 6000, signal);
+}
+
+function request<T>(type: BackgroundMessage['type'], word: string, timeout: number, signal?: AbortSignal): Promise<T> {
   return new Promise((resolve, reject) => {
     let settled = false;
-    const finish = (error?: Error, definition?: Definition) => {
+    const finish = (error?: Error, definition?: T) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
@@ -14,11 +22,11 @@ export function requestDefinition(word: string, signal?: AbortSignal): Promise<D
       if (error) reject(error); else resolve(definition!);
     };
     const abort = () => finish(new DOMException('Lookup cancelled', 'AbortError'));
-    const timer = setTimeout(() => finish(new Error('The dictionary is taking too long. Please try again.')), LOOKUP_DEADLINE_MS);
+    const timer = setTimeout(() => finish(new Error(type === 'GET_TRANSLATION' ? 'Chinese translation timed out. Please try again.' : 'The dictionary is taking too long. Please try again.')), timeout);
     if (signal?.aborted) { abort(); return; }
     signal?.addEventListener('abort', abort, { once: true });
-    Promise.resolve().then(() => browser.runtime.sendMessage({ type: 'GET_DEFINITION', word } satisfies BackgroundMessage))
-      .then((response: BackgroundResponse | undefined) => {
+    Promise.resolve().then(() => browser.runtime.sendMessage({ type, word } satisfies BackgroundMessage))
+      .then((response: BackgroundResponse<T> | undefined) => {
         if (!response) finish(new Error('The extension is reconnecting. Please try again.'));
         else if (!response.success) finish(new Error(response.error));
         else finish(undefined, response.data);

@@ -53,6 +53,19 @@ describe('Storage Service - Export/Import Functionality', () => {
     expect(words.find(entry => entry.word === 'legacy')?.history[0].definition).toEqual(mockDefinition);
   });
 
+  it('round-trips a translation-only entry and rejects malformed translation data', async () => {
+    const definition: Definition = { word: 'curated', phonetics: [], meanings: [], translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } };
+    await storageService.saveWord('curated', definition, 'A curated list.', 'https://example.com/fixture');
+    const backup = await storageService.exportData();
+    storageApiMock.values.clear();
+    await storageService.importData(backup);
+    expect((await storageService.getWord('curated'))?.history[0].definition).toEqual(definition);
+    const malformed = JSON.parse(backup);
+    malformed[0].history[0].definition.translation.text = { html: '<img>' };
+    await expect(storageService.importData(JSON.stringify(malformed))).rejects.toThrow();
+    expect((await storageService.getWord('curated'))?.count).toBe(1);
+  });
+
   it('should export data as valid JSON', async () => {
     // Requirement 5.1, 5.2: Generate JSON file with all WordEntry and HistoryRecord
     const word1 = 'export1';

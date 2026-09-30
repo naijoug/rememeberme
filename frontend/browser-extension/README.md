@@ -1,8 +1,8 @@
 # Remember Me browser extension
 
-Select an English word to look up its definition and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
+Select an English word to see a Chinese translation and English definitions, and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-Vocabulary is stored in the browser's local extension storage. Dictionary lookups first use a packaged English WordNet dictionary; missing words fall back to the external Free Dictionary API, sending the selected word. Saved contexts and full source URLs are included in exports; there is no cloud vocabulary sync. See [dictionary coverage and sources](docs/dictionary.md).
+Vocabulary is stored in the browser's local extension storage. Chinese translations use MyMemory without an API key; uncached words are sent to that external service. English definitions first use packaged WordNet; missing words fall back to Free Dictionary API. The two results load independently, so a failed provider does not hide a successful result. Saved contexts and full source URLs are included in exports; there is no cloud vocabulary sync. See [sources, limits and privacy](docs/dictionary.md).
 
 ## Setup
 
@@ -85,8 +85,10 @@ Generated `.wxt/` and `.output/` directories are disposable. Static reference de
 
 ## Paper & Sage interface
 
-The popup now has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Use the sun/moon button in the header to switch Light / Dark; open page cards follow the same saved preference. New installations follow the system theme until manually switched. Lookup waits end after 10 seconds with a retry action, and Forget is unavailable until a definition is ready.
+The popup now has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Use the sun/moon button in the header to switch Light / Dark; open page cards follow the same saved preference. New installations follow the system theme until manually switched. Lookups have bounded waits and retry actions, and Forget becomes available once a translation or English definition is ready.
 
 Light mode uses paper-white and sage; dark mode uses the user's selected Codex-inspired charcoal gray palette. See the [dark palette comparison](http://127.0.0.1:3937/preview/paper-sage.html?compare=codex) for the supplied reference beside the actual components.
 
-For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual lookups use the packaged dictionary first and the external dictionary API only as a fallback.
+The page card keeps Remember / Forget beside the word while long definitions scroll underneath. Page scrolling and text/scrollbar drags do not dismiss it; use Escape, the close button, Remember or a deliberate outside click to close it.
+
+For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual English lookups use the packaged dictionary first; Chinese translations and English fallbacks require their external services.

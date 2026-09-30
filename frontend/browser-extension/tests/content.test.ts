@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { ContentScriptContext } from 'wxt/utils/content-script-context';
-import type { BackgroundResponse } from '~/types';
+import type { BackgroundResponse, Translation } from '~/types';
 
 vi.mock('wxt/browser', () => ({ browser: { runtime: { id: 'disposable-extension' } } }));
 const { saveWord, stopTheme, themeCallbacks } = vi.hoisted(() => ({
@@ -15,6 +15,8 @@ vi.mock('~/services/storage-client', () => ({ storageClient: { saveWord } }));
 
 type Lookup = { word: string; respond: (response: BackgroundResponse) => void };
 let lookups: Lookup[];
+let translations: Array<{ word: string; respond: (response: BackgroundResponse<Translation>) => void }>;
+let deferTranslation = false;
 let ctx: ContentScriptContext;
 let eventSpy: MockInstance<Document['addEventListener']>;
 
@@ -22,7 +24,7 @@ function ui<T extends Element = HTMLElement>(selector: string): T | null {
   return document.querySelector('#vocab-counter-popup-root')?.shadowRoot?.querySelector<T>(selector) ?? null;
 }
 
-async function select(word: string) {
+function startSelection(word: string) {
   const paragraph = document.querySelector('p')!;
   const offset = paragraph.textContent!.indexOf(word);
   const range = document.createRange();
@@ -32,6 +34,10 @@ async function select(word: string) {
   selection.removeAllRanges();
   selection.addRange(range);
   paragraph.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+}
+
+async function select(word: string) {
+  startSelection(word);
   await vi.advanceTimersByTimeAsync(300);
 }
 
@@ -47,13 +53,19 @@ beforeEach(async () => {
   stopTheme.mockReset();
   themeCallbacks.length = 0;
   lookups = [];
+  translations = [];
+  deferTranslation = false;
   document.body.innerHTML = '<p>An apple and a banana.</p>';
   vi.stubGlobal('defineContentScript', (definition: unknown) => definition);
   vi.stubGlobal('browser', { runtime: {
     onMessage: { addListener: vi.fn(), removeListener: vi.fn() },
-    sendMessage: vi.fn((message: { word: string }) => new Promise<BackgroundResponse>(respond => {
-      lookups.push({ word: message.word, respond });
-    })),
+    sendMessage: vi.fn((message: { type: string; word: string }) => {
+      if (message.type === 'GET_TRANSLATION') {
+        if (!deferTranslation) return Promise.resolve({ success: false, error: 'Chinese translation unavailable.' });
+        return new Promise<BackgroundResponse<Translation>>(respond => translations.push({ word: message.word, respond }));
+      }
+      return new Promise<BackgroundResponse>(respond => lookups.push({ word: message.word, respond }));
+    }),
   } });
   vi.spyOn(console, 'log').mockImplementation(() => {});
   vi.spyOn(console, 'debug').mockImplementation(() => {});
@@ -81,6 +93,118 @@ afterEach(() => {
 });
 
 describe('content selection flow (mock browser runtime)', () => {
+  it('keeps the card open when its body or the page scrolls', async () => {
+    await select('apple');
+    await resolve(lookups[0]);
+    ui('.lookup-body')!.dispatchEvent(new Event('scroll', { bubbles: true, composed: true }));
+    window.dispatchEvent(new Event('scroll'));
+    await vi.advanceTimersByTimeAsync(400);
+    expect(ui('.word')?.textContent).toBe('apple');
+    expect(lookups).toHaveLength(1);
+  });
+
+  it('does not dismiss a drag that starts inside the card and ends outside', async () => {
+    await select('apple');
+    await resolve(lookups[0]);
+    ui('.lookup-body')!.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, composed: true }));
+    window.getSelection()?.removeAllRanges();
+    document.body.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    await vi.advanceTimersByTimeAsync(400);
+    expect(ui('.word')?.textContent).toBe('apple');
+    expect(saveWord).not.toHaveBeenCalled();
+  });
+
+  it('still dismisses a deliberate outside click', async () => {
+    await select('apple');
+    await resolve(lookups[0]);
+    document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, composed: true }));
+    window.getSelection()?.removeAllRanges();
+    document.body.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+    await vi.advanceTimersByTimeAsync(400);
+    expect(ui('.vocab-counter-popup')).toBeNull();
+    expect(lookups).toHaveLength(1);
+  });
+
+  it('uses the completed selection snapshot if the page later clears selection', async () => {
+    startSelection('apple');
+    window.getSelection()?.removeAllRanges();
+    await vi.advanceTimersByTimeAsync(300);
+    expect(lookups).toHaveLength(1);
+    expect(lookups[0].word).toBe('apple');
+  });
+
+  it('does not treat the click completing a new selection as dismissal', async () => {
+    await select('apple');
+    await resolve(lookups[0]);
+    document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, composed: true }));
+    startSelection('banana');
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 2 }));
+    expect(ui('.word')?.textContent).toBe('apple');
+    await vi.advanceTimersByTimeAsync(300);
+    expect(ui('.word')?.textContent).toBe('banana');
+    expect(lookups).toHaveLength(2);
+  });
+
+  it('cancels a pending selection on Escape instead of reopening after dismissal', async () => {
+    startSelection('apple');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await vi.advanceTimersByTimeAsync(400);
+    expect(lookups).toHaveLength(0);
+    expect(ui('.vocab-counter-popup')).toBeNull();
+    await select('apple');
+    await resolve(lookups[0]);
+    startSelection('banana');
+    ui<HTMLButtonElement>('[aria-label="Close definition"]')!.click();
+    await vi.advanceTimersByTimeAsync(400);
+    expect(ui('.vocab-counter-popup')).toBeNull();
+    expect(lookups).toHaveLength(1);
+  });
+
+  it('shows and saves curated Chinese translation even when the English dictionary fails', async () => {
+    deferTranslation = true;
+    document.body.innerHTML = '<p>A curated collection.</p>';
+    await select('curated');
+    translations[0].respond({ success: true, data: { text: '精选', target: 'zh-CN', source: 'mymemory' } });
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.translation-text')?.textContent).toBe('精选');
+    expect(ui<HTMLButtonElement>('.btn-forget')?.disabled).toBe(false);
+    lookups[0].respond({ success: false, error: 'No local verb definition; online dictionary timed out.' });
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('[role=alert]')).toBeNull();
+    expect(ui('.translation-text')?.textContent).toBe('精选');
+    saveWord.mockResolvedValue({ word: 'curated', count: 1 });
+    ui<HTMLButtonElement>('.btn-forget')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledWith('curated', expect.objectContaining({ word: 'curated', translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } }), 'A curated collection.', window.location.href);
+  });
+
+  it('keeps an English result usable while Chinese translation fails', async () => {
+    deferTranslation = true;
+    await select('apple');
+    await resolve(lookups[0]);
+    expect(ui('.loading')).toBeNull();
+    expect(ui<HTMLButtonElement>('.btn-forget')?.disabled).toBe(false);
+    translations[0].respond({ success: false, error: 'Free translation quota exhausted.' });
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('[role=alert]')).toBeNull();
+    expect(ui('.word')?.textContent).toBe('apple');
+    expect(ui('.lookup-note')?.textContent).toContain('quota');
+  });
+
+  it('ignores a previous word’s Chinese result and renders remote markup literally', async () => {
+    deferTranslation = true;
+    await select('apple');
+    await select('banana');
+    translations[1].respond({ success: true, data: { text: '<img src=x onerror=alert(1)> 香蕉', target: 'zh-CN', source: 'mymemory' } });
+    translations[0].respond({ success: true, data: { text: '苹果', target: 'zh-CN', source: 'mymemory' } });
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.translation-text')?.textContent).toContain('<img src=x');
+    expect(ui('.translation-text img')).toBeNull();
+    expect(ui('.word')?.textContent).toBe('banana');
+  });
+
   it('renders lookup and theme changes without leaking state as component attributes', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     document.body.innerHTML = '<p>Having trouble?</p>';

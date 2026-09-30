@@ -1,11 +1,11 @@
-import type { BackgroundMessage, BackgroundResponse, Definition, VocabularyMessage } from '~/types';
+import type { BackgroundMessage, BackgroundResponse, Definition, Translation, VocabularyMessage } from '~/types';
 import type { StorageService } from './storage';
 import { isDefinition } from './definition-utils';
 import { isEnglishWord } from './word-utils';
 
-function isDefinitionRequest(message: unknown): message is BackgroundMessage {
+function isLookupRequest(message: unknown): message is BackgroundMessage {
   return typeof message === 'object' && message !== null &&
-    'type' in message && message.type === 'GET_DEFINITION' &&
+    'type' in message && (message.type === 'GET_DEFINITION' || message.type === 'GET_TRANSLATION') &&
     'word' in message && typeof message.word === 'string' && isEnglishWord(message.word);
 }
 
@@ -37,10 +37,15 @@ type VocabularyStorage = Pick<StorageService,
 export async function handleBackgroundRequest(
   message: unknown,
   dictionary: { getDefinition(word: string): Promise<Definition> },
-  vocabulary: VocabularyStorage
+  vocabulary: VocabularyStorage,
+  translator?: { translate(word: string): Promise<Translation> }
 ): Promise<BackgroundResponse<unknown>> {
   try {
-    if (isDefinitionRequest(message)) {
+    if (isLookupRequest(message)) {
+      if (message.type === 'GET_TRANSLATION') {
+        if (!translator) return { success: false, error: 'Chinese translation is unavailable.' };
+        return { success: true, data: await translator.translate(message.word) };
+      }
       return { success: true, data: await dictionary.getDefinition(message.word) };
     }
     if (!isVocabularyRequest(message)) {

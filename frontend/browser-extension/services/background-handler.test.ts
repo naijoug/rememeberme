@@ -8,6 +8,18 @@ const vocabulary = {
 beforeEach(() => vi.resetAllMocks());
 
 describe('background requests', () => {
+  it('dispatches translation separately from English lookup and returns provider failures', async () => {
+    const data = { text: '精选', target: 'zh-CN' as const, source: 'mymemory' as const };
+    const translate = vi.fn().mockResolvedValueOnce(data).mockRejectedValueOnce(new Error('Translation quota exhausted.'));
+    const dictionary = { getDefinition: vi.fn() };
+    expect(await handleBackgroundRequest({ type: 'GET_TRANSLATION', word: 'curated' }, dictionary, vocabulary, { translate })).toEqual({ success: true, data });
+    expect(await handleBackgroundRequest({ type: 'GET_TRANSLATION', word: 'curated' }, dictionary, vocabulary, { translate })).toEqual({ success: false, error: 'Translation quota exhausted.' });
+    expect(await handleBackgroundRequest({ type: 'GET_TRANSLATION', word: 'two words' }, dictionary, vocabulary, { translate })).toMatchObject({ success: false });
+    expect(translate).toHaveBeenCalledTimes(2);
+    expect(dictionary.getDefinition).not.toHaveBeenCalled();
+    expect(vocabulary.saveWord).not.toHaveBeenCalled();
+  });
+
   it('returns the requested definition', async () => {
     const definition = { word: 'apple', phonetics: [], meanings: [] };
     const getDefinition = vi.fn().mockResolvedValue(definition);

@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { Circle , IconoirProvider } from '@iconoir/vue';
 import type { HistoryRecord } from '~/types';
+import TranslationText from './TranslationText.vue';
 
 // Props
 interface Props {
@@ -69,8 +70,9 @@ function getShortUrl(url: string): string {
       <span v-else-if="record.url" class="source-text">{{ record.url }}</span>
     </div>
     <div v-if="record.context" class="context-text"><template v-for="(part, index) in contextParts" :key="index"><mark v-if="index % 2 === 1">{{ part }}</mark><template v-else>{{ part }}</template></template></div>
-    <details v-if="showDefinition && record.definition.meanings.length" class="history-definition">
+    <details v-if="showDefinition && (record.definition.meanings.length || record.definition.translation)" class="history-definition">
       <summary>Definition at the time</summary>
+      <TranslationText :translation="record.definition.translation" />
       <p>{{ record.definition.meanings[0]?.definitions[0]?.definition }}</p>
     </details>
   </article>

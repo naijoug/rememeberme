@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { NavArrowRight , IconoirProvider } from '@iconoir/vue';
 import type { WordEntry } from '~/types';
+import { isTranslation } from '~/services/definition-utils';
 
 const props = defineProps<{ words: WordEntry[]; initialScrollTop?: number }>();
 const emit = defineEmits<{ select: [word: string]; 'scroll-position': [top: number] }>();
@@ -31,7 +32,9 @@ function handleScroll(event: Event) {
   emit('scroll-position', scrollTop.value);
 }
 function summary(entry: WordEntry): string {
-  const latest = entry.history.at(-1)?.definition.meanings[0];
+  const definition = entry.history.at(-1)?.definition;
+  if (isTranslation(definition?.translation)) return definition.translation.text;
+  const latest = definition?.meanings[0];
   return latest ? [latest.partOfSpeech, latest.definitions[0]?.definition].filter(Boolean).join(' · ') : 'No definition saved';
 }
 </script>

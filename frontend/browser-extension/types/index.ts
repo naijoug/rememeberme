@@ -16,6 +16,8 @@ export interface Position {
  */
 export interface Definition {
   word: string;
+  /** Optional Chinese translation; legacy vocabulary remains compatible. */
+  translation?: Translation;
   /** Optional provenance; old vocabulary and backups need no migration. */
   source?: 'wordnet' | 'dictionary-api';
   phonetic?: string;
@@ -32,6 +34,12 @@ export interface Definition {
       antonyms?: string[];
     }>;
   }>;
+}
+
+export interface Translation {
+  text: string;
+  target: 'zh-CN';
+  source: 'mymemory';
 }
 
 /**
@@ -79,7 +87,7 @@ export interface DictionaryResponse {
 /**
  * Message types for communication between content script and background
  */
-export type BackgroundMessage = { type: 'GET_DEFINITION'; word: string };
+export type BackgroundMessage = { type: 'GET_DEFINITION' | 'GET_TRANSLATION'; word: string };
 
 export type VocabularyMessage =
   | { type: 'GET_WORDS' }

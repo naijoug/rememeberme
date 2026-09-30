@@ -72,6 +72,11 @@
 .rm-theme .meaning + .meaning { margin-top: 18px; }
 .rm-theme .definition-source { margin-top: 14px; color: var(--rm-muted); font-size: 11px; line-height: 1.5; }
 .rm-theme .definition-source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.rm-theme .translation-section { padding: 12px 0; margin-bottom: 10px; border-bottom: 1px solid var(--rm-border); }
+.rm-theme .translation-label { color: var(--rm-muted); font-size: 11px; margin-bottom: 5px; }
+.rm-theme .translation-text { color: var(--rm-text); font-size: 19px; line-height: 1.6; overflow-wrap: anywhere; }
+.rm-theme .translation-section .definition-source { margin-top: 5px; }
+.rm-theme .lookup-note { margin: 10px 0; color: var(--rm-muted); font-size: 12px; line-height: 1.5; }
 .rm-theme .definition-item + .definition-item { margin-top: 14px; }
 .rm-theme .rm-banner { margin: 12px 20px 0; padding: 10px 12px; border-radius: 7px; font-size: 13px; line-height: 1.5; }
 .rm-theme .error { color: var(--rm-error); background: var(--rm-error-soft); }
@@ -139,16 +144,19 @@
 .rm-theme .confirm-content p { color: var(--rm-muted); font-size: 13px; line-height: 1.6; }
 .rm-theme .confirm-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 20px; }
 .rm-theme .confirm-btn { background: var(--rm-error); color: var(--rm-bg); }
-.rm-theme .vocab-counter-popup { position: fixed; width: min(340px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; padding: 19px 21px 16px; border: 1px solid var(--rm-border); border-radius: 11px; background: var(--rm-bg); box-shadow: var(--rm-shadow); pointer-events: auto; }
-.rm-theme .lookup-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 3px; }
-.rm-theme .lookup-header .word { font-size: 30px; }
-.rm-theme .lookup-header .rm-icon-btn { width: 29px; height: 29px; padding: 4px; margin: -3px -6px 0 0; }
+.rm-theme .vocab-counter-popup { position: fixed; display: flex; flex-direction: column; width: min(420px, calc(100vw - 24px)); max-height: min(480px, calc(100dvh - 24px)); overflow: hidden; border: 1px solid var(--rm-border); border-radius: 11px; background: var(--rm-bg); box-shadow: var(--rm-shadow); pointer-events: auto; }
+.rm-theme .lookup-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 15px 16px 13px; border-bottom: 1px solid var(--rm-border); flex-shrink: 0; }
+.rm-theme .lookup-header .word { font-size: 27px; flex: 1; min-width: 0; }
+.rm-theme .lookup-header .rm-icon-btn { width: 26px; height: 30px; padding: 4px; }
+.rm-theme .lookup-header .rm-button { min-height: 30px; padding: 6px 8px; font-size: 12px; white-space: nowrap; }
+.rm-theme .lookup-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--rm-border) transparent; padding: 13px 18px 17px; }
+.rm-theme .lookup-body:focus-visible { outline: 2px solid var(--rm-primary); outline-offset: -3px; }
 .rm-theme .lookup-meaning { margin-top: 9px; }
 .rm-theme .vocab-counter-popup .phonetic { line-height: 1.3; }
 .rm-theme .vocab-counter-popup .part-of-speech { font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
 .rm-theme .vocab-counter-popup .example { margin-top: 8px; line-height: 1.45; }
 .rm-theme .lookup-meaning + .lookup-meaning { margin-top: 16px; }
-.rm-theme .lookup-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+.rm-theme .lookup-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .rm-theme .lookup-status { display: flex; align-items: flex-start; gap: 10px; padding: 18px 0 6px; }
 .rm-theme .lookup-status > svg { color: var(--rm-primary); margin-top: 2px; }
 .rm-theme .lookup-status h3 { font-size: 14px; font-weight: 500; }

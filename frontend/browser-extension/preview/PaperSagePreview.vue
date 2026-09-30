@@ -110,7 +110,7 @@ body { margin: 0; background: #eef2ed; color: #28372e; font-family: -apple-syste
 .preview-grid { display: grid; grid-template-columns: repeat(2, 400px); gap: 56px; justify-content: center; }
 .preview-column > h2, .reference-column > h2 { margin: 0 0 12px; color: #68776b; font-size: 12px; font-weight: 500; }
 .popup-stage { border: 1px solid #dce3d9; border-radius: 11px; overflow: hidden; width: 400px; box-shadow: 0 3px 14px rgb(23 45 30 / 5%); margin-bottom: 24px; }
-.lookup-stage { margin-left: 20px; width: 340px; min-height: 180px; }
+.lookup-stage { width: 420px; max-width: calc(100vw - 56px); min-height: 180px; }
 .preview-footer { color: #68776b; font-size: 12px; line-height: 1.6; margin-top: 28px; max-width: 740px; }
 .preview-feedback { font-size: 13px; color: #3e775e; }
 .reference-popup { width: 400px; height: 498px; margin-bottom: 24px; }

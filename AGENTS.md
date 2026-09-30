@@ -16,7 +16,7 @@
 
 - Preserve existing vocabulary and JSON import/export compatibility. A count reset retains history, so count need not equal history length.
 - Treat imported data and webpage text as untrusted text. Highlight with text nodes; only HTTP(S) history URLs are navigable.
-- Vocabulary is stored locally. Packaged dictionary hits stay local, but online fallbacks send the selected word to an external API. Do not describe the extension as fully offline or exports as free of sensitive data.
+- Vocabulary is stored locally. Packaged English dictionary hits stay local; Chinese translation requests and online English fallbacks send the selected word to external APIs. Do not describe the extension as fully offline or exports as free of sensitive data.
 - Keep user-facing deletion confirmation. That product requirement does not require approval for editing code or disposable test fixtures.
 - Distinguish observed implementation from intended behavior. Record unresolved differences instead of silently treating either code or an old plan as the product decision.
 

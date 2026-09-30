@@ -16,7 +16,8 @@ export class DictionaryService {
   private readonly API_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en';
   private readonly TIMEOUT_MS = 8000;
   private readonly MAX_RETRIES = 1;
-  private readonly TOTAL_TIMEOUT_MS = 10000;
+  // Leave headroom for the background reply before the UI's 10-second deadline.
+  private readonly TOTAL_TIMEOUT_MS = 8500;
   private readonly CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
   private cache: Map<string, CacheEntry> = new Map();
   private pending = new Map<string, Promise<Definition>>();
