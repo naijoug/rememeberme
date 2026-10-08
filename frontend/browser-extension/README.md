@@ -59,6 +59,10 @@ Use [the browser checklist](docs/testing.md) before claiming a browser target ha
 
 ## Documentation and source map
 
+The [project architecture](../../docs/architecture.md) covers repository boundaries and planned applications. The [extension architecture](docs/architecture.md) covers the implemented runtime, message contracts, storage ownership and external data flow.
+
+For store submission, start with the [release preparation guide](docs/release/README.md), including listing copy, privacy policy draft, assets and outstanding publication requirements.
+
 | Task | Start here |
 | --- | --- |
 | Product behavior and original-specification gaps | [Behavior](docs/behavior.md) |
@@ -85,10 +89,10 @@ Generated `.wxt/` and `.output/` directories are disposable. Static reference de
 
 ## Paper & Sage interface
 
-The popup now has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Use the sun/moon button in the header to switch Light / Dark; open page cards follow the same saved preference. New installations follow the system theme until manually switched. Lookups have bounded waits and retry actions, and Forget becomes available once a translation or English definition is ready.
+The popup has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Use the sun/moon button in the header to switch Light / Dark; open page cards follow the same saved preference. New installations follow the system theme until manually switched. Lookups have bounded waits and retry actions; recording a word does not depend on lookup success.
 
 Light mode uses paper-white and sage; dark mode uses the user's selected Codex-inspired charcoal gray palette. See the [dark palette comparison](http://127.0.0.1:3937/preview/paper-sage.html?compare=codex) for the supplied reference beside the actual components.
 
-The page card keeps Remember / Forget beside the word while long definitions scroll underneath. Page scrolling and text/scrollbar drags do not dismiss it; use Escape, the close button, Remember or a deliberate outside click to close it.
+The page card has one bookmark-and-count button beside the word. Each click adds one to the count and saves a separate encounter with the selected sentence, click time and source URL. The card stays open for repeated recording. Expand **Records**, then a numbered entry to inspect its context, exact time and full source link; the vocabulary reading view shows the same records. Long contents scroll underneath the header. Use Escape, the close button or a deliberate outside click to dismiss the card.
 
 For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual English lookups use the packaged dictionary first; Chinese translations and English fallbacks require their external services.
