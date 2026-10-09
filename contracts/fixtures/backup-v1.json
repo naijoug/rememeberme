@@ -1,0 +1,30 @@
+{
+  "format": "rememberme-backup",
+  "schemaVersion": 1,
+  "exportedAtMs": 2,
+  "entries": [
+    {
+      "id": "fixture-handwritten",
+      "word": "handwritten",
+      "normalizedKey": "handwritten",
+      "kind": "word",
+      "count": null,
+      "createdAt": 1,
+      "updatedAt": 1,
+      "definition": {
+        "word": "handwritten",
+        "phonetics": [],
+        "meanings": []
+      },
+      "notes": "synthetic note",
+      "version": 0,
+      "deleted": false,
+      "history": [],
+      "reviewEvents": [],
+      "legacyFields": {},
+      "aliases": []
+    }
+  ],
+  "tombstones": [],
+  "importSources": []
+}

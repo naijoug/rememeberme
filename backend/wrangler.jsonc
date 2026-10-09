@@ -1,0 +1,140 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "remember-me-api-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-09",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "ENVIRONMENT": "local",
+    "PUBLIC_ORIGIN": "http://127.0.0.1:8787",
+    "NATIVE_CALLBACKS": "rememberme://auth/callback",
+    "GITHUB_CLIENT_ID": ""
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "remember-me-local",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*",
+      "/auth/*"
+    ]
+  },
+  "env": {
+    "staging": {
+      "name": "remember-me-api-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "PUBLIC_ORIGIN": "https://configure-before-deploy.invalid",
+        "NATIVE_CALLBACKS": "rememberme://auth/callback",
+        "GITHUB_CLIENT_ID": ""
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "remember-me-staging",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "secrets": {
+        "required": [
+          "GITHUB_CLIENT_SECRET"
+        ]
+      },
+      "ratelimits": [
+        {
+          "name": "AUTH_LIMIT",
+          "namespace_id": "2001",
+          "simple": {
+            "limit": 30,
+            "period": 60
+          }
+        },
+        {
+          "name": "API_LIMIT",
+          "namespace_id": "2002",
+          "simple": {
+            "limit": 300,
+            "period": 60
+          }
+        }
+      ]
+    },
+    "production": {
+      "name": "remember-me-api-production",
+      "vars": {
+        "ENVIRONMENT": "production",
+        "PUBLIC_ORIGIN": "https://configure-before-deploy.invalid",
+        "NATIVE_CALLBACKS": "rememberme://auth/callback",
+        "GITHUB_CLIENT_ID": ""
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "remember-me-production",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "secrets": {
+        "required": [
+          "GITHUB_CLIENT_SECRET"
+        ]
+      },
+      "ratelimits": [
+        {
+          "name": "AUTH_LIMIT",
+          "namespace_id": "2011",
+          "simple": {
+            "limit": 30,
+            "period": 60
+          }
+        },
+        {
+          "name": "API_LIMIT",
+          "namespace_id": "2012",
+          "simple": {
+            "limit": 300,
+            "period": 60
+          }
+        }
+      ]
+    }
+  },
+  "secrets": {
+    "required": [
+      "GITHUB_CLIENT_SECRET"
+    ]
+  },
+  "send_metrics": false,
+  "ratelimits": [
+    {
+      "name": "AUTH_LIMIT",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 30,
+        "period": 60
+      }
+    },
+    {
+      "name": "API_LIMIT",
+      "namespace_id": "1002",
+      "simple": {
+        "limit": 300,
+        "period": 60
+      }
+    }
+  ]
+}

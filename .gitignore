@@ -26,3 +26,16 @@ web-ext.config.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Apple clients
+.build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# Unified API local data, secret inputs and disposable output
+.wrangler/
+backend/.build/
+.dev.vars*
+!.dev.vars.example
+.env*

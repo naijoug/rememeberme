@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rememberme:operations-v1",
+  "type": "object",
+  "required": [
+    "id",
+    "owner",
+    "entryID",
+    "kind",
+    "baseVersion",
+    "payload",
+    "state"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entryID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "create",
+        "legacySeed",
+        "legacyMerge",
+        "record",
+        "edit",
+        "reset",
+        "delete",
+        "review",
+        "restore",
+        "enrichSource",
+        "associateHistory",
+        "epochOrphan"
+      ]
+    },
+    "baseVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "payload": {
+      "type": "object"
+    },
+    "state": {
+      "enum": [
+        "pending",
+        "confirmed",
+        "conflict",
+        "discarded"
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "observedRemoteVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "observedReviewVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "wireCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "confirmedRemoteVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "confirmedReviewVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "syncDependencyId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wirePrivacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "context",
+        "urls"
+      ],
+      "properties": {
+        "context": {
+          "type": "boolean"
+        },
+        "urls": {
+          "type": "boolean"
+        }
+      }
+    },
+    "projectedReview": {
+      "type": "object",
+      "required": [
+        "algorithmVersion",
+        "step",
+        "dueAtMs",
+        "version"
+      ],
+      "properties": {
+        "algorithmVersion": {
+          "const": "review-v1"
+        },
+        "step": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "dueAtMs": {
+          "type": "number",
+          "minimum": 0
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependencyExpectedVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "dependencyExpectedReviewVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "observedVersionFloor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "observedReviewVersionFloor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "Persisted local logical operations, distinct from HTTP wire items. Optional metadata binds causal dependencies, first-flight privacy and server acknowledgements; none is exported in vocabulary backups."
+}

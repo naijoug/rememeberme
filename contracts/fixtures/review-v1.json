@@ -1,0 +1,86 @@
+[
+  {
+    "step": -1,
+    "result": "forgot",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 0,
+    "dueAtMs": 1700086400000
+  },
+  {
+    "step": -1,
+    "result": "fuzzy",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 0,
+    "dueAtMs": 1700086400000
+  },
+  {
+    "step": -1,
+    "result": "remembered",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 0,
+    "dueAtMs": 1700086400000
+  },
+  {
+    "step": 0,
+    "result": "forgot",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 0,
+    "dueAtMs": 1700086400000
+  },
+  {
+    "step": 0,
+    "result": "fuzzy",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 0,
+    "dueAtMs": 1700086400000
+  },
+  {
+    "step": 0,
+    "result": "remembered",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 1,
+    "dueAtMs": 1700259200000
+  },
+  {
+    "step": 1,
+    "result": "forgot",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 0,
+    "dueAtMs": 1700086400000
+  },
+  {
+    "step": 1,
+    "result": "fuzzy",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 1,
+    "dueAtMs": 1700259200000
+  },
+  {
+    "step": 1,
+    "result": "remembered",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 2,
+    "dueAtMs": 1700604800000
+  },
+  {
+    "step": 4,
+    "result": "forgot",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 0,
+    "dueAtMs": 1700086400000
+  },
+  {
+    "step": 4,
+    "result": "fuzzy",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 4,
+    "dueAtMs": 1702592000000
+  },
+  {
+    "step": 4,
+    "result": "remembered",
+    "answeredAtMs": 1700000000000,
+    "nextStep": 4,
+    "dueAtMs": 1702592000000
+  }
+]

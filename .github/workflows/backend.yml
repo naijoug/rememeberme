@@ -1,0 +1,22 @@
+name: Unified API
+on:
+  pull_request:
+    paths: ['backend/**', 'contracts/**', '.github/workflows/backend.yml']
+  workflow_dispatch:
+jobs:
+  isolated-worker:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: backend/.nvmrc
+      - run: npx --yes --package=npm@11.21.0 npm ci
+      - run: npm rebuild esbuild workerd
+      - run: npm run types
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build

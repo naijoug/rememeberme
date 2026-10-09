@@ -1,6 +1,6 @@
 # Working in Remember Me
 
-- The runnable package is `frontend/browser-extension/` (WXT, Vue 3, TypeScript). Run npm commands there. The repository root has no Node package; `backend/` is reserved for future services.
+- The browser package is `frontend/browser-extension/` (WXT, Vue 3, TypeScript). Run extension npm commands there. The unified Worker API has its own package/lockfile under `backend/`; use its README, `.nvmrc` and package commands for backend work. Native Apple clients use Xcode / SwiftPM under `frontend/apple/`; see its README and `docs/testing.md`. The repository root has no Node package.
 - Use the package's `.nvmrc` and `npm ci`. Keep `package.json` and `package-lock.json` in sync when changing dependencies or runtime requirements.
 - Edit source files, not generated `.wxt/`, `.output/`, or `node_modules/` directories. `frontend/designs/` contains reference prototypes, not the extension runtime.
 

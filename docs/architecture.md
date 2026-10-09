@@ -4,7 +4,7 @@ Reviewed against the current working-tree source on 2026-10-08. This is an inven
 
 ## Current application boundary
 
-Remember Me currently has one runnable application: a WXT browser extension using Vue 3 and TypeScript. It selects words from webpages, looks up English definitions and Chinese translations, and stores vocabulary encounters locally. There is no running backend, website, account system or cloud synchronization in this repository.
+Remember Me has a WXT browser extension using Vue 3/TypeScript and native macOS/iOS clients using SwiftUI. The extension selects words from webpages, looks up definitions/translations and stores encounters locally. Native targets provide local vocabulary, lookup/editing, backup/restore, review and sharing-draft code; platform/device acceptance and the full release remain in progress. The local Worker/D1 package implements native authentication and conditional sync operations, but is not deployed. Native Settings has explicit ownership/account-selection/sync paths; real Swift/HTTP-to-local-Worker integration now passes with separate synthetic device processes. Hosted/signed-device acceptance and the full website remain unfinished.
 
 ```text
 rememberme/
@@ -15,7 +15,7 @@ rememberme/
 │   └── cloudflare-implementation-plan.md  # Proposed website/backend/sync
 ├── frontend/
 │   ├── README.md                   # Frontend boundaries
-│   ├── browser-extension/          # Only runnable package
+│   ├── browser-extension/          # WXT runtime
 │   │   ├── entrypoints/            # Background, page content and toolbar popup
 │   │   ├── components/             # Shared Vue UI
 │   │   ├── services/               # Messaging, storage, lookup and theme logic
@@ -29,12 +29,18 @@ rememberme/
 │   │   ├── docs/                   # Extension behavior, architecture and checks
 │   │   ├── package.json / package-lock.json / .nvmrc
 │   │   └── wxt.config.ts / wxt.feedback.config.ts / vitest.config.ts
+│   ├── apple/                      # Native targets, Swift packages, tests and docs
 │   └── designs/                    # Static design references, not applications
+├── contracts/                      # Shared schema and synthetic fixtures
 └── backend/
-    └── README.md                   # Reserved service boundary
+    ├── src/                       # Auth, conditional D1 store, bounded HTTP/API
+    ├── migrations/                # Versioned SQL schema
+    ├── tests/                     # workerd/D1 and mocked provider fixtures
+    ├── public/                    # Small connection page
+    └── README.md                  # Independent package/lockfile and evidence
 ```
 
-Tests also live alongside services/components and the popup entrypoint. Dependencies and generated files are omitted from the tree. The repository root has no Node package or workspace manifest; use the extension's `.nvmrc`, lockfile and `npm ci` from its package directory. Root `node_modules/` and the empty root `utils/` have been removed; current functionality belongs to the extension package.
+Extension tests also live alongside services/components and the popup entrypoint. Dependencies and generated files are omitted from the tree. The repository root has no Node package or workspace manifest; use the extension's `.nvmrc`, lockfile and `npm ci` from its package directory. Apple clients use Xcode/SwiftPM independently. Root `node_modules/` and the empty root `utils/` have been removed.
 
 ## Runtime and data flow
 
@@ -90,7 +96,7 @@ Chrome/Edge production output is in `frontend/browser-extension/.output/chrome-m
 
 ## Planned architecture
 
-The Cloudflare plan proposes a Vue/Vite website, a Hono Worker, D1, authentication, vocabulary migration, synchronization and review reminders. Proposed `frontend/website/` and backend service directories do not exist yet. Mobile and desktop clients are also future possibilities. Implemented state and compatibility rules above remain authoritative for the current code until those changes are implemented and verified.
+The Cloudflare plan proposes a Vue/Vite website, a Hono Worker, D1, authentication, vocabulary migration, synchronization and review reminders. The full `frontend/website/` remains unimplemented; [backend setup/evidence](../backend/README.md) now describes the local Worker/D1 API. Root npm workspaces/website/extension migration are explicitly deferred while serving the Apple API dependency. The [Apple implementation plan](apple-clients-implementation-plan.md) is in progress: native local UI/lookup/backup/review and sharing-draft code exist; signed sharing, system notifications, full device/platform acceptance and cloud integration remain outstanding. See [native architecture](../frontend/apple/docs/architecture.md) for actual store boundaries and [native verification](../frontend/apple/docs/testing.md) for evidence. The runtime/data-flow sections above describe the extension and remain authoritative for it; native and extension stores are independent.
 
 ## Documentation map
 
@@ -102,5 +108,6 @@ The Cloudflare plan proposes a Vue/Vite website, a Hono Worker, D1, authenticati
 | Where do definitions/translations come from? | [Dictionary sources and limits](../frontend/browser-extension/docs/dictionary.md) |
 | What checks are needed and what has actually been run? | [Testing](../frontend/browser-extension/docs/testing.md) and its linked verification records |
 | What is proposed for the website and backend? | [Cloudflare implementation plan](cloudflare-implementation-plan.md) |
+| How will macOS and iOS clients be built and integrated? | [Apple clients implementation plan](apple-clients-implementation-plan.md) |
 
 Archived specifications are historical context. Design references and dated verification records do not establish that today's working tree passes browser checks.

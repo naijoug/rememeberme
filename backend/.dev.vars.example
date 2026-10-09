@@ -1,0 +1,3 @@
+# Only required for an explicitly configured live OAuth diagnostic.
+# Unit/integration tests override these with synthetic in-memory bindings.
+GITHUB_CLIENT_SECRET=

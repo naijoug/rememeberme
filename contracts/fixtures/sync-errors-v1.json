@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "VERSION_CONFLICT",
+    "retryable": false,
+    "requestId": "00000000-0000-0000-0000-000000000001"
+  }
+}

@@ -1,0 +1,44 @@
+name: Apple clients
+on:
+  pull_request:
+    paths:
+      - 'frontend/apple/**'
+      - 'contracts/**'
+      - 'backend/**'
+      - 'frontend/browser-extension/services/definition-utils.ts'
+      - '.github/workflows/apple.yml'
+  workflow_dispatch:
+jobs:
+  local-contracts-and-builds:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend/browser-extension/.nvmrc
+      - name: Shared TypeScript contracts
+        run: node --experimental-strip-types contracts/reference.ts
+      - name: Shared packaged dictionary integrity
+        run: python3 frontend/apple/scripts/verify-dictionary-assets.py
+      - name: Swift disk and domain tests
+        working-directory: frontend/apple/Packages/RememberMeCore
+        run: swift test
+      - name: Native presentation models
+        working-directory: frontend/apple/Packages/RememberMeUI
+        run: swift test
+      - name: Independent process recovery
+        run: python3 frontend/apple/scripts/verify-process-recovery.py frontend/apple/Packages/RememberMeCore/.build/debug/RememberMeProbe
+      - name: Local Worker runtime dependencies
+        working-directory: backend
+        run: npx --yes --package=npm@11.21.0 npm ci && npm rebuild esbuild workerd
+      - name: Local Worker bundle (no deployment)
+        working-directory: backend
+        run: npm run build
+      - name: Native HTTP / Worker / D1 integration
+        run: node backend/scripts/verify-native-sync.mjs frontend/apple/Packages/RememberMeCore/.build/debug/RememberMeProbe
+      - name: macOS build
+        working-directory: frontend/apple
+        run: xcodebuild -quiet -project RememberMe.xcodeproj -scheme RememberMeMac -destination 'platform=macOS,arch=arm64' CODE_SIGNING_ALLOWED=NO build
+      - name: iOS Simulator build
+        working-directory: frontend/apple
+        run: xcodebuild -quiet -project RememberMe.xcodeproj -scheme RememberMeiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

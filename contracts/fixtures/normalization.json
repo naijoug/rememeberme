@@ -1,0 +1,26 @@
+[
+  {
+    "input": " ﻿Having ",
+    "expected": "having"
+  },
+  {
+    "input": "İ",
+    "expected": "i̇"
+  },
+  {
+    "input": "I",
+    "expected": "i"
+  },
+  {
+    "input": "É",
+    "expected": "é"
+  },
+  {
+    "input": "É",
+    "expected": "é"
+  },
+  {
+    "input": "A",
+    "expected": "a"
+  }
+]

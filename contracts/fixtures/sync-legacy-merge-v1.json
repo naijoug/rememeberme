@@ -1,0 +1,17 @@
+{
+  "logicalId": "synthetic-merge-batch",
+  "request": {
+    "operationId": "wire:0f431edb68fbdce94093128ec0f0c746e4d7ccd6e6b496e3e16452dc6218c159",
+    "entryId": "fixture-entry",
+    "kind": "legacyMerge",
+    "baseVersion": 1,
+    "payload": {
+      "countDelta": 0.5,
+      "definition": {
+        "word": "have",
+        "phonetics": [],
+        "meanings": []
+      }
+    }
+  }
+}

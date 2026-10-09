@@ -1,0 +1,113 @@
+name: RememberMe
+options:
+  minimumXcodeGenVersion: 2.44.0
+packages:
+  RememberMeCore:
+    path: Packages/RememberMeCore
+  RememberMeUI:
+    path: Packages/RememberMeUI
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 1
+    GENERATE_INFOPLIST_FILE: YES
+    CODE_SIGN_STYLE: Automatic
+    REMEMBERME_APP_GROUP: group.com.rememberme.app
+targets:
+  RememberMeMac:
+    type: application
+    platform: macOS
+    deploymentTarget: '14.0'
+    sources:
+      - Apps/macOS
+      - path: ../browser-extension/public/dictionary/wordnet
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: RememberMeUI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rememberme.app.mac
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Configuration/Mac-Info.plist
+        ENABLE_APP_SANDBOX: YES
+        ENABLE_USER_SELECTED_FILES: readwrite
+        ENABLE_OUTGOING_NETWORK_CONNECTIONS: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Remember Me
+  RememberMeiOS:
+    type: application
+    platform: iOS
+    deploymentTarget: '17.0'
+    sources:
+      - Apps/iOS
+      - path: ../browser-extension/public/dictionary/wordnet
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: RememberMeUI
+      - target: RememberMeShare
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rememberme.app.ios
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Configuration/iOS-Info.plist
+        TARGETED_DEVICE_FAMILY: '1,2'
+        INFOPLIST_KEY_CFBundleDisplayName: Remember Me
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_RememberMeAppGroup: $(REMEMBERME_APP_GROUP)
+        CODE_SIGN_ENTITLEMENTS: Configuration/SharedCapture.entitlements
+  RememberMeShare:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: '17.0'
+    sources: [Extensions/Share]
+    dependencies:
+      - package: RememberMeCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rememberme.app.ios.share
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Configuration/Share-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Configuration/SharedCapture.entitlements
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+  RememberMeiOSUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: '17.0'
+    sources: [Tests/iOSUITests]
+    dependencies:
+      - target: RememberMeiOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rememberme.tests.ios
+        TEST_TARGET_NAME: RememberMeiOS
+  RememberMeMacUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    deploymentTarget: '14.0'
+    sources: [Tests/iOSUITests]
+    dependencies:
+      - target: RememberMeMac
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rememberme.tests.mac
+        TEST_TARGET_NAME: RememberMeMac
+schemes:
+  RememberMeMac:
+    build:
+      targets:
+        RememberMeMac: all
+    test:
+      targets:
+        - RememberMeMacUITests
+  RememberMeiOS:
+    build:
+      targets:
+        RememberMeiOS: all
+    test:
+      targets:
+        - RememberMeiOSUITests

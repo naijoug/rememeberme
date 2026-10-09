@@ -6,13 +6,14 @@ Frontend clients live under this directory.
 
 ```text
 frontend/
-├── browser-extension/  # Only runnable package: WXT / Vue 3 / TypeScript
+├── browser-extension/  # WXT / Vue 3 / TypeScript
+├── apple/              # macOS/iOS targets and shared Swift packages
 └── designs/            # Static HTML/style/image/design references
 ```
 
 Add future mobile and desktop clients as sibling directories, for example `frontend/mobile/` or `frontend/desktop/`, so each frontend surface can keep its own runtime, dependencies, build output, and documentation.
 
-The proposed website is described in the [Cloudflare implementation plan](../docs/cloudflare-implementation-plan.md); `frontend/website/` has not been implemented. Designs under `designs/` are product references, not runnable clients. The extension's component preview may use reference images but uses disposable sample vocabulary.
+The proposed website is described in the [Cloudflare implementation plan](../docs/cloudflare-implementation-plan.md); `frontend/website/` has not been implemented. Native Apple targets and shared packages now exist under `apple/`, with local foundations implemented and later milestones pending. See the [Apple README](apple/README.md) and [implementation plan](../docs/apple-clients-implementation-plan.md). Designs under `designs/` are product references, not runnable clients. The extension's component preview may use reference images but uses disposable sample vocabulary.
 
 ## Browser Extension
 

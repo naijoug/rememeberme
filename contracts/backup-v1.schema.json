@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rememberme:backup-v1",
+  "type": "object",
+  "required": [
+    "format",
+    "schemaVersion",
+    "exportedAtMs",
+    "entries",
+    "tombstones",
+    "importSources"
+  ],
+  "properties": {
+    "format": {
+      "const": "rememberme-backup"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "exportedAtMs": {
+      "type": "number",
+      "minimum": 0
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    },
+    "tombstones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    },
+    "importSources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "word",
+        "normalizedKey",
+        "kind",
+        "createdAt",
+        "updatedAt",
+        "definition",
+        "notes",
+        "version",
+        "deleted",
+        "history",
+        "reviewEvents",
+        "legacyFields",
+        "aliases"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "word": {
+          "type": "string",
+          "pattern": "[^\\u0009-\\u000D\\u0020\\u00A0\\u1680\\u2000-\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000\\uFEFF]"
+        },
+        "normalizedKey": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "word",
+            "phrase",
+            "abbreviation",
+            "proper_noun"
+          ]
+        },
+        "count": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "number",
+          "minimum": 0
+        },
+        "updatedAt": {
+          "type": "number",
+          "minimum": 0
+        },
+        "definition": {
+          "type": "object"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "timestamp",
+              "context",
+              "url",
+              "definition",
+              "legacyFields"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "timestamp": {
+                "type": "number",
+                "minimum": 0
+              },
+              "context": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "definition": {
+                "type": "object"
+              },
+              "legacyFields": {
+                "type": "object"
+              },
+              "cloudPosition": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            }
+          }
+        },
+        "review": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "algorithmVersion",
+                "step",
+                "dueAtMs",
+                "version"
+              ],
+              "properties": {
+                "algorithmVersion": {
+                  "const": "review-v1"
+                },
+                "step": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4
+                },
+                "dueAtMs": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewEvents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "result",
+              "answeredAtMs",
+              "baseReviewVersion",
+              "algorithmVersion"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "result": {
+                "enum": [
+                  "forgot",
+                  "fuzzy",
+                  "remembered"
+                ]
+              },
+              "answeredAtMs": {
+                "type": "number",
+                "minimum": 0
+              },
+              "baseReviewVersion": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "algorithmVersion": {
+                "const": "review-v1"
+              },
+              "originEventId": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "legacyFields": {
+          "type": "object"
+        },
+        "sourceDigest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reviewRevision": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "captureOrigin": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "id",
+            "text",
+            "createdAtMs"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 16384
+            },
+            "sourceURL": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 8192
+            },
+            "createdAtMs": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

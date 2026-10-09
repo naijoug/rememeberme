@@ -1,0 +1,265 @@
+[
+  {
+    "name": "shared",
+    "valid": true,
+    "data": [
+      {
+        "word": " Having ",
+        "count": 0.5,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "https://example.test/synthetic",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": []
+            }
+          },
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "javascript:alert(1)",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": [],
+              "translation": {
+                "text": "有",
+                "source": "mymemory",
+                "target": "zh-CN"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "word": "中文",
+        "count": 1e+20,
+        "createdAt": 1e+100,
+        "updatedAt": 1e+100,
+        "history": []
+      },
+      {
+        "word": "empty",
+        "count": 0,
+        "createdAt": 0,
+        "updatedAt": 0,
+        "history": []
+      }
+    ]
+  },
+  {
+    "name": "fraction",
+    "valid": true,
+    "data": [
+      {
+        "word": " Having ",
+        "count": 0.5,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "https://example.test/synthetic",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": []
+            }
+          },
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "javascript:alert(1)",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": [],
+              "translation": {
+                "text": "有",
+                "source": "mymemory",
+                "target": "zh-CN"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "negative",
+    "valid": false,
+    "data": [
+      {
+        "word": " Having ",
+        "count": -1,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "https://example.test/synthetic",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": []
+            }
+          },
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "javascript:alert(1)",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": [],
+              "translation": {
+                "text": "有",
+                "source": "mymemory",
+                "target": "zh-CN"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "missing-phonetics",
+    "valid": false,
+    "data": [
+      {
+        "word": " Having ",
+        "count": 0.5,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 0,
+            "context": "",
+            "url": "",
+            "definition": {
+              "word": "a",
+              "meanings": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "permissive-optional",
+    "valid": true,
+    "data": [
+      {
+        "word": " Having ",
+        "count": 0.5,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 0,
+            "context": "<script>literal</script>",
+            "url": "file:///synthetic",
+            "definition": {
+              "word": "having",
+              "phonetics": [
+                null,
+                {
+                  "text": false
+                }
+              ],
+              "meanings": [],
+              "phonetic": 17,
+              "source": "legacy-provider"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "empty-word",
+    "valid": false,
+    "data": [
+      {
+        "word": "﻿ ",
+        "count": 0.5,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "https://example.test/synthetic",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": []
+            }
+          },
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "javascript:alert(1)",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": [],
+              "translation": {
+                "text": "有",
+                "source": "mymemory",
+                "target": "zh-CN"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "null-count",
+    "valid": false,
+    "data": [
+      {
+        "word": " Having ",
+        "count": null,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "https://example.test/synthetic",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": []
+            }
+          },
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "javascript:alert(1)",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": [],
+              "translation": {
+                "text": "有",
+                "source": "mymemory",
+                "target": "zh-CN"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

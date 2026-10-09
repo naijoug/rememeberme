@@ -1,0 +1,49 @@
+[
+  {
+    "name": "conflicting-count",
+    "currentCount": 0,
+    "backupCount": 3,
+    "deleted": false,
+    "choice": null,
+    "conflict": true,
+    "canUseBackup": true,
+    "expectedCount": null
+  },
+  {
+    "name": "keep-current",
+    "currentCount": 0,
+    "backupCount": 3,
+    "deleted": false,
+    "choice": "keepCurrent",
+    "conflict": false,
+    "expectedCount": 0
+  },
+  {
+    "name": "use-backup",
+    "currentCount": 0,
+    "backupCount": 3,
+    "deleted": false,
+    "choice": "useBackup",
+    "conflict": false,
+    "expectedCount": 3
+  },
+  {
+    "name": "tombstone",
+    "currentCount": 0,
+    "backupCount": 3,
+    "deleted": true,
+    "choice": "useBackup",
+    "conflict": true,
+    "canUseBackup": false,
+    "expectedCount": null
+  },
+  {
+    "name": "keep-tombstone",
+    "currentCount": 0,
+    "backupCount": 3,
+    "deleted": true,
+    "choice": "keepCurrent",
+    "conflict": false,
+    "expectedCount": 0
+  }
+]

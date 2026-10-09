@@ -1,0 +1,49 @@
+[
+  {
+    "word": " Having ",
+    "count": 0.5,
+    "createdAt": 0,
+    "updatedAt": 1700000000123.5,
+    "history": [
+      {
+        "timestamp": 1700000000123.5,
+        "context": "same synthetic sentence",
+        "url": "https://example.test/synthetic",
+        "definition": {
+          "word": "having",
+          "phonetics": [],
+          "meanings": []
+        }
+      },
+      {
+        "timestamp": 1700000000123.5,
+        "context": "same synthetic sentence",
+        "url": "javascript:alert(1)",
+        "definition": {
+          "word": "having",
+          "phonetics": [],
+          "meanings": [],
+          "translation": {
+            "text": "有",
+            "source": "mymemory",
+            "target": "zh-CN"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "word": "中文",
+    "count": 1e+20,
+    "createdAt": 1e+100,
+    "updatedAt": 1e+100,
+    "history": []
+  },
+  {
+    "word": "empty",
+    "count": 0,
+    "createdAt": 0,
+    "updatedAt": 0,
+    "history": []
+  }
+]

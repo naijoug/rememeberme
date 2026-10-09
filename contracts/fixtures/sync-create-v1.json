@@ -1,0 +1,45 @@
+{
+  "request": {
+    "operationId": "fixture-create",
+    "entryId": "fixture-entry",
+    "kind": "create",
+    "payload": {
+      "word": "Having",
+      "kind": "word",
+      "count": 0.5,
+      "definition": {
+        "word": "have",
+        "phonetics": [],
+        "meanings": []
+      },
+      "notes": "Synthetic note",
+      "createdAtMs": 0.5,
+      "updatedAtMs": 1e+100
+    }
+  },
+  "response": {
+    "operationId": "fixture-create",
+    "status": "applied",
+    "entry": {
+      "id": "fixture-entry",
+      "word": "Having",
+      "kind": "word",
+      "count": 0.5,
+      "definition": {
+        "word": "have",
+        "phonetics": [],
+        "meanings": []
+      },
+      "notes": "Synthetic note",
+      "createdAtMs": 0.5,
+      "updatedAtMs": 1e+100,
+      "normalizedKey": "having",
+      "version": 1,
+      "deleted": false,
+      "review": null,
+      "reviewVersion": 0,
+      "historyOrdering": "retained"
+    },
+    "cursor": 1
+  }
+}

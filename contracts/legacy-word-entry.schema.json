@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rememberme:legacy-word-entry",
+  "title": "Current extension WordEntry[]: permissive optional fields",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "word",
+      "count",
+      "history",
+      "createdAt",
+      "updatedAt"
+    ],
+    "properties": {
+      "word": {
+        "type": "string",
+        "pattern": "[^\\u0009-\\u000D\\u0020\\u00A0\\u1680\\u2000-\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000\\uFEFF]"
+      },
+      "count": {
+        "type": "number",
+        "minimum": 0
+      },
+      "history": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/history"
+        }
+      },
+      "createdAt": {
+        "type": "number",
+        "minimum": 0
+      },
+      "updatedAt": {
+        "type": "number",
+        "minimum": 0
+      }
+    }
+  },
+  "$defs": {
+    "definition": {
+      "type": "object",
+      "required": [
+        "word",
+        "phonetics",
+        "meanings"
+      ],
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "phonetics": {
+          "type": "array"
+        },
+        "meanings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "partOfSpeech",
+              "definitions"
+            ],
+            "properties": {
+              "partOfSpeech": {
+                "type": "string"
+              },
+              "definitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "definition"
+                  ],
+                  "properties": {
+                    "definition": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "translation": {
+          "type": "object",
+          "required": [
+            "text",
+            "source",
+            "target"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "[^\\u0009-\\u000D\\u0020\\u00A0\\u1680\\u2000-\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000\\uFEFF]"
+            },
+            "source": {
+              "const": "mymemory"
+            },
+            "target": {
+              "const": "zh-CN"
+            }
+          }
+        }
+      }
+    },
+    "history": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "context",
+        "url",
+        "definition"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "minimum": 0
+        },
+        "context": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "definition": {
+          "$ref": "#/$defs/definition"
+        }
+      }
+    }
+  }
+}
