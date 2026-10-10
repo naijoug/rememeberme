@@ -43,6 +43,8 @@ extension SyncProjection {
             values.append(("record", .object(["event": event(record, privacy: privacy)])))
         case "associateHistory":
             try history(try decodeEntry(operation.payload).history)
+        case "enrichSource":
+            values.append(("enrichSource", operation.payload))
         case "edit":
             var selected: [String: JSONValue] = [:]
             for key in ["word", "kind", "definition", "notes"] { selected[key] = fields[key] }
@@ -74,8 +76,9 @@ extension SyncProjection {
             } else { id = try wireID(logical: operation.id, index: index, kind: kind) }
             let conditional = ["edit", "reset", "delete", "review", "restore", "legacyMerge"].contains(kind)
             if conditional && remoteVersion < 1 { throw ClientError.conflict("server base state is not available") }
-            let item = APIOperation(operationId: id, entryId: operation.entryID, kind: kind,
+            var item = APIOperation(operationId: id, entryId: operation.entryID, kind: kind,
                 baseVersion: conditional ? remoteVersion : nil, payload: payload)
+            if Self.hasSources(item) { item.sourceRevision = operation.wireSourceRevision ?? 0 }
             guard (try JSONValue.encoder().encode(item)).count <= 256 * 1024 else { throw ClientError.invalidData("sync item exceeds API request limit") }
             result.append(item)
             if index < values.count - 1 { remoteVersion = try VersionToken.next(remoteVersion) }
@@ -86,8 +89,9 @@ extension SyncProjection {
 
 extension LocalRepository {
     static func wireItems(_ context: NSManagedObjectContext, owner: String, generation: String) throws -> [SyncWireItem] {
-        try fetch(context, "SyncRecord", owner: owner, generation: generation).filter { ($0.value(forKey: "id") as? String)?.hasPrefix("wire:") == true }
-            .map { try decode(SyncWireItem.self, $0) }.sorted { a, b in a.sequence == b.sequence ? a.index < b.index : a.sequence < b.sequence }
+        let request = NSFetchRequest<NSManagedObject>(entityName: "SyncRecord")
+        request.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND id BEGINSWITH %@", owner, generation, "wire:")
+        return try context.fetch(request).map { try decode(SyncWireItem.self, $0) }.sorted { a, b in a.sequence == b.sequence ? a.index < b.index : a.sequence < b.sequence }
     }
     public func nextSyncWire(now: Double = Date().timeIntervalSince1970 * 1000) throws -> SyncWireItem? {
         let owner = owner
@@ -95,61 +99,75 @@ extension LocalRepository {
             let meta = try Self.partition(context, owner), generation = Self.generation(meta)
             guard let configuration = try Self.syncValue(SyncConfiguration.self, id: "configuration", context: context, owner: owner, generation: generation),
                   configuration.enabled, configuration.phase == "ready", let epoch = configuration.epoch else { return nil }
-            let logical = try Self.logicalOperations(context, owner: owner, generation: generation)
-            var blockedEntries = Set(logical.filter { $0.state == "conflict" }.map(\.entryID))
-            for var intent in logical.filter({ $0.state == "pending" }) {
-                if blockedEntries.contains(intent.entryID) { continue }
-                if try Self.syncValue(SyncHistoryCheckpoint.self, id: "history:" + intent.entryID, context: context, owner: owner, generation: generation)?.complete == false {
-                    blockedEntries.insert(intent.entryID); continue
-                }
-                let existing = try Self.wireItems(context, owner: owner, generation: generation).filter { $0.logicalId == intent.id }
-                if let first = existing.first(where: { $0.status == "pending" }) {
-                    guard first.epoch == epoch else { throw ClientError.conflict("frozen operation belongs to an earlier server epoch") }
-                    if let retry = first.retryAtMs, retry > now { blockedEntries.insert(intent.entryID); continue }
-                    return first
-                }
-                if let dependencyId = intent.syncDependencyId {
-                    guard let dependency = logical.first(where: { $0.id == dependencyId }) else { throw ClientError.invalidData("sync dependency missing") }
-                    guard dependency.state == "confirmed" else { blockedEntries.insert(intent.entryID); continue }
-                    if let expected = intent.dependencyExpectedVersion, let actual = dependency.confirmedRemoteVersion,
-                       actual < expected {
-                        intent.observedRemoteVersion = max(intent.observedVersionFloor ?? 0, (intent.observedRemoteVersion ?? expected) - (expected - actual))
+            var blockedEntries = Set<String>()
+            let request = NSFetchRequest<NSManagedObject>(entityName: "Operation")
+            request.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND state == %@", owner, generation, "pending")
+            request.sortDescriptors = [NSSortDescriptor(key: "sequence", ascending: true)]; request.fetchLimit = 50
+            let wires = try Self.wireItems(context, owner: owner, generation: generation)
+            while true {
+                let rows = try context.fetch(request)
+                if rows.isEmpty { return nil }
+                for row in rows {
+                    var intent = try Self.decode(PendingOperation.self, row)
+                    let conflicts = NSFetchRequest<NSFetchRequestResult>(entityName: "Operation")
+                    conflicts.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND entryID == %@ AND state == %@", owner, generation, intent.entryID, "conflict")
+                    if try context.count(for: conflicts) > 0 { blockedEntries.insert(intent.entryID) }
+                    if blockedEntries.contains(intent.entryID) { continue }
+                    if try Self.syncValue(SyncHistoryCheckpoint.self, id: "history:" + intent.entryID, context: context, owner: owner, generation: generation)?.complete == false {
+                        blockedEntries.insert(intent.entryID); continue
                     }
-                    if let expected = intent.dependencyExpectedReviewVersion, let actual = dependency.confirmedReviewVersion,
-                       actual < expected {
-                        intent.observedReviewVersion = max(intent.observedReviewVersionFloor ?? 0, (intent.observedReviewVersion ?? expected) - (expected - actual))
+                    let existing = wires.filter { $0.logicalId == intent.id }
+                    if let first = existing.first(where: { $0.status == "pending" }) {
+                        guard first.epoch == epoch else { throw ClientError.conflict("frozen operation belongs to an earlier server epoch") }
+                        if let retry = first.retryAtMs, retry > now { blockedEntries.insert(intent.entryID); continue }
+                        return first
                     }
-                    intent.dependencyExpectedVersion = nil; intent.dependencyExpectedReviewVersion = nil
-                    // Never raise an explicit mutation's base just because an
-                    // additive predecessor ran over unseen concurrent changes.
-                }
-                let base = try Self.syncValue(APIEntry.self, id: "base:" + intent.entryID, context: context, owner: owner, generation: generation)
-                intent.wirePrivacy = intent.wirePrivacy ?? configuration.privacy
-                // The payload/chunk layout is stable. Only duplicate/no-op
-                // acknowledgements can lower the expected causal base; unseen
-                // concurrent increments must still produce a CAS conflict.
-                let projected = try SyncProjection.makeWire(intent, privacy: intent.wirePrivacy!, base: base)
-                intent.wireCount = projected.count
-                let index = existing.count
-                guard index < projected.count else { throw ClientError.invalidData("incomplete wire confirmation") }
-                var operation = projected[index]
-                if operation.baseVersion != nil, index > 0 {
-                    var previous = intent.observedRemoteVersion ?? 0, noOps = 0
-                    for predecessor in existing {
-                        guard let actual = predecessor.confirmedRemoteVersion else { throw ClientError.invalidData("wire predecessor result missing") }
-                        if actual <= previous { noOps += 1 }
-                        previous = actual
+                    if let dependencyId = intent.syncDependencyId {
+                        guard let dependencyRow = try Self.row(context, "Operation", owner, generation, dependencyId) else { throw ClientError.invalidData("sync dependency missing") }
+                        let dependency = try Self.decode(PendingOperation.self, dependencyRow)
+                        guard dependency.state == "confirmed" else { blockedEntries.insert(intent.entryID); continue }
+                        if let expected = intent.dependencyExpectedVersion, let actual = dependency.confirmedRemoteVersion,
+                           actual < expected {
+                            intent.observedRemoteVersion = max(intent.observedVersionFloor ?? 0, (intent.observedRemoteVersion ?? expected) - (expected - actual))
+                        }
+                        if let expected = intent.dependencyExpectedReviewVersion, let actual = dependency.confirmedReviewVersion,
+                           actual < expected {
+                            intent.observedReviewVersion = max(intent.observedReviewVersionFloor ?? 0, (intent.observedReviewVersion ?? expected) - (expected - actual))
+                        }
+                        intent.dependencyExpectedVersion = nil; intent.dependencyExpectedReviewVersion = nil
+                        // Never raise an explicit mutation's base just because an
+                        // additive predecessor ran over unseen concurrent changes.
                     }
-                    operation.baseVersion = max(intent.observedVersionFloor ?? 0, operation.baseVersion! - noOps)
+                    let base = try Self.syncValue(APIEntry.self, id: "base:" + intent.entryID, context: context, owner: owner, generation: generation)
+                    if intent.wirePrivacy == nil {
+                        intent.wirePrivacy = configuration.privacy; intent.wireSourceRevision = configuration.sourceRevision ?? 0
+                    }
+                    // The payload/chunk layout is stable. Only duplicate/no-op
+                    // acknowledgements can lower the expected causal base; unseen
+                    // concurrent increments must still produce a CAS conflict.
+                    let projected = try SyncProjection.makeWire(intent, privacy: intent.wirePrivacy!, base: base)
+                    intent.wireCount = projected.count
+                    let index = existing.count
+                    guard index < projected.count else { throw ClientError.invalidData("incomplete wire confirmation") }
+                    var operation = projected[index]
+                    if operation.baseVersion != nil, index > 0 {
+                        var previous = intent.observedRemoteVersion ?? 0, noOps = 0
+                        for predecessor in existing {
+                            guard let actual = predecessor.confirmedRemoteVersion else { throw ClientError.invalidData("wire predecessor result missing") }
+                            if actual <= previous { noOps += 1 }
+                            previous = actual
+                        }
+                        operation.baseVersion = max(intent.observedVersionFloor ?? 0, operation.baseVersion! - noOps)
+                    }
+                    let item = SyncWireItem(id: operation.operationId, logicalId: intent.id, entryId: intent.entryID,
+                        sequence: intent.sequence ?? 0, index: index, epoch: epoch, body: try JSONValue.encoder().encode(operation),
+                        status: "pending", attempts: 0, retryAtMs: nil, errorCode: nil)
+                    try Self.writeLogical(intent, context: context, generation: generation)
+                    try Self.writeSync(item, id: "wire:" + item.id, context: context, owner: owner, generation: generation)
+                    Self.bump(meta); return item
                 }
-                let item = SyncWireItem(id: operation.operationId, logicalId: intent.id, entryId: intent.entryID,
-                    sequence: intent.sequence ?? 0, index: index, epoch: epoch, body: try JSONValue.encoder().encode(operation),
-                    status: "pending", attempts: 0, retryAtMs: nil, errorCode: nil)
-                try Self.writeLogical(intent, context: context, generation: generation)
-                try Self.writeSync(item, id: "wire:" + item.id, context: context, owner: owner, generation: generation)
-                Self.bump(meta); return item
+                request.fetchOffset += rows.count
             }
-            return nil
         }
     }
     public func acknowledgeSyncWire(_ id: String, result: APIOperationResult, fault: Fault = .none) throws {
@@ -175,7 +193,11 @@ extension LocalRepository {
             else { eventValues = operation.payload["events"]?.items ?? [] }
             for event in eventValues {
                 if let eventId = event["id"]?.text {
-                    try Self.writeSync(event, id: "event:" + LegacyCodec.digest(Data(wire.entryId.utf8)) + ":" + eventId, context: context, owner: owner, generation: generation)
+                    let key = "event:" + LegacyCodec.digest(Data(wire.entryId.utf8)) + ":" + eventId
+                    var fields = try Self.syncValue(JSONValue.self, id: key, context: context, owner: owner, generation: generation)?.fields ?? [:]
+                    for (name, value) in event.fields ?? [:] { fields[name] = value }
+                    fields["sourceRevision"] = .number(Double(operation.sourceRevision ?? 0))
+                    try Self.writeSync(JSONValue.object(fields), id: key, context: context, owner: owner, generation: generation)
                 }
             }
             let related = try Self.wireItems(context, owner: owner, generation: generation).filter { $0.logicalId == wire.logicalId }

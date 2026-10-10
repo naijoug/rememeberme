@@ -68,7 +68,7 @@ public struct ServerSnapshotLoader: Sendable {
         let latest = try await api.account()
         guard try await api.identity() == identity, latest.userId == account.userId, latest.deviceId == account.deviceId else { throw AuthenticationError.superseded }
         guard latest.epoch == account.epoch, latest.timezone == account.timezone,
-              latest.syncContext == account.syncContext, latest.syncURLs == account.syncURLs else { throw ClientError.stalePreview }
+              latest.syncContext == account.syncContext, latest.syncURLs == account.syncURLs, latest.sourceRevision == account.sourceRevision else { throw ClientError.stalePreview }
         return ServerSnapshot(identity: identity, account: latest, boundary: boundary ?? 0, entries: entries)
     }
 }

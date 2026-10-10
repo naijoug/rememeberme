@@ -32,12 +32,23 @@ private actor VocabularyAPI: SyncAPI {
     private var accountCalls = 0
     private var epoch = "synthetic-epoch"
     private var offline = false
+    private var sourcePrivacy = SyncPrivacy()
+    private var sourceRevision = 0
+    private var lostRemoval: SourceRemovalRequest?
+    private var loseRemovalReply = false
     var delay = 0.0
     var capabilities = ["history-order-v1", "history-version-v1", "explicit-lifecycles-v1"]
     func setDelay(_ value: Double) { delay = value }
     func setCapabilities(_ values: [String]) { capabilities = values }
     func setEpoch(_ value: String) { epoch = value }
     func setOffline(_ value: Bool) { offline = value }
+    func setRemovalReplyLoss(_ value: Bool) { loseRemovalReply = value }
+    func setSourcePrivacy(_ privacy: SyncPrivacy, timezone: String) async throws { sourcePrivacy = privacy }
+    func clearSources(_ request: SourceRemovalRequest, epoch: String) async throws -> Int {
+        if lostRemoval != request { sourceRevision += 1; lostRemoval = request; sourcePrivacy = SyncPrivacy() }
+        if loseRemovalReply { throw URLError(.networkConnectionLost) }
+        return request.sourceRevision + 1
+    }
     func mutateCloud() {
         guard var fields = state?.fields else { return }
         fields["version"] = .number((fields["version"]?.number ?? 0) + 1); fields["count"] = .number(9); state = .object(fields)
@@ -51,7 +62,7 @@ private actor VocabularyAPI: SyncAPI {
         if delay > 0 { try await Task.sleep(for: .seconds(delay)) }
         return try JSONDecoder().decode(APIAccountIdentity.self, from: JSONValue.encoder().encode(JSONValue.object([
             "userId": .string("synthetic-account"), "deviceId": .string("synthetic-device"), "epoch": .string(epoch),
-            "timezone": .string("UTC"), "syncContext": .bool(false), "syncURLs": .bool(false),
+            "timezone": .string("UTC"), "syncContext": .bool(sourcePrivacy.context), "syncURLs": .bool(sourcePrivacy.urls), "sourceRevision": .number(Double(sourceRevision)),
             "reviewDay": .string(try ReviewDate.localDay(Date().timeIntervalSince1970 * 1000, timeZoneID: "UTC")), "reviewAdmissionIds": .array([]),
             "displayName": .string("Synthetic account"), "syncCapabilities": .array(capabilities.map(JSONValue.string))])))
     }
@@ -278,4 +289,25 @@ private actor SilentLookup: LookupTransport {
     #expect(try await account.repository.recoverableImports().contains { $0.mode == .restoreAccount })
     #expect(await api.submitted().count == 1)
     try await cleanupVocabulary(url, defaults, account)
+}
+
+@Test @MainActor func sourcePrivacyUIRequiresExplicitConsentAndRetainsRemovalRetryAfterLostReply() async throws {
+    let (url, defaults, _, _, model, api) = try await vocabularySetup()
+    await api.setCapabilities(["history-order-v1", "history-version-v1", "explicit-lifecycles-v1", "source-privacy-v1"])
+    model.openCloudVocabulary(); while model.busy { await Task.yield() }
+    #expect(model.sourceControlsAvailable); #expect(model.sourcePrivacy == SyncPrivacy())
+    model.setSourcePrivacy(.init(context: true, urls: false)); while model.busy { await Task.yield() }
+    #expect(model.error == nil); #expect(model.sourcePrivacy == SyncPrivacy(context: true, urls: false)); #expect(!model.syncEnabled)
+    await api.setRemovalReplyLoss(true)
+    model.clearUploadedSources(); while model.busy { await Task.yield() }
+    #expect(model.error != nil); #expect(model.sourceRemovalPending); #expect(!model.syncEnabled)
+    let pending = try #require(try await model.repository.syncConfiguration()?.pendingSourceRemoval)
+    model.setSyncEnabled(true); while model.busy { await Task.yield() }
+    #expect(!model.syncEnabled); #expect(model.error != nil)
+    await api.setRemovalReplyLoss(false)
+    model.clearUploadedSources(); while model.busy { await Task.yield() }
+    #expect(model.error == nil); #expect(!model.sourceRemovalPending); #expect(model.sourcePrivacy == SyncPrivacy())
+    #expect(try await model.repository.syncConfiguration()?.sourceRevision == pending.sourceRevision + 1)
+    #expect(!model.syncEnabled); #expect(await api.submitted().isEmpty)
+    try await cleanupVocabulary(url, defaults, model)
 }

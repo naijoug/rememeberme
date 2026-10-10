@@ -61,10 +61,16 @@ final class VocabularyUITests: XCTestCase {
         app.buttons["Options"].tap(); app.buttons["Today’s review"].tap()
         let reveal = app.buttons["Reveal meaning"]
         XCTAssertTrue(reveal.waitForExistence(timeout: 5))
+        let beforeReveal = XCTAttachment(screenshot: app.screenshot())
+        beforeReveal.name = "iPad review before reveal"; beforeReveal.lifetime = .keepAlways; add(beforeReveal)
         XCTAssertFalse(app.staticTexts["Literal synthetic meaning"].exists)
         reveal.tap(); XCTAssertTrue(app.staticTexts["Literal synthetic meaning"].waitForExistence(timeout: 5))
+        let afterReveal = XCTAttachment(screenshot: app.screenshot())
+        afterReveal.name = "iPad review after reveal"; afterReveal.lifetime = .keepAlways; add(afterReveal)
         app.buttons["Remembered"].tap()
         XCTAssertTrue(app.staticTexts["Review complete for now"].waitForExistence(timeout: 5))
+        let completed = XCTAttachment(screenshot: app.screenshot())
+        completed.name = "iPad review completed"; completed.lifetime = .keepAlways; add(completed)
         app.buttons["Done"].tap()
         if !app.buttons["Record once forgotten"].exists { app.staticTexts["synthetic"].firstMatch.tap() }
         XCTAssertTrue(app.staticTexts["Forgotten: 1"].waitForExistence(timeout: 5))

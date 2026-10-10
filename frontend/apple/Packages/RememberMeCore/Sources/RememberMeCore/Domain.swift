@@ -84,6 +84,7 @@ public struct PendingOperation: Codable, Sendable, Equatable, Identifiable {
     public var dependencyExpectedReviewVersion: Int?
     public var observedVersionFloor: Int?
     public var observedReviewVersionFloor: Int?
+    public var wireSourceRevision: Int?
     public var wirePrivacy: SyncPrivacy?
     public var wireCount: Int?
     public var confirmedRemoteVersion: Int?

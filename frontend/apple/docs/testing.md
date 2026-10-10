@@ -92,3 +92,9 @@ python3 frontend/apple/scripts/verify-dictionary-assets.py /tmp/rememberme-ios-b
 ```
 
 Share Extension/device acceptance remains required: provision both app and extension with the same available `REMEMBERME_APP_GROUP`, then share text and URL-only payloads from real hosts with the main app closed; verify inbox acknowledgment, confirmation, duplicate delivery, disk failure and capability failure. No registry or signing team has been selected by the automation.
+
+## Source privacy and current local acceptance
+
+The [2026-10-09 source privacy checkpoint](verification/2026-10-09-source-privacy.md) records 119 core, 20 presentation and 32 API tests, real local native HTTP removal/backfill/restart checks, the four passing iPad simulator UI cases and manual Mac keyboard/AX evidence. Source removal freezes an idempotent request before I/O and blocks sending on unknown outcomes; test re-enable plus old frozen/unsubmitted source intents as well as explicit new backfill. Account/snapshot recovery rechecks the source revision.
+
+`RememberMeProbe sync-benchmark /tmp/rememberme-sync-benchmark-NEW/store.sqlite` requires a new synthetic directory and measures 10k-word/100k-history outbox setup, status/first-wire/retry latency, exact request recovery after reopen and peak RSS without network. Paging/database-count optimization reduced retry p95 from 7183.5 to 32.7ms in the observed Mac debug run. Neither benchmark proves full hosted throughput or physical-device acceptance. Use [staging/device acceptance](staging-device-acceptance.md) for the unfinished signing/OAuth/share/notification/accessibility and large-store device checks.

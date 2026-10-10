@@ -329,3 +329,19 @@ private func acknowledge(_ repository: LocalRepository, wire: SyncWireItem, entr
     #expect(try await reopened.entry("fixture")?.count == 3)
     try await reopened.close()
 }
+
+@Test func syncPagingCanReachAnEligibleIntentBeyondFiftyBackedOffEntries() async throws {
+    let url = temporaryURL(); defer { cleanup(url) }
+    let repository = try await make(url)
+    for index in 0..<51 {
+        try await repository.create(VocabularyEntry(id: "entry-\(index)", word: "synthetic-\(index)", timestamp: 1, definition: empty))
+    }
+    for _ in 0..<50 {
+        let wire = try #require(try await repository.nextSyncWire(now: 1000))
+        try await repository.rejectSyncWire(wire.id, code: "NETWORK_UNAVAILABLE", retryable: true, now: 1000)
+    }
+    let available = try #require(try await repository.nextSyncWire(now: 1001))
+    #expect(available.entryId == "entry-50")
+    #expect(try await repository.syncStatus().pending == 51)
+    try await repository.close()
+}

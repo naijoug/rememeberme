@@ -43,6 +43,9 @@ extension LocalRepository {
     static func assignSyncObservation(_ operation: inout PendingOperation, context: NSManagedObjectContext, generation: String) throws {
         guard let configuration = try syncValue(SyncConfiguration.self, id: "configuration", context: context, owner: operation.owner, generation: generation) else { return }
         guard SyncConfiguration.owner(for: configuration.identity) == operation.owner else { throw ClientError.invalidData("sync owner") }
+        if operation.wirePrivacy == nil {
+            operation.wirePrivacy = configuration.privacy; operation.wireSourceRevision = configuration.sourceRevision ?? 0
+        }
         let base = try syncValue(APIEntry.self, id: "base:" + operation.entryID, context: context, owner: operation.owner, generation: generation)
         let earlier = try logicalOperations(context, owner: operation.owner, generation: generation, entryId: operation.entryID)
             .filter { $0.state == "pending" || $0.state == "conflict" }
@@ -83,6 +86,7 @@ extension LocalRepository {
             var configuration = try Self.syncValue(SyncConfiguration.self, id: "configuration", context: context, owner: owner, generation: generation)
                 ?? SyncConfiguration(identity: identity)
             guard configuration.origin == identity.origin, configuration.userId == identity.userId else { throw ClientError.invalidData("account ownership changed") }
+            guard !enabled || configuration.pendingSourceRemoval == nil else { throw ClientError.conflict("Complete source removal before enabling sync") }
             configuration.deviceId = identity.deviceId; configuration.enabled = enabled; configuration.privacy = privacy
             try Self.writeSync(configuration, id: "configuration", context: context, owner: owner, generation: generation); Self.bump(meta)
         }
@@ -91,10 +95,13 @@ extension LocalRepository {
         let owner = owner
         return try context.performAndWait {
             let generation = Self.generation(try Self.partition(context, owner))
-            let operations = try Self.logicalOperations(context, owner: owner, generation: generation)
             let configuration = try Self.syncValue(SyncConfiguration.self, id: "configuration", context: context, owner: owner, generation: generation)
-            return SyncStatus(pending: operations.filter { $0.state == "pending" }.count,
-                conflicts: operations.filter { $0.state == "conflict" }.count, configuration: configuration)
+            func count(_ state: String) throws -> Int {
+                let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Operation")
+                request.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND state == %@", owner, generation, state)
+                return try context.count(for: request)
+            }
+            return try SyncStatus(pending: count("pending"), conflicts: count("conflict"), configuration: configuration)
         }
     }
     public func initializeSyncEpoch(_ account: APIAccountIdentity) throws {
@@ -108,6 +115,10 @@ extension LocalRepository {
                 try Self.writeSync(configuration, id: "configuration", context: context, owner: owner, generation: generation); Self.bump(meta)
                 return
             }
+            guard account.sourceRevision == nil || VersionToken.valid(account.sourceRevision!) else { throw ClientError.invalidData("source revision") }
+            configuration.sourceRevision = account.sourceRevision
+            configuration.privacy.context = configuration.privacy.context && account.syncContext
+            configuration.privacy.urls = configuration.privacy.urls && account.syncURLs
             configuration.epoch = account.epoch
             configuration.timeZoneID = account.timezone
             configuration.capabilities = account.syncCapabilities
@@ -115,7 +126,6 @@ extension LocalRepository {
             try Self.validateReviewAdmissions(account)
             configuration.serverReviewDay = account.reviewDay; configuration.serverReviewAdmissionIds = account.reviewAdmissionIds
             if configuration.phase == "initial" { configuration.phase = "snapshot"; configuration.snapshotCursor = 0; configuration.snapshotBoundary = nil }
-            configuration.privacy = SyncPrivacy(context: account.syncContext, urls: account.syncURLs)
             try Self.writeSync(configuration, id: "configuration", context: context, owner: owner, generation: generation); Self.bump(meta)
         }
     }

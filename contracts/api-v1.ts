@@ -2,7 +2,7 @@
 export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 export type EntryKind = 'word' | 'phrase' | 'abbreviation' | 'proper_noun';
 export type OperationKind = 'create' | 'seed' | 'record' | 'importHistory' | 'edit' | 'reset' | 'delete' | 'review' | 'restore' | 'enrichSource' | 'legacyMerge';
-export interface WireOperation { operationId: string; entryId: string; kind: OperationKind; baseVersion?: number; payload: Record<string, Json> }
+export interface WireOperation { operationId: string; entryId: string; kind: OperationKind; baseVersion?: number; sourceRevision?: number; payload: Record<string, Json> }
 export interface WireReview { algorithmVersion: 'review-v1'; step: number; dueAtMs: number }
 export interface WireEntry {
   id: string; word: string; normalizedKey: string; kind: EntryKind; count: number | null;
@@ -68,9 +68,9 @@ function seed(p: Record<string, unknown>, migration: boolean) {
 }
 export function parseOperation(v: unknown): WireOperation {
   if (!object(v)) throw new ApiError('INVALID_REQUEST');
-  keys(v, ['operationId', 'entryId', 'kind', 'baseVersion', 'payload'], ['operationId', 'entryId', 'kind', 'payload']);
+  keys(v, ['operationId', 'entryId', 'kind', 'baseVersion', 'sourceRevision', 'payload'], ['operationId', 'entryId', 'kind', 'payload']);
   if (!id(v.operationId) || !id(v.entryId) || !ACTIONS.includes(v.kind as OperationKind) || !object(v.payload) || !json(v.payload)
-    || (v.baseVersion !== undefined && !version(v.baseVersion))) throw new ApiError('INVALID_REQUEST');
+    || (v.baseVersion !== undefined && !version(v.baseVersion)) || (v.sourceRevision !== undefined && !version(v.sourceRevision))) throw new ApiError('INVALID_REQUEST');
   const kind = v.kind as OperationKind, p = v.payload;
   if (['edit', 'reset', 'delete', 'review', 'restore', 'legacyMerge'].includes(kind) && !version(v.baseVersion)) throw new ApiError('BASE_VERSION_REQUIRED');
   switch (kind) {
@@ -116,7 +116,7 @@ export function parseOperation(v: unknown): WireOperation {
       break;
   }
   // Validation above establishes a JSON object; preserve only typed protocol fields.
-  return { operationId: v.operationId, entryId: v.entryId, kind, ...(v.baseVersion === undefined ? {} : { baseVersion: v.baseVersion }), payload: v.payload };
+  return { operationId: v.operationId, entryId: v.entryId, kind, ...(v.baseVersion === undefined ? {} : { baseVersion: v.baseVersion }), ...(v.sourceRevision === undefined ? {} : { sourceRevision: v.sourceRevision as number }), payload: v.payload };
 }
 export function canonical(v: Json): string {
   const ordered = (value: Json): Json => Array.isArray(value) ? value.map(ordered)

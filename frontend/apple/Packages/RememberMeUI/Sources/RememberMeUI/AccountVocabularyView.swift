@@ -6,6 +6,8 @@ struct AccountVocabularyView: View {
     @ObservedObject var connection: AccountConnectionModel
     @State private var resolving: SyncConflict?
     @State private var separateCopy = false
+    @State private var clearingSources = false
+    @State private var backfillingSources = false
     init(model: AccountVocabularyModel) { self.model = model; connection = model.connection }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -22,6 +24,20 @@ struct AccountVocabularyView: View {
                 Toggle("Enable cloud sync", isOn: Binding(get: { model.syncEnabled }, set: { model.setSyncEnabled($0) }))
                     .disabled(model.busy || connection.identity == nil || model.epochConflict)
                 Button("Synchronize now") { model.synchronize() }.disabled(model.busy || !model.syncEnabled)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Source privacy").font(.headline)
+                    Toggle("Sync encounter contexts", isOn: Binding(get: { model.sourcePrivacy.context }, set: {
+                        model.setSourcePrivacy(SyncPrivacy(context: $0, urls: model.sourcePrivacy.urls))
+                    })).accessibilityIdentifier("sync-source-context")
+                    Toggle("Sync source URLs", isOn: Binding(get: { model.sourcePrivacy.urls }, set: {
+                        model.setSourcePrivacy(SyncPrivacy(context: model.sourcePrivacy.context, urls: $0))
+                    })).accessibilityIdentifier("sync-source-urls")
+                    Text("Sources may contain private webpage text and addresses. Preferences apply to this account; this device also requires your consent. Turning a switch off retains uploaded sources. Changes pause sync.").font(.caption)
+                    Button("Backfill historical sources…") { backfillingSources = true }
+                        .disabled(!model.sourcePrivacy.context && !model.sourcePrivacy.urls || model.sourceRemovalPending)
+                    Button(model.sourceRemovalPending ? "Retry uploaded source removal…" : "Clear uploaded contexts and URLs…", role: .destructive) { clearingSources = true }
+                    if model.sourceRemovalPending { Text("Removal is awaiting confirmation. Sync stays paused; retry completes the same request.").font(.caption) }
+                }.disabled(model.busy || connection.identity == nil || model.epochConflict || !model.sourceControlsAvailable)
                 if model.epochConflict {
                     Text("Your saved vocabulary and pending changes are retained. Keep sync paused until the restored cloud data has been reconciled.").font(.caption)
                     Button("Review restored cloud vocabulary…") { model.prepareEpochRecovery() }.disabled(model.busy || connection.identity == nil)
@@ -47,6 +63,18 @@ struct AccountVocabularyView: View {
         }
         .sheet(isPresented: Binding(get: { model.preview != nil }, set: { if !$0 { model.dismissPreview() } })) {
             OwnershipPreviewView(model: model)
+        }
+        .alert("Clear all uploaded sources?", isPresented: $clearingSources) {
+            Button("Cancel", role: .cancel) {}
+            Button("Clear uploaded sources", role: .destructive) { model.clearUploadedSources() }
+        } message: {
+            Text("This removes contexts and URLs from cloud history across this account and turns both source switches off. Local sources and exported backups remain. Sync stays paused. Earlier requests cannot upload the cleared sources again.")
+        }
+        .alert("Backfill historical sources?", isPresented: $backfillingSources) {
+            Button("Cancel", role: .cancel) {}
+            Button("Queue enabled source fields") { model.backfillHistoricalSources() }
+        } message: {
+            Text("This queues enabled source fields from this device for historical events already in the cloud. Counts and review schedules stay unchanged. Enable sync afterward to upload. Cancelling a running backfill retains sources already queued.")
         }
         .sheet(isPresented: Binding(get: { model.recoveryPreview != nil }, set: { if !$0 { model.dismissEpochRecovery() } })) {
             EpochRecoveryPreviewView(model: model)

@@ -8,6 +8,7 @@ public struct EpochRecoveryProvenance: Codable, Sendable, Equatable {
     public var sourceGeneration: String
     public var previousEpoch: String
     public var configuration: SyncConfiguration
+    public var serverPrivacy: SyncPrivacy? = nil
 }
 public struct EpochRecoveryItem: Sendable, Identifiable {
     public var id: String
@@ -54,7 +55,8 @@ extension LocalRepository {
             let localById = Dictionary(uniqueKeysWithValues: locals.map { ($0.id, $0) })
             guard Set(snapshot.entries.map { $0.state.id }).count == snapshot.entries.count else { throw ClientError.invalidData("recovery lifecycle identity") }
             let clouds = Dictionary(uniqueKeysWithValues: snapshot.entries.map { ($0.state.id, $0) })
-            var configuration = SyncConfiguration(identity: snapshot.identity, enabled: false, privacy: .init(context: snapshot.account.syncContext, urls: snapshot.account.syncURLs))
+            var configuration = SyncConfiguration(identity: snapshot.identity, enabled: false, privacy: .init(context: previous.privacy.context && snapshot.account.syncContext, urls: previous.privacy.urls && snapshot.account.syncURLs))
+            configuration.sourceRevision = snapshot.account.sourceRevision
             configuration.epoch = snapshot.account.epoch; configuration.cursor = snapshot.boundary; configuration.phase = "ready"
             configuration.timeZoneID = snapshot.account.timezone; configuration.capabilities = snapshot.account.syncCapabilities; configuration.displayName = snapshot.account.displayName
             try Self.validateReviewAdmissions(snapshot.account)
@@ -131,7 +133,7 @@ extension LocalRepository {
             var plan = ImportPreview(id: previewId, mode: .reconcileEpoch, revision: meta.value(forKey: "revision") as! Int64, owner: owner,
                 entries: entries, sources: sources, conflicts: conflicts, operations: operations, alreadyImported: false,
                 losses: ["Export a current complete backup before continuing.", "Earlier-epoch requests stay in the recovery generation and are never replayed.", "Retained local changes remain explicit conflicts; selected field restores use new request IDs and current cloud versions."])
-            plan.epochRecovery = .init(sourceGeneration: generation, previousEpoch: epoch, configuration: configuration)
+            plan.epochRecovery = .init(sourceGeneration: generation, previousEpoch: epoch, configuration: configuration, serverPrivacy: .init(context: snapshot.account.syncContext, urls: snapshot.account.syncURLs))
             plan.remoteBases = bases
             return .init(items: items, previousPendingCount: old.filter { $0.state == "pending" || $0.state == "conflict" }.count, plan: plan)
         }
@@ -223,7 +225,8 @@ extension LocalRepository {
               identity == provenance.configuration.identity, account.userId == identity.userId, account.deviceId == identity.deviceId,
               account.epoch == provenance.configuration.epoch, account.timezone == provenance.configuration.timeZoneID,
               account.reviewDay != nil, account.reviewAdmissionIds != nil,
-              account.syncContext == provenance.configuration.privacy.context, account.syncURLs == provenance.configuration.privacy.urls else { throw ClientError.stalePreview }
+              account.sourceRevision == provenance.configuration.sourceRevision,
+              account.syncContext == (provenance.serverPrivacy ?? provenance.configuration.privacy).context, account.syncURLs == (provenance.serverPrivacy ?? provenance.configuration.privacy).urls else { throw ClientError.stalePreview }
         let owner = owner, now = Date().timeIntervalSince1970 * 1000
         try transaction { context in
             let request = NSFetchRequest<NSManagedObject>(entityName: "Batch")

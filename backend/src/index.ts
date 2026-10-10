@@ -43,8 +43,8 @@ app.get('/api/v1/me', async c => {
   const who = c.get('identity');
   const profile = await c.env.DB.prepare('SELECT login FROM users WHERE id=? AND deleted_at IS NULL').bind(who.userId).first<{ login: string }>();
   return c.json({ userId: who.userId, deviceId: who.deviceId, epoch: who.epoch, timezone: who.timezone,
-    syncContext: who.syncContext, syncURLs: who.syncURLs, displayName: profile?.login ?? '',
-    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1'] });
+    sourceRevision: who.sourceRevision, syncContext: who.syncContext, syncURLs: who.syncURLs, displayName: profile?.login ?? '',
+    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1'] });
 });
 app.get('/api/v1/entries/:id', async c => {
   const entryId = c.req.param('id'); if (!id(entryId)) throw new ApiError('INVALID_REQUEST');
@@ -91,6 +91,41 @@ app.put('/api/v1/preferences', async c => {
     .bind(input.timezone, Number(input.syncContext), Number(input.syncURLs), c.get('identity').userId).run();
   return c.json({ updated: true });
 });
+app.post('/api/v1/sources/clear', async c => {
+  const input = await requestJSON(c.req.raw);
+  if (!object(input)) throw new ApiError('INVALID_REQUEST');
+  keys(input, ['requestId', 'sourceRevision'], ['requestId', 'sourceRevision']);
+  if (!id(input.requestId) || !version(input.sourceRevision)) throw new ApiError('INVALID_REQUEST');
+  const who = c.get('identity'), db = c.env.DB;
+  const receipt = () => db.prepare('SELECT source_revision FROM source_removals WHERE user_id=? AND id=?')
+    .bind(who.userId, input.requestId).first<{ source_revision: number }>();
+  const prior = await receipt();
+  if (prior) {
+    if (prior.source_revision !== input.sourceRevision + 1) throw new ApiError('OPERATION_ID_REUSED', 409);
+    return c.json({ cleared: true, sourceRevision: prior.source_revision });
+  }
+  if (input.sourceRevision !== who.sourceRevision) throw new ApiError('SOURCE_REVISION_CHANGED', 409);
+  if (who.sourceRevision >= Number.MAX_SAFE_INTEGER) throw new ApiError('VERSION_EXHAUSTED', 409);
+  const nonce = crypto.randomUUID();
+  try {
+    await db.batch([
+      db.prepare(`INSERT INTO write_guards(nonce,allowed) SELECT ?,CASE WHEN EXISTS(
+        SELECT 1 FROM sessions s JOIN users u ON u.id=s.user_id JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id
+        WHERE s.token_hash=? AND s.revoked_at IS NULL AND s.access_expires_at>? AND d.revoked_at IS NULL
+        AND u.deleted_at IS NULL AND u.source_revision=? AND u.sync_epoch=?) THEN 1 ELSE 0 END`)
+        .bind(nonce, who.sessionHash, Date.now(), who.sourceRevision, who.epoch),
+      db.prepare('UPDATE users SET sync_context=0,sync_urls=0,source_revision=source_revision+1 WHERE id=?').bind(who.userId),
+      db.prepare("UPDATE encounters SET context='',url='' WHERE user_id=?").bind(who.userId),
+      db.prepare('INSERT INTO source_removals(user_id,id,source_revision) VALUES(?,?,?)').bind(who.userId, input.requestId, who.sourceRevision + 1),
+      db.prepare('DELETE FROM write_guards WHERE nonce=?').bind(nonce)
+    ]);
+  } catch {
+    const replay = await receipt();
+    if (!replay) throw new ApiError('SOURCE_REVISION_CHANGED', 409);
+    if (replay.source_revision !== input.sourceRevision + 1) throw new ApiError('OPERATION_ID_REUSED', 409);
+  }
+  return c.json({ cleared: true, sourceRevision: who.sourceRevision + 1 });
+});
 app.get('/api/v1/devices', async c => {
   const rows = await c.env.DB.prepare('SELECT id,name,created_at AS createdAtMs,revoked_at AS revokedAtMs FROM devices WHERE user_id=? ORDER BY created_at,id')
     .bind(c.get('identity').userId).all(); return c.json({ devices: rows.results });
@@ -119,6 +154,7 @@ app.delete('/api/v1/account', async c => {
     c.env.DB.prepare('DELETE FROM vocabulary_entries WHERE user_id=?').bind(who.userId),
     c.env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(who.userId),
     c.env.DB.prepare('DELETE FROM devices WHERE user_id=?').bind(who.userId),
+    c.env.DB.prepare('DELETE FROM source_removals WHERE user_id=?').bind(who.userId),
     c.env.DB.prepare('DELETE FROM users WHERE id=?').bind(who.userId)
   ]); return c.json({ deleted: true });
 });

@@ -21,6 +21,8 @@ public struct SyncConfiguration: Codable, Sendable, Equatable {
     public var serverReviewAdmissionIds: [String]? = nil
     public var snapshotCursor: Int
     public var phase: String
+    public var sourceRevision: Int? = nil
+    public var pendingSourceRemoval: SourceRemovalRequest? = nil
     public var privacy: SyncPrivacy
     public init(identity: ConnectedIdentity, enabled: Bool = false, privacy: SyncPrivacy = SyncPrivacy()) {
         origin = identity.origin; userId = identity.userId; deviceId = identity.deviceId; self.enabled = enabled
@@ -81,6 +83,7 @@ public struct APIAccountIdentity: Codable, Sendable, Equatable {
     public var timezone: String
     public var syncContext: Bool
     public var syncURLs: Bool
+    public var sourceRevision: Int? = nil
     public var syncCapabilities: [String]? = nil
     public var displayName: String? = nil
     public var reviewDay: String? = nil

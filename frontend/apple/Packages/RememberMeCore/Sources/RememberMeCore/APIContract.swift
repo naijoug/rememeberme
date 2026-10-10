@@ -40,6 +40,7 @@ public struct APIOperation: Codable, Sendable, Equatable {
     public var kind: String
     public var baseVersion: Int?
     public var payload: JSONValue
+    public var sourceRevision: Int? = nil
 }
 public struct APIOperationResult: Codable, Sendable, Equatable {
     public var operationId: String

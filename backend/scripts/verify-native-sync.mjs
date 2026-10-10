@@ -23,6 +23,7 @@ const bytes = JSON.stringify(legacy);
 await writeFile(join(temporary, 'synthetic-fixture-only'), 'Disposable synthetic integration fixtures only.\n');
 await writeFile(join(temporary, 'legacy.json'), bytes, { mode: 0o600 });
 let worker, lossArmed = false, lostOperation, outboundCalls = 0;
+let sourcePhase = false, sourceLossArmed = false;
 const operations = [];
 const authCalls = [];
 const errors = [];
@@ -38,7 +39,7 @@ const server = createServer(async (request, response) => {
     if (request.url === '/api/v1/sync/operations') {
       operation = JSON.parse(body.toString());
       operations.push({ id: operation.operationId, kind: operation.kind, digest: hash(body) });
-      if (operation.kind === 'record' || operation.kind === 'importHistory') {
+      if (!sourcePhase && (operation.kind === 'record' || operation.kind === 'importHistory')) {
         const events = operation.kind === 'record' ? [operation.payload.event] : operation.payload.events;
         assert.ok(events.every(event => !('context' in event) && !('url' in event)), 'default wire must omit private source fields');
       }
@@ -47,6 +48,9 @@ const server = createServer(async (request, response) => {
       method: request.method, headers, ...(body.length ? { body } : {})
     });
     const data = Buffer.from(await result.arrayBuffer());
+    if (sourceLossArmed && request.url === '/api/v1/sources/clear' && result.status === 200) {
+      request.socket.destroy(); return;
+    }
     if (lossArmed && result.status === 200 && operation?.kind === 'seed') {
       lostOperation ??= { id: operation.operationId, digest: hash(body) };
       assert.equal(operation.operationId, lostOperation.id);
@@ -162,6 +166,29 @@ try {
   assert.deepEqual(operations.slice(beforeBackupSend).map(value => value.kind), ['restore', 'importHistory', 'importHistory', 'importHistory']);
   assert.equal(await db.prepare('SELECT count(*) AS n FROM review_events WHERE user_id=?').bind('synthetic-user-shared').first('n'), 1);
   console.log('Real account backup field restore, staged process exit/recheck, history independence and no review replay passed.');
+  sourcePhase = true;
+  await command('A', 'source-enable'); await command('A', 'source-backfill');
+  await command('A', 'enable'); const enriched = await command('A', 'sync');
+  assert.equal(enriched.pending, 0); assert.equal(entry(enriched).count, 3); assert.equal(entry(enriched).reviewStep, 0);
+  const sourced = await db.prepare("SELECT count(*) AS n FROM encounters WHERE user_id=? AND context<>''").bind('synthetic-user-shared').first('n');
+  assert.ok(sourced > 0);
+  await command('A', 'source-freeze');
+  sourceLossArmed = true; await command('A', 'source-clear-loss-exit'); sourceLossArmed = false;
+  assert.equal(await db.prepare("SELECT count(*) AS n FROM encounters WHERE user_id=? AND (context<>'' OR url<>'')").bind('synthetic-user-shared').first('n'), 0);
+  const beforeClearRetry = operations.length;
+  await command('A', 'source-clear'); await command('A', 'source-enable'); await command('A', 'enable');
+  const protectedRetry = await command('A', 'sync');
+  assert.equal(operations.length, beforeClearRetry, 'frozen source request must be rejected locally after clear/reopen/re-enable');
+  assert.deepEqual(protectedRetry.conflictCodes, ['SOURCE_CONSENT_CHANGED']);
+  assert.ok(entry(protectedRetry).privateHistoryCount > 0, 'local sources remain available');
+  await command('A', 'use-cloud');
+  await command('A', 'source-backfill'); await command('A', 'enable');
+  const reconsented = await command('A', 'sync');
+  assert.equal(reconsented.conflicts, 0); assert.equal(entry(reconsented).count, 3);
+  assert.ok(await db.prepare("SELECT count(*) AS n FROM encounters WHERE user_id=? AND context<>''").bind('synthetic-user-shared').first('n') > 0);
+  await command('A', 'source-clear'); await command('A', 'enable');
+  sourcePhase = false;
+  console.log('Real source consent/backfill, committed removal loss/restart/retry and stale frozen request fencing passed; counts/review and local sources preserved.');
   await command('A', 'delete'); const deleted = await command('A', 'sync');
   assert.equal(entry(deleted).deleted, true);
   // This offline client records over its earlier live base; the server tombstone

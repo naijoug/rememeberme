@@ -53,6 +53,33 @@ enum NativeSyncProbe {
         // avoiding sleeps while preserving actual HTTP/authentication clocks.
         let coordinator = SyncCoordinator(repository: repository, api: api, clock: { Date().timeIntervalSince1970 * 1000 + 120_000 })
         let action = arguments[1]
+        if ["source-enable", "source-backfill", "source-clear", "source-clear-loss-exit", "source-freeze"].contains(action) {
+            guard let configuration = try await repository.syncConfiguration(), let epoch = configuration.epoch else { throw ClientError.invalidData("source fixture sync configuration") }
+            if action == "source-enable" {
+                try await api.setSourcePrivacy(.init(context: true, urls: true), timezone: "UTC")
+                try await repository.initializeSyncEpoch(api.account())
+                try await repository.configureSync(identity: identity, enabled: false, privacy: .init(context: true, urls: true))
+            } else if action == "source-backfill" {
+                let entry = try await sharedEntry(repository)
+                for offset in stride(from: 0, to: entry.history.count, by: 25) { _ = try await repository.backfillSources(entryId: entry.id, offset: offset) }
+            } else if action == "source-freeze" {
+                let entry = try await sharedEntry(repository)
+                try await repository.configureSync(identity: identity, enabled: true, privacy: configuration.privacy)
+                _ = try await repository.record(entry.id, context: "Synthetic frozen source", url: "https://example.test/frozen",
+                    definition: entry.definition, timestamp: 3000, eventID: "synthetic-frozen-source")
+                guard try await repository.nextSyncWire() != nil else { throw ClientError.invalidData("source request not frozen") }
+            } else {
+                let request = try await repository.beginSourceRemoval()
+                do {
+                    let revision = try await api.clearSources(request, epoch: epoch)
+                    try await repository.finishSourceRemoval(request, revision: revision)
+                } catch is URLError {
+                    guard action == "source-clear-loss-exit" else { throw ClientError.invalidData("unexpected source reply loss") }
+                    _exit(0)
+                }
+            }
+            try await report(repository); try await repository.close(); return
+        }
         if action == "backup-save" {
             try JSONValue.encoder().encode(try await repository.backup()).write(to: directory.appendingPathComponent("account-backup.json"), options: .atomic)
             try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: directory.appendingPathComponent("account-backup.json").path)

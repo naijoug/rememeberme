@@ -32,6 +32,7 @@ web-ext.config.ts
 DerivedData/
 xcuserdata/
 *.xcuserstate
+frontend/apple/Configuration/Signing.local.xcconfig
 
 # Unified API local data, secret inputs and disposable output
 .wrangler/

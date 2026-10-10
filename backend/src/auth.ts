@@ -1,8 +1,8 @@
 import { ApiError, object, text, keys } from '../../contracts/api-v1';
 import { challenge, sha, token, cookie, providerJSON } from './http';
 
-export interface Identity { userId: string; deviceId: string; timezone: string; syncContext: boolean; syncURLs: boolean; epoch: string; sessionHash: string }
-interface SessionRow { user_id: string; device_id: string; timezone: string; sync_context: number; sync_urls: number; sync_epoch: string }
+export interface Identity { userId: string; deviceId: string; timezone: string; syncContext: boolean; syncURLs: boolean; epoch: string; sourceRevision: number; sessionHash: string }
+interface SessionRow { user_id: string; device_id: string; timezone: string; sync_context: number; sync_urls: number; sync_epoch: string; source_revision: number }
 interface FlowRow {
   state_hash: string; client_state: string; challenge: string; callback: string; device_name: string;
   provider_verifier: string; expires_at: number; claimed_by: string | null; code_hash: string | null;
@@ -12,13 +12,13 @@ export async function identity(request: Request, db: D1Database, now = Date.now(
   const raw = request.headers.get('Authorization');
   if (!raw || !/^Bearer [A-Za-z0-9_-]{43}$/.test(raw)) throw new ApiError('UNAUTHENTICATED', 401);
   const sessionHash = await sha(raw.slice(7));
-  const row = await db.prepare(`SELECT s.user_id,s.device_id,u.timezone,u.sync_context,u.sync_urls,u.sync_epoch
+  const row = await db.prepare(`SELECT s.user_id,s.device_id,u.timezone,u.sync_context,u.sync_urls,u.sync_epoch,u.source_revision
     FROM sessions s JOIN users u ON u.id=s.user_id JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id
     WHERE s.token_hash=? AND s.access_expires_at>? AND s.revoked_at IS NULL AND u.deleted_at IS NULL AND d.revoked_at IS NULL`)
     .bind(sessionHash, now).first<SessionRow>();
   if (!row) throw new ApiError('UNAUTHENTICATED', 401);
   return { userId: row.user_id, deviceId: row.device_id, timezone: row.timezone,
-    syncContext: !!row.sync_context, syncURLs: !!row.sync_urls, epoch: row.sync_epoch, sessionHash };
+    syncContext: !!row.sync_context, syncURLs: !!row.sync_urls, epoch: row.sync_epoch, sourceRevision: row.source_revision, sessionHash };
 }
 export async function startNative(request: Request, env: Env): Promise<Response> {
   if (!env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET) throw new ApiError('LOGIN_NOT_CONFIGURED', 503);

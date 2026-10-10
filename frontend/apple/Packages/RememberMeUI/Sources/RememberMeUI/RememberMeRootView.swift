@@ -61,8 +61,8 @@ public struct RememberMeRootView: View {
                         Button("Replace anonymous vocabulary…") { replacing = true }.disabled(model.activeOwner != "anonymous")
                         Button("Interrupted imports (\(model.interruptedImports.count))") { showingImportRecovery = true }
                         Divider()
-                        Button("Today’s review") { reviewing = true }
-                        Button("Settings") { settings = true }
+                        Button("Today’s review") { reviewing = true }.keyboardShortcut("r", modifiers: [.command, .shift])
+                        Button("Settings") { settings = true }.keyboardShortcut(",", modifiers: [.command])
                         Button("Shared drafts (\(model.captures.count))") { showingCaptures = true }
                         Divider()
                         Button("Export complete backup") { Task { await model.prepareExport(legacy: false) } }
@@ -75,8 +75,12 @@ public struct RememberMeRootView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) { Text(model.status).font(.caption).foregroundStyle(.secondary).padding(12) }
+            .navigationSplitViewColumnWidth(min: 280, ideal: 300, max: 360)
         } detail: {
-            if let entry = model.detail {
+            if reviewing {
+                ContentUnavailableView("Review in progress", systemImage: "book.closed",
+                    description: Text("Close review to return to the word details."))
+            } else if let entry = model.detail {
                 let owner = model.activeOwner
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {

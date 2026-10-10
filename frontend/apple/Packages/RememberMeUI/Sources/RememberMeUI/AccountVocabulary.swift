@@ -27,6 +27,9 @@ import RememberMeCore
     @Published private(set) var conflicts: [SyncConflict] = []
     @Published private(set) var conflictCopies: [String: VocabularyEntry] = [:]
     @Published private(set) var syncEnabled = false
+    @Published private(set) var sourcePrivacy = SyncPrivacy()
+    @Published private(set) var sourceRemovalPending = false
+    @Published private(set) var sourceControlsAvailable = false
     @Published private(set) var epochConflict = false
     @Published private(set) var accountName = "Connected account"
     let connection: AccountConnectionModel
@@ -203,6 +206,80 @@ import RememberMeCore
             }
         }
     }
+    func setSourcePrivacy(_ privacy: SyncPrivacy) {
+        guard !isAnonymous else { return }
+        launch {
+            let repository = self.repository
+            guard let configuration = try await repository.syncConfiguration(), configuration.pendingSourceRemoval == nil,
+                  configuration.capabilities?.contains("source-privacy-v1") == true else { throw ClientError.conflict("Complete source removal or update the cloud service first") }
+            if let coordinator = self.coordinator { await coordinator.cancel() }
+            // Persist opt-outs before I/O, so a lost preference reply never permits a local send.
+            let safe = SyncPrivacy(context: configuration.privacy.context && privacy.context, urls: configuration.privacy.urls && privacy.urls)
+            try await repository.configureSync(identity: configuration.identity, enabled: false, privacy: safe)
+            await self.refreshStatus()
+            let api = try await self.sourceAPI(for: configuration)
+            try await api.setSourcePrivacy(privacy, timezone: configuration.timeZoneID ?? "UTC")
+            let account = try await api.account()
+            try Task.checkCancellation()
+            guard self.repository === repository, self.connection.identity == configuration.identity else { throw AuthenticationError.superseded }
+            try await repository.initializeSyncEpoch(account)
+            try await repository.configureSync(identity: configuration.identity, enabled: false,
+                privacy: SyncPrivacy(context: privacy.context && account.syncContext, urls: privacy.urls && account.syncURLs))
+            await self.refreshStatus(); self.status = "Source preferences saved · Sync is paused · Historical sources require explicit backfill"
+        }
+    }
+    func clearUploadedSources() {
+        guard !isAnonymous else { return }
+        launch {
+            let repository = self.repository
+            if let coordinator = self.coordinator { await coordinator.cancel() }
+            let request = try await repository.beginSourceRemoval()
+            await self.refreshStatus()
+            guard let configuration = try await repository.syncConfiguration(), let epoch = configuration.epoch else { throw AuthenticationError.notSignedIn }
+            let api = try await self.sourceAPI(for: configuration)
+            let revision = try await api.clearSources(request, epoch: epoch)
+            guard self.connection.identity == configuration.identity, self.repository === repository else { throw AuthenticationError.superseded }
+            try await repository.finishSourceRemoval(request, revision: revision)
+            await self.refreshStatus(); self.status = "Uploaded contexts and URLs removed · Local sources retained · Sync is paused"
+        }
+    }
+    private func sourceAPI(for configuration: SyncConfiguration) async throws -> any SyncAPI {
+        try Task.checkCancellation()
+        guard connection.identity == configuration.identity else { throw AuthenticationError.superseded }
+        let api = apiFactory(try await connection.connectedSession())
+        try Task.checkCancellation()
+        guard connection.identity == configuration.identity, try await api.identity() == configuration.identity else { throw AuthenticationError.superseded }
+        return api
+    }
+    func backfillHistoricalSources() {
+        guard !isAnonymous else { return }
+        launch {
+            let repository = self.repository
+            guard let configuration = try await repository.syncConfiguration(), configuration.pendingSourceRemoval == nil else { throw ClientError.conflict("Complete source removal first") }
+            if let coordinator = self.coordinator { await coordinator.cancel() }
+            try await repository.configureSync(identity: configuration.identity, enabled: false, privacy: configuration.privacy)
+            await self.refreshStatus()
+            var offset = 0, queued = 0
+            while true {
+                try Task.checkCancellation()
+                let entries = try await repository.entries(limit: 50, offset: offset)
+                if entries.isEmpty { break }
+                for entry in entries {
+                    var historyOffset = 0
+                    while true {
+                        try Task.checkCancellation()
+                        let events = try await repository.history(entry.id, offset: historyOffset, limit: 25)
+                        if events.isEmpty { break }
+                        queued += try await repository.backfillSources(entryId: entry.id, offset: historyOffset)
+                        historyOffset += events.count
+                        self.status = "\(queued) historical sources queued · Sync stays paused"
+                    }
+                }
+                offset += entries.count
+            }
+            await self.refreshStatus(); self.status = "\(queued) historical sources queued · Enable sync to upload"
+        }
+    }
     func localVocabularyChanged() async {
         guard !busy, !isAnonymous else { return }
         await refreshStatus()
@@ -221,6 +298,9 @@ import RememberMeCore
             }
             let incompleteHistory = try await reader.pendingSyncHistory() != nil
             guard repository === reader else { return }
+            sourcePrivacy = state.configuration?.privacy ?? SyncPrivacy()
+            sourceRemovalPending = state.configuration?.pendingSourceRemoval != nil
+            sourceControlsAvailable = state.configuration?.capabilities?.contains("source-privacy-v1") == true
             syncEnabled = state.configuration?.enabled == true; epochConflict = state.configuration?.phase == "epochConflict"
             pendingCount = state.pending
             accountName = state.configuration?.displayName ?? "Connected account"

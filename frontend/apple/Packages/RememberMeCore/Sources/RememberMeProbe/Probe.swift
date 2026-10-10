@@ -6,6 +6,7 @@ import RememberMeCore
         let args = CommandLine.arguments
         guard args.count >= 3 else { throw ClientError.invalidData("usage: RememberMeProbe contracts|before-publish|after-publish|inspect PATH") }
         if args[1] == "native-sync" { try await NativeSyncProbe.run(Array(args.dropFirst(2))); return }
+        if args[1] == "sync-benchmark" { try await SyncBenchmarkProbe.run(args[2]); return }
         if args[1] == "keychain-smoke" {
             guard let uuid = UUID(uuidString: args[2]) else { throw ClientError.invalidData("unique Keychain fixture ID required") }
             let service = "com.rememberme.tests." + uuid.uuidString

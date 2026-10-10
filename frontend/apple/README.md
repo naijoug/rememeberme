@@ -4,7 +4,7 @@ Native macOS and iOS targets now share `RememberMeCore` and `RememberMeUI`. This
 
 Implemented: local SQLite/Core Data repository and durable logical outbox; legacy migration/explicit merge and cancellable staged publication; complete backup export and anonymous merge/replacement restore with conflict preview; shared native adding/editing, literal history and pagination, reset and confirmed deletion; bundled WordNet and independent English/Chinese providers; review-v1 queues/events with durable daily admission limits; appearance and opt-in local reminder settings. No production vocabulary is seeded or read from Chrome.
 
-The iOS Share Extension and main-app draft confirmation path are implemented and buildable; App Groups signing and real host/device sharing are not yet validated. Interrupted imports have a durable plan and Resume/Discard/Cleanup UI; existing-store copies and inactive-generation cleanup run in bounded chunks. Account ownership, vocabulary selection, sync/conflicts, epoch recovery and online account-backup merge are connected. Real Swift/URLSession-to-local-Worker/D1 integration passes with separate synthetic stores, including interrupted epoch/backup recovery. Hosted/signed-device sessions, source consent/enrichment UI and large-store/device acceptance remain unfinished. Provider diagnostics and system notification delivery/launch routing remain unverified; remote CI execution has not been observed.
+The iOS Share Extension and main-app draft confirmation path are implemented and buildable; App Groups signing and real host/device sharing are not yet validated. Interrupted imports have a durable plan and Resume/Discard/Cleanup UI; existing-store copies and inactive-generation cleanup run in bounded chunks. Account ownership, vocabulary selection, sync/conflicts, epoch recovery and online account-backup merge are connected. Real Swift/URLSession-to-local-Worker/D1 integration passes with separate synthetic stores, including interrupted epoch/backup recovery. Source consent/backfill and explicit uploaded-source removal are implemented with persistent retry fencing. Hosted/signed-device sessions and complete large-store/device acceptance remain unfinished. Provider diagnostics and system notification delivery/launch routing remain unverified; remote CI execution has not been observed.
 
 ## Build
 
@@ -38,7 +38,7 @@ Backups retain potentially sensitive contexts/URLs, but omit credentials, sessio
 
 WordNet resources are packaged from the same checked-in source directory as the extension, with metadata and licenses. English local misses use Free Dictionary API and uncached Chinese lookup uses MyMemory; only the lookup word is sent. Opening saved words does not make requests or change definitions; lookup/refresh results stay in the editor until explicit Save. See [behavior](docs/behavior.md) for the exact boundaries.
 
-See [testing](docs/testing.md), [shared contracts](../../contracts/README.md) and the [implementation plan](../../docs/apple-clients-implementation-plan.md).
+See [source privacy and local acceptance](docs/verification/2026-10-09-source-privacy.md), [staging/device setup](docs/staging-device-acceptance.md), [testing](docs/testing.md), [shared contracts](../../contracts/README.md) and the [implementation plan](../../docs/apple-clients-implementation-plan.md).
 
 ## iOS sharing setup
 

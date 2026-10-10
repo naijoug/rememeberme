@@ -41,7 +41,8 @@ export async function rememberConflict(db: D1Database, who: Identity, op: WireOp
     .bind(who.userId, op.operationId, hash, JSON.stringify({ error: { code: failure.code, status: failure.status } }), Date.now(), who.sessionHash, Date.now()).run();
   return result(db, who.userId, op, hash);
 }
-function sourcePrivacy(who: Identity, context: Json | undefined, url: Json | undefined) {
+function sourcePrivacy(who: Identity, revision: number | undefined, context: Json | undefined, url: Json | undefined) {
+  if (((typeof context === 'string' && context) || (typeof url === 'string' && url)) && (revision ?? 0) !== who.sourceRevision) throw new ApiError('SOURCE_REVISION_CHANGED', 409);
   if (typeof context === 'string' && context && !who.syncContext) throw new ApiError('CONTEXT_SYNC_NOT_ENABLED');
   if (typeof url === 'string' && url && !who.syncURLs) throw new ApiError('URL_SYNC_NOT_ENABLED');
 }
@@ -99,7 +100,7 @@ export async function applyOperation(db: D1Database, who: Identity, op: WireOper
       const existing = await db.prepare(`SELECT * FROM encounters WHERE user_id=? AND id IN (${events.map(() => '?').join(',')})`)
         .bind(who.userId, ...events.map(e => e.id)).all<EventRow>();
       for (const event of events) {
-        sourcePrivacy(who, event.context, event.url);
+        sourcePrivacy(who, op.sourceRevision, event.context, event.url);
         const immutable = await sha(canonical({ entryId: op.entryId, id: event.id, timestamp: event.timestamp, definition: event.definition }));
         const prior = existing.results.find(e => e.id === event.id);
         if (prior) {
@@ -155,7 +156,7 @@ export async function applyOperation(db: D1Database, who: Identity, op: WireOper
       const existing = await db.prepare(`SELECT * FROM encounters WHERE user_id=? AND entry_id=? AND id IN (${ids.map(() => '?').join(',')})`)
         .bind(who.userId, op.entryId, ...ids).all<EventRow>();
       for (const value of p.events as Json[]) {
-        if (!object(value)) throw new ApiError('INVALID_REQUEST'); sourcePrivacy(who, value.context, value.url);
+        if (!object(value)) throw new ApiError('INVALID_REQUEST'); sourcePrivacy(who, op.sourceRevision, value.context, value.url);
         const prior = existing.results.find(row => row.id === value.id);
         if (!prior) throw new ApiError('EVENT_NOT_FOUND', 404);
         mutations.push(db.prepare('UPDATE encounters SET context=?,url=? WHERE user_id=? AND id=? AND entry_id=?')
@@ -177,12 +178,12 @@ export async function applyOperation(db: D1Database, who: Identity, op: WireOper
     const sourceCheck = checkSource ? ' AND NOT EXISTS(SELECT 1 FROM vocabulary_entries WHERE user_id=? AND normalized_key=? AND id<>? AND deleted=0)' : '';
     const authorized = `EXISTS(SELECT 1 FROM sessions s JOIN users u ON u.id=s.user_id JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id
       WHERE s.token_hash=? AND s.user_id=? AND s.device_id=? AND s.revoked_at IS NULL AND s.access_expires_at>?
-      AND d.revoked_at IS NULL AND u.deleted_at IS NULL AND u.timezone=? AND u.sync_context=? AND u.sync_urls=? AND u.sync_epoch=?)`;
+      AND d.revoked_at IS NULL AND u.deleted_at IS NULL AND u.timezone=? AND u.sync_context=? AND u.sync_urls=? AND u.sync_epoch=? AND u.source_revision=?)`;
     const statements = [
       db.prepare('INSERT INTO sync_operations(user_id,id,request_hash,response_json,committed_at) VALUES(?,?,?,?,?)')
         .bind(who.userId, op.operationId, hash, JSON.stringify(response), now),
       db.prepare(`INSERT INTO write_guards(nonce,allowed) SELECT ?,CASE WHEN ${authorized} AND ${checks}${quotaCheck}${sourceCheck} THEN 1 ELSE 0 END`)
-        .bind(nonce, who.sessionHash, who.userId, who.deviceId, Date.now(), who.timezone, Number(who.syncContext), Number(who.syncURLs), who.epoch,
+        .bind(nonce, who.sessionHash, who.userId, who.deviceId, Date.now(), who.timezone, Number(who.syncContext), Number(who.syncURLs), who.epoch, who.sourceRevision,
           ...guardValues, ...(quotaDay ? [who.userId, quotaDay] : []), ...(checkSource ? [who.userId, current.normalizedKey, current.id] : [])),
       ...(changed ? [saveEntry(db, who.userId, current, creating)] : []), ...mutations,
       ...(changed ? [db.prepare('INSERT INTO sync_changes(user_id,entry_id,version,entry_json) VALUES(?,?,?,?)')
@@ -194,11 +195,12 @@ export async function applyOperation(db: D1Database, who: Identity, op: WireOper
     try { await db.batch(statements); return (await result(db, who.userId, op, hash))!; }
     catch (error) {
       const replay = await result(db, who.userId, op, hash); if (replay) return replay;
-      const authorization = await db.prepare(`SELECT u.timezone,u.sync_context,u.sync_urls,u.sync_epoch FROM sessions s JOIN users u ON u.id=s.user_id
+      const authorization = await db.prepare(`SELECT u.timezone,u.sync_context,u.sync_urls,u.sync_epoch,u.source_revision FROM sessions s JOIN users u ON u.id=s.user_id
         JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id WHERE s.token_hash=? AND s.revoked_at IS NULL AND s.access_expires_at>?
-        AND d.revoked_at IS NULL AND u.deleted_at IS NULL`).bind(who.sessionHash, Date.now()).first<{ timezone: string; sync_context: number; sync_urls: number; sync_epoch: string }>();
+        AND d.revoked_at IS NULL AND u.deleted_at IS NULL`).bind(who.sessionHash, Date.now()).first<{ timezone: string; sync_context: number; sync_urls: number; sync_epoch: string; source_revision: number }>();
       if (!authorization) throw new ApiError('UNAUTHENTICATED', 401);
       if (authorization.sync_epoch !== who.epoch) throw new ApiError('SYNC_EPOCH_CHANGED', 409);
+      if (authorization.source_revision !== who.sourceRevision) throw new ApiError('SOURCE_REVISION_CHANGED', 409);
       if (authorization.timezone !== who.timezone || !!authorization.sync_context !== who.syncContext || !!authorization.sync_urls !== who.syncURLs) throw new ApiError('PREFERENCES_CHANGED', 409);
       if (quotaDay) {
         const count = await db.prepare('SELECT count(*) AS n FROM review_admissions WHERE user_id=? AND local_day=?').bind(who.userId, quotaDay).first<{ n: number }>();

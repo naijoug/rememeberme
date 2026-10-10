@@ -40,6 +40,8 @@ public struct AccountRestoreProvenance: Codable, Sendable, Equatable {
     public var deviceId: String
     public var epoch: String
     public var privacy: SyncPrivacy
+    public var serverPrivacy: SyncPrivacy? = nil
+    public var sourceRevision: Int? = nil
     public var timeZoneID: String
     public var expectedEntries: [ServerEntryExpectation]
     public var expectedLiveKeys: [String: [String]]
@@ -198,7 +200,7 @@ extension LocalRepository {
                 plan.remoteBases = bases
                 plan.accountRestore = .init(sourceGeneration: generation, origin: snapshot.identity.origin, userId: snapshot.identity.userId,
                     deviceId: snapshot.identity.deviceId, epoch: snapshot.account.epoch,
-                    privacy: configuration.privacy, timeZoneID: snapshot.account.timezone,
+                    privacy: configuration.privacy, serverPrivacy: .init(context: snapshot.account.syncContext, urls: snapshot.account.syncURLs), sourceRevision: snapshot.account.sourceRevision, timeZoneID: snapshot.account.timezone,
                     expectedEntries: expected.keys.sorted().map { .init(id: $0, version: expected[$0]!) }, expectedLiveKeys: expectedKeys)
             }
             return .init(online: snapshot != nil, items: items, plan: plan)
@@ -256,8 +258,9 @@ extension LocalRepository {
         let plan = try loadImportPlan(batchId)
         guard plan.mode == .restoreAccount, let source = plan.accountRestore, snapshot.identity == source.identity,
               snapshot.account.epoch == source.epoch, snapshot.account.userId == source.userId, snapshot.account.deviceId == source.deviceId,
-              snapshot.account.timezone == source.timeZoneID, snapshot.account.syncContext == source.privacy.context,
-              snapshot.account.syncURLs == source.privacy.urls else { throw ClientError.stalePreview }
+              snapshot.account.sourceRevision == source.sourceRevision,
+              snapshot.account.timezone == source.timeZoneID, snapshot.account.syncContext == (source.serverPrivacy ?? source.privacy).context,
+              snapshot.account.syncURLs == (source.serverPrivacy ?? source.privacy).urls else { throw ClientError.stalePreview }
         guard Set(snapshot.entries.map { $0.state.id }).count == snapshot.entries.count else { throw ClientError.invalidData("account snapshot identities") }
         let current = Dictionary(uniqueKeysWithValues: snapshot.entries.map { ($0.state.id, $0.state) })
         for expected in source.expectedEntries { guard current[expected.id]?.version == expected.version else { throw ClientError.stalePreview } }

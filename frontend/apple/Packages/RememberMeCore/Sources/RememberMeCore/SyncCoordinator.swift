@@ -5,11 +5,13 @@ public protocol SyncAPI: Sendable {
     func account() async throws -> APIAccountIdentity
     func page(snapshot: Bool, epoch: String, after: Int, boundary: Int?) async throws -> SyncCheckpointPage
     func history(entryId: String, after: String, version: Int, epoch: String) async throws -> APIHistoryPage
+    func setSourcePrivacy(_ privacy: SyncPrivacy, timezone: String) async throws
+    func clearSources(_ request: SourceRemovalRequest, epoch: String) async throws -> Int
     func submit(_ wire: SyncWireItem) async throws -> APIOperationResult
 }
 
 public struct NativeSyncAPI: SyncAPI {
-    private let client: AuthenticatedAPIClient
+    let client: AuthenticatedAPIClient
     public init(client: AuthenticatedAPIClient) { self.client = client }
     public func identity() async throws -> ConnectedIdentity? { try await client.session.restoreIdentity() }
     public func account() async throws -> APIAccountIdentity {
@@ -88,7 +90,7 @@ public actor SyncCoordinator {
     private static func active(_ repository: LocalRepository, api: any SyncAPI, sends: Bool) async throws -> SyncConfiguration? {
         try Task.checkCancellation()
         guard let configuration = try await repository.syncConfiguration(), (!sends || configuration.enabled),
-              configuration.phase != "epochConflict" else { return nil }
+              configuration.phase != "epochConflict", (!sends || configuration.pendingSourceRemoval == nil) else { return nil }
         guard try await api.identity() == configuration.identity else { throw AuthenticationError.superseded }
         return configuration
     }
@@ -126,6 +128,9 @@ public actor SyncCoordinator {
                 guard try await active(repository, api: api, sends: sends)?.phase == "ready" else { return result }
                 guard let wire = try await repository.nextSyncWire(now: clock()) else { break }
                 do {
+                    if !(try await repository.sourceWireAllowed(wire)) {
+                        try await repository.rejectSyncWire(wire.id, code: "SOURCE_CONSENT_CHANGED", retryable: false, now: clock()); continue
+                    }
                     let reply = try await api.submit(wire)
                     guard try await active(repository, api: api, sends: sends) != nil else { return result }
                     try await repository.acknowledgeSyncWire(wire.id, result: reply); result.submitted += 1

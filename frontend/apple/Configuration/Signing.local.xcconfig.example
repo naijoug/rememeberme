@@ -1,0 +1,7 @@
+// Copy outside tracked source or to an ignored Signing.local.xcconfig.
+// Use xcodebuild -xcconfig /absolute/path/Signing.local.xcconfig or enter these
+// settings in Xcode. Apply the same App Group to the app and Share Extension.
+DEVELOPMENT_TEAM = YOUR_AUTHORIZED_TEAM_ID
+REMEMBERME_APP_GROUP = group.YOUR_REGISTERED_APP_GROUP
+// Bundle IDs are per-target in project.yml. Replace all three provisional IDs
+// with registered IDs there, then regenerate RememberMe.xcodeproj using XcodeGen.
