@@ -5,8 +5,8 @@ import { storageClient } from '~/services/storage-client';
 import { requestDefinition, requestTranslation } from '~/services/lookup-client';
 import { isTranslation } from '~/services/definition-utils';
 import { watchTheme } from '~/services/theme';
-import { getOrdinal, isEnglishWord } from '~/services/word-utils';
-import type { Definition, Position } from '~/types';
+import { isEnglishWord } from '~/services/word-utils';
+import type { Definition, Position, WordEntry } from '~/types';
 import type { ResolvedTheme } from '~/types/theme';
 import SelectionPopup from '~/components/SelectionPopup.vue';
 import uiStyles from '~/assets/paper-sage.css?inline';
@@ -14,20 +14,24 @@ import '~/assets/content.css';
 
 let context: ContentScriptContext;
 let host: HTMLElement | null = null;
+let popupShadow: ShadowRoot | null = null;
 let popupApp: VueApp | null = null;
 let debounceTimer: number | undefined;
-let pendingSelection: { word: string; context: string; position: Position; range: Range } | undefined;
+let pendingSelection: { word: string; context: string; url: string; position: Position; range: Range } | undefined;
 let selectedRange: Range | undefined;
 let pointerStartedInside = false;
 let activeLookup: AbortController | undefined;
 let lookupVersion = 0;
 let notificationId = 0;
+let saveSequence = 0;
+let appliedSaveSequence = 0;
 const notices = reactive<{ id: number; message: string; type: 'success' | 'error' }[]>([]);
 const state = reactive({
   word: '', position: { x: 12, y: 12 } as Position, visible: false,
   definition: undefined as Definition | undefined, loading: false,
   error: '', saveError: '', saving: false, context: '', theme: 'light' as ResolvedTheme,
   englishLoading: false, translationLoading: false, englishError: '', translationError: '',
+  savedWord: undefined as WordEntry | null | undefined, recordsLoading: false, recordsError: '', pendingSaves: 0, url: '',
 });
 
 export default defineContentScript({
@@ -73,6 +77,7 @@ export default defineContentScript({
       popupApp = null;
       host?.remove();
       host = null;
+      popupShadow = null;
       notices.splice(0);
       state.visible = false;
       try { browser.runtime.onMessage.removeListener(onMessage); } catch { /* Context already gone. */ }
@@ -84,7 +89,10 @@ function ensureUi() {
   if (host || context.isInvalid) return;
   host = document.createElement('div');
   host.id = 'vocab-counter-popup-root';
-  const shadow = host.attachShadow({ mode: 'open' });
+  // Prior encounter sentences/URLs must not be exposed through the host page's
+  // DOM. The extension keeps the reference privately for selection handling.
+  const shadow = host.attachShadow({ mode: 'closed' });
+  popupShadow = shadow;
   const style = document.createElement('style');
   style.textContent = uiStyles;
   const mount = document.createElement('div');
@@ -97,7 +105,8 @@ function ensureUi() {
         loading: state.loading, error: state.error, saving: state.saving, saveError: state.saveError,
         englishLoading: state.englishLoading, translationLoading: state.translationLoading,
         englishError: state.englishError, translationError: state.translationError,
-        onRemember: hidePopup, onForget: forgetWord, onClose: hidePopup, onRetry: lookupWord,
+        savedWord: state.savedWord, recordsLoading: state.recordsLoading, recordsError: state.recordsError, pendingSaves: state.pendingSaves,
+        onRecord: recordWord, onClose: hidePopup, onRetry: lookupWord,
       }),
       ...notices.map(notice => h('div', {
         key: notice.id, class: ['rm-notice', 'vocab-counter-notification', { 'is-error': notice.type === 'error' }],
@@ -115,14 +124,14 @@ function selectText(event: MouseEvent) {
   const selection = window.getSelection();
   if (!selection?.rangeCount || !isEnglishWord(selection.toString())) return;
   const range = selection.getRangeAt(0);
-  if (host?.shadowRoot && (selection.anchorNode?.getRootNode() === host.shadowRoot || selection.focusNode?.getRootNode() === host.shadowRoot)) return;
+  if (popupShadow && (selection.anchorNode?.getRootNode() === popupShadow || selection.focusNode?.getRootNode() === popupShadow)) return;
   if (state.visible && selectedRange && range.startContainer === selectedRange.startContainer && range.endContainer === selectedRange.endContainer &&
       range.startOffset === selectedRange.startOffset && range.endOffset === selectedRange.endOffset) return;
   const rect = range.getBoundingClientRect();
   // Snapshot at mouseup. Later focus/copy/selection changes must not dismiss or
   // replace this lookup while the debounce timer is waiting.
   const captured = {
-    word: selection.toString().trim(), context: contextExtractor.extractSentence(selection).context,
+    word: selection.toString().trim(), context: contextExtractor.extractSentence(selection).context, url: location.href,
     position: { x: rect.left + rect.width / 2, y: rect.bottom + 10, anchorTop: rect.top }, range: range.cloneRange(),
   };
   pendingSelection = captured;
@@ -133,8 +142,11 @@ function selectText(event: MouseEvent) {
     selectedRange = captured.range;
     state.word = captured.word;
     state.context = captured.context;
+    state.url = captured.url;
     state.position = captured.position;
     state.saving = false;
+    state.pendingSaves = 0;
+    state.savedWord = undefined;
     void lookupWord();
   }, 300);
 }
@@ -153,6 +165,8 @@ async function lookupWord() {
   const controller = new AbortController();
   activeLookup = controller;
   const version = ++lookupVersion;
+  state.pendingSaves = 0;
+  state.saving = false;
   state.visible = true;
   state.loading = true;
   state.error = '';
@@ -164,6 +178,16 @@ async function lookupWord() {
   state.translationError = '';
   ensureUi();
   const word = state.word;
+  const savesAtRead = saveSequence;
+  state.recordsLoading = true;
+  state.recordsError = '';
+  void storageClient.getWord(word).then(entry => {
+    if (version === lookupVersion && context.isValid && saveSequence === savesAtRead) state.savedWord = entry;
+  }).catch(() => {
+    if (version === lookupVersion && saveSequence === savesAtRead) state.recordsError = 'Could not load saved records. Recording a new entry will refresh them.';
+  }).finally(() => {
+    if (version === lookupVersion) state.recordsLoading = false;
+  });
   const current = () => version === lookupVersion && context.isValid;
   const updateStatus = () => {
     if (!current()) return;
@@ -204,22 +228,32 @@ function hidePopup() {
   state.translationLoading = false;
 }
 
-async function forgetWord() {
-  if (!context.isValid || !state.definition || state.loading || state.saving) return;
+async function recordWord() {
+  if (!context.isValid || !state.visible || !state.word) return;
   const version = lookupVersion;
-  const snapshot = { word: state.word, definition: state.definition, context: state.context, url: location.href };
+  const sequence = ++saveSequence;
+  const snapshot = { word: state.word, definition: state.definition ?? { word: state.word, phonetics: [], meanings: [] }, context: state.context, url: state.url, timestamp: Date.now() };
+  state.pendingSaves++;
   state.saving = true;
   state.saveError = '';
   try {
-    const entry = await storageClient.saveWord(snapshot.word, snapshot.definition, snapshot.context, snapshot.url);
-    if (context.isInvalid) return;
-    showNotification('This is the ' + getOrdinal(entry.count) + ' time you forgot "' + entry.word + '"');
-    if (version === lookupVersion) hidePopup();
+    // Each intentional click is one distinct write. The background queue makes
+    // increments atomic; do not retry ambiguous failures or close after saving.
+    const entry = await storageClient.saveWord(snapshot.word, snapshot.definition, snapshot.context, snapshot.url, snapshot.timestamp);
+    if (context.isInvalid || version !== lookupVersion) return;
+    if (sequence > appliedSaveSequence) {
+      appliedSaveSequence = sequence;
+      state.savedWord = entry;
+      state.recordsError = '';
+    }
   } catch (error) {
     if (context.isInvalid || version !== lookupVersion) return;
     state.saveError = error instanceof Error ? error.message : 'Could not save this word. Please try again.';
   } finally {
-    if (version === lookupVersion || !state.visible) state.saving = false;
+    if (version === lookupVersion) {
+      state.pendingSaves = Math.max(0, state.pendingSaves - 1);
+      state.saving = state.pendingSaves > 0;
+    }
   }
 }
 

@@ -70,7 +70,8 @@ export class StorageService {
     word: string,
     definition: Definition,
     context: string,
-    url: string
+    url: string,
+    recordedAt?: number
   ): Promise<WordEntry> {
     return enqueueStorageOperation(async () => {
       try {
@@ -80,7 +81,7 @@ export class StorageService {
           w => w.word.toLowerCase() === normalizedWord
         );
 
-        const timestamp = Date.now();
+        const timestamp = recordedAt ?? Date.now();
         const historyRecord: HistoryRecord = {
           timestamp,
           context,

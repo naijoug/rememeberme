@@ -13,6 +13,41 @@ describe('Context Extractor - Sentence Extraction', () => {
     extractor = new ContextExtractor();
   });
 
+  it('captures the full sentence when the word is nested in a link and emphasis', () => {
+    const p = document.createElement('p');
+    p.innerHTML = 'First sentence.\n  We study <a href="#"><strong>architecture</strong></a> in this course.';
+    const node = p.querySelector('strong')!.firstChild!;
+    const range = document.createRange(); range.selectNodeContents(node);
+    const selection = { rangeCount: 1, getRangeAt: () => range, toString: () => range.toString() } as unknown as Selection;
+    const result = extractor.extractSentence(selection);
+    expect(result.context).toBe('We study architecture in this course.');
+    expect(result.context.slice(result.wordPosition!.start, result.wordPosition!.end)).toBe('architecture');
+  });
+
+  it('locates the selected occurrence after inline siblings and repeated words', () => {
+    const p = document.createElement('p');
+    p.innerHTML = '<b>Architecture</b> changed. The <em>new</em> <span>architecture</span> works well.';
+    const range = document.createRange(); range.selectNodeContents(p.querySelector('span')!);
+    const selection = { rangeCount: 1, getRangeAt: () => range, toString: () => range.toString() } as unknown as Selection;
+    expect(extractor.extractSentence(selection).context).toBe('The new architecture works well.');
+  });
+
+  it('preserves a word split across inline elements and its exact position', () => {
+    const p = document.createElement('p'); p.innerHTML = 'Learn <b>archi</b><em>tecture</em> today.';
+    const range = document.createRange(); range.setStart(p.querySelector('b')!.firstChild!, 0); range.setEnd(p.querySelector('em')!.firstChild!, 7);
+    const selection = { rangeCount: 1, getRangeAt: () => range, toString: () => range.toString() } as unknown as Selection;
+    const result = extractor.extractSentence(selection);
+    expect(result.context).toBe('Learn architecture today.');
+    expect(result.context.slice(result.wordPosition!.start, result.wordPosition!.end)).toBe('architecture');
+  });
+
+  it('keeps a full code line containing a URL rather than splitting at its dots', () => {
+    const pre = document.createElement('pre'); pre.innerHTML = 'RSS endpoint:\nhttps://example.com/api/<code>curated</code>.xml\nNext line';
+    const range = document.createRange(); range.selectNodeContents(pre.querySelector('code')!);
+    const selection = { rangeCount: 1, getRangeAt: () => range, toString: () => range.toString() } as unknown as Selection;
+    expect(extractor.extractSentence(selection).context).toBe('https://example.com/api/curated.xml');
+  });
+
   it('should extract complete sentence with word boundaries', () => {
     // Requirement 6.1, 6.2: Extract complete sentence using boundary detection
     const text = 'This is the first sentence. This is the second sentence. This is the third sentence.';
@@ -54,25 +89,23 @@ describe('Context Extractor - Sentence Extraction', () => {
     });
   });
 
-  it('should truncate long sentences to 200 characters', () => {
-    // Requirement 6.3: Truncate sentences over 200 characters
+  it('keeps complete sentences longer than the old 200-character limit', () => {
+    // The record should preserve ordinary full sentences, including long ones.
     const longSentence = 'This is a very long sentence that contains many words and will definitely exceed the maximum context length of two hundred characters which is the limit we have set for context extraction in order to keep the display manageable and readable for users who are learning vocabulary.';
     const selectedWord = 'limit';
     
     const mockSelection = createMockSelection(longSentence, selectedWord);
     const result = extractor.extractSentence(mockSelection);
     
-    // Should be truncated
-    expect(result.context.length).toBeLessThanOrEqual(215); // 200 + "..." on both sides + some buffer
+    expect(result.context).toBe(longSentence);
     expect(result.context).toContain('limit');
-    expect(result.context).toContain('...');
+    expect(result.context).not.toContain('...');
   });
 
-  it('should extract 100 characters before and after selected word in long sentences', () => {
-    // Requirement 6.3: Extract 100 chars before and after the word
-    const prefix = 'A'.repeat(150); // 150 chars before
+  it('should extract a bounded window around the selected word in very long sentences', () => {
+    const prefix = 'A'.repeat(750);
     const word = 'TARGET';
-    const suffix = 'B'.repeat(150); // 150 chars after
+    const suffix = 'B'.repeat(750);
     const longText = `${prefix} ${word} ${suffix}`;
     
     const mockSelection = createMockSelection(longText, word);
@@ -84,8 +117,8 @@ describe('Context Extractor - Sentence Extraction', () => {
     // Should be truncated with ellipsis
     expect(result.context).toContain('...');
     
-    // Should be approximately 200 chars + ellipsis
-    expect(result.context.length).toBeLessThanOrEqual(215);
+    // A pathological sentence is bounded to 1000 characters plus ellipses.
+    expect(result.context.length).toBeLessThanOrEqual(1006);
   });
 
   it('should handle edge case when word is at start of text', () => {
@@ -175,23 +208,11 @@ function createMockSelection(fullText: string, selectedWord: string): Selection 
   const startIndex = fullText.indexOf(selectedWord);
   const endIndex = startIndex + selectedWord.length;
 
-  // Create a mock text node
-  const textNode = {
-    nodeType: Node.TEXT_NODE,
-    textContent: fullText,
-    parentElement: {
-      textContent: fullText,
-    },
-    previousSibling: null,
-  } as unknown as Node;
-
-  // Create a mock range
-  const mockRange = {
-    commonAncestorContainer: textNode,
-    startContainer: textNode,
-    startOffset: startIndex,
-    endOffset: endIndex,
-  } as unknown as Range;
+  const paragraph = document.createElement('p');
+  paragraph.textContent = fullText;
+  const mockRange = document.createRange();
+  mockRange.setStart(paragraph.firstChild!, startIndex);
+  mockRange.setEnd(paragraph.firstChild!, endIndex);
 
   // Create a mock selection
   const mockSelection = {

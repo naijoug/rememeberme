@@ -30,6 +30,31 @@ beforeEach(() => {
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 describe('vocabulary client through the background handler (mock transport/storage)', () => {
+  it('persists one count and distinct sentence/time/URL per click and retains records after reset', async () => {
+    const word = 'architecture';
+    const meaning = { ...definition, word };
+    await Promise.all([
+      storageClient.saveWord(word, meaning, 'Architecture shapes this city.', 'https://example.com/first?q=1', 1000),
+      storageClient.saveWord(word, meaning, 'We study architecture here.', 'https://example.com/second#section', 2000),
+    ]);
+    const saved = await storageClient.getWord(' Architecture ');
+    expect(saved?.count).toBe(2);
+    expect(saved?.history.map(({ context, timestamp, url }) => ({ context, timestamp, url }))).toEqual([
+      { context: 'Architecture shapes this city.', timestamp: 1000, url: 'https://example.com/first?q=1' },
+      { context: 'We study architecture here.', timestamp: 2000, url: 'https://example.com/second#section' },
+    ]);
+    expect(sendMessage).toHaveBeenCalledWith({ type: 'GET_WORD', word: ' Architecture ' });
+    await storageClient.resetCount(word);
+    const afterReset = await storageClient.saveWord(word, meaning, 'Architecture again.', '', 3000);
+    expect(afterReset.count).toBe(1);
+    expect(afterReset.history).toHaveLength(3);
+    expect(afterReset.history[2]).toMatchObject({ context: 'Architecture again.', timestamp: 3000, url: '' });
+    const backup = await storageClient.exportData();
+    store.values.clear();
+    await storageClient.importData(backup);
+    expect(await storageClient.getWord(word)).toEqual(afterReset);
+  });
+
   it('shares one queue across page requests, popup import and direct context-menu saves', async () => {
     await save('apple', 'seed');
     await Promise.all([

@@ -37,12 +37,15 @@ The sibling `frontend/designs/` directory contains static references. Generated 
 | [popup/App.vue](../entrypoints/popup/App.vue) | Storage/theme integration, import/export, deletion and reset |
 | [VocabularyPanel.vue](../components/VocabularyPanel.vue) | Pure UI: word search/list, reading view, menus, themes and confirmation |
 | [WordHistory.vue](../components/WordHistory.vue) / [HistoryItem.vue](../components/HistoryItem.vue) | Numbered encounter disclosures with sentence, precise time and safe source link |
+| [WordPronunciation.vue](../components/WordPronunciation.vue) | Shared US/UK speech controls, voice discovery, playback lifecycle and literal phonetic text |
 | [theme.ts](../services/theme.ts) | Watch/persist System / Light / Dark under local:appearance, separately from vocabulary |
 | [storage-client.ts](../services/storage-client.ts) | Content/popup vocabulary client, using background messages only |
 | [storage.ts](../services/storage.ts) | Background-owned vocabulary operation queue, persistence and JSON validation/merge |
 | [lookup-client.ts](../services/lookup-client.ts) | Page-to-background lookup messages, UI deadlines and cancellation of pending UI responses |
 | [dictionary.ts](../services/dictionary.ts) | Local-first lookup, online fallback, retries and in-memory cache |
 | [translation.ts](../services/translation.ts) | Keyless Chinese translation, provider deadline and separate persistent success cache |
+| [phonetics.ts](../services/phonetics.ts) | Exact-spelling US/UK IPA from packaged shards, bounded reads and memory cache |
+| [pinyin-format.ts](../services/pinyin-format.ts) / [TranslationText.vue](../components/TranslationText.vue) | Display numbered Chinese pinyin with tone marks; preserve provider/cache/history/export text and literal rendering |
 | [bilingual-lookup.ts](../services/bilingual-lookup.ts) | Combine successful sources for context-menu saves |
 | [offline-dictionary.ts](../services/offline-dictionary.ts) | Packaged WordNet shards, bounded local reads and memory cache |
 | [word-forms.ts](../services/word-forms.ts) | Regular suffix candidates, accepted only when the matching WordNet part of speech exists |
@@ -61,6 +64,7 @@ The separate [feedback configuration](../wxt.feedback.config.ts) uses a loopback
 | Request | Successful `data` | Validation / operation |
 | --- | --- | --- |
 | `GET_DEFINITION` / `GET_TRANSLATION` | `Definition` / `Translation` | Valid single English word; independent provider paths |
+| `GET_PHONETICS` | `{ us?: string, uk?: string }` | Valid single English word; exact spelling in packaged IPA; empty object on a miss |
 | `GET_WORDS` | `WordEntry[]` | Queued vocabulary read |
 | `GET_WORD` | `WordEntry` or `null` | Nonempty word, normalized for lookup |
 | `SAVE_WORD` | Updated `WordEntry` | Valid English word, structurally valid definition, text context/URL and optional finite nonnegative timestamp |
@@ -106,6 +110,12 @@ English lookup has an 8.5-second service budget covering the local lookup (cappe
 Source URLs and contexts may contain sensitive information and are included in backups. History rendering must preserve text without interpreting it as HTML. Navigable source links are restricted to HTTP(S), with `noopener noreferrer` for new tabs.
 
 Release manifest permissions are `storage`, `contextMenus`, and `<all_urls>` host access. Static content scripts support selection across readable pages; host access also allows the external dictionary request. The unused `activeTab` grant was removed for 0.1.0: release code does not dynamically inject scripts or read protected tab metadata. Selection is enabled broadly on pages that permit injection. Permission changes need browser validation; an all-URLs declaration does not enable browser-internal pages. See [release materials](release/README.md) for permission justifications and remaining browser checks.
+
+## Pronunciation runtime
+
+The shared pronunciation component requests `GET_PHONETICS` independently of definitions and translations. The background phonetics service reads one of 64 packaged IPA shards for the exact lowercase selected spelling (never the definition's base form), coalesces reads and retains at most 16 parsed shards. Local headers/body are bounded at 1.5 seconds and the UI message at two seconds; word/view changes abort pending UI replies. Data is validated, rendered literally and displayed beside small US/UK speaker icons. Missing IPA is stated explicitly; file/message errors offer retry without disabling speech. General saved/provider IPA is only a same-spelling fallback. No definition snapshot, vocabulary key or export format is changed. The sample preview injects a direct local-asset lookup; production uses the background message path. Source hashes, original compressed TSVs, licenses and modification notices ship with the assets; see [pronunciation coverage](dictionary.md#pronunciation).
+
+Playback uses browser speech synthesis with exact `en-US` / `en-GB` voices, preferring local voices. Remote matching voices may send the clicked word to the browser's speech provider; no context or source URL is passed. Voice discovery updates asynchronously. Playback starts only after a click, stops when that word/view closes or changes, and has an eight-second deadline. It uses no dictionary audio URLs, new manifest permissions or persisted fields. Speech chooses its own variant independently of the displayed IPA.
 
 ## Future changes
 

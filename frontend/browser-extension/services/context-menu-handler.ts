@@ -25,7 +25,8 @@ export interface StorageLikeService {
     word: string,
     definition: Definition,
     context: string,
-    url: string
+    url: string,
+    timestamp?: number
   ): Promise<WordEntry>;
 }
 
@@ -69,6 +70,7 @@ export async function handleContextMenuClick(
   }
 
   const selectedText = info.selectionText.trim();
+  const timestamp = Date.now();
   const frameId = info.frameId ?? 0;
   try { await deps.status.clear(tab.id); } catch { /* The tab may already be closed. */ }
 
@@ -92,7 +94,8 @@ export async function handleContextMenuClick(
       selectedText,
       definition,
       context,
-      info.frameUrl || info.pageUrl || ''
+      info.frameUrl || info.pageUrl || '',
+      timestamp
     );
 
     const message = `This is the ${getOrdinal(updatedWord.count)} time you forgot "${updatedWord.word}"`;

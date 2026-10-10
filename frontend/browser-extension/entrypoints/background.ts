@@ -5,6 +5,7 @@
 
 import { dictionaryService } from '~/services/dictionary';
 import { translationService } from '~/services/translation';
+import { phoneticsService } from '~/services/phonetics';
 import { lookupForSave } from '~/services/bilingual-lookup';
 import {
   createContextMenu,
@@ -50,7 +51,7 @@ export default defineBackground(() => {
     _sender,
     sendResponse: (response: BackgroundResponse<unknown>) => void
   ) => {
-    handleBackgroundRequest(message, dictionaryService, storageService, translationService)
+    handleBackgroundRequest(message, dictionaryService, storageService, translationService, phoneticsService)
       .then(response => sendResponse(response))
       .catch(error => {
         console.error('Background message handler error:', error);

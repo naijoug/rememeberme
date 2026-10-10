@@ -11,8 +11,9 @@ async function request<T>(message: VocabularyMessage): Promise<T> {
 // Never fall back to a local write when messaging fails.
 export const storageClient = {
   getAllWords: () => request<WordEntry[]>({ type: 'GET_WORDS' }),
-  saveWord: (word: string, definition: Definition, context: string, url: string) =>
-    request<WordEntry>({ type: 'SAVE_WORD', word, definition, context, url }),
+  getWord: (word: string) => request<WordEntry | null>({ type: 'GET_WORD', word }),
+  saveWord: (word: string, definition: Definition, context: string, url: string, timestamp?: number) =>
+    request<WordEntry>({ type: 'SAVE_WORD', word, definition, context, url, ...(timestamp !== undefined ? { timestamp } : {}) }),
   deleteWord: (word: string) => request<void>({ type: 'DELETE_WORD', word }),
   resetCount: (word: string) => request<void>({ type: 'RESET_COUNT', word }),
   importData: (jsonData: string) => request<void>({ type: 'IMPORT_DATA', jsonData }),

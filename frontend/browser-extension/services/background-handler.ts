@@ -1,11 +1,11 @@
-import type { BackgroundMessage, BackgroundResponse, Definition, Translation, VocabularyMessage } from '~/types';
+import type { BackgroundMessage, BackgroundResponse, Definition, PhoneticTranscriptions, Translation, VocabularyMessage } from '~/types';
 import type { StorageService } from './storage';
 import { isDefinition } from './definition-utils';
 import { isEnglishWord } from './word-utils';
 
 function isLookupRequest(message: unknown): message is BackgroundMessage {
   return typeof message === 'object' && message !== null &&
-    'type' in message && (message.type === 'GET_DEFINITION' || message.type === 'GET_TRANSLATION') &&
+    'type' in message && (message.type === 'GET_DEFINITION' || message.type === 'GET_TRANSLATION' || message.type === 'GET_PHONETICS') &&
     'word' in message && typeof message.word === 'string' && isEnglishWord(message.word);
 }
 
@@ -17,6 +17,7 @@ function isVocabularyRequest(message: unknown): message is VocabularyMessage {
       return true;
     case 'DELETE_WORD':
     case 'RESET_COUNT':
+    case 'GET_WORD':
       // Backups may contain words outside the selection validator's alphabet.
       return 'word' in message && typeof message.word === 'string' && message.word.trim().length > 0;
     case 'IMPORT_DATA':
@@ -25,23 +26,29 @@ function isVocabularyRequest(message: unknown): message is VocabularyMessage {
       return 'word' in message && typeof message.word === 'string' && isEnglishWord(message.word) &&
         'definition' in message && isDefinition(message.definition) &&
         'context' in message && typeof message.context === 'string' &&
-        'url' in message && typeof message.url === 'string';
+        'url' in message && typeof message.url === 'string' &&
+        (!('timestamp' in message) || (typeof message.timestamp === 'number' && Number.isFinite(message.timestamp) && message.timestamp >= 0));
     default:
       return false;
   }
 }
 
 type VocabularyStorage = Pick<StorageService,
-  'getAllWords' | 'saveWord' | 'deleteWord' | 'resetCount' | 'importData' | 'exportData'>;
+  'getAllWords' | 'getWord' | 'saveWord' | 'deleteWord' | 'resetCount' | 'importData' | 'exportData'>;
 
 export async function handleBackgroundRequest(
   message: unknown,
   dictionary: { getDefinition(word: string): Promise<Definition> },
   vocabulary: VocabularyStorage,
-  translator?: { translate(word: string): Promise<Translation> }
+  translator?: { translate(word: string): Promise<Translation> },
+  phonetics?: { getPhonetics(word: string): Promise<PhoneticTranscriptions> }
 ): Promise<BackgroundResponse<unknown>> {
   try {
     if (isLookupRequest(message)) {
+      if (message.type === 'GET_PHONETICS') {
+        if (!phonetics) return { success: false, error: 'Phonetic data is unavailable.' };
+        return { success: true, data: await phonetics.getPhonetics(message.word) };
+      }
       if (message.type === 'GET_TRANSLATION') {
         if (!translator) return { success: false, error: 'Chinese translation is unavailable.' };
         return { success: true, data: await translator.translate(message.word) };
@@ -54,8 +61,10 @@ export async function handleBackgroundRequest(
     switch (message.type) {
       case 'GET_WORDS':
         return { success: true, data: await vocabulary.getAllWords() };
+      case 'GET_WORD':
+        return { success: true, data: await vocabulary.getWord(message.word) };
       case 'SAVE_WORD':
-        return { success: true, data: await vocabulary.saveWord(message.word, message.definition, message.context, message.url) };
+        return { success: true, data: await vocabulary.saveWord(message.word, message.definition, message.context, message.url, message.timestamp) };
       case 'DELETE_WORD':
         await vocabulary.deleteWord(message.word);
         return { success: true, data: null };

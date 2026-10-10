@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { Circle , IconoirProvider } from '@iconoir/vue';
+import { NavArrowDown, IconoirProvider } from '@iconoir/vue';
 import type { HistoryRecord } from '~/types';
 import TranslationText from './TranslationText.vue';
 
@@ -9,6 +9,7 @@ interface Props {
   record: HistoryRecord;
   word: string;
   showDefinition?: boolean;
+  recordNumber?: number;
 }
 
 const props = defineProps<Props>();
@@ -20,13 +21,15 @@ const isoDate = computed(() => {
 // Format timestamp
 function formatTimestamp(timestamp: number): string {
   const date = new Date(timestamp);
-  if (date.toDateString() === new Date().toDateString()) return 'Today';
-  return date.toLocaleString('en-US', {
+  if (!Number.isFinite(date.getTime())) return 'Unknown time';
+  return date.toLocaleString(undefined, {
     year: 'numeric',
-    month: 'short',
+    month: '2-digit',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
   });
 }
 
@@ -63,17 +66,24 @@ function getShortUrl(url: string): string {
 <template>
   <IconoirProvider :icon-props="{ color: 'currentColor', 'stroke-width': 1.5 }">
   <article class="history-item">
-    <Circle class="history-dot" width="9" height="9" aria-hidden="true" />
-    <div class="history-header">
-      <time class="timestamp" :datetime="isoDate">{{ formatTimestamp(record.timestamp) }}</time>
-      <a v-if="sourceUrl" class="url-link" :href="sourceUrl" target="_blank" rel="noopener noreferrer" :title="record.url">{{ getShortUrl(record.url) }}</a>
-      <span v-else-if="record.url" class="source-text">{{ record.url }}</span>
-    </div>
+    <details class="record-entry">
+      <summary class="record-summary">
+        <span class="record-number">#{{ recordNumber ?? 1 }}</span>
+        <span class="record-summary-text"><time class="timestamp" :datetime="isoDate" :title="isoDate">{{ formatTimestamp(record.timestamp) }}</time><span class="record-domain">{{ sourceUrl ? getShortUrl(record.url) : 'No webpage' }}</span></span>
+        <NavArrowDown class="record-chevron" width="15" height="15" aria-hidden="true" />
+      </summary>
+      <div class="record-content">
     <div v-if="record.context" class="context-text"><template v-for="(part, index) in contextParts" :key="index"><mark v-if="index % 2 === 1">{{ part }}</mark><template v-else>{{ part }}</template></template></div>
+    <p v-else class="context-text">Sentence unavailable for this record.</p>
+    <a v-if="sourceUrl" class="url-link" :href="sourceUrl" target="_blank" rel="noopener noreferrer">{{ record.url }}</a>
+    <span v-else-if="record.url" class="source-text">{{ record.url }}</span>
+    <p v-else class="source-text">No webpage URL recorded.</p>
     <details v-if="showDefinition && (record.definition.meanings.length || record.definition.translation)" class="history-definition">
       <summary>Definition at the time</summary>
       <TranslationText :translation="record.definition.translation" />
       <p>{{ record.definition.meanings[0]?.definitions[0]?.definition }}</p>
+    </details>
+      </div>
     </details>
   </article>
   </IconoirProvider>

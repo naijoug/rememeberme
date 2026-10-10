@@ -1,0 +1,27 @@
+{
+  "source": "open-dict-data/ipa-dict",
+  "retrieved": "2026-10-10",
+  "url": "https://github.com/open-dict-data/ipa-dict",
+  "sourceHashesSha256": {
+    "en_US.txt": "2af6f154a5c363275f052d1f85acedef38ed185ca9745aa4314be77f6b70de67",
+    "en_UK.txt": "221394caef0cf723b4f2df81a98ac33191293257b88aed5b1fb89466d3a0dc77",
+    "ipa-dict-LICENSE.txt": "2c6a7e4c71f834a8fc0114fa4f65ca85e80bc4b4dc7ed08746963a09a7b0d177",
+    "en-US-LICENSE.txt": "a504bede5a50d1ac19c38984d9bb33371927f72e714946a963bf40bb2de21188",
+    "en-UK-LICENSE.txt": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+    "cmudict-LICENSE.txt": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
+    "syllabify-LICENSE.txt": "20318769d8694a14abb3b5c0f98ddd49105a22c9a38e75a2889da9f1bd08f737"
+  },
+  "entries": 146548,
+  "counts": {
+    "en_US.txt": 124987,
+    "en_UK.txt": 65119
+  },
+  "shards": 64,
+  "jsonBytes": 5934514,
+  "format": "exact lowercase spelling -> [US IPA or null, UK IPA or null]",
+  "licenses": {
+    "en_US": "MIT",
+    "en_UK": "GPL-3.0 (ipacards-derived)"
+  },
+  "limitations": "Broad phonemic transcriptions; variants retained as provided. Not a complete dictionary. No context-based heteronym choice. Speech synthesis is independent and can use a different variant."
+}

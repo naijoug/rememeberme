@@ -42,6 +42,9 @@ export interface Translation {
   source: 'mymemory';
 }
 
+/** Independent display data from the packaged IPA dictionary; not vocabulary. */
+export interface PhoneticTranscriptions { us?: string; uk?: string }
+
 /**
  * History record for a single word lookup
  */
@@ -87,11 +90,12 @@ export interface DictionaryResponse {
 /**
  * Message types for communication between content script and background
  */
-export type BackgroundMessage = { type: 'GET_DEFINITION' | 'GET_TRANSLATION'; word: string };
+export type BackgroundMessage = { type: 'GET_DEFINITION' | 'GET_TRANSLATION' | 'GET_PHONETICS'; word: string };
 
 export type VocabularyMessage =
   | { type: 'GET_WORDS' }
-  | { type: 'SAVE_WORD'; word: string; definition: Definition; context: string; url: string }
+  | { type: 'GET_WORD'; word: string }
+  | { type: 'SAVE_WORD'; word: string; definition: Definition; context: string; url: string; timestamp?: number }
   | { type: 'DELETE_WORD'; word: string }
   | { type: 'RESET_COUNT'; word: string }
   | { type: 'IMPORT_DATA'; jsonData: string }

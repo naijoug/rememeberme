@@ -1,20 +1,32 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from 'vue';
+import { computed, onUnmounted, provide, ref } from 'vue';
 import VocabularyPanel from '../components/VocabularyPanel.vue';
 import SelectionPopup from '../components/SelectionPopup.vue';
 import type { Definition, WordEntry } from '../types';
 import type { ThemePreference } from '../types/theme';
 import { isDefinition } from '../services/definition-utils';
+import { PhoneticsService, phoneticsLookupKey } from '../services/phonetics';
 import referenceImage from '../../designs/rememberme-extension/paper-sage-reference.png';
 import darkPaletteImage from '../../designs/rememberme-extension/codex-dark-reference.png';
 
-const definition: Definition = { word: 'multiple', phonetic: '/ˈmʌltɪpəl/', phonetics: [], meanings: [{ partOfSpeech: 'adjective', definitions: [{ definition: 'More than one; consisting of several parts.', example: 'She compared multiple sources.' }] }] };
+// Read packaged IPA directly in the preview; no extension messages or vocabulary.
+const previewPhonetics = new PhoneticsService(path => path);
+provide(phoneticsLookupKey, word => previewPhonetics.getPhonetics(word));
+
+const params = new URLSearchParams(location.search);
+const sampleWord = params.get('word') === 'trick' ? 'trick' : 'multiple';
+const sampleContext = sampleWord === 'trick' ? 'He played a trick on me.' : 'She compared multiple sources.';
+const definition: Definition = sampleWord === 'trick'
+  ? { word: 'trick', source: 'wordnet', phonetics: [], translation: { text: '哄騙 哄骗 [hong3 pian4]', target: 'zh-CN', source: 'mymemory' }, meanings: [{ partOfSpeech: 'noun', definitions: [{ definition: 'A cunning or deceitful action or device.', example: sampleContext }] }] }
+  : { word: 'multiple', phonetic: '/ˈmʌltɪpəl/', phonetics: [], meanings: [{ partOfSpeech: 'adjective', definitions: [{ definition: 'More than one; consisting of several parts.', example: sampleContext }] }] };
 const initial: WordEntry[] = [
-  { word: 'multiple', count: 2, createdAt: Date.now(), updatedAt: Date.now(), history: [{ timestamp: Date.now(), context: 'This article draws on multiple sources.', url: 'https://example.com/article', definition }] },
+  { word: sampleWord, count: 2, createdAt: Date.now() - 86400000, updatedAt: Date.now() - 3600000, history: [
+    { timestamp: Date.now() - 86400000, context: sampleWord === 'trick' ? sampleContext : 'Multiple examples helped explain the idea.', url: 'https://example.com/first-reading', definition },
+    { timestamp: Date.now() - 3600000, context: sampleWord === 'trick' ? sampleContext : 'This article draws on multiple sources.', url: 'https://example.com/article', definition },
+  ] },
   { word: 'serendipity', count: 4, createdAt: 1, updatedAt: 1, history: [{ timestamp: Date.now() - 86400000, context: 'A moment of serendipity.', url: 'https://example.com/reading', definition: { word: 'serendipity', phonetics: [], meanings: [{ partOfSpeech: 'noun', definitions: [{ definition: 'A fortunate discovery.' }] }] } }] },
   { word: 'meticulous', count: 1, createdAt: 1, updatedAt: 2, history: [] },
 ];
-const params = new URLSearchParams(location.search);
 const initialMode = params.get('state');
 const mode = ref(initialMode === 'empty' || initialMode === 'list' ? initialMode : 'detail');
 const words = ref<WordEntry[]>(mode.value === 'empty' ? [] : structuredClone(initial));
@@ -36,13 +48,12 @@ function setMode(value: string) {
 }
 function reset(word: string) { const entry = words.value.find(item => item.word === word); if (entry) entry.count = 0; }
 function remove(word: string) { words.value = words.value.filter(item => item.word !== word); }
-function forget() {
-  const entry = words.value.find(item => item.word === 'multiple');
-  const history = { timestamp: Date.now(), context: 'She compared multiple sources.', url: 'https://example.com/article', definition };
+function recordWord() {
+  const entry = words.value.find(item => item.word === sampleWord);
+  const history = { timestamp: Date.now(), context: sampleContext, url: 'https://example.com/article', definition };
   if (entry) { entry.count++; entry.history.push(history); }
-  else words.value.push({ word: 'multiple', count: 1, history: [history], createdAt: Date.now(), updatedAt: Date.now() });
+  else words.value.push({ word: sampleWord, count: 1, history: [history], createdAt: Date.now(), updatedAt: Date.now() });
   feedback.value = 'Saved in this preview only.';
-  cardVisible.value = false;
 }
 function retry() { cardState.value = 'loading'; retryTimer = setTimeout(() => { cardState.value = 'ready'; }, 600); }
 function exportData() {
@@ -83,13 +94,13 @@ function importData(text: string) {
       <section v-for="theme in themes" :key="theme" class="preview-column">
         <h2>{{ compare ? 'Implementation' : theme === 'light' ? 'Light mode' : 'Dark mode' }}</h2>
         <div class="popup-stage">
-          <VocabularyPanel :key="version" :words="words" :theme="preference === 'system' ? theme : preference" :initial-word="mode === 'detail' ? 'multiple' : undefined"
+          <VocabularyPanel :key="version" :words="words" :theme="preference === 'system' ? theme : preference" :initial-word="mode === 'detail' ? sampleWord : undefined"
             @theme-change="preference = $event" @reset="reset" @delete="remove" @import="importData" @export="exportData" />
         </div>
         <h2>In-page lookup</h2>
         <div class="lookup-stage rm-theme" :data-theme="preference === 'system' ? theme : preference">
-          <SelectionPopup word="multiple" :position="{ x: 0, y: 0 }" :visible="cardVisible" :definition="cardState === 'ready' ? definition : undefined" :loading="cardState === 'loading'" :error="cardState === 'error' ? 'The dictionary is taking too long. Please try again.' : ''" inline
-            @close="cardVisible = false" @remember="cardVisible = false" @forget="forget" @retry="retry" />
+          <SelectionPopup :word="sampleWord" :position="{ x: 0, y: 0 }" :visible="cardVisible" :definition="cardState === 'ready' ? definition : undefined" :loading="cardState === 'loading'" :error="cardState === 'error' ? 'The dictionary is taking too long. Please try again.' : ''" inline
+            :saved-word="words.find(entry => entry.word === sampleWord) ?? null" @close="cardVisible = false" @record="recordWord" @retry="retry" />
         </div>
       </section>
     </main>

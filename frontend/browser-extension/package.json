@@ -1,8 +1,8 @@
 {
   "name": "remember-me",
-  "description": "Words remember you, too.",
+  "description": "Look up English words as you read and keep a local vocabulary history of the words you forget.",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "engines": {
     "node": "^22.12.0"

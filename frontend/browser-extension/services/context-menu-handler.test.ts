@@ -85,7 +85,8 @@ describe('context-menu-handler', () => {
       'Serendipity',
       definition,
       'Words remember you, too.',
-      'https://example.com/article'
+      'https://example.com/article',
+      expect.any(Number)
     );
     expect(sendMessage).toHaveBeenNthCalledWith(1, 7, { type: 'EXTRACT_CONTEXT' }, { frameId: 0 });
     expect(sendMessage).toHaveBeenNthCalledWith(2, 7, {
@@ -172,7 +173,7 @@ describe('context-menu-handler', () => {
     expect(reconnectPage).toHaveBeenCalledExactlyOnceWith(7, 3);
     expect(sendMessage).toHaveBeenNthCalledWith(2, 7, { type: 'EXTRACT_CONTEXT' }, { frameId: 3 });
     expect(sendMessage.mock.invocationCallOrder[1]).toBeLessThan(getDefinition.mock.invocationCallOrder[0]);
-    expect(saveWord).toHaveBeenCalledExactlyOnceWith('serendipity', definition, 'The original selected sentence.', 'https://example.com/frame');
+    expect(saveWord).toHaveBeenCalledExactlyOnceWith('serendipity', definition, 'The original selected sentence.', 'https://example.com/frame', expect.any(Number));
   });
 
   it('does not query or save when a restricted page cannot be reconnected', async () => {

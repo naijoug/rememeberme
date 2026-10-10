@@ -1,5 +1,7 @@
 # Paper & Sage design QA
 
+The latest single counter action and numbered record viewer intentionally replace the original Remember/Forget design; see [encounter-counter verification](docs/verification/2026-09-30-encounter-counter.md) for the current browser evidence.
+
 Subsequent user-requested popup action placement and scrolling changes are recorded in [the interaction verification](docs/verification/2026-09-30-popup-interactions.md); the original source comparisons below describe the earlier layout.
 
 Latest update: the user replaced the original green dark palette with a neutral Codex-inspired palette. The earlier comparison below documents the selected layout; the final section records the superseding dark-color check.

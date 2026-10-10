@@ -1,24 +1,43 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createApp, nextTick, type App } from 'vue';
+import { createApp, h, nextTick, reactive, type App } from 'vue';
 import SelectionPopup from './SelectionPopup.vue';
+vi.mock('~/services/lookup-client', () => ({ requestPhonetics: vi.fn().mockResolvedValue({}) }));
 
 let app: App;
 let host: HTMLElement;
 afterEach(() => { app?.unmount(); host?.remove(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 describe('lookup card interaction and viewport fit', () => {
-  it('places actions beside the word outside the scrollable reading body', async () => {
-    const remember = vi.fn();
-    const forget = vi.fn();
+  it('plays pronunciation without recording and stops it when the card closes', async () => {
+    const record = vi.fn();
+    const synth = { getVoices: () => [{ lang: 'en-US', localService: true }], speak: vi.fn(), cancel: vi.fn(), addEventListener: vi.fn(), removeEventListener: vi.fn() };
+    vi.stubGlobal('speechSynthesis', synth);
+    vi.stubGlobal('SpeechSynthesisUtterance', class { constructor(public text: string) {} });
+    const state = reactive({ visible: true });
     host = document.createElement('div'); document.body.appendChild(host);
-    app = createApp(SelectionPopup, { word: 'technical', visible: true, position: { x: 250, y: 200 }, definition: { word: 'technical', phonetics: [], meanings: [] }, onRemember: remember, onForget: forget });
+    app = createApp({ render: () => h(SelectionPopup, { word: 'apple', visible: state.visible, position: { x: 200, y: 20 }, onRecord: record, onClose: () => { state.visible = false; } }) });
+    app.mount(host); await nextTick();
+    host.querySelector<HTMLButtonElement>('.lookup-header .pronunciation-button')!.click();
+    expect(synth.speak).toHaveBeenCalledTimes(1);
+    expect(record).not.toHaveBeenCalled();
+    host.querySelector<HTMLButtonElement>('[aria-label="Close definition"]')!.click(); await nextTick();
+    expect(host.querySelector('.vocab-counter-popup')).toBeNull();
+    expect(synth.cancel).toHaveBeenCalledTimes(1);
+    expect(synth.removeEventListener).toHaveBeenCalledWith('voiceschanged', expect.any(Function));
+  });
+
+  it('places actions beside the word outside the scrollable reading body', async () => {
+    const record = vi.fn();
+    host = document.createElement('div'); document.body.appendChild(host);
+    app = createApp(SelectionPopup, { word: 'technical', visible: true, position: { x: 250, y: 200 }, savedWord: { word: 'technical', count: 3, history: [], createdAt: 1, updatedAt: 1 }, definition: { word: 'technical', phonetics: [], meanings: [] }, onRecord: record });
     app.mount(host); await nextTick();
     expect(host.querySelector('.lookup-header .word')?.textContent).toBe('technical');
     expect(host.querySelector('.lookup-body .lookup-actions')).toBeNull();
-    host.querySelector<HTMLButtonElement>('.lookup-header .btn-remember')!.click();
-    host.querySelector<HTMLButtonElement>('.lookup-header .btn-forget')!.click();
-    expect(remember).toHaveBeenCalledTimes(1);
-    expect(forget).toHaveBeenCalledTimes(1);
+    expect(host.querySelector('.record-count')?.textContent).toBe('3');
+    expect(host.querySelector('.btn-remember, .btn-forget')).toBeNull();
+    host.querySelector<HTMLButtonElement>('.lookup-header .record-button')!.click();
+    host.querySelector<HTMLButtonElement>('.lookup-header .record-button')!.click();
+    expect(record).toHaveBeenCalledTimes(2);
   });
 
   it('keeps controls in place when content grows after the reader enters the card', async () => {
@@ -49,16 +68,16 @@ describe('lookup card interaction and viewport fit', () => {
     const card = host.querySelector<HTMLElement>('.vocab-counter-popup')!;
     expect(card.style.left).toBe('12px');
     expect(card.style.top).toBe('370px');
-    expect(host.querySelector<HTMLButtonElement>('.btn-forget')?.disabled).toBe(true);
+    expect(host.querySelector<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
   });
 
-  it('keeps the word visible on failure and exposes retry instead of save', async () => {
+  it('keeps recording available when lookup fails, with a separate retry action', async () => {
     const retry = vi.fn();
     host = document.createElement('div'); document.body.appendChild(host);
     app = createApp(SelectionPopup, { word: 'multiple', visible: true, error: 'Please try again.', position: { x: 200, y: 20 }, onRetry: retry });
     app.mount(host); await nextTick();
     expect(host.querySelector('.word')?.textContent).toBe('multiple');
-    expect(host.querySelector('.btn-forget')).toBeNull();
+    expect(host.querySelector<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
     host.querySelector<HTMLButtonElement>('.retry-btn')!.click();
     expect(retry).toHaveBeenCalledTimes(1);
   });

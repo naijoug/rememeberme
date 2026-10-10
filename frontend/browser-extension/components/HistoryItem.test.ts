@@ -13,7 +13,7 @@ function render(context: string, word = 'apple', url = 'https://example.com/arti
   };
   container = document.createElement('div');
   document.body.appendChild(container);
-  app = createApp(HistoryItem, { record, word });
+  app = createApp(HistoryItem, { record, word, recordNumber: 2 });
   app.mount(container);
   return container;
 }
@@ -24,6 +24,19 @@ afterEach(() => {
 });
 
 describe('HistoryItem', () => {
+  it('opens an individual numbered record with its precise timestamp and full source URL', () => {
+    const view = render('An apple sentence.', 'apple', 'https://example.com/article?chapter=2#context');
+    const details = view.querySelector<HTMLDetailsElement>('.record-entry')!;
+    expect(details.open).toBe(false);
+    expect(view.querySelector('.record-number')?.textContent).toBe('#2');
+    view.querySelector<HTMLElement>('.record-summary')!.click();
+    expect(details.open).toBe(true);
+    expect(view.querySelector('time')?.getAttribute('datetime')).toBe(new Date(1).toISOString());
+    expect(view.querySelector('time')?.textContent).toMatch(/\d{2}:\d{2}:\d{2}/);
+    expect(view.querySelector('.context-text')?.textContent).toBe('An apple sentence.');
+    expect(view.querySelector('.url-link')?.textContent).toBe('https://example.com/article?chapter=2#context');
+  });
+
   it('renders HTML as text and highlights only matching words', () => {
     const context = '<img src=x onerror="alert(1)"> Apple & apple; pineapple.';
     const view = render(context);

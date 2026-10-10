@@ -2,12 +2,40 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { handleBackgroundRequest } from './background-handler';
 
 const vocabulary = {
-  getAllWords: vi.fn(), saveWord: vi.fn(), deleteWord: vi.fn(),
+  getAllWords: vi.fn(), getWord: vi.fn(), saveWord: vi.fn(), deleteWord: vi.fn(),
   resetCount: vi.fn(), importData: vi.fn(), exportData: vi.fn(),
 };
 beforeEach(() => vi.resetAllMocks());
 
 describe('background requests', () => {
+  it('dispatches local IPA separately, rejects invalid requests and surfaces recoverable failures', async () => {
+    const getPhonetics = vi.fn().mockResolvedValueOnce({ us: '/ˈtɹɪk/', uk: '/tɹˈɪk/' }).mockRejectedValueOnce(new Error('Local file unavailable'));
+    const dictionary = { getDefinition: vi.fn() };
+    expect(await handleBackgroundRequest({ type: 'GET_PHONETICS', word: 'trick' }, dictionary, vocabulary, undefined, { getPhonetics }))
+      .toEqual({ success: true, data: { us: '/ˈtɹɪk/', uk: '/tɹˈɪk/' } });
+    expect(await handleBackgroundRequest({ type: 'GET_PHONETICS', word: 'apple' }, dictionary, vocabulary, undefined, { getPhonetics }))
+      .toEqual({ success: false, error: 'Local file unavailable' });
+    for (const word of ['two words', '<script>', null]) {
+      expect(await handleBackgroundRequest({ type: 'GET_PHONETICS', word }, dictionary, vocabulary, undefined, { getPhonetics })).toMatchObject({ success: false });
+    }
+    expect(getPhonetics).toHaveBeenCalledTimes(2);
+    expect(dictionary.getDefinition).not.toHaveBeenCalled();
+    for (const method of Object.values(vocabulary)) expect(method).not.toHaveBeenCalled();
+  });
+
+  it('reads only the requested word and validates a supplied record timestamp', async () => {
+    vocabulary.getWord.mockResolvedValue({ word: 'architecture', count: 2, history: [] });
+    expect(await handleBackgroundRequest({ type: 'GET_WORD', word: 'architecture' }, { getDefinition: vi.fn() }, vocabulary)).toMatchObject({ success: true, data: { count: 2 } });
+    expect(vocabulary.getAllWords).not.toHaveBeenCalled();
+    const message = { type: 'SAVE_WORD', word: 'architecture', context: 'Architecture here.', url: '', definition: { word: 'architecture', phonetics: [], meanings: [] } };
+    for (const timestamp of [-1, NaN, 'now', null]) {
+      expect(await handleBackgroundRequest({ ...message, timestamp }, { getDefinition: vi.fn() }, vocabulary)).toMatchObject({ success: false });
+    }
+    expect(vocabulary.saveWord).not.toHaveBeenCalled();
+    await handleBackgroundRequest({ ...message, timestamp: 1234 }, { getDefinition: vi.fn() }, vocabulary);
+    expect(vocabulary.saveWord).toHaveBeenCalledWith('architecture', message.definition, message.context, '', 1234);
+  });
+
   it('dispatches translation separately from English lookup and returns provider failures', async () => {
     const data = { text: '精选', target: 'zh-CN' as const, source: 'mymemory' as const };
     const translate = vi.fn().mockResolvedValueOnce(data).mockRejectedValueOnce(new Error('Translation quota exhausted.'));

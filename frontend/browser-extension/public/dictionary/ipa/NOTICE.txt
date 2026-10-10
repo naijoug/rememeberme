@@ -1,0 +1,24 @@
+Packaged English IPA pronunciation data
+
+Source: https://github.com/open-dict-data/ipa-dict
+Copyright (c) 2016 dohliam, MIT except for third-party data identified below.
+
+US data is based on a modified version of cmudict-ipa by Lingliang Zhang
+(https://github.com/lingz/cmudict-ipa), with stress markers using syllabify
+by Kyle Gorman (https://github.com/kylebgorman/syllabify), MIT.
+See ipa-dict-LICENSE.txt, en-US-LICENSE.txt, cmudict-LICENSE.txt and
+syllabify-LICENSE.txt for permission and copyright notices.
+
+UK data is derived from ipacards by leoboiko / melissaboiko
+(https://github.com/melissaboiko/ipacards), GPL version 3.
+The UK-derived data remains under that license; see en-UK-LICENSE.txt.
+
+Remember Me modifications, 2026-10-10: filter to supported single-word
+spellings, normalize lookup keys to lowercase, and group unchanged IPA
+strings into 64 JSON shards. No pronunciation text is generated or corrected.
+Original corresponding TSV sources are shipped as en_US.txt.gz and
+en_UK.txt.gz. Source checksums and coverage are in metadata.json.
+The reproducible converter is scripts/build-ipa.py in the Remember Me source.
+
+The dictionaries do not endorse Remember Me. IPA variants are not selected
+by sense or context; browser speech voices may pronounce a different variant.

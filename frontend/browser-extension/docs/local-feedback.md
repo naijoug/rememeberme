@@ -30,7 +30,7 @@ Browser automation may block `chrome://extensions/`; the initial loading step is
 
 ## Quick check in Chrome
 
-With the service running, open [the local selection test page](http://127.0.0.1:3937/test-selection.html) and double-click a highlighted English word. A working extension shows the definition card. **Remember** closes the card without saving; **Forget** and the context-menu shortcut save into the vocabulary of the currently loaded extension, so use Remember for a check that does not change your vocabulary.
+With the service running, open [the local selection test page](http://127.0.0.1:3937/test-selection.html) and double-click a highlighted English word. A working extension shows the definition card and bookmark counter. Use **X** or **Escape** for a check that does not change vocabulary. Clicking the counter records an encounter in the installed extension, even when lookup is unavailable. Use the isolated component preview or a disposable browser profile for repeated-click/save tests.
 
 If no card appears, check Chrome's puzzle-piece extension menu for **Remember Me · Local**. If it is absent, use the extension manager yourself to enable the existing entry or load the fixed directory above if it has never been loaded. Do not reinstall or create a second copy just to refresh an already-enabled extension. If the popup is blank, first run `npm run local:status` and `npm run local:start`; the local build needs its server even when the generated folder exists.
 
@@ -55,3 +55,5 @@ WXT references: [browser startup/manual profiles](https://wxt.dev/guide/essentia
 ## Design preview
 
 The [Paper & Sage component preview](http://127.0.0.1:3937/preview/paper-sage.html) uses disposable in-memory sample vocabulary and simulated lookup states. It renders the same UI components as the extension without accessing browser vocabulary. Use it to compare light/dark, empty/loading/error and reading/list states. It is not an installed-extension or live dictionary check. The preview files are outside extension entrypoints and are not shipped in production output.
+
+Use [the trick fixture](http://127.0.0.1:3937/preview/paper-sage.html?word=trick) to check packaged US/UK IPA and Chinese numbered-pinyin display in both views. Its raw sample translation contains `[hong3 pian4]`, which should render as `[hǒng piàn]`; definitions/translations remain fixture data.

@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { Refresh, WarningTriangle, Xmark , IconoirProvider } from '@iconoir/vue';
-import type { Definition, Position } from '~/types';
+import { Bookmark, Refresh, WarningTriangle, Xmark, IconoirProvider } from '@iconoir/vue';
+import type { Definition, Position, WordEntry } from '~/types';
 import HighlightedText from './HighlightedText.vue';
 import DefinitionSource from './DefinitionSource.vue';
 import TranslationText from './TranslationText.vue';
+import WordHistory from './WordHistory.vue';
+import WordPronunciation from './WordPronunciation.vue';
 
 const props = defineProps<{
   word: string; position: Position; visible: boolean; definition?: Definition;
   loading?: boolean; error?: string; saving?: boolean; saveError?: string; inline?: boolean;
   englishLoading?: boolean; translationLoading?: boolean; englishError?: string; translationError?: string;
+  savedWord?: WordEntry | null; recordsLoading?: boolean; recordsError?: string; pendingSaves?: number;
 }>();
-const emit = defineEmits<{ remember: []; forget: []; close: []; retry: [] }>();
+const emit = defineEmits<{ record: []; close: []; retry: [] }>();
 const card = ref<HTMLElement>();
 const coords = ref({ left: 12, top: 12 });
 let observer: ResizeObserver | undefined;
 const interacted = ref(false);
 const maxHeight = ref(480);
-const phonetic = computed(() => props.definition?.phonetic || props.definition?.phonetics.find(item => item?.text)?.text);
+const displayedCount = computed(() => props.savedWord?.count ?? (props.recordsLoading || props.recordsError ? '—' : 0));
 const popupStyle = computed(() => props.inline
   ? { position: 'relative' as const, left: 'auto', top: 'auto' }
   : { left: coords.value.left + 'px', top: coords.value.top + 'px', maxHeight: maxHeight.value + 'px' });
@@ -58,21 +61,19 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener('resize',
   <IconoirProvider :icon-props="{ color: 'currentColor', 'stroke-width': 1.5 }">
   <section v-if="visible" ref="card" class="vocab-counter-popup" :style="popupStyle" role="dialog" :aria-label="'Definition of ' + word" :aria-busy="loading || saving" @pointerenter="interacted = true" @focusin="interacted = true" @pointerdown.stop="interacted = true" @click.stop @dblclick.stop @mouseup.stop @keydown.esc.stop="emit('close')">
     <div class="lookup-header">
-      <h2 class="word rm-word">{{ word }}</h2>
+      <div class="lookup-heading">
+        <h2 class="word rm-word">{{ word }}</h2>
+        <WordPronunciation :word="word" :definition="definition" />
+      </div>
       <div class="lookup-actions" role="group" aria-label="Word actions">
-        <template v-if="error">
-          <button class="rm-button rm-secondary" @click="emit('close')">Close</button>
-          <button class="rm-button rm-primary retry-btn" @click="emit('retry')">Try again</button>
-        </template>
-        <template v-else>
-          <button class="rm-button rm-secondary btn-remember" :disabled="saving" @click="loading ? emit('close') : emit('remember')">{{ loading ? 'Cancel' : 'Remember' }}</button>
-          <button class="rm-button rm-primary btn-forget" :disabled="loading || saving || !definition" @click="emit('forget')">{{ saving ? 'Saving…' : 'Forget' }}</button>
-        </template>
+        <button class="record-button" :aria-label="'Add a record for ' + word + ' (+1), count ' + displayedCount" title="Add to vocabulary and record this encounter (+1)" :aria-busy="saving" @click="emit('record')">
+          <Bookmark width="18" height="18" aria-hidden="true" /><span class="record-count" aria-live="polite">{{ displayedCount }}</span>
+          <Refresh v-if="pendingSaves" class="rm-spinner" width="12" height="12" aria-hidden="true" />
+        </button>
         <button class="rm-icon-btn" aria-label="Close definition" @click="emit('close')"><Xmark width="18" height="18" aria-hidden="true" /></button>
       </div>
     </div>
     <div class="lookup-body" tabindex="0" role="region" aria-label="Translation and definitions">
-    <div v-if="phonetic" class="phonetic">{{ phonetic }}</div>
     <div v-if="definition && definition.word.toLowerCase() !== word.toLowerCase()" class="phonetic base-form">Base form: {{ definition.word }}</div>
     <div v-if="loading" class="lookup-status loading" role="status">
       <Refresh class="rm-spinner" width="18" height="18" aria-hidden="true" />
@@ -82,6 +83,7 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener('resize',
       <WarningTriangle width="18" height="18" aria-hidden="true" />
       <div><h3>We couldn't load this word</h3><p>{{ error }}</p></div>
     </div>
+    <button v-if="error" class="rm-text-action retry-btn" @click="emit('retry')">Try again</button>
     <div v-else-if="definition" class="definition">
       <TranslationText :translation="definition.translation" />
       <p v-if="translationLoading && !definition.translation" class="lookup-note" role="status">Translating to Chinese…</p>
@@ -97,7 +99,13 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener('resize',
       </div>
       <DefinitionSource :source="definition.source" />
     </div>
+    <details v-if="savedWord?.history.length" class="lookup-records">
+      <summary class="records-toggle">Records · {{ savedWord.history.length }}</summary>
+      <WordHistory :word="word" :history="savedWord.history" :heading="false" />
+    </details>
     <p v-if="saveError" class="save-error" role="alert">{{ saveError }}</p>
+    <p v-if="pendingSaves" class="lookup-note" role="status">Saving {{ pendingSaves }} {{ pendingSaves === 1 ? 'record' : 'records' }}…</p>
+    <p v-if="recordsError" class="lookup-note" role="alert">{{ recordsError }}</p>
     </div>
   </section>
   </IconoirProvider>

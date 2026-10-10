@@ -1,17 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { ContentScriptContext } from 'wxt/utils/content-script-context';
-import type { BackgroundResponse, Translation } from '~/types';
+import type { BackgroundResponse, Translation, WordEntry } from '~/types';
 
 vi.mock('wxt/browser', () => ({ browser: { runtime: { id: 'disposable-extension' } } }));
-const { saveWord, stopTheme, themeCallbacks } = vi.hoisted(() => ({
-  saveWord: vi.fn(), stopTheme: vi.fn(), themeCallbacks: [] as Array<(theme: { preference: 'system' | 'dark'; resolved: 'light' | 'dark' }) => void>,
+const { saveWord, getWord, stopTheme, themeCallbacks } = vi.hoisted(() => ({
+  saveWord: vi.fn(), getWord: vi.fn(), stopTheme: vi.fn(), themeCallbacks: [] as Array<(theme: { preference: 'system' | 'dark'; resolved: 'light' | 'dark' }) => void>,
 }));
 vi.mock('~/services/theme', () => ({ watchTheme: (callback: (theme: { preference: 'system' | 'dark'; resolved: 'light' | 'dark' }) => void) => {
   themeCallbacks.push(callback);
   callback({ preference: 'system', resolved: 'light' });
   return stopTheme;
 } }));
-vi.mock('~/services/storage-client', () => ({ storageClient: { saveWord } }));
+vi.mock('~/services/storage-client', () => ({ storageClient: { saveWord, getWord } }));
 
 type Lookup = { word: string; respond: (response: BackgroundResponse) => void };
 let lookups: Lookup[];
@@ -19,9 +19,15 @@ let translations: Array<{ word: string; respond: (response: BackgroundResponse<T
 let deferTranslation = false;
 let ctx: ContentScriptContext;
 let eventSpy: MockInstance<Document['addEventListener']>;
+let shadows: WeakMap<Element, ShadowRoot>;
+
+function savedFixture(word: string, count: number): WordEntry {
+  return { word, count, createdAt: 1, updatedAt: Date.now(), history: Array.from({ length: count }, (_, index) => ({ timestamp: index + 1, context: `A ${word} sentence.`, url: 'https://example.com/fixture', definition: { word, phonetics: [], meanings: [] } })) };
+}
 
 function ui<T extends Element = HTMLElement>(selector: string): T | null {
-  return document.querySelector('#vocab-counter-popup-root')?.shadowRoot?.querySelector<T>(selector) ?? null;
+  const host = document.querySelector('#vocab-counter-popup-root');
+  return host ? shadows.get(host)?.querySelector<T>(selector) ?? null : null;
 }
 
 function startSelection(word: string) {
@@ -50,16 +56,25 @@ beforeEach(async () => {
   vi.resetModules();
   vi.useFakeTimers();
   saveWord.mockReset();
+  getWord.mockReset().mockResolvedValue(null);
   stopTheme.mockReset();
   themeCallbacks.length = 0;
   lookups = [];
   translations = [];
   deferTranslation = false;
   document.body.innerHTML = '<p>An apple and a banana.</p>';
+  shadows = new WeakMap();
+  const attachShadow = Element.prototype.attachShadow;
+  vi.spyOn(Element.prototype, 'attachShadow').mockImplementation(function (this: Element, options) {
+    const shadow = attachShadow.call(this, options);
+    shadows.set(this, shadow);
+    return shadow;
+  });
   vi.stubGlobal('defineContentScript', (definition: unknown) => definition);
   vi.stubGlobal('browser', { runtime: {
     onMessage: { addListener: vi.fn(), removeListener: vi.fn() },
     sendMessage: vi.fn((message: { type: string; word: string }) => {
+      if (message.type === 'GET_PHONETICS') return Promise.resolve({ success: true, data: { us: '/fixture/', uk: '/fixture/' } });
       if (message.type === 'GET_TRANSLATION') {
         if (!deferTranslation) return Promise.resolve({ success: false, error: 'Chinese translation unavailable.' });
         return new Promise<BackgroundResponse<Translation>>(respond => translations.push({ word: message.word, respond }));
@@ -169,15 +184,15 @@ describe('content selection flow (mock browser runtime)', () => {
     translations[0].respond({ success: true, data: { text: '精选', target: 'zh-CN', source: 'mymemory' } });
     await vi.advanceTimersByTimeAsync(20);
     expect(ui('.translation-text')?.textContent).toBe('精选');
-    expect(ui<HTMLButtonElement>('.btn-forget')?.disabled).toBe(false);
+    expect(ui<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
     lookups[0].respond({ success: false, error: 'No local verb definition; online dictionary timed out.' });
     await vi.advanceTimersByTimeAsync(20);
     expect(ui('[role=alert]')).toBeNull();
     expect(ui('.translation-text')?.textContent).toBe('精选');
-    saveWord.mockResolvedValue({ word: 'curated', count: 1 });
-    ui<HTMLButtonElement>('.btn-forget')!.click();
+    saveWord.mockResolvedValue(savedFixture('curated', 1));
+    ui<HTMLButtonElement>('.record-button')!.click();
     await vi.advanceTimersByTimeAsync(20);
-    expect(saveWord).toHaveBeenCalledWith('curated', expect.objectContaining({ word: 'curated', translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } }), 'A curated collection.', window.location.href);
+    expect(saveWord).toHaveBeenCalledWith('curated', expect.objectContaining({ word: 'curated', translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } }), 'A curated collection.', window.location.href, expect.any(Number));
   });
 
   it('keeps an English result usable while Chinese translation fails', async () => {
@@ -185,7 +200,7 @@ describe('content selection flow (mock browser runtime)', () => {
     await select('apple');
     await resolve(lookups[0]);
     expect(ui('.loading')).toBeNull();
-    expect(ui<HTMLButtonElement>('.btn-forget')?.disabled).toBe(false);
+    expect(ui<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
     translations[0].respond({ success: false, error: 'Free translation quota exhausted.' });
     await vi.advanceTimersByTimeAsync(20);
     expect(ui('[role=alert]')).toBeNull();
@@ -218,26 +233,26 @@ describe('content selection flow (mock browser runtime)', () => {
     expect(ui('.word')?.textContent).toBe('Having');
     expect(ui('.base-form')?.textContent).toBe('Base form: have');
     expect(warn).not.toHaveBeenCalled();
-    saveWord.mockResolvedValue({ word: 'having', count: 1 });
-    ui<HTMLButtonElement>('.btn-forget')!.click();
+    saveWord.mockResolvedValue(savedFixture('having', 1));
+    ui<HTMLButtonElement>('.record-button')!.click();
     await vi.advanceTimersByTimeAsync(20);
-    expect(saveWord).toHaveBeenCalledWith('Having', expect.objectContaining({ word: 'have' }), 'Having trouble?', window.location.href);
+    expect(saveWord).toHaveBeenCalledWith('Having', expect.objectContaining({ word: 'have' }), 'Having trouble?', window.location.href, expect.any(Number));
   });
 
   it('closes and reopens the popup, then saves the second selected word', async () => {
     await select('apple');
     await resolve(lookups[0]);
-    ui<HTMLButtonElement>('.btn-remember')!.click();
+    ui<HTMLButtonElement>('[aria-label="Close definition"]')!.click();
     await vi.advanceTimersByTimeAsync(20);
     expect(ui('.vocab-counter-popup')).toBeNull();
     expect(saveWord).not.toHaveBeenCalled();
     await select('banana');
     await resolve(lookups[1]);
     expect(ui('.word')?.textContent).toBe('banana');
-    saveWord.mockResolvedValue({ word: 'banana', count: 1 });
-    ui<HTMLButtonElement>('.btn-forget')!.click();
+    saveWord.mockResolvedValue(savedFixture('banana', 1));
+    ui<HTMLButtonElement>('.record-button')!.click();
     await vi.advanceTimersByTimeAsync(20);
-    expect(saveWord).toHaveBeenCalledWith('banana', expect.objectContaining({ word: 'banana' }), 'An apple and a banana.', window.location.href);
+    expect(saveWord).toHaveBeenCalledWith('banana', expect.objectContaining({ word: 'banana' }), 'An apple and a banana.', window.location.href, expect.any(Number));
   });
 
   it('keeps the latest definition when an older request completes last', async () => {
@@ -261,8 +276,11 @@ describe('content selection flow (mock browser runtime)', () => {
   it('removes listeners, popup and notifications when replaced by an update', async () => {
     await select('apple');
     await resolve(lookups[0]);
-    saveWord.mockResolvedValue({ word: 'apple', count: 1 });
-    ui<HTMLButtonElement>('.btn-forget')!.click();
+    saveWord.mockResolvedValue(savedFixture('apple', 1));
+    ui<HTMLButtonElement>('.record-button')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    const onMessage = vi.mocked(browser.runtime.onMessage.addListener).mock.calls[0][0];
+    onMessage({ type: 'SHOW_NOTIFICATION', message: 'Fixture saved', notificationType: 'success' }, {} as any, vi.fn());
     await vi.advanceTimersByTimeAsync(20);
     expect(ui('.vocab-counter-notification')).not.toBeNull();
     ctx.notifyInvalidated();
@@ -297,8 +315,8 @@ describe('content selection flow (mock browser runtime)', () => {
     expect(lookups).toHaveLength(2);
     await resolve(lookups[1]);
     expect(document.querySelectorAll('#vocab-counter-popup-root')).toHaveLength(1);
-    saveWord.mockResolvedValue({ word: 'banana', count: 1 });
-    ui<HTMLButtonElement>('.btn-forget')!.click();
+    saveWord.mockResolvedValue(savedFixture('banana', 1));
+    ui<HTMLButtonElement>('.record-button')!.click();
     await vi.advanceTimersByTimeAsync(20);
     expect(saveWord).toHaveBeenCalledTimes(1);
   });
@@ -306,7 +324,7 @@ describe('content selection flow (mock browser runtime)', () => {
   it('ends loading without a background response and can retry', async () => {
     await select('apple');
     expect(ui('.word')?.textContent).toBe('apple');
-    expect(ui<HTMLButtonElement>('.btn-forget')?.disabled).toBe(true);
+    expect(ui<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
     expect(document.querySelector('.vocab-counter-popup')).toBeNull();
     await vi.advanceTimersByTimeAsync(10000);
     expect(ui('[role=alert]')?.textContent).toContain('taking too long');
@@ -314,7 +332,7 @@ describe('content selection flow (mock browser runtime)', () => {
     ui<HTMLButtonElement>('.retry-btn')!.click();
     await vi.advanceTimersByTimeAsync(20);
     await resolve(lookups[1]);
-    expect(ui<HTMLButtonElement>('.btn-forget')?.disabled).toBe(false);
+    expect(ui<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
   });
 
   it('closes on Escape and ignores the late response', async () => {
@@ -325,20 +343,71 @@ describe('content selection flow (mock browser runtime)', () => {
     expect(saveWord).not.toHaveBeenCalled();
   });
 
-  it('prevents duplicate saves while a write is pending', async () => {
+  it('records every intentional click and ignores out-of-order write responses', async () => {
     await select('apple');
     await resolve(lookups[0]);
-    let complete!: (value: unknown) => void;
-    saveWord.mockImplementation(() => new Promise(resolve => { complete = resolve; }));
-    const button = ui<HTMLButtonElement>('.btn-forget')!;
+    const complete: Array<(entry: WordEntry) => void> = [];
+    saveWord.mockImplementation(() => new Promise<WordEntry>(resolve => { complete.push(resolve); }));
+    const button = ui<HTMLButtonElement>('.record-button')!;
     button.click();
     button.click();
     await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledTimes(2);
+    expect(ui<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
+    complete[1](savedFixture('apple', 2));
+    await vi.advanceTimersByTimeAsync(20);
+    complete[0](savedFixture('apple', 1));
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.record-count')?.textContent).toBe('2');
+    expect(ui('.vocab-counter-popup')).not.toBeNull();
+    expect(ui('.record-number')?.textContent).toBe('#2');
+    expect(ui('.lookup-note[role=status]')).toBeNull();
+  });
+
+  it('loads the existing count and does not expose prior records through the host DOM', async () => {
+    getWord.mockResolvedValue(savedFixture('apple', 7));
+    await select('apple');
+    expect(ui('.record-count')?.textContent).toBe('7');
+    expect(document.querySelector('#vocab-counter-popup-root')?.shadowRoot).toBeNull();
+    expect(document.querySelector('.context-text')).toBeNull();
+  });
+
+  it('records a sentence, click time and original page URL before lookup completes', async () => {
+    const source = { href: 'https://example.com/original?chapter=2' };
+    vi.stubGlobal('location', source);
+    await select('apple');
+    const timestamp = Date.now();
+    source.href = 'https://example.com/after-navigation';
+    saveWord.mockResolvedValue(savedFixture('apple', 1));
+    ui<HTMLButtonElement>('.record-button')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledWith('apple', { word: 'apple', phonetics: [], meanings: [] }, 'An apple and a banana.', 'https://example.com/original?chapter=2', timestamp);
+    expect(ui('.record-count')?.textContent).toBe('1');
+    expect(ui('.vocab-counter-popup')).not.toBeNull();
+  });
+
+  it('does not let a stale record read overwrite a completed increment', async () => {
+    let finishRead!: (entry: WordEntry | null) => void;
+    getWord.mockReturnValue(new Promise<WordEntry | null>(resolve => { finishRead = resolve; }));
+    await select('apple');
+    saveWord.mockResolvedValue(savedFixture('apple', 4));
+    ui<HTMLButtonElement>('.record-button')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    finishRead(savedFixture('apple', 3));
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.record-count')?.textContent).toBe('4');
+  });
+
+  it('reports a failed click without incrementing or retrying and keeps the card open', async () => {
+    getWord.mockResolvedValue(savedFixture('apple', 2));
+    await select('apple');
+    saveWord.mockRejectedValue(new Error('Write failed'));
+    ui<HTMLButtonElement>('.record-button')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.save-error')?.textContent).toBe('Write failed');
+    expect(ui('.record-count')?.textContent).toBe('2');
     expect(saveWord).toHaveBeenCalledTimes(1);
-    expect(ui<HTMLButtonElement>('.btn-forget')?.disabled).toBe(true);
-    complete({ word: 'apple', count: 1 });
-    await vi.advanceTimersByTimeAsync(20);
-    expect(ui('.vocab-counter-popup')).toBeNull();
+    expect(ui('.vocab-counter-popup')).not.toBeNull();
   });
 
   it('updates the isolated card theme without changing page styles', async () => {

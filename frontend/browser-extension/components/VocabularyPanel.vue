@@ -106,7 +106,7 @@ async function importFile(event: Event) {
       <div v-else class="empty">
         <Bookmark width="32" height="32" stroke-width="1.3" aria-hidden="true" />
         <h2>Your words start here</h2>
-        <p>No words saved yet. Select an English word on a webpage, then choose <strong>Forget</strong> to keep it here.</p>
+        <p>No words saved yet. Select an English word on a webpage, then click the bookmark counter to record it here.</p>
         <button class="rm-button rm-secondary" @click="triggerImport">Import a backup</button>
       </div>
     </main>

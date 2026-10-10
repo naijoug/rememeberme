@@ -1,4 +1,5 @@
-import type { BackgroundMessage, BackgroundResponse, Definition, Translation } from '~/types';
+import type { BackgroundMessage, BackgroundResponse, Definition, PhoneticTranscriptions, Translation } from '~/types';
+import { isPhoneticTranscriptions } from './phonetics';
 
 export const LOOKUP_DEADLINE_MS = 10_000;
 
@@ -9,6 +10,12 @@ export function requestDefinition(word: string, signal?: AbortSignal): Promise<D
 
 export function requestTranslation(word: string, signal?: AbortSignal): Promise<Translation> {
   return request<Translation>('GET_TRANSLATION', word, 6000, signal);
+}
+
+export async function requestPhonetics(word: string, signal?: AbortSignal): Promise<PhoneticTranscriptions> {
+  const data = await request<unknown>('GET_PHONETICS', word, 2000, signal);
+  if (!isPhoneticTranscriptions(data)) throw new Error('Phonetic data is unavailable.');
+  return data;
 }
 
 function request<T>(type: BackgroundMessage['type'], word: string, timeout: number, signal?: AbortSignal): Promise<T> {
@@ -22,7 +29,7 @@ function request<T>(type: BackgroundMessage['type'], word: string, timeout: numb
       if (error) reject(error); else resolve(definition!);
     };
     const abort = () => finish(new DOMException('Lookup cancelled', 'AbortError'));
-    const timer = setTimeout(() => finish(new Error(type === 'GET_TRANSLATION' ? 'Chinese translation timed out. Please try again.' : 'The dictionary is taking too long. Please try again.')), timeout);
+    const timer = setTimeout(() => finish(new Error(type === 'GET_PHONETICS' ? 'Phonetic data could not be loaded.' : type === 'GET_TRANSLATION' ? 'Chinese translation timed out. Please try again.' : 'The dictionary is taking too long. Please try again.')), timeout);
     if (signal?.aborted) { abort(); return; }
     signal?.addEventListener('abort', abort, { once: true });
     Promise.resolve().then(() => browser.runtime.sendMessage({ type, word } satisfies BackgroundMessage))

@@ -35,7 +35,7 @@ function summary(entry: WordEntry): string {
   const definition = entry.history.at(-1)?.definition;
   if (isTranslation(definition?.translation)) return definition.translation.text;
   const latest = definition?.meanings[0];
-  return latest ? [latest.partOfSpeech, latest.definitions[0]?.definition].filter(Boolean).join(' · ') : 'No definition saved';
+  return latest ? [latest.partOfSpeech, latest.definitions[0]?.definition].filter(Boolean).join(' · ') : entry.history.at(-1)?.context || 'No definition saved';
 }
 </script>
 
