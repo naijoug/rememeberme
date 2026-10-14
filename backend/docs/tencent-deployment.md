@@ -5,6 +5,30 @@ full synchronous commits and atomic conditional batches. The checked-in D1
 migrations are reused verbatim. Existing migrations are checked by digest; an
 edited applied migration stops startup.
 
+## Current recorded status (2026-10-14)
+
+The API and isolated Hermes are deployed and enabled on the inspected Tencent
+Lighthouse host. The recorded API runtime is
+`/opt/rememberme/releases/20261014-80bfe7fb0c9d/runtime`, with listeners restricted
+to loopback 8787 and 8643. Live synthetic translation, database integrity/backup,
+server-side trusted HTTPS and GitHub login-start checks passed. GitHub client
+credentials are configured; the earlier Passkey/secret-creation blocker was
+resolved in the final checkpoint below.
+
+Public service acceptance remains pending. The last public HTTP/HTTPS checks
+failed; the deployment record identifies domain filing as the blocker. Tencent
+review passed in the recorded console inspection, with authority submission
+waiting for the domain real-name verification delay. That console state has not
+been rechecked by the subsequent local source review. The installed extension's
+exact callback and origin allowlist, completed hosted OAuth and real Mac/browser
+cross-client sync are still outstanding.
+
+The serving DNS-01 certificate has manual renewal and expires 2027-01-12 at
+09:40:43 Asia/Shanghai. Off-host backup and a production restore drill have not
+been accepted. The browser scope/byte-budget fixes are local source changes;
+passing local tests or rebuilding an archive does not update this host release.
+The dated sections below preserve the successive inspection/deployment states.
+
 ## Prepare and deploy
 
 Use the version in `backend/.nvmrc`, run `npm ci`, `npm run typecheck`,
@@ -94,6 +118,9 @@ intent, rather than relabeling changed counts as an old migration baseline.
 
 ## Host inspection on 2026-10-13
 
+Historical pre-deployment checkpoint; later October 14 sections supersede its
+terminal, domain and disabled-API status.
+
 The authenticated Hermes dashboard reports Linux x86_64, two cores,
 approximately 1.9 GiB memory and 49.1 GiB disk. Hermes is v0.21.0 with
 `glmcode / glm-5.3-flash`; the existing gateway is running.
@@ -106,6 +133,9 @@ Deployment requires an authenticated SSH/server-terminal session and a selected
 business HTTPS domain/OAuth app; these are not inferred from dashboard access.
 
 ## Private deployment on 2026-10-14
+
+Initial private-install checkpoint; Hermes/HTTPS activation and GitHub credential
+configuration in later sections supersede the pending steps recorded here.
 
 The user authenticated the OrcaTerm shell as `ubuntu`. Host inspection confirmed
 `/usr/bin/node` v22.23.2 and SQLite 3.51.3, about 1.9 GiB RAM, 35 GiB free disk,
@@ -226,9 +256,10 @@ followed by SMS/authority review. No duplicate filing or identity-data edits wer
 made during deployment. The server OS firewall was reported inactive.
 
 GitHub OAuth application `3930524` was created in the signed-in account with the
-confirmed exact callback and no wildcard matching. Client-secret generation is
-waiting on GitHub's required Passkey reauthentication; no OAuth secret has been
-configured on the server. The extension's actual ID/callback is also still needed
+confirmed exact callback and no wildcard matching. At this activation checkpoint,
+client-secret generation was waiting on Passkey reauthentication; the final
+GitHub configuration checkpoint below records its successful installation.
+The extension's actual ID/callback is still needed
 for the exact allowlist, because browser policy blocks its management-page access.
 These are missing identity/configuration steps, not a request to repeat deployment
 authorization. Existing client vocabulary was not loaded, uploaded or modified.

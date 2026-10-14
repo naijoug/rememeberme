@@ -65,5 +65,8 @@ origin and account. Provider changes invalidate old in-flight results; packaged
 English lookup remains independent. Connected failures remain explicit and do
 not silently switch providers. Disconnected lookup retains MyMemory. Definitions
 accept both `hermes` and historical `mymemory`, with no rewrite of old histories.
-The default API runtime is now Node/SQLite, prepared for Tencent Lighthouse;
-server deployment and live Hermes acceptance remain pending.
+The default API runtime is Node/SQLite. The 2026-10-14 host record confirms its
+Tencent Lighthouse deployment, live isolated Hermes, server-side trusted HTTPS
+and configured GitHub credentials. Public access remains blocked by filing in
+that record; completed hosted OAuth and signed/installed-client synchronization
+remain unaccepted. See [current deployment status](../../../backend/docs/tencent-deployment.md).

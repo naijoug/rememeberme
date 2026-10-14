@@ -125,6 +125,14 @@ Encounter counter: [2026-09-30 counter and individual record inspection](verific
 legacy export/reset/import, atomic rejection, exact response-loss retry after
 reopening, captured conditional versions, additive acknowledgment conflicts,
 paged history/restart, account isolation and epoch recovery archives.
+Regressions also gate the actual context-menu handler while switching to local,
+another account or away-and-back; the late save must report an error and leave
+both partitions/outboxes unchanged. Large copy/import fixtures use multibyte
+definitions to check the UTF-8 request ceiling, retained event order, subsequent
+writes, exact history-chunk retry after restart and causal reset versions.
+Single-record overflow checks require atomic account rejection and an unchanged
+anonymous backup.
+See [2026-10-14 account scope and upload-size regressions](verification/2026-10-14-account-scope-upload.md) for the executed checks and remaining installed-client limits.
 `services/backend-client.test.ts` checks PKCE/callback, exact request bodies,
 refresh coalescing, credential-save retry and late refresh after offline disconnect.
 
@@ -132,5 +140,7 @@ From `backend/`, after installing both package dependencies and building the API
 run `npm run test:browser`. It bundles actual extension source with synthetic WXT
 storage/fake IndexedDB and connects to random loopback HTTP/real SQLite; it never
 accesses an installed extension or actual vocabulary. Provider inference is
-synthetic. Installed upgrade, OAuth callback IDs, real Hermes, cross-client hosted
+synthetic. The harness additionally sends both large copy/import histories through
+the real HTTP body reader, verifies every event in SQLite and syncs later resets.
+Installed upgrade, OAuth callback IDs, real Hermes, cross-client hosted
 sync and storage-quota/large-vocabulary performance still require browser checks.

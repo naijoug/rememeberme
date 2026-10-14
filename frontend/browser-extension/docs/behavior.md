@@ -49,9 +49,21 @@ These are documented gaps, not claims that the original requirements have passed
 | Legacy storage vs account storage | Account/local partitions now use IndexedDB; original `local:words` is retained | Compatibility is covered by disk/mock/HTTP fixtures; real browser upgrade acceptance remains required |
 | Design promised optional URL recording and exports without sensitive data | Full URLs and contexts are saved and exported | A privacy control would require new UI and behavior; it does not exist today |
 
-Cloud synchronization, a backend, mobile/desktop clients and learning algorithms are future ideas, not implemented features. Static designs under `frontend/designs/` are references, not proof of product functionality.
+The shared Node/SQLite API, explicit browser account synchronization and native Apple clients are implemented. Hosted/installed-client acceptance and the full website remain unfinished; review features are implemented in native clients, not in this extension. Static designs under `frontend/designs/` are references, not proof of product functionality.
 
 ## Cloud account behavior
+
+Right-click lookup saves belong to the vocabulary selected when the operation
+starts. Switching vocabularies, including switching back before lookup finishes,
+rejects the old save with retry guidance instead of adding to another partition.
+Pausing sync alone does not cancel the save.
+
+New account copy/import histories are split by both event count and UTF-8 request
+size. If an individual entry or history cannot fit, the complete account mutation
+is rejected before persistence. The user can keep/export it in local vocabulary
+or reduce its definition before a new account copy/import. Previously frozen
+oversize requests are retained; use explicit archive/cloud recovery rather than
+expecting the update to change an already-submitted request.
 
 The popup has HTTPS/GitHub login, open account, confirmed copy-local, enable/pause,
 sync-now, use-local and disconnect actions. Login enables backend translation;

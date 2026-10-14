@@ -53,7 +53,7 @@ The sibling `frontend/designs/` directory contains static references. Generated 
 | [word-forms.ts](../services/word-forms.ts) | Regular suffix candidates, accepted only when the matching WordNet part of speech exists |
 | [local-feedback.ts](../services/local-feedback.ts) | Local feedback builds only: development-server reconnection and script replacement without reloading tabs |
 
-The backend is a separate Node/SQLite package under `backend/`, prepared for Tencent Lighthouse. The extension runtime remains this package; generated `.wxt/` and `.output/` directories are not sources. WXT configuration is in [wxt.config.ts](../wxt.config.ts), and shared data types are in [types/index.ts](../types/index.ts).
+The backend is a separate Node/SQLite package under `backend/`, deployed privately on Tencent Lighthouse according to the 2026-10-14 host record. Live isolated Hermes and server-side HTTPS passed; public access and installed-client acceptance remain pending filing and exact extension callbacks. The extension runtime remains this package; generated `.wxt/` and `.output/` directories are not sources. WXT configuration is in [wxt.config.ts](../wxt.config.ts), and shared data types are in [types/index.ts](../types/index.ts).
 
 Only the background owns vocabulary writes. `CloudVocabulary` serializes account/local mutations and atomically writes the selected partition's entries/outbox in IndexedDB. `local:words` is retained as an upgrade snapshot. Theme and translation caching remain separate. Popup reads reload on mount and its own successful actions; there is no live cross-page vocabulary observer.
 
@@ -78,7 +78,7 @@ Content and popup vocabulary operations use the storage client, never direct voc
 
 Background-to-content messages are `EXTRACT_CONTEXT` (returns the current context) and `SHOW_NOTIFICATION` (renders a page notification). These require a reachable content script. They are separate from the dictionary request contract.
 
-Context-menu requests address the clicked `frameId` and capture context before waiting for the dictionary. The local feedback build can reinject its existing content script once into that frame if connection fails, using its existing development permissions. Browser-internal pages are rejected before lookup/injection. Page notifications can fall back to the existing toolbar action/browserAction badge and title; no new manifest permissions are needed, and a notification failure does not cause a storage retry.
+Context-menu requests capture a queued writer for the selected partition/generation before page/provider I/O, address the clicked `frameId` and capture context before waiting for the dictionary. The eventual save checks that scope inside the vocabulary queue. Switching away and back, changing account connection or publishing recovery invalidates the writer; the old request reports an error without saving into either partition. Pausing sync alone does not change the target. The local feedback build can reinject its existing content script once into that frame if connection fails, using its existing development permissions. Browser-internal pages are rejected before lookup/injection. Page notifications can fall back to the existing toolbar action/browserAction badge and title; no new manifest permissions are needed, and a notification failure does not cause a storage retry.
 
 ## Persistence and compatibility
 
@@ -128,6 +128,13 @@ accounts pauses the previous sender and retains anonymous vocabulary. Copying lo
 words requires confirmation and a completed cloud snapshot. Existing/colliding
 words require an explicit import/merge choice. Same-source seed receipts are
 idempotent; intentional imports use new request/event IDs and add counts again.
+New history operations use at most 25 events and at most 256 KiB of UTF-8 JSON,
+including operation IDs and the payload envelope. Copy/import plans complete in
+memory before the partition/outbox transaction. A single oversize event or entry
+rejects the whole account mutation with local-vocabulary guidance; anonymous
+import/export remains compatible. Already-frozen requests keep their exact IDs
+and bodies. Old queues paused by an oversize request require explicit archive/
+cloud recovery and a new copy/import; this update does not silently rewrite them.
 Fixed-boundary state pages and versioned history scans persist across flights and
 restarts; history positions restore source ordering. Conditional reset/delete/merge
 versions are captured with local intent, never silently rebased onto a pulled

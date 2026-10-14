@@ -1,6 +1,6 @@
 # Remember Me project architecture
 
-Reviewed against the current working-tree source on 2026-10-08. This is an inventory of the implemented architecture, not a browser verification record. The [Cloudflare implementation plan](cloudflare-implementation-plan.md) describes proposed work separately.
+Reviewed against the current working-tree source on 2026-10-14. This is an inventory of the implemented architecture, not a browser verification record. The [Cloudflare implementation plan](cloudflare-implementation-plan.md) is historical design context; the current deployment target is Tencent Lighthouse.
 
 ## Current application boundary
 
@@ -83,6 +83,8 @@ English and Chinese lookup are independent. A packaged English hit remains local
 
 Every extension vocabulary mutation uses one background promise queue and a strict IndexedDB transaction for entries plus outbox. The aggregate partition still needs large-store memory/quota validation. A local lost reply cannot be blindly retried; the sync layer instead freezes a unique request/body/epoch before I/O and retries exactly those bytes after restart.
 
+Right-click saves capture the selected partition and its generation before page/provider I/O. The eventual write checks both in the vocabulary queue; switching away and back, disconnecting or publishing cloud recovery invalidates the old save. New account history operations are split by both the 25-event limit and the 256 KiB UTF-8 JSON body limit. A single oversize event/entry rejects account copy/import before publishing any vocabulary or outbox changes; anonymous data and compatible exports remain available.
+
 Counts and histories remain independent: reset retains encounters. Intentional imports are additive; newly inserted histories retain order while existing-word merges use timestamp order. Sync versions/identity/checkpoints stay outside legacy JSON. Account copy and sending require explicit choices; context/URL are excluded from extension uploads. Conflicts and epoch changes pause sending. Confirmed recovery archives the old partition/queue atomically and downloads cloud state, leaving sync paused. Native clients offer finer recovery choices.
 
 Imports, webpage context and provider text are untrusted. Render them as text, and allow navigation only for HTTP(S) history URLs. Exported contexts and full URLs may contain sensitive browsing data. See the [extension architecture](../frontend/browser-extension/docs/architecture.md) for message contracts, definition snapshots, queue limits and permissions.
@@ -127,6 +129,15 @@ a private, isolated Hermes translation profile. SQL migrations/conditional guard
 and legacy number semantics are retained from the Worker implementation.
 [Deployment instructions](../backend/docs/tencent-deployment.md) include a service
 unit, config templates, packaging, consistent backup and epoch restore rules.
-The authenticated dashboard confirmed a two-core/approximately 2 GiB host and
-disabled Hermes API. Terminal authentication/domain/OAuth still block live
-deployment; local tests do not establish production readiness.
+The latest recorded host checks on 2026-10-14 confirmed the deployed API and
+isolated Hermes services, live synthetic translation, server-side trusted HTTPS
+and configured GitHub app credentials. The recorded runtime is
+`20261014-80bfe7fb0c9d`; subsequent GitHub configuration/check tools were installed
+without replacing that runtime. This source update has not been deployed.
+
+Public access remains unaccepted: the last public checks failed, and the host
+record identifies Tencent filing as the blocker. The exact installed-extension
+callback/origin allowlist, completed hosted OAuth and Mac/browser cross-client
+sync remain pending. TLS renewal is manual; the recorded certificate expires
+2027-01-12 at 09:40:43 Asia/Shanghai. Historical pre-deployment checks do not
+override these later records, and local tests do not establish hosted readiness.

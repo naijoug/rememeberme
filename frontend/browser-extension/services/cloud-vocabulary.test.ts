@@ -4,7 +4,8 @@ import { VocabularyDB } from './vocabulary-db';
 import { CloudVocabulary } from './cloud-vocabulary';
 import type { BackendClient, Connection } from './backend-client';
 import { BackendError } from './backend-client';
-import type { WireOperation, WireEntry } from '../../../contracts/api-v1';
+import { handleContextMenuClick } from './context-menu-handler';
+import { MAX_BODY_BYTES, MAX_EVENTS, parseOperation, type WireEntry } from '../../../contracts/api-v1';
 const local = vi.hoisted(() => ({ values: new Map<string, unknown>() }));
 vi.mock('wxt/utils/storage', () => ({ storage: {
   getItem: async (key: string) => structuredClone(local.values.get(key) ?? null),
@@ -16,7 +17,7 @@ const legacy = [{ word: 'synthetic', count: 0.5, createdAt: 1, updatedAt: 2,
 beforeEach(() => local.values.clear());
 function fixture() {
   const states = new Map<string, WireEntry>(), events = new Map<string, unknown[]>(), receipts = new Map<string, unknown>();
-  const calls: string[] = []; let drop = false, expose = false, noOpHistory = false, epoch = 'synthetic-epoch';
+  const calls: string[] = []; let drop = false, dropHistory = false, expose = false, noOpHistory = false, epoch = 'synthetic-epoch';
   const connection: Connection = { origin: 'https://api.example.test', credentials: { userId: 'synthetic-user', deviceId: 'synthetic-device', accessToken: '', refreshToken: '', accessExpiresAtMs: 0, refreshExpiresAtMs: 0 } };
   const client = {
     current: async () => connection,
@@ -38,7 +39,8 @@ function fixture() {
       }
       if (path === '/api/v1/sync/operations') {
         calls.push(frozen!);
-        const op = JSON.parse(frozen!) as WireOperation;
+        if (new TextEncoder().encode(frozen).byteLength > MAX_BODY_BYTES) throw new BackendError(413, 'REQUEST_TOO_LARGE');
+        const op = parseOperation(JSON.parse(frozen!));
         if (receipts.has(op.operationId)) return receipts.get(op.operationId);
         let entry = states.get(op.entryId);
         if (entry && ['reset', 'delete', 'legacyMerge'].includes(op.kind) && op.baseVersion !== entry.version) throw new BackendError(409, 'VERSION_CONFLICT');
@@ -51,7 +53,12 @@ function fixture() {
           if (!(op.kind === 'importHistory' && noOpHistory)) entry.version++;
           if (op.kind === 'record') {
             entry.count = (entry.count ?? 0) + 1;
-            events.set(entry.id, [...events.get(entry.id) ?? [], op.payload.event]);
+            const previous = events.get(entry.id) ?? [];
+            events.set(entry.id, [...previous, { ...op.payload.event as object, position: previous.length + 1 }]);
+          }
+          if (op.kind === 'importHistory' && !noOpHistory) {
+            const previous = events.get(entry.id) ?? [];
+            events.set(entry.id, [...previous, ...(op.payload.events as object[]).map((event, index) => ({ ...event, position: previous.length + index + 1 }))]);
           }
           if (op.kind === 'legacyMerge') entry.count = (entry.count ?? 0) + Number(op.payload.countDelta);
           if (op.kind === 'reset') entry.count = 0;
@@ -60,12 +67,13 @@ function fixture() {
         const result = structuredClone({ status: 'applied', operationId: op.operationId, cursor: 0, entry });
         receipts.set(op.operationId, result);
         if (drop) { drop = false; throw new TypeError('Synthetic committed response lost'); }
+        if (dropHistory && op.kind === 'importHistory') { dropHistory = false; throw new TypeError('Synthetic committed history response lost'); }
         return result;
       }
       throw new Error('Unexpected fixture request: ' + path);
     },
   } as unknown as BackendClient;
-  return { client, calls, states, events, connection, drop: () => { drop = true; },
+  return { client, calls, states, events, connection, drop: () => { drop = true; }, dropHistory: () => { dropHistory = true; },
     expose: () => { expose = true; }, noOpHistory: () => { noOpHistory = true; },
     restore: () => { epoch = 'restored-epoch'; states.clear(); events.clear(); receipts.clear(); } };
 }
@@ -239,4 +247,116 @@ it('propagates a no-op version adjustment through the whole causal queue before 
   const deletion = api.calls.map(body => JSON.parse(body)).find(op => op.kind === 'delete');
   expect(reset.baseVersion).toBe(1); expect(deletion.baseVersion).toBe(2);
   expect(await repository.status()).toMatchObject({ pending: 0, conflicts: 0 });
+});
+
+it.each(['local', 'round-trip', 'another-account'])('rejects a context-menu save after a %s vocabulary switch, including returning to the original account', async change => {
+  local.values.set('local:words', legacy);
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('fixture-' + crypto.randomUUID()), api.client);
+  await repository.openAccount();
+  let release!: (value: typeof definition) => void, started!: () => void;
+  const lookup = new Promise<typeof definition>(resolve => { release = resolve; });
+  const ready = new Promise<void>(resolve => { started = resolve; });
+  const sendMessage = vi.fn(async (_tab: number, message: { type: string }) => message.type === 'EXTRACT_CONTEXT' ? { context: 'Synthetic context' } : undefined);
+  const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    const save = handleContextMenuClick({ storageService: repository,
+      dictionaryService: { getDefinition: () => { started(); return lookup; } }, tabs: { sendMessage },
+      status: { clear: async () => {}, show: async () => {} },
+    }, { menuItemId: 'remember-me', selectionText: 'synthetic', pageUrl: 'https://example.test/fixture' }, { id: 1 });
+    await ready;
+    if (change === 'another-account') {
+      api.connection.credentials.userId = 'another-user'; await repository.openAccount();
+    } else {
+      await repository.useLocal();
+      if (change === 'round-trip') await repository.openAccount();
+    }
+    release(definition); await save;
+    expect(sendMessage).toHaveBeenCalledWith(1, expect.objectContaining({ notificationType: 'error', message: expect.stringContaining('vocabulary changed') }), { frameId: 0 });
+    expect((await repository.status()).pending).toBe(0);
+    if (change !== 'local') expect(await repository.getAllWords()).toEqual([]);
+    api.connection.credentials.userId = 'synthetic-user'; await repository.openAccount();
+    expect(await repository.getAllWords()).toEqual([]);
+    await repository.useLocal(); expect(JSON.parse(await repository.exportData())).toEqual(legacy);
+    expect(api.calls).toHaveLength(0);
+  } finally { consoleError.mockRestore(); }
+});
+
+const largeLegacy = () => [{ ...legacy[0], history: Array.from({ length: 25 }, (_, index) => ({
+  ...legacy[0].history[0], timestamp: index + 1,
+  definition: { ...definition, meanings: [{ partOfSpeech: 'noun', definitions: [{ definition: '释'.repeat(12_000) }] }] },
+})) }];
+
+it('keeps a captured writer usable while only sync is paused', async () => {
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('fixture-' + crypto.randomUUID()), api.client);
+  await repository.openAccount();
+  const writer = await repository.captureWriter();
+  await repository.pause();
+  await writer.saveWord('synthetic', definition, 'Private context', 'https://example.test/private', 3);
+  expect((await repository.getWord('synthetic'))?.count).toBe(1);
+  expect((await repository.getWord('synthetic'))?.history).toHaveLength(1);
+  expect(await repository.status()).toMatchObject({ enabled: false, pending: 2 });
+  expect(api.calls).toHaveLength(0);
+});
+
+it('rejects a captured writer after cloud recovery replaces the same account partition', async () => {
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('fixture-' + crypto.randomUUID()), api.client);
+  await repository.openAccount();
+  const writer = await repository.captureWriter();
+  await repository.archiveAndReloadCloud();
+  await expect(writer.saveWord('synthetic', definition, '', '', 3)).rejects.toThrow('vocabulary changed');
+  expect(await repository.getAllWords()).toEqual([]);
+  expect(await repository.status()).toMatchObject({ enabled: false, pending: 0 });
+});
+
+it.each(['copy', 'import'])('uploads %s history by UTF-8 byte limits and retains every event without blocking later changes', async mode => {
+  const imported = largeLegacy(), api = fixture();
+  if (mode === 'copy') local.values.set('local:words', imported);
+  const repository = new CloudVocabulary(new VocabularyDB('fixture-' + crypto.randomUUID()), api.client);
+  await repository.openAccount(mode === 'copy');
+  if (mode === 'import') await repository.importData(JSON.stringify(imported));
+  await repository.setEnabled(true);
+  const history = api.calls.map(body => JSON.parse(body)).filter(op => op.kind === 'importHistory');
+  expect(history.length).toBeGreaterThan(1);
+  expect(history.every(op => op.payload.events.length <= MAX_EVENTS)).toBe(true);
+  expect(history.flatMap(op => op.payload.events).map(event => event.timestamp)).toEqual(imported[0].history.map(event => event.timestamp));
+  expect(api.calls.every(body => new TextEncoder().encode(body).byteLength <= MAX_BODY_BYTES)).toBe(true);
+  expect([...api.events.values()][0]).toHaveLength(25);
+  await repository.saveWord('another', { ...definition, word: 'another' }, '', '', 30);
+  await repository.synchronize();
+  expect(api.states.size).toBe(2);
+  expect(await repository.status()).toMatchObject({ enabled: true, pending: 0, conflicts: 0 });
+});
+
+it('retries an acknowledged large history chunk unchanged after restart and keeps a later reset causal', async () => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  try {
+    local.values.set('local:words', largeLegacy());
+    const api = fixture(), database = new VocabularyDB('fixture-' + crypto.randomUUID());
+    let repository = new CloudVocabulary(database, api.client);
+    await repository.openAccount(true); await repository.resetCount('synthetic');
+    api.dropHistory(); await expect(repository.setEnabled(true)).rejects.toThrow('history response lost');
+    const frozen = api.calls.at(-1);
+    repository = new CloudVocabulary(database, api.client);
+    vi.setSystemTime(Date.now() + 31_000); await repository.synchronize();
+    expect(api.calls[2]).toBe(frozen);
+    expect([...api.events.values()][0]).toHaveLength(25);
+    expect([...api.states.values()][0].count).toBe(0);
+    expect((await repository.getWord('synthetic'))?.history).toHaveLength(25);
+    expect(await repository.status()).toMatchObject({ pending: 0, conflicts: 0 });
+  } finally { vi.useRealTimers(); }
+});
+
+it.each(['copy', 'import'])('rejects a single oversize history during account %s atomically while retaining its local backup', async mode => {
+  const tooLarge = [{ ...legacy[0], history: [{ ...legacy[0].history[0], definition: {
+    ...definition, meanings: [{ partOfSpeech: 'noun', definitions: [{ definition: 'x'.repeat(MAX_BODY_BYTES) }] }],
+  } }, legacy[0].history[0]] }];
+  local.values.set('local:words', tooLarge);
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('fixture-' + crypto.randomUUID()), api.client);
+  await repository.openAccount();
+  if (mode === 'copy') await expect(repository.openAccount(true)).rejects.toThrow(/too large to sync/);
+  else await expect(repository.importData(JSON.stringify([{ ...legacy[0], word: 'small' }, ...tooLarge]))).rejects.toThrow(/too large to sync/);
+  expect(await repository.getAllWords()).toEqual([]);
+  expect(await repository.status()).toMatchObject({ pending: 0, conflicts: 0 });
+  expect(api.calls).toHaveLength(0);
+  await repository.useLocal(); expect(JSON.parse(await repository.exportData())).toEqual(tooLarge);
 });

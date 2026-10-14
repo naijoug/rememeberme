@@ -6,6 +6,13 @@ No production vocabulary or server credentials were used as test fixtures.
 Local checks were followed by the private host deployment recorded below.
 This record does not establish a public service or installed-client acceptance.
 
+This record contains chronological checkpoints. Earlier disabled-Hermes,
+pre-deployment and pending-GitHub-secret statements describe those phases only.
+The final checkpoint confirms the deployed private API/Hermes, server-side HTTPS
+and configured GitHub credentials; public filing, exact extension callbacks and
+completed hosted-client OAuth/sync remain unaccepted. See the
+[current status summary](../tencent-deployment.md#current-recorded-status-2026-10-14).
+
 ## Implementation
 
 The default backend now bundles Node/Hono with real SQLite WAL and the existing

@@ -21,6 +21,7 @@ export interface DictionaryLikeService {
 }
 
 export interface StorageLikeService {
+  captureWriter?(): Promise<Pick<StorageLikeService, 'saveWord'>>;
   saveWord(
     word: string,
     definition: Definition,
@@ -72,15 +73,18 @@ export async function handleContextMenuClick(
   const selectedText = info.selectionText.trim();
   const timestamp = Date.now();
   const frameId = info.frameId ?? 0;
-  try { await deps.status.clear(tab.id); } catch { /* The tab may already be closed. */ }
-
   if (!isEnglishWord(selectedText)) {
+    try { await deps.status.clear(tab.id); } catch { /* The tab may already be closed. */ }
     await sendNotificationToTab(deps, tab.id, frameId, 'Please select a valid English word', 'error');
     return;
   }
 
   let pageConnected = false;
   try {
+    // Capture the target before any page/provider I/O. The repository checks
+    // the captured generation in the same queue as the eventual write.
+    const writer = await (deps.storageService.captureWriter?.() ?? deps.storageService);
+    try { await deps.status.clear(tab.id); } catch { /* The tab may already be closed. */ }
     if (info.pageUrl && !/^(https?|file):\/\//i.test(info.pageUrl)) {
       throw new Error('Use Remember Me on a webpage. Browser-internal and extension management pages are not supported.');
     }
@@ -90,7 +94,7 @@ export async function handleContextMenuClick(
     pageConnected = true;
     const definition = await deps.dictionaryService.getDefinition(selectedText);
 
-    const updatedWord = await deps.storageService.saveWord(
+    const updatedWord = await writer.saveWord(
       selectedText,
       definition,
       context,

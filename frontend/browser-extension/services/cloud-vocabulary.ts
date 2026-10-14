@@ -3,8 +3,8 @@ import { BackendError, backendClient, type BackendClient } from './backend-clien
 import { VocabularyDB } from './vocabulary-db';
 import { StorageService } from './storage';
 import { isDefinition } from './definition-utils';
-import type { Definition, HistoryRecord, WordEntry } from '~/types';
-import { parseEntry, type WireEntry, type WireOperation, type OperationResult, type Json } from '../../../contracts/api-v1';
+import type { Definition, WordEntry } from '~/types';
+import { MAX_BODY_BYTES, MAX_EVENTS, parseEntry, type WireEntry, type WireOperation, type WireEncounter, type OperationResult, type Json } from '../../../contracts/api-v1';
 
 interface Entry { id: string; value: WordEntry; events: string[]; deleted: boolean; base?: WireEntry }
 interface Pending {
@@ -20,6 +20,7 @@ interface Partition {
 }
 interface RemoteEvent { id: string; timestamp: number; definition: Definition; position: number; context?: string; url?: string }
 interface Account { userId: string; deviceId: string; epoch: string; syncCapabilities: string[]; sourceRevision: number; syncContext: boolean; syncURLs: boolean }
+interface VocabularyScope { owner: string; generation: number }
 export interface CloudStatus {
   connected: boolean; origin?: string; owner: string; enabled: boolean; pending: number; conflicts: number;
   failure?: string; localWords: number; archives: { key: string; createdAt: number }[];
@@ -30,10 +31,16 @@ const normalized = (word: string) => word.trim().toLowerCase();
 async function sha(value: string) { return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)))).map(value => value.toString(16).padStart(2, '0')).join(''); }
 const json = (value: unknown) => value as Json;
 const fresh = (): Partition => ({ schema: 2, entries: [], outbox: [], enabled: false, cursor: 0, snapshot: true, history: [] });
+const encoder = new TextEncoder();
+const operationBytes = (operation: WireOperation) => encoder.encode(JSON.stringify(operation)).byteLength;
+function requireUploadSize(operation: WireOperation) {
+  if (operationBytes(operation) > MAX_BODY_BYTES) throw new Error('This entry or history record is too large to sync. Keep it in local vocabulary or reduce its definition before copying or importing it into an account.');
+}
 
 export class CloudVocabulary {
   private queue: Promise<unknown> = Promise.resolve();
   private owner = 'anonymous';
+  private generation = 0;
   private ready?: Promise<void>;
   private flight?: Promise<void>;
   constructor(private database = new VocabularyDB(), private client: BackendClient = backendClient) {}
@@ -74,8 +81,24 @@ export class CloudVocabulary {
     const versionFloor = predecessor?.versionFloor ?? state.entries.find(entry => entry.id === operation.entryId)?.base?.version ?? 0;
     const observedVersion = predecessor ? (predecessor.observedVersion ?? versionFloor) + 1 : versionFloor;
     if (['reset', 'delete', 'legacyMerge', 'edit'].includes(operation.kind)) operation.baseVersion = observedVersion;
+    requireUploadSize(operation);
     state.outbox.push({ operation, observedVersion, versionFloor,
       ...(predecessor ? { dependsOn: predecessor.operation.operationId } : {}) });
+  }
+  private addHistory(state: Partition, entryId: string, events: WireEncounter[]) {
+    if (this.owner === 'anonymous') return;
+    const chunk = (values: WireEncounter[]): WireOperation => ({ operationId: crypto.randomUUID(), entryId, kind: 'importHistory', payload: { events: json(values) } });
+    let operation = chunk([]), values: WireEncounter[] = [];
+    for (const event of events) {
+      const candidate = { ...operation, payload: { events: json([...values, event]) } };
+      if (values.length === MAX_EVENTS || operationBytes(candidate) > MAX_BODY_BYTES) {
+        if (values.length) this.add(state, operation);
+        values = [event]; operation = chunk(values);
+        // Reject a single oversize event before any entries/outbox are published.
+        requireUploadSize(operation);
+      } else { values.push(event); operation = candidate; }
+    }
+    if (values.length) this.add(state, operation);
   }
   async getAllWords(): Promise<WordEntry[]> {
     return this.serialize(async () => {
@@ -97,9 +120,20 @@ export class CloudVocabulary {
     if (matches.length > 1) throw new Error('This account has separate copies of this word. Choose one in the vocabulary popup.');
     return matches[0] ?? null;
   }
+  async captureWriter(): Promise<Pick<CloudVocabulary, 'saveWord'>> {
+    return this.serialize(async () => {
+      await this.initialize();
+      const scope = { owner: this.owner, generation: this.generation };
+      return { saveWord: (word, definition, context, url, recordedAt = Date.now()) => this.saveScopedWord(word, definition, context, url, recordedAt, scope) };
+    });
+  }
   async saveWord(word: string, definition: Definition, context: string, url: string, recordedAt = Date.now()): Promise<WordEntry> {
+    return this.saveScopedWord(word, definition, context, url, recordedAt);
+  }
+  private async saveScopedWord(word: string, definition: Definition, context: string, url: string, recordedAt: number, scope?: VocabularyScope): Promise<WordEntry> {
     return this.serialize(async () => {
       const state = await this.state(); const key = normalized(word);
+      if (scope && (scope.owner !== this.owner || scope.generation !== this.generation)) throw new Error('The selected vocabulary changed. Please record the word again.');
       if (state.entries.filter(entry => !entry.deleted && normalized(entry.value.word) === key).length > 1) {
         throw new Error('This account has separate copies of this word. Choose a copy in the macOS client before recording.');
       }
@@ -165,9 +199,7 @@ export class CloudVocabulary {
           const id = crypto.randomUUID(); entry!.events.push(id); entry!.value.history.push(record);
           return { id, timestamp: record.timestamp, definition: json(record.definition) };
         });
-        for (let index = 0; index < events.length; index += 25) this.add(state, {
-          operationId: crypto.randomUUID(), entryId: entry.id, kind: 'importHistory', payload: { events: events.slice(index, index + 25) },
-        });
+        this.addHistory(state, entry.id, events);
         if (merging) {
           const retained = entry.value.history.map((record, index) => ({ record, event: entry!.events[index] })).sort((a, b) => a.record.timestamp - b.record.timestamp);
           entry.value.history = retained.map(value => value.record); entry.events = retained.map(value => value.event);
@@ -185,14 +217,14 @@ export class CloudVocabulary {
     });
   }
   async connect(origin: string): Promise<void> {
-    await this.pause(); await this.client.signIn(origin);
+    await this.pause(); await this.serialize(async () => { this.generation++; }); await this.client.signIn(origin);
   }
   async pause(): Promise<void> {
     await this.serialize(async () => { const state = await this.state(); state.enabled = false; await this.database.write(this.owner, state); });
   }
   async disconnect(): Promise<void> {
-    await this.pause(); await this.client.disconnect();
-    await this.serialize(async () => { this.owner = 'anonymous'; await this.database.write('selected', this.owner); });
+    await this.pause(); await this.serialize(async () => { this.generation++; }); await this.client.disconnect();
+    await this.serialize(async () => { await this.database.write('selected', 'anonymous'); this.owner = 'anonymous'; });
   }
   async openAccount(copyLocal = false): Promise<void> {
     const connection = await this.client.current(); if (!connection) throw new Error('Connect an account first.');
@@ -202,7 +234,8 @@ export class CloudVocabulary {
       if (this.owner !== owner) {
         const previous = await this.state(); previous.enabled = false; await this.database.write(this.owner, previous);
       }
-      await this.database.initialize(owner, fresh()); this.owner = owner; await this.database.write('selected', owner);
+      await this.database.initialize(owner, fresh()); await this.database.write('selected', owner);
+      if (this.owner !== owner) { this.owner = owner; this.generation++; }
     });
     await this.synchronize(true);
     if (copyLocal) await this.serialize(async () => {
@@ -221,16 +254,17 @@ export class CloudVocabulary {
             definition: json(entry.value.history.at(-1)?.definition ?? emptyDefinition(entry.value.word)), notes: '',
             createdAtMs: entry.value.createdAt, updatedAtMs: entry.value.updatedAt, ...(baseline ? { sourceDigest: digest } : {}) } });
         const events = entry.value.history.map((record, index) => ({ id: entry.events[index], timestamp: record.timestamp, definition: json(record.definition) }));
-        for (let index = 0; index < events.length; index += 25) this.add(state, {
-          operationId: crypto.randomUUID(), entryId: entry.id, kind: 'importHistory', payload: { events: events.slice(index, index + 25) },
-        });
+        this.addHistory(state, entry.id, events);
       }
       await this.database.write(this.owner, state);
     });
   }
   async useLocal(): Promise<void> {
     await this.pause();
-    await this.serialize(async () => { this.owner = 'anonymous'; await this.database.write('selected', this.owner); });
+    await this.serialize(async () => {
+      await this.database.write('selected', 'anonymous');
+      if (this.owner !== 'anonymous') { this.owner = 'anonymous'; this.generation++; }
+    });
   }
   async archiveAndReloadCloud(): Promise<void> {
     await this.pause();
@@ -248,6 +282,7 @@ export class CloudVocabulary {
       next.epoch = account.epoch; next.archives = [...previous.archives ?? [], archive];
       // Preserve vocabulary and frozen requests in the same commit as the new checkpoint.
       await this.database.writeMany([[archive.key, previous], [owner, next]]);
+      this.generation++;
     });
     await this.synchronize(true);
   }

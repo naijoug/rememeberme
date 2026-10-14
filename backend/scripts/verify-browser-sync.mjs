@@ -61,6 +61,7 @@ try {
     export { BackendClient } from './services/backend-client';
     export { CloudVocabulary } from './services/cloud-vocabulary';
     export { VocabularyDB } from './services/vocabulary-db';
+    export { MAX_BODY_BYTES, MAX_EVENTS } from '../../contracts/api-v1';
     export { fixtureDisk } from 'wxt/utils/storage';`, resolveDir: extension },
     outfile: bundle, bundle: true, platform: 'node', format: 'esm', target: 'node22',
     define: { 'import.meta.env.DEV': 'true' },
@@ -127,7 +128,38 @@ try {
   assert.equal((await b.repository.status()).enabled, false);
   await b.repository.useLocal();
   assert.deepEqual(JSON.parse(await b.repository.exportData()), legacy);
+  // Exercise both byte-bounded history planners against the actual HTTP body
+  // reader and SQLite store, including multibyte definitions and later writes.
+  for (const mode of ['copy', 'import']) {
+    const word = 'large-' + mode;
+    const large = [{ ...legacy[0], word, history: Array.from({ length: 25 }, (_, index) => ({
+      timestamp: index + 1, context: 'Synthetic private context', url: 'https://example.test/private/large',
+      definition: { ...definition, word, meanings: [{ partOfSpeech: 'noun', definitions: [{ definition: '释'.repeat(12_000) }] }] },
+    })) }];
+    a.module.fixtureDisk.set('local:words', mode === 'copy' ? large : []);
+    const repository = new a.module.CloudVocabulary(new a.module.VocabularyDB('synthetic-large-' + mode + '-' + randomBytes(8).toString('hex')), a.client);
+    await repository.openAccount(mode === 'copy');
+    if (mode === 'import') await repository.importData(JSON.stringify(large));
+    const start = bodies.length;
+    await repository.setEnabled(true);
+    const sent = bodies.slice(start), chunks = sent.map(body => JSON.parse(body)).filter(operation => operation.kind === 'importHistory');
+    assert.ok(chunks.length > 1, 'History must split before the actual byte ceiling');
+    assert.ok(sent.every(body => Buffer.byteLength(body, 'utf8') <= a.module.MAX_BODY_BYTES));
+    assert.ok(chunks.every(operation => operation.payload.events.length <= a.module.MAX_EVENTS));
+    assert.deepEqual(chunks.flatMap(operation => operation.payload.events).map(event => event.timestamp), large[0].history.map(event => event.timestamp));
+    const entry = await runtime.DB.prepare('SELECT id,count FROM vocabulary_entries WHERE user_id=? AND word=?').bind('synthetic-user', word).first();
+    assert.equal(entry.count, large[0].count);
+    assert.equal((await runtime.DB.prepare('SELECT count(*) AS n FROM encounters WHERE user_id=? AND entry_id=?').bind('synthetic-user', entry.id).first()).n, 25);
+    await repository.resetCount(word); await repository.synchronize();
+    assert.equal((await repository.getWord(word)).count, 0);
+    assert.equal((await repository.getWord(word)).history.length, 25);
+    assert.equal((await repository.status()).pending, 0);
+    assert.equal((await repository.status()).conflicts, 0);
+    assert.equal((await repository.status()).enabled, true);
+  }
+  assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
   console.log('Extension repository and authenticated client -> real Node/SQLite HTTP: refresh, exact restart retry, cross-device history, privacy, conflict archive and epoch fencing passed. Hermes protocol uses a synthetic provider.');
+  console.log('Large copy/import histories: UTF-8 byte/count limits, full SQLite history, later resets and uninterrupted sync passed.');
 } finally {
   globalThis.fetch = originalFetch; Date.now = originalNow;
   await new Promise(resolve => { server.close(resolve); server.closeAllConnections(); });
