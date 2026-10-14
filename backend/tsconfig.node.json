@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "paths": { "cloudflare:workers": ["./tests/node-bindings.ts"] }
+  },
+  "include": ["src/**/*.ts", "vitest.node.config.ts", "tests/node-bindings.ts", "tests/hermes.test.ts", "tests/runtime-node.test.ts"],
+  "exclude": ["worker-configuration.d.ts"]
+}

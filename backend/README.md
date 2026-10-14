@@ -1,65 +1,114 @@
-# Unified API
+# Remember Me API
 
-`backend/` contains a local Hono/Workers/D1 implementation for the Apple clients' API dependency. The service is not deployed and no Cloudflare database or GitHub OAuth app has been registered. Native Settings has explicit account/ownership/sync paths; real Swift/HTTP-to-local-Worker integration passes with separate synthetic device processes, while hosted/signed-device acceptance remains unfinished. The extension has no cloud sender.
+The default runtime is Node/Hono with SQLite, deployed privately on Tencent
+Lighthouse with an isolated live Hermes translator. Server-local HTTPS passes,
+but Tencent's domain-filing block prevents public access. GitHub credentials are
+configured and native login-start checks pass; exact installed-extension callbacks
+and completed client authentication remain pending. See
+[deployment and host inspection](docs/tencent-deployment.md).
 
-Implemented: account-scoped operation receipts and conditional D1 batches, creation/migration baselines, distinct encounter recording/import, explicit legacy-merge count deltas, editing/reset/deletion tombstones, snapshot restoration and review-v1 admission/state rules, fixed-boundary snapshots/deltas, history paging, context/URL consent, OAuth browser state plus provider/client PKCE, single-use native codes, hashed device credentials, refresh rotation/revocation, account erasure, bounded request bodies, rate limits and JSON API errors. Atomic writes now recheck the resolved user epoch at commit. The latest 25 local API tests and shared native merge fixture are summarized in [sync core evidence](../frontend/apple/docs/verification/2026-10-09-sync-core.md).
+Implemented: GitHub OAuth with browser/client PKCE, hashed device credentials,
+refresh rotation/revocation, account ownership, atomic operation receipts,
+count/history-independent mutations, tombstones, fixed-boundary snapshots/deltas,
+version-bound history, review admission, source consent/removal, and authenticated
+Hermes Chinese translation. macOS and the browser extension use the same API.
+The homepage is a small connection page; a full website vocabulary UI is deferred.
 
-This API work keeps the browser-extension Node package and lockfile independent, as permitted by the Apple plan. Root npm workspaces, the full website and extension storage/sync migration from the broader Cloudflare plan are deferred; they are not claimed as completed prerequisites. Language-neutral wire schemas/fixtures live in `contracts/`; local native operations are a different model.
+## Local commands
 
-## Local setup and checks
-
-Use Node 22.22.3 from `.nvmrc`. Commands run in this package:
+Use Node 22.22.3 from `.nvmrc`, and run commands inside `backend/`:
 
 ```sh
-cd backend
 nvm use
-npx --yes --package=npm@11.21.0 npm ci
-npm rebuild esbuild workerd
-npm run types
+npm ci
 npm run typecheck
-npm run test
+npm test
 npm run build
+DATABASE_PATH=/tmp/rememberme-api-disposable.sqlite npm run dev
 ```
 
-A reproducible npm 10.9.8 peer-resolver crash was observed while bootstrapping; npm 11 was used in an isolated process, without replacing global npm or changing extension dependencies. Packages and lockfile are pinned. The patched Wrangler/Vitest plugin versions resolved the bootstrap's four dev-tool advisories; the final audit reported zero. `build` is an explicit root-environment **dry run**, not a deployment command.
+The server binds only `127.0.0.1:8787`. It has no development login/seed route.
+Node 22's built-in SQLite API emits an experimental warning. The tested runtime
+is pinned; the deployment host must use a compatible executable.
 
-Tests execute in local workerd/D1 bindings. GitHub calls are intercepted using current Cloudflare-compatible MSW handlers; all other outbound test calls are rejected. Accounts/tokens/vocabulary are synthetic and the test database resets between cases. Required-secret warnings during config loading are expected because no real secret is supplied; tests override it with a synthetic binding. Remote CI is configured but has not run.
+`npm test` runs the existing API/auth/migration tests against real SQLite and
+mocked GitHub providers, plus Hermes adapter tests. Provider network is blocked;
+all accounts, credentials and vocabulary are disposable synthetic fixtures.
+The database resets between cases.
 
-For a local server with a disposable database:
+After building `RememberMeProbe` with SwiftPM and this backend:
 
 ```sh
-npm run db:migrate:local -- --persist-to /tmp/rememberme-api-local-smoke
-npm run dev -- --persist-to /tmp/rememberme-api-local-smoke
+npm run test:native -- /absolute/path/to/RememberMeProbe
+npm run test:browser
+npm run package:deploy
 ```
 
-This binds only `127.0.0.1:8787`. A local loopback smoke check observed health 200 JSON, unauthenticated API 401 JSON, missing auth route 404 JSON and homepage 200 HTML. The temporary server was stopped after checks. Local development has no public test-token/login bypass; authenticated integration fixtures are injected only by tests.
+The native harness runs separate Swift processes with URLSession over real
+loopback HTTP. The browser harness bundles the actual extension repository/client
+with disposable WXT storage and fake IndexedDB, then talks over real HTTP to
+Node/SQLite. Install extension dependencies first. It covers refresh, frozen
+response-loss retries, cross-device history, source exclusion, conflicts and epoch
+fencing. Hermes protocol tests use a synthetic provider; these checks do not prove
+installed-extension OAuth, live Hermes or hosted macOS sync.
 
-## Configuration and credentials
+## Runtime and data
 
-`wrangler.jsonc` specifies separate local/staging/production bindings. Local D1 uses a zero-ID placeholder solely for local simulation. Remote D1 names/IDs and rate-limit namespace choices must be configured for the intended account before deployment. Staging/production origins intentionally use an invalid placeholder. No environment should be deployed from these defaults.
+`src/runtime.ts` defines the database/provider boundary. `sqlite.ts` uses WAL,
+foreign keys, FULL synchronous commits and synchronous `BEGIN IMMEDIATE` batches.
+The D1 SQL migrations are reused verbatim, with applied migration digests checked
+on startup. Receipt, state, history and change records commit together; rejected
+conflict IDs are retained. Finite nonnegative legacy binary64 counts/times,
+including fractions and very large values, remain compatible. New versions and
+cursors are safe integers. Reset retains history; imports never replay review.
 
-Set the public `GITHUB_CLIENT_ID`, exact `PUBLIC_ORIGIN` and `NATIVE_CALLBACKS` allowlist for an authorized OAuth app. Provide `GITHUB_CLIENT_SECRET` via an ignored `.dev.vars` for an explicitly requested live diagnostic or Cloudflare secret storage when deployment is authorized; the required-secret name is typed from configuration, not a source secret value. The GitHub callback is `${PUBLIC_ORIGIN}/auth/github/callback`. `rememberme://auth/callback` is the provisional native callback; server and app must agree before real login.
+Persist `DATABASE_PATH` outside the release directory. The service unit supplies
+`/var/lib/rememberme/rememberme.sqlite` under a dedicated user. Release archives
+contain bundled code, migrations, static assets, operations scripts and config
+templates, never databases or credentials. Existing browser `local:words` and
+native stores are retained. Account copy and sync enablement are explicit choices.
 
-Long-term access/refresh credentials are returned only by the authenticated HTTPS exchange, never in callback URLs. Database sessions store hashes. Short browser/provider verifiers have bounded lifetimes; provider tokens are used only to revalidate identity and are not persisted. Logging records request IDs/status, without request bodies, authorization headers, contexts or complete URLs.
+`npm run backup -- DATABASE NEW_BACKUP_PATH` uses `VACUUM INTO` and verifies
+integrity/foreign keys. `npm run restore -- BACKUP NEW_DATABASE_PATH` creates a
+new verified copy and fresh account epochs; stop API writes before selecting it.
+Preserve the prior database/WAL and release.
+Existing D1 production data, if discovered, requires a verified export and
+migration; do not replace it with an empty database. No deployed D1 was established
+in the current inspection.
 
-## Protocol boundaries
+## Auth, translation and configuration
 
-See [wire contract](../contracts/api-v1.md) and [verification](docs/verification/2026-10-09-api-foundation.md). An operation request is capped at 256 KiB of actual streamed bytes, one logical operation per request, with at most 25 events. Incremental/snapshot pages are capped at 50 states; history pages at 25 events. New version/cursor tokens are safe integers; old count/time values preserve finite nonnegative binary64 semantics. Definitions/notes/text remain untrusted data.
+Production uses exact `PUBLIC_ORIGIN`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`,
+`NATIVE_CALLBACKS` and extension `CLIENT_ORIGINS`. Register
+`${PUBLIC_ORIGIN}/auth/github/callback` with GitHub, and allowlist each actual
+extension identity callback. Credentials never appear in callback URLs or logs;
+long-lived tokens are returned by the HTTPS exchange and stored hashed server-side.
+Node rate limiting is bounded, per-process memory suitable for this single-instance
+release; it is not a distributed quota. Globally atomic review admission remains
+in SQLite guards.
 
-The backend uses real D1 transaction rollback plus conditional CHECK guards: receipts, business state, events and increment records commit together. A rejected conflict is retained for the original operation ID; resolution uses a new ID. History imports never increment count or replay review intervals. Snapshot restore takes current server versions, not backup versions, and cannot resurrect tombstones. Account deletion erases its active stored data and credentials; a later provider login receives a new opaque account ID, avoiding old cache ownership reuse.
+`POST /api/v1/lookup/translation` accepts only an authenticated single English
+word and `zh-CN`. The backend owns Hermes's private URL, bearer key and model.
+Use a dedicated loopback translation profile with tools/MCP/memory disabled.
+The adapter checks `/v1/toolsets`, limits inference concurrency to two, shares
+identical requests, bounds JSON bodies and has a twelve-second provider deadline.
+Successful results have source `hermes`; old `mymemory` snapshots remain valid.
+See [API contract](../contracts/api-v1.md) and
+[Hermes official API documentation](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server/).
 
-Rate-limit bindings provide configured request limiting; they are not the globally atomic review quota. Review admissions use D1 guards. Migrations 0002–0004 allow explicitly requested duplicate lifecycles (normal creation remains atomically source-guarded), retained history positions and entry-version-bound event reads. ID paging remains stable while positions reconstruct retained/timestamp order. `/me` advertises these capabilities; native Settings requires them. The current local tests cover these paths, but hosted CPU/row budgets, rate behavior across regions, remote backup/epoch recovery, real OAuth/device sessions, end-to-end native sync, hosted source-privacy/device and complete release acceptance remain unfinished.
+`GET /api/v1/health` is public liveness; `capabilities` advertises supported
+translation/sync contracts, not upstream readiness. Vocabulary endpoints require
+bearer authentication. Logs contain request IDs/status only. Definitions, imports,
+contexts and URLs remain untrusted text.
 
-The website is only a small static connection page. Website cookie sessions, full vocabulary UI, old-site migration and extension sync remain unfinished. The entire Apple implementation goal is still active.
+## Retained Worker path
 
-The current account/ordering checkpoint passed 29 local API tests, including a populated original-schema migration, plus native ownership/presentation and simulator checks. See [account ownership evidence](../frontend/apple/docs/verification/2026-10-09-account-ownership.md) for exact scope and remaining end-to-end acceptance.
+The old Worker configuration is retained for migration/reference:
+`dev:worker`, `build:worker`, `test:worker`, `typecheck:worker` and
+`db:migrate:local`. The default build/test/dev commands target Node/SQLite.
+Do not use historical Worker verification records as evidence of a Tencent
+production deployment. Live isolated Hermes and server-side HTTPS are now checked;
+public access, hosted OAuth, production restore and installed Mac/browser
+acceptance remain pending.
 
-The [native HTTP integration](../frontend/apple/docs/verification/2026-10-09-native-http.md) now runs real Swift/URLSession requests against the Worker in local workerd/D1. After `npm run build` and building `RememberMeProbe`, run `npm run test:native -- /absolute/path/to/RememberMeProbe`. The harness uses random loopback ports, disposable synthetic D1 accounts/credentials and separate native processes; it tests shared-source deduplication, real refresh, committed response loss/restart, history order, merge/null/review/conflicts/tombstones, account isolation and read-only changed-epoch snapshots. It never adds a production seed/login route or deploys. Hosted/signed-device epoch-reconciliation acceptance remains unfinished.
-
-The latest [epoch recovery checkpoint](../frontend/apple/docs/verification/2026-10-09-epoch-recovery.md) passed 30 local API tests and actual Swift/HTTP recovery staging/exit/resume/recheck/publication. `/me` now includes the current account-day admission IDs for native quota reconciliation. Confirmed recovery leaves sending paused; re-enabling sends only newly chosen requests. Remote D1 backup/restore tooling and hosted/signed-device acceptance remain unfinished.
-
-The native harness now additionally exercises [online account-backup merge](../frontend/apple/docs/verification/2026-10-09-account-backup.md): old count is restored through a fresh current-version snapshot, later history remains, and historical review answers/admissions are not replayed. Candidate staging exits, a new Swift process rechecks current cloud versions before publishing, and another explicit enable sends the restore/history requests. These changes use existing API operation kinds; no production fixture endpoint or deployment was added.
-
-Primary references checked for implementation: [D1 batches](https://developers.cloudflare.com/d1/worker-api/d1-database/), [Workers best practices](https://developers.cloudflare.com/workers/best-practices/workers-best-practices/), [current Vitest integration](https://developers.cloudflare.com/workers/testing/vitest-integration/write-your-first-test/), [outbound mocks](https://developers.cloudflare.com/workers/testing/vitest-integration/mock-outbound-requests/), [GitHub OAuth/PKCE](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps).
-
-Source privacy checkpoint: migration 0005 and the native Settings controls now support separate per-device/account context/URL consent, explicit historical backfill and idempotent removal of uploaded sources. A guarded revision rejects pre-clear source requests after re-enablement, including stale concurrent writers. All 32 API tests and real Swift/HTTP removal-loss/restart/backfill tests pass locally. [Verification](../frontend/apple/docs/verification/2026-10-09-source-privacy.md) distinguishes this evidence from hosted/device acceptance. `node scripts/staging-preflight.mjs` checks public staging configuration without reading secrets or deploying; current placeholders deliberately fail. [Staging and device acceptance](../frontend/apple/docs/staging-device-acceptance.md) lists missing inputs and actual-device checks.
+Current local and host evidence: [2026-10-14 Tencent/Hermes checkpoint](docs/verification/2026-10-14-tencent-hermes.md).

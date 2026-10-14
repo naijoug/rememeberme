@@ -28,13 +28,13 @@ jobs:
         run: swift test
       - name: Independent process recovery
         run: python3 frontend/apple/scripts/verify-process-recovery.py frontend/apple/Packages/RememberMeCore/.build/debug/RememberMeProbe
-      - name: Local Worker runtime dependencies
+      - name: Local Node runtime dependencies
         working-directory: backend
-        run: npx --yes --package=npm@11.21.0 npm ci && npm rebuild esbuild workerd
-      - name: Local Worker bundle (no deployment)
+        run: npx --yes --package=npm@11.21.0 npm ci && npm rebuild esbuild
+      - name: Local Node bundle (no deployment)
         working-directory: backend
         run: npm run build
-      - name: Native HTTP / Worker / D1 integration
+      - name: Native HTTP / Node / SQLite integration
         run: node backend/scripts/verify-native-sync.mjs frontend/apple/Packages/RememberMeCore/.build/debug/RememberMeProbe
       - name: macOS build
         working-directory: frontend/apple

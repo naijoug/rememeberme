@@ -8,14 +8,15 @@ import TranslationText from './TranslationText.vue';
 import WordPronunciation from './WordPronunciation.vue';
 
 const props = defineProps<{ wordEntry: WordEntry }>();
-const latestDefinition = computed(() => props.wordEntry.history.at(-1)?.definition);
+const latestDefinition = computed(() => props.wordEntry.currentDefinition ?? props.wordEntry.history.at(-1)?.definition);
 </script>
 
 <template>
   <div class="word-detail">
     <h2 class="word-title rm-word">{{ wordEntry.word }}</h2>
     <div class="word-meta">
-      <span class="count">Forgotten {{ wordEntry.count }} {{ wordEntry.count === 1 ? 'time' : 'times' }}</span>
+      <span v-if="wordEntry.countKnown === false" class="count">Not recorded</span>
+      <span v-else class="count">Forgotten {{ wordEntry.count }} {{ wordEntry.count === 1 ? 'time' : 'times' }}</span>
     </div>
     <WordPronunciation :word="wordEntry.word" :definition="latestDefinition" />
     <p v-if="latestDefinition && latestDefinition.word.toLowerCase() !== wordEntry.word.toLowerCase()" class="phonetic base-form">Base form: {{ latestDefinition.word }}</p>

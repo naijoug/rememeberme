@@ -32,7 +32,7 @@ function handleScroll(event: Event) {
   emit('scroll-position', scrollTop.value);
 }
 function summary(entry: WordEntry): string {
-  const definition = entry.history.at(-1)?.definition;
+  const definition = entry.currentDefinition ?? entry.history.at(-1)?.definition;
   if (isTranslation(definition?.translation)) return definition.translation.text;
   const latest = definition?.meanings[0];
   return latest ? [latest.partOfSpeech, latest.definitions[0]?.definition].filter(Boolean).join(' · ') : entry.history.at(-1)?.context || 'No definition saved';
@@ -44,10 +44,10 @@ function summary(entry: WordEntry): string {
   <div ref="scrollContainer" class="word-list" aria-label="Saved vocabulary" @scroll="handleScroll">
     <div :class="{ 'virtual-scroll-spacer': virtual }" :style="virtual ? { height: words.length * ROW_HEIGHT + 'px' } : undefined">
       <div :class="{ 'virtual-scroll-content': virtual }" :style="virtual ? { transform: 'translateY(' + start * ROW_HEIGHT + 'px)' } : undefined">
-        <div v-for="entry in visibleWords" :key="entry.word" class="word-item">
-          <button class="word-header" :aria-label="'Open ' + entry.word" @click="emit('select', entry.word)">
+        <div v-for="entry in visibleWords" :key="entry.id ?? entry.word" class="word-item">
+          <button class="word-header" :aria-label="'Open ' + entry.word" @click="emit('select', entry.id ?? entry.word)">
             <span class="word-info"><span class="word-text">{{ entry.word }}</span><span class="word-summary">{{ summary(entry) }}</span></span>
-            <span class="row-count" :title="'Forgotten ' + entry.count + ' times'">{{ entry.count }}</span>
+            <span class="row-count" :title="entry.countKnown === false ? 'Not recorded' : 'Forgotten ' + entry.count + ' times'">{{ entry.countKnown === false ? '—' : entry.count }}</span>
             <NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
           </button>
         </div>

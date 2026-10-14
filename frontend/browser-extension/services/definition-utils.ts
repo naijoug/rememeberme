@@ -3,7 +3,7 @@ import type { Definition, Translation } from '~/types';
 export function isTranslation(value: unknown): value is Translation {
   if (typeof value !== 'object' || value === null) return false;
   const translation = value as Record<string, unknown>;
-  return translation.source === 'mymemory' && translation.target === 'zh-CN' &&
+  return (translation.source === 'mymemory' || translation.source === 'hermes') && translation.target === 'zh-CN' &&
     typeof translation.text === 'string' && translation.text.trim().length > 0 && translation.text.length <= 2000;
 }
 

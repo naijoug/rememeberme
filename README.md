@@ -1,6 +1,6 @@
 # Remember Me
 
-Remember Me currently runs as a browser extension for looking up English words and keeping a local vocabulary encounter history. The repository separates frontend clients, future backend services and project documentation.
+Remember Me currently runs as a browser extension for looking up English words and keeping a local vocabulary encounter history. The repository separates frontend clients, backend services and project documentation.
 
 ## Structure
 
@@ -11,12 +11,12 @@ rememberme/
 │   ├── browser-extension/  # WXT / Vue 3 / TypeScript
 │   ├── apple/              # Native macOS/iOS implementation foundation
 │   └── designs/            # Static design references
-└── backend/    # Local Hono/Workers/D1 API package
+└── backend/    # Node/Hono/SQLite API for Tencent Lighthouse
 ```
 
-The browser extension lives in `frontend/browser-extension/`. It contains its own dependencies, tests, configuration and generated output. Native macOS/iOS targets and shared Swift packages exist under `frontend/apple/`, with local features and explicit account ownership/sync controls; complete release acceptance remains in progress. The unified API under `backend/` is not deployed; real Swift/HTTP-to-local-Worker integration passes with separate synthetic device processes, while hosted Mac/iPhone acceptance remains unfinished. The extension has no cloud sender. The full website remains planned.
+The browser extension lives in `frontend/browser-extension/`. It contains its own dependencies, tests, configuration and generated output. Native macOS/iOS targets and shared Swift packages exist under `frontend/apple/`, with local features and explicit account ownership/sync controls; complete release acceptance remains in progress. The unified API under `backend/` now runs Node/SQLite on Tencent Lighthouse with verified live isolated Hermes translation and configured GitHub login credentials. Both clients have authenticated translation and explicit account sync paths. Public access is blocked by Tencent domain filing; exact extension callbacks and installed Mac/browser acceptance remain pending. The full website remains planned.
 
-See the [project architecture](docs/architecture.md) for runtime/data flows, directory responsibilities and the boundary between implemented features and plans. Extension vocabulary stays in extension local storage; native clients use an independent local store. In the extension, packaged English hits stay local, while Chinese translations and online English fallbacks send the selected word to external providers.
+See the [project architecture](docs/architecture.md) for runtime/data flows, directory responsibilities and the boundary between implemented features and plans. Extension vocabulary uses account-partitioned IndexedDB while retaining the old local storage snapshot; native clients retain their independent Core Data store. Cloud upload requires explicit account copy/import and sync enablement. In the extension, packaged English hits stay local, while connected Chinese lookups go through the authenticated backend to private Hermes; disconnected Chinese lookups use MyMemory. Online English fallbacks send the selected word to the dictionary provider.
 
 ## Browser Extension Commands
 
@@ -33,7 +33,7 @@ npm run build
 npm run dev
 ```
 
-The repository root intentionally does not contain a Node package manifest or workspace manifest. The Node package boundary is the browser extension; root-level Node dependencies and utilities are not required. Use this package's `.nvmrc` and lockfile. Load build output from the package's `.output/`, not any legacy root output. Native packages use their own SwiftPM manifests.
+The repository root intentionally does not contain a Node package manifest or workspace manifest. The browser extension and backend have separate Node package boundaries; root-level Node dependencies and utilities are not required. Use this package's `.nvmrc` and lockfile. Load build output from the package's `.output/`, not any legacy root output. Native packages use their own SwiftPM manifests.
 
 ## Frontend
 

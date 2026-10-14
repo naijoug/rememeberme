@@ -1,0 +1,30 @@
+# Verified against the installed Hermes v0.21.0 gateway on October 14, 2026.
+# Provider credentials belong in the private service environment, never here.
+model:
+  default: glm-5.3-flash
+  provider: glmcode
+  base_url: https://open.bigmodel.cn/api/coding/paas/v4
+  api_mode: chat_completions
+providers:
+  glmcode:
+    base_url: https://open.bigmodel.cn/api/coding/paas/v4
+    protocol: openai
+    key_env: GLMCODE_API_KEY
+    api_mode: chat_completions
+    model: glm-5.3-flash
+platform_toolsets:
+  api_server: []
+  cli: []
+memory:
+  memory_enabled: false
+  user_profile_enabled: false
+mcp_servers: {}
+gateway:
+  multiplex_profiles: false
+platforms:
+  api_server:
+    enabled: true
+    extra:
+      host: 127.0.0.1
+      port: 8643
+      model_name: rememberme-translation

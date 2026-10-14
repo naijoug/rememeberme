@@ -1,4 +1,4 @@
-// Local-only Swift -> HTTP -> workerd/D1 integration. Never a production route.
+// Local-only Swift -> HTTP -> Node/SQLite integration. Never a production route.
 import assert from 'node:assert/strict';
 import { createHash, randomBytes } from 'node:crypto';
 import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -8,7 +8,7 @@ import { spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Miniflare, NoOpLog, convertV4MiniflareOptions } from 'miniflare';
+import { app, createRuntime, WindowLimiter, HermesTranslator } from '../.build/library.mjs';
 
 const backend = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const probe = process.argv[2] && resolve(process.argv[2]);
@@ -23,6 +23,8 @@ const bytes = JSON.stringify(legacy);
 await writeFile(join(temporary, 'synthetic-fixture-only'), 'Disposable synthetic integration fixtures only.\n');
 await writeFile(join(temporary, 'legacy.json'), bytes, { mode: 0o600 });
 let worker, lossArmed = false, lostOperation, outboundCalls = 0;
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async () => { outboundCalls++; throw new Error('Integration fixtures must never contact an external provider'); };
 let sourcePhase = false, sourceLossArmed = false;
 const operations = [];
 const authCalls = [];
@@ -54,7 +56,7 @@ const server = createServer(async (request, response) => {
     if (lossArmed && result.status === 200 && operation?.kind === 'seed') {
       lostOperation ??= { id: operation.operationId, digest: hash(body) };
       assert.equal(operation.operationId, lostOperation.id);
-      request.socket.destroy(); // Commit happened in the real Worker; no reply.
+      request.socket.destroy(); // Commit happened in the real SQLite database; no reply.
       return;
     }
     response.writeHead(result.status, Object.fromEntries(result.headers)); response.end(data);
@@ -68,27 +70,25 @@ server.listen(0, '127.0.0.1'); await once(server, 'listening');
 const origin = 'http://127.0.0.1:' + server.address().port;
 const configurations = {};
 try {
-  const runtime = convertV4MiniflareOptions({
-    name: 'rememberme-native-synthetic-fixture', modules: true, scriptPath: join(backend, '.build/index.js'),
-    compatibilityDate: '2026-10-09', compatibilityFlags: ['nodejs_compat'], host: '127.0.0.1', port: 0,
-    cf: false,
-    log: new NoOpLog(), d1Databases: { DB: 'rememberme-native-synthetic-fixture' },
-    bindings: { PUBLIC_ORIGIN: origin, ENVIRONMENT: 'local', NATIVE_CALLBACKS: 'rememberme://auth/callback', GITHUB_CLIENT_ID: '', GITHUB_CLIENT_SECRET: '' },
-    ratelimits: { AUTH_LIMIT: { namespace_id: '9101', simple: { limit: 100, period: 60 } },
-      API_LIMIT: { namespace_id: '9102', simple: { limit: 300, period: 60 } } },
-    serviceBindings: { ASSETS: () => new Response('Synthetic fixture only') },
-    outboundService: () => { outboundCalls++; throw new Error('Integration fixtures must never contact an external provider'); }
+  const runtime = createRuntime({
+    databasePath: join(temporary, 'synthetic.sqlite'), migrations: join(backend, 'migrations'), publicDirectory: join(backend, 'public'),
+    configuration: { PUBLIC_ORIGIN: origin, ENVIRONMENT: 'local' },
   });
-  runtime.telemetry = { enabled: false };
-  runtime.resourcePersistencePath = join(temporary, 'worker-persistence');
-  worker = new Miniflare(runtime);
-  await worker.ready;
-  const db = await worker.getD1Database('DB');
-  // Use each checked-in migration verbatim, including multiline upgrade SQL.
-  for (const file of (await readdir(join(backend, 'migrations'))).filter(name => name.endsWith('.sql')).sort()) {
-    const sql = await readFile(join(backend, 'migrations', file), 'utf8');
-    for (const statement of sql.split(';').map(value => value.trim()).filter(Boolean)) await db.prepare(statement).run();
-  }
+  runtime.AUTH_LIMIT = new WindowLimiter(1000); runtime.API_LIMIT = new WindowLimiter(10_000);
+  runtime.TRANSLATOR = new HermesTranslator({ baseURL: 'http://127.0.0.1:8643/v1',
+    key: 'synthetic-fixture-key', model: 'synthetic-model', fetch: async (url, init) => {
+      if (String(url).endsWith('/chat/completions')) {
+        const input = JSON.parse(init.body);
+        assert.deepEqual(input.messages[1], { role: 'user', content: 'synthetic-shared' });
+      }
+      return new Response(JSON.stringify(String(url).endsWith('/toolsets') ? []
+        : { choices: [{ message: { content: '{"text":"合成释义"}' } }] }), { headers: { 'Content-Type': 'application/json' } });
+    } });
+  worker = {
+    dispatchFetch: (url, init) => app.fetch(new Request(url, init), runtime),
+    dispose: () => runtime.DB.close(),
+  };
+  const db = runtime.DB;
   const now = Date.now();
   for (const [name, user] of [['A', 'shared'], ['B', 'shared'], ['C', 'isolated']]) {
     const userId = 'synthetic-user-' + user, deviceId = 'synthetic-device-' + name;
@@ -114,6 +114,9 @@ try {
     const report = stdout.split('\n').filter(line => line.startsWith('{')).at(-1);
     return report ? JSON.parse(report) : null;
   }
+  const translation = await command('A', 'translation');
+  assert.deepEqual(translation, { source: 'hermes', target: 'zh-CN', text: '合成释义' });
+  console.log('Real Swift authenticated translation -> HTTP -> Node/Hermes adapter passed with synthetic inference.');
   const entry = report => report.entries.find(value => value.word === 'synthetic-shared');
   const a = await command('A', 'prepare'), b = await command('B', 'prepare');
   assert.equal(entry(a).id, entry(b).id); assert.equal(entry(a).count, 1.5); assert.equal(entry(b).count, 1.5);
@@ -138,7 +141,7 @@ try {
   assert.equal(await db.prepare('SELECT count(*) AS n FROM sync_operations WHERE id=?').bind(frozen.operationId).first('n'), 1);
   assert.equal(await db.prepare("SELECT count(*) AS n FROM encounters WHERE context<>'' OR url<>''").first('n'), 0);
   assert.equal(authCalls.length, 1, 'reopened Swift processes must use the persisted rotated fixture credentials');
-  console.log('Real Swift/URLSession -> Worker/D1 shared baseline, refresh, response-loss/restart and retained history passed.');
+  console.log('Real Swift/URLSession -> Node/SQLite shared baseline, refresh, response-loss/restart and retained history passed.');
   await command('A', 'merge');
   const merged = await command('A', 'sync'); await command('B', 'sync');
   assert.equal(entry(merged).count, 3); assert.equal(entry(merged).historyCount, 54); assert.equal(merged.conflicts, 0);
@@ -227,5 +230,6 @@ try {
 } finally {
   server.closeAllConnections(); await new Promise(resolve => server.close(resolve));
   if (worker) await worker.dispose();
+  globalThis.fetch = originalFetch;
   await rm(temporary, { recursive: true, force: true });
 }

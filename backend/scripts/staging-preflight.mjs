@@ -1,4 +1,5 @@
 // Read-only check of public deployment configuration; never reads secret values.
+// Historical Worker path. Tencent deployment uses deploy/api.env.example and the Node release checks.
 import { readFile } from 'node:fs/promises';
 const config = JSON.parse(await readFile(new URL('../wrangler.jsonc', import.meta.url), 'utf8'));
 const staging = config.env.staging, problems = [];

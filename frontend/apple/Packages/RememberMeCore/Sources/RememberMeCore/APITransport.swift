@@ -80,6 +80,7 @@ public struct APIHTTPClient: Sendable {
         if let body, body.count > 256 * 1024 { throw ClientError.invalidData("API request exceeds the supported size") }
         var request = URLRequest(url: try origin.endpoint(path, query: query)); request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("translation-source-v2", forHTTPHeaderField: "X-Client-Capabilities")
         if let body { request.httpBody = body; request.setValue("application/json", forHTTPHeaderField: "Content-Type") }
         if let accessToken { request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization") }
         if let epoch { request.setValue(epoch, forHTTPHeaderField: "X-Sync-Epoch") }

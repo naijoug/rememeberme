@@ -48,8 +48,9 @@ export function cookie(request: Request, name: string): string | null {
   }
   return null;
 }
-export function checkOrigin(request: Request, origin: string) {
-  const value = request.headers.get('Origin'); if (value && value !== origin) throw new ApiError('ORIGIN_REJECTED', 403);
+export function checkOrigin(request: Request, origin: string, clients = '') {
+  const value = request.headers.get('Origin');
+  if (value && ![origin, ...clients.split(',').filter(Boolean)].includes(value)) throw new ApiError('ORIGIN_REJECTED', 403);
 }
 export async function providerJSON(url: string, init: RequestInit = {}): Promise<unknown> {
   const response = await fetch(url, { ...init, redirect: 'manual', signal: AbortSignal.timeout(10_000) });

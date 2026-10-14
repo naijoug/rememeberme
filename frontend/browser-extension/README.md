@@ -2,7 +2,7 @@
 
 Select an English word to see a Chinese translation and English definitions, and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-Vocabulary is stored in the browser's local extension storage. Chinese translations use MyMemory without an API key; uncached words are sent to that external service. English definitions first use packaged WordNet; missing words fall back to Free Dictionary API. The two results load independently, so a failed provider does not hide a successful result. Saved contexts and full source URLs are included in exports; there is no cloud vocabulary sync. See [sources, limits and privacy](docs/dictionary.md).
+Vocabulary is stored locally in account-partitioned IndexedDB. The first upgrade retains the old `local:words` snapshot and its original JSON; it does not upload vocabulary. The Cloud account panel connects your HTTPS backend for authenticated Hermes translation. Open/copy account vocabulary and enable sync explicitly to upload words/definition history; this extension excludes contexts and source URLs from outgoing sync. Disconnected Chinese lookup retains MyMemory. Packaged English hits stay local, and misses use Free Dictionary API. Legacy JSON exports retain local sources and remain compatible. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
 
 ## Setup
 
@@ -98,3 +98,20 @@ The page card has one bookmark-and-count button beside the word. Each click adds
 For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual English lookups use the packaged dictionary first; Chinese translations and English fallbacks require their external services.
 
 Phonetic transcriptions appear beneath a word as **🇺🇸 IPA 🔊 / 🇬🇧 IPA 🔊** in the page card and vocabulary reading view. The interface uses small inline SVG US/UK flags, with country labels for screen readers and accent tooltips. IPA comes from a separate packaged dictionary, so supported words such as `trick` have it even when WordNet supplies the definition. Click the small speaker icon beside an accent to play it, or click again to stop. Playback uses matching browser/device voices, preferring local voices; missing voices show system guidance. No encounter is saved by playing audio. See [pronunciation sources, coverage and privacy](docs/dictionary.md#pronunciation).
+
+## Backend connection
+
+Build/deploy the API using [Tencent deployment](../../backend/docs/tencent-deployment.md).
+Register the actual installed extension's identity callback and origin in the
+server allowlists before GitHub login. Cloud account controls are restricted to
+extension pages. Login alone enables backend translation, while vocabulary upload
+requires opening/copying the account and enabling sync separately.
+
+Conflicts and server restores pause sending and retain the local overlay/frozen
+queue. The confirmed recovery action archives ALL pending account changes before
+downloading the cloud vocabulary. Recovery copies can be exported as legacy JSON;
+exports omit private request/checkpoint metadata, and importing them adds counts
+again. Sync stays paused after recovery. The macOS client provides richer field
+merge and separate-copy choices. The Tencent backend and live isolated Hermes
+passed server acceptance; public domain access is blocked pending Tencent filing.
+Installed-client OAuth and real cross-client sync remain unverified.

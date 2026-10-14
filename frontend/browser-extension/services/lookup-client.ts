@@ -9,7 +9,7 @@ export function requestDefinition(word: string, signal?: AbortSignal): Promise<D
 }
 
 export function requestTranslation(word: string, signal?: AbortSignal): Promise<Translation> {
-  return request<Translation>('GET_TRANSLATION', word, 6000, signal);
+  return request<Translation>('GET_TRANSLATION', word, 17_000, signal);
 }
 
 export async function requestPhonetics(word: string, signal?: AbortSignal): Promise<PhoneticTranscriptions> {

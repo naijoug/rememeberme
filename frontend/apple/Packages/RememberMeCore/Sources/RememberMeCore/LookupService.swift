@@ -117,14 +117,22 @@ public actor LookupService {
     private var englishCache: [String: Cached] = [:]
     private var chineseCache: [String: Cached] = [:]
     private var loadedCache = false
+    private var chineseProvider: (any ChineseTranslationProvider)?
+    private var providerGeneration = UUID()
     private let englishRequests = Coalescer<JSONValue>()
     private let chineseRequests = Coalescer<JSONValue>()
 
     public init(dictionaryDirectory: URL?, cacheURL: URL? = nil,
                 transport: any LookupTransport = URLSessionLookupTransport(), budgets: Budgets = Budgets(),
+                chineseProvider: (any ChineseTranslationProvider)? = nil,
                 clock: @escaping @Sendable () -> Double = { Date().timeIntervalSince1970 * 1000 }) {
         local = LocalWordNet(directory: dictionaryDirectory); self.cacheURL = cacheURL
         self.transport = transport; self.budgets = budgets; self.clock = clock
+        self.chineseProvider = chineseProvider
+    }
+    public func setChineseProvider(_ provider: (any ChineseTranslationProvider)?) {
+        guard provider?.cacheNamespace != chineseProvider?.cacheNamespace else { return }
+        chineseProvider = provider; providerGeneration = UUID()
     }
     public func english(_ input: String, refresh: Bool = false) async throws -> JSONValue {
         try Task.checkCancellation()
@@ -170,10 +178,15 @@ public actor LookupService {
         let word = LegacyCodec.normalize(input)
         guard LegacyCodec.isEnglishWord(word), word.utf16.count <= 500 else { throw LookupError.invalidWord }
         loadCache()
-        if !refresh, let cached = chineseCache[word], clock() >= cached.at, clock() - cached.at < 604_800_000 { return cached.value }
+        let provider = chineseProvider, generation = providerGeneration
+        let key = provider.map { $0.cacheNamespace + ":" + word } ?? word
+        if !refresh, let cached = chineseCache[key], clock() >= cached.at, clock() - cached.at < 604_800_000 { return cached.value }
         let transport = transport, seconds = budgets.chinese
-        let value = try await chineseRequests.get(word) {
-            try await deadline(seconds) {
+        let value = try await chineseRequests.get(key) {
+            if let provider {
+                return try await deadline(15) { try await provider.translate(word) }
+            }
+            return try await deadline(seconds) {
                 var components = URLComponents(string: "https://api.mymemory.translated.net/get")!
                 components.queryItems = [URLQueryItem(name: "q", value: word), URLQueryItem(name: "langpair", value: "en|zh-CN")]
                 let response = try await transport.fetch(components.url!)
@@ -189,7 +202,8 @@ public actor LookupService {
             }
         }
         try Task.checkCancellation()
-        chineseCache[word] = Cached(value: value, at: clock())
+        guard generation == providerGeneration else { throw CancellationError() }
+        chineseCache[key] = Cached(value: value, at: clock())
         while chineseCache.count > 500 {
             if let oldest = chineseCache.min(by: { $0.value.at < $1.value.at })?.key { chineseCache[oldest] = nil }
         }
@@ -205,10 +219,10 @@ public actor LookupService {
         guard let cacheURL, let data = try? Data(contentsOf: cacheURL),
               let cache = try? JSONDecoder().decode([String: Cached].self, from: data) else { return }
         for (word, entry) in cache.sorted(by: { $0.value.at < $1.value.at }).suffix(500) {
-            guard LegacyCodec.isEnglishWord(word), entry.at.isFinite, clock() >= entry.at,
+            guard (LegacyCodec.isEnglishWord(word) || word.hasPrefix("hermes:")), entry.at.isFinite, clock() >= entry.at,
                   clock() - entry.at < 604_800_000,
                   let text = entry.value["text"]?.text, !text.isEmpty, text.utf16.count <= 2000,
-                  entry.value["source"]?.text == "mymemory", entry.value["target"]?.text == "zh-CN" else { continue }
+                  ["mymemory", "hermes"].contains(entry.value["source"]?.text ?? ""), entry.value["target"]?.text == "zh-CN" else { continue }
             chineseCache[word] = entry
         }
     }

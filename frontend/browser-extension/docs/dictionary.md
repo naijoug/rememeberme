@@ -1,6 +1,6 @@
 # Dictionary sources and offline coverage
 
-Chinese translation and English definitions are independent. English lookup first reads packaged WordNet 3.1; a hit needs no external **English dictionary** request and is marked **Offline dictionary · WordNet**. English misses or unavailable local assets use Free Dictionary API. In parallel, Chinese translation checks a separate local cache, then sends an uncached selected word to MyMemory. Thus even a word present in WordNet can make a Chinese translation request. The extension is not completely offline.
+Chinese translation and English definitions are independent. English lookup first reads packaged WordNet 3.1; a hit needs no external **English dictionary** request and is marked **Offline dictionary · WordNet**. English misses or unavailable local assets use Free Dictionary API. In parallel, Chinese translation checks a separate local cache, then uses authenticated backend Hermes when connected, or MyMemory when disconnected. Thus even a word present in WordNet can make a Chinese translation request. The extension is not completely offline.
 
 ## Chinese translation and API keys
 
@@ -8,7 +8,7 @@ MyMemory's public `GET https://api.mymemory.translated.net/get?q=<word>&langpair
 
 The [official API specification](https://mymemory.translated.net/doc/spec.php) makes `key` optional. The [usage limits](https://mymemory.translated.net/doc/usagelimits.php), checked 2026-09-30, specify 5,000 characters/day for anonymous use. Availability, quality and quota are not guaranteed. Exhausted quota, timeout, unavailable service and missing translation have distinct messages; no account or quota upgrade is configured automatically.
 
-`local:translationCache` holds up to 500 successful word translations. Entries are reused for seven days, expired entries are ignored and removed on subsequent successful cache writes. The cache is separate from vocabulary and exports; closing the card does not add vocabulary, but a successful translation can still be cached. Concurrent requests for one normalized word are coalesced. Network/body reads have a 4.5-second deadline; the content-side message deadline is six seconds.
+`local:translationCache` holds up to 500 successful word translations. Entries are reused for seven days, expired entries are ignored and removed on subsequent successful cache writes. The cache is separate from vocabulary and exports; closing the card does not add vocabulary, but a successful translation can still be cached. Concurrent requests for one normalized word are coalesced. Client network/body reads have a fifteen-second deadline; the content-side message deadline is seventeen seconds. Connected refresh adds its own transport deadline. Hermes itself has a twelve-second backend deadline. Cache keys separate providers, origins and accounts.
 
 Results render as each source finishes. The bookmark counter records the selected word, sentence, click time and URL even if neither source has succeeded, using an empty definition snapshot in that case. Saving stores results available when clicked, not future responses. The separate context-menu shortcut waits for both bounded sources and retains whichever succeed; if both fail, that shortcut still reports failure without saving.
 
@@ -46,6 +46,18 @@ The [conversion script](../scripts/build-wordnet.py) rejects an archive with a d
 
 `Definition.source` is optional and additive. Old saved vocabulary and JSON backups remain valid; exports of new records retain their source identifier. Source links are hardcoded by the UI, never taken from imported data.
 
-The optional `Definition.translation` object contains `{ text, target: 'zh-CN', source: 'mymemory' }`. A Chinese-only result uses an empty English `meanings` array. Imports validate this optional field, retain literal text and accept older records without it; no migration is required.
+The optional `Definition.translation` object contains `{ text, target: 'zh-CN', source: 'mymemory' | 'hermes' }`. A Chinese-only result uses an empty English `meanings` array. Imports validate this optional field, retain literal text and accept older records without it; no migration is required.
 
 Word-form matching uses the regular detachment rules documented in [WordNet Morphy](https://wordnet.princeton.edu/documentation/morphy7wn), with exact-match priority. It is not a complete implementation of Morphy's exception handling. Saving keeps the user's selected word as the vocabulary key and the matched headword in `definition.word`; counts and history are not silently merged into a different word.
+
+## Connected Hermes provider
+
+Cloud login routes Chinese requests through the authenticated business API.
+Hermes runs privately on the server with an isolated translation profile, no
+tools/MCP/memory, and a server-side bearer key. Only the selected word and target
+are accepted by the business endpoint; webpage context/URL and vocabulary are
+excluded. The model provider configured in Hermes may receive that word. Hermes
+results display their own attribution; existing MyMemory snapshots are unchanged.
+An unavailable/misconfigured connected backend reports an error and does not
+silently send the word to a different provider. The live server API is not yet
+configured/verified. See [deployment status](../../../backend/docs/tencent-deployment.md).

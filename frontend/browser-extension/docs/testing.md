@@ -79,7 +79,7 @@ Mark each case **Not run**, **Pass**, **Fail**, or **Blocked**, with evidence. T
 | Open the toolbar popup, sort, open a word, reset, cancel deletion, confirm deletion | Display and stored data agree; reset preserves history and cancel preserves the word |
 | Load over 100 fixture words, open a long history, go back and scroll to the final word | Detail scroll does not affect virtual rows; list position restores on back and the last word is reachable |
 | Switch Light / Dark using the toolbar header sun/moon button | Toolbar and open page card update consistently; the choice persists without changing vocabulary; no footer theme selector appears |
-| Stop both online responses for a word absent from the local index | Within 10 seconds the loading UI becomes a retryable error; the counter can still record the selected word/context |
+| Stop both online responses for a word absent from the local index | Within the source-specific deadline (10 seconds English, 17 seconds Chinese) the loading UI becomes a retryable error; the counter can still record the selected word/context |
 | Delete a word after scrolling deep into a large vocabulary list | Confirmation covers the viewport; cancel preserves the entry and confirm deletes it |
 | Export fixtures, import into an empty disposable profile | Counts and history survive the round trip |
 | Import a malformed file | Clear error and existing vocabulary remains intact |
@@ -118,3 +118,19 @@ Chinese translation: [2026-09-30 curated and independent bilingual results](veri
 Popup interaction: [2026-09-30 persistent header and accidental dismissal fixes](verification/2026-09-30-popup-interactions.md).
 
 Encounter counter: [2026-09-30 counter and individual record inspection](verification/2026-09-30-encounter-counter.md).
+
+## Tencent backend and durable browser sync
+
+`services/cloud-vocabulary.test.ts` uses fake IndexedDB to test old-store retention,
+legacy export/reset/import, atomic rejection, exact response-loss retry after
+reopening, captured conditional versions, additive acknowledgment conflicts,
+paged history/restart, account isolation and epoch recovery archives.
+`services/backend-client.test.ts` checks PKCE/callback, exact request bodies,
+refresh coalescing, credential-save retry and late refresh after offline disconnect.
+
+From `backend/`, after installing both package dependencies and building the API,
+run `npm run test:browser`. It bundles actual extension source with synthetic WXT
+storage/fake IndexedDB and connects to random loopback HTTP/real SQLite; it never
+accesses an installed extension or actual vocabulary. Provider inference is
+synthetic. Installed upgrade, OAuth callback IDs, real Hermes, cross-client hosted
+sync and storage-quota/large-vocabulary performance still require browser checks.

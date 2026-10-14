@@ -47,6 +47,12 @@ enum NativeSyncProbe {
         let vault = try FixtureVault(file: directory.appendingPathComponent("credentials.json"), initial: fixture.credentials)
         let session = NativeSession(origin: origin, vault: vault)
         let identity = ConnectedIdentity(origin: origin.string, userId: fixture.credentials.userId, deviceId: fixture.credentials.deviceId)
+        if arguments[1] == "translation" {
+            let provider = BackendTranslationProvider(session: session, accountID: identity.userId)
+            let value = try await provider.translate("synthetic-shared")
+            print(String(decoding: try JSONValue.encoder().encode(value), as: UTF8.self))
+            return
+        }
         let repository = try LocalRepository(url: directory.appendingPathComponent("vocabulary.sqlite"), owner: SyncConfiguration.owner(for: identity))
         let api = NativeSyncAPI(client: AuthenticatedAPIClient(session: session))
         // Recovery commands advance only the coordinator's test retry clock,

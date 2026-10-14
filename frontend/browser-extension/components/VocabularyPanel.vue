@@ -26,7 +26,7 @@ const menu = ref<HTMLElement>();
 const menuButton = ref<HTMLButtonElement>();
 const backButton = ref<HTMLButtonElement>();
 const importError = ref('');
-const selectedEntry = computed(() => props.words.find(entry => entry.word === selected.value));
+const selectedEntry = computed(() => props.words.find(entry => (entry.id ?? entry.word) === selected.value));
 const displayedWords = computed(() => props.words.filter(entry => entry.word.toLowerCase().includes(query.value.trim().toLowerCase()))
   .slice().sort((a, b) => sortBy.value === 'count' ? b.count - a.count : b.updatedAt - a.updatedAt));
 watch(selectedEntry, entry => { if (!entry) { selected.value = null; confirmWord.value = null; listScrollTop.value = 0; } });
@@ -89,7 +89,7 @@ async function importFile(event: Event) {
         <button ref="backButton" class="back-link" @click="selected = null"><NavArrowLeft width="17" height="17" aria-hidden="true" /><span>Vocabulary</span><span aria-hidden="true">/</span><span>{{ selectedEntry.word }}</span></button>
         <WordDetail :word-entry="selectedEntry" />
         <div class="word-actions">
-          <button class="rm-text-action reset-btn" :disabled="busy" @click="emit('reset', selectedEntry.word)"><Refresh width="18" height="18" aria-hidden="true" />Reset count</button>
+          <button class="rm-text-action reset-btn" :disabled="busy" @click="emit('reset', selectedEntry.id ?? selectedEntry.word)"><Refresh width="18" height="18" aria-hidden="true" />Reset count</button>
           <button class="rm-text-action delete-btn" :disabled="busy" @click="confirmWord = selectedEntry.word"><Trash width="17" height="17" aria-hidden="true" />Delete</button>
         </div>
       </div>
@@ -110,7 +110,7 @@ async function importFile(event: Event) {
         <button class="rm-button rm-secondary" @click="triggerImport">Import a backup</button>
       </div>
     </main>
-    <ConfirmDelete v-if="confirmWord" :word="confirmWord" :busy="busy" @cancel="confirmWord = null" @confirm="emit('delete', confirmWord); confirmWord = null" />
+    <ConfirmDelete v-if="confirmWord" :word="confirmWord" :busy="busy" @cancel="confirmWord = null" @confirm="emit('delete', selectedEntry?.id ?? confirmWord); confirmWord = null" />
   </div>
   </IconoirProvider>
 </template>

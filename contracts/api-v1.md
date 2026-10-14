@@ -57,3 +57,23 @@ Native epoch recovery now confirms a new-generation plan with a fresh online acc
 Native account-backup merge now previews current cloud lifecycles/tombstones and rechecks relevant versions/source identities before local publication. It queues fresh conditional restore/delete/edit requests and independent history imports; backup versions are provenance only, incoming queues/checkpoints are rejected, and historical review answers are retained locally without replay. Existing unrelated current queues stay intact. Offline cached preview cannot confirm, and publication keeps sync paused. [Account backup evidence](../frontend/apple/docs/verification/2026-10-09-account-backup.md) records real HTTP staged-exit/resume/recheck and count/history/review independence.
 
 `POST /api/v1/sources/clear` accepts exactly `{requestId, sourceRevision}`. A single guarded transaction disables both source consents, increments the account source revision, blanks all encounter contexts/URLs and writes an idempotent receipt. A matching retry returns the receipt without clearing later uploads; changed receipt input is rejected. Count, event identity/order, review, entry versions and local client copies are retained. The revision invalidates uncommitted old record/import/enrichment source writes even after re-enabling. Previously committed operation receipts return their original acknowledgment without rerunning mutations. A native unknown-outcome removal keeps sending paused across restart. Local conflict review or a new explicitly confirmed backfill is required for old source intents. Cloud source removal does not erase exported files or provider/database backups.
+
+## Translation source extension (2026-10-14)
+
+`Definition.translation.source` accepts both `mymemory` and `hermes`, with
+`target: zh-CN` and nonempty bounded text. Existing histories are never rewritten.
+Updated clients send `X-Client-Capabilities: translation-source-v2`; `/me` and
+public `/api/v1/capabilities` advertise support. Upgrade old clients before
+sharing Hermes snapshots: old validators may reject that new source.
+
+Authenticated `POST /api/v1/lookup/translation` accepts exactly
+`{"word":"synthetic","target":"zh-CN"}` and returns
+`{"translation":{"text":"...","target":"zh-CN","source":"hermes"}}`.
+Only a normalized single English word is supported. Provider failures remain
+separate from local English lookup and vocabulary persistence. Hermes credentials,
+URLs, model selection and tools are never client parameters.
+
+The default runtime now uses Node/SQLite with the existing SQL/atomic guards.
+Exact extension callback/CORS allowlists support browser PKCE device sessions.
+The API remains v1; the source extension does not change legacy number/history
+semantics or operation IDs. Hosted deployment remains pending.

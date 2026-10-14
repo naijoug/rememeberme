@@ -260,7 +260,7 @@ export class StorageService {
     });
   }
 
-  private parseImportedWords(jsonData: string): WordEntry[] {
+  parseImportedWords(jsonData: string): WordEntry[] {
     let importedData: unknown;
 
     try {

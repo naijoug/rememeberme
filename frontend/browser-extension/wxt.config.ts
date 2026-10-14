@@ -7,7 +7,7 @@ export default defineConfig({
     name: 'Remember Me',
     description: 'Look up English words as you read and keep a local vocabulary history of the words you forget.',
     // Static content scripts handle selection; no temporary activeTab grant is needed.
-    permissions: ['storage', 'contextMenus'],
+    permissions: ['storage', 'contextMenus', 'identity', 'alarms'],
     host_permissions: ['<all_urls>'],
   },
 });

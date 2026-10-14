@@ -109,7 +109,7 @@ struct EntryEditor: View {
             HStack {
                 Button(draft.original == nil ? "Look up" : "Refresh definition") { draft.lookup() }
                     .disabled(!LegacyCodec.isEnglishWord(draft.word))
-                Text("Chinese lookup uses MyMemory. English misses use Free Dictionary API.").font(.caption).foregroundStyle(.secondary)
+                Text("Chinese lookup uses your connected backend and Hermes, or MyMemory when no backend account is connected. English misses use Free Dictionary API.").font(.caption).foregroundStyle(.secondary)
             }
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {

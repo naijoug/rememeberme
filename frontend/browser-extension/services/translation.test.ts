@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TranslationService, TRANSLATION_TIMEOUT_MS } from './translation';
+import type { BackendClient, Connection } from './backend-client';
 
 const api = vi.hoisted(() => {
   const values = new Map<string, unknown>();
@@ -16,6 +17,29 @@ beforeEach(() => { vi.resetAllMocks(); api.values.clear(); vi.stubGlobal('fetch'
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('Chinese translation (mock provider and disposable cache)', () => {
+  it('uses authenticated Hermes with provider/account-separated cache and sends only word/target', async () => {
+    const connection: Connection = { origin: 'https://api.example.test', credentials: {
+      userId: 'synthetic-user', deviceId: 'synthetic-device', accessToken: '', refreshToken: '',
+      accessExpiresAtMs: 0, refreshExpiresAtMs: 0,
+    } };
+    const request = vi.fn().mockResolvedValue({ translation: { text: '精选', target: 'zh-CN', source: 'hermes' } });
+    const backend = { current: async () => connection, request } as unknown as BackendClient;
+    const first = new TranslationService(backend);
+    expect((await first.translate(' Curated ')).source).toBe('hermes');
+    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/lookup/translation', 'POST', { word: 'curated', target: 'zh-CN' });
+    await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalled());
+    expect((await new TranslationService(backend).translate('curated')).source).toBe('hermes');
+    expect(request).toHaveBeenCalledTimes(1);
+    connection.credentials.userId = 'another-user';
+    await first.translate('curated');
+    expect(request).toHaveBeenCalledTimes(2); expect(fetchMock).not.toHaveBeenCalled();
+  });
+  it('keeps connected backend failures explicit without caching or switching to MyMemory', async () => {
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'synthetic-user' } }),
+      request: vi.fn().mockRejectedValue(new Error('TRANSLATION_NOT_CONFIGURED')) } as unknown as BackendClient;
+    await expect(new TranslationService(backend).translate('curated')).rejects.toThrow('TRANSLATION_NOT_CONFIGURED');
+    expect(fetchMock).not.toHaveBeenCalled(); expect(api.storage.setItem).not.toHaveBeenCalled();
+  });
   it('sends only the selected word and language pair without an API key', async () => {
     fetchMock.mockResolvedValue(response());
     const result = await new TranslationService().translate(' Curated ');

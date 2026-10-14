@@ -1,0 +1,33 @@
+[Unit]
+Description=Remember Me isolated Hermes translation
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/rememberme/hermes.env
+
+[Service]
+Type=simple
+User=rememberme-hermes
+Group=rememberme-hermes
+WorkingDirectory=/var/lib/rememberme-hermes
+Environment=HOME=/var/lib/rememberme-hermes
+Environment=HERMES_HOME=/var/lib/rememberme-hermes
+Environment=GATEWAY_MULTIPLEX_PROFILES=false
+EnvironmentFile=/etc/rememberme/hermes.env
+ExecStart=/home/ubuntu/.hermes/hermes-agent/venv/bin/hermes gateway run --external-supervisor
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+StateDirectory=rememberme-hermes
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=tmpfs
+BindReadOnlyPaths=/home/ubuntu/.hermes/hermes-agent
+BindReadOnlyPaths=/home/ubuntu/.local/share/uv/python
+ReadWritePaths=/var/lib/rememberme-hermes
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

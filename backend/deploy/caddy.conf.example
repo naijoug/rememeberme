@@ -1,0 +1,14 @@
+# Add this site to the existing Caddy configuration after DNS and OAuth setup.
+# This planned hostname was not resolving during the October 14 host check.
+rememberme.couplelabs.cn {
+  encode zstd gzip
+  request_body {
+    max_size 256KB
+  }
+  reverse_proxy 127.0.0.1:8787 {
+    header_up X-Forwarded-For {remote_host}
+    transport http {
+      response_header_timeout 25s
+    }
+  }
+}

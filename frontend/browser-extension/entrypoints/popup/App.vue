@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import VocabularyPanel from '~/components/VocabularyPanel.vue';
+import CloudConnection from '~/components/CloudConnection.vue';
 import { storageClient } from '~/services/storage-client';
 import { saveTheme, watchTheme } from '~/services/theme';
 import type { WordEntry } from '~/types';
@@ -68,6 +69,7 @@ async function exportData() {
 </script>
 
 <template>
+  <CloudConnection :data-theme="theme.resolved" @changed="loadWords" />
   <VocabularyPanel
     :words="words" :loading="loading" :busy="busy" :error="error" :success="success"
     :theme="theme.resolved"

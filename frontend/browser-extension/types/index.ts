@@ -39,7 +39,7 @@ export interface Definition {
 export interface Translation {
   text: string;
   target: 'zh-CN';
-  source: 'mymemory';
+  source: 'mymemory' | 'hermes';
 }
 
 /** Independent display data from the packaged IPA dictionary; not vocabulary. */
@@ -59,6 +59,10 @@ export interface HistoryRecord {
  * Word entry with count and history
  */
 export interface WordEntry {
+  /** Account lifecycle identity and current definition are presentation metadata. */
+  id?: string;
+  currentDefinition?: Definition;
+  countKnown?: boolean;
   word: string;
   count: number;
   history: HistoryRecord[];

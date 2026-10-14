@@ -3,8 +3,9 @@ import { ApiError, id, object, keys, parseOperation, version } from '../../contr
 import { requestJSON, checkOrigin } from './http';
 import { identity, exchangeNative, refreshSession, startNative, githubCallback, type Identity } from './auth';
 import { applyOperation, changes, getEntry, entryHistory, rememberConflict, reviewAdmissions } from './store';
+import type { Bindings } from './runtime';
 
-const app = new Hono<{ Bindings: Env; Variables: { requestId: string; identity: Identity } }>();
+const app = new Hono<{ Bindings: Bindings; Variables: { requestId: string; identity: Identity } }>();
 app.use('*', async (c, next) => {
   c.set('requestId', crypto.randomUUID());
   c.header('Cache-Control', 'no-store'); c.header('Referrer-Policy', 'no-referrer');
@@ -19,32 +20,58 @@ app.onError((error, c) => {
     { status: failure.status, headers: { 'Cache-Control': 'no-store', ...(failure.status === 429 ? { 'Retry-After': '60' } : {}) } });
 });
 app.get('/api/v1/health', c => c.json({ apiVersion: 1, status: 'ok' }));
+app.get('/api/v1/capabilities', c => c.json({ apiVersion: 1,
+  translationSources: ['mymemory', 'hermes'], translation: Boolean(c.env.TRANSLATOR),
+  syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2'] }));
+app.use('*', async (c, next) => {
+  const origin = c.req.header('Origin');
+  checkOrigin(c.req.raw, c.env.PUBLIC_ORIGIN, c.env.CLIENT_ORIGINS);
+  if (origin) {
+    c.header('Access-Control-Allow-Origin', origin);
+    c.header('Vary', 'Origin');
+  }
+  if (c.req.method === 'OPTIONS') {
+    c.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    c.header('Access-Control-Allow-Headers', 'Authorization,Content-Type,X-Sync-Epoch,X-Client-Capabilities');
+    return c.body(null, 204);
+  }
+  await next();
+});
 app.use('/auth/*', async (c, next) => {
-  if (!(await c.env.AUTH_LIMIT.limit({ key: c.req.header('CF-Connecting-IP') ?? 'local' })).success) throw new ApiError('RATE_LIMITED', 429, true);
+  if (!(await c.env.AUTH_LIMIT.limit({ key: c.env.CLIENT_IP ?? c.req.header('CF-Connecting-IP') ?? 'local' })).success) throw new ApiError('RATE_LIMITED', 429, true);
   await next();
 });
 app.use('/api/v1/auth/*', async (c, next) => {
-  if (!(await c.env.AUTH_LIMIT.limit({ key: c.req.header('CF-Connecting-IP') ?? 'local' })).success) throw new ApiError('RATE_LIMITED', 429, true);
+  if (!(await c.env.AUTH_LIMIT.limit({ key: c.env.CLIENT_IP ?? c.req.header('CF-Connecting-IP') ?? 'local' })).success) throw new ApiError('RATE_LIMITED', 429, true);
   await next();
 });
 app.get('/auth/native/start', c => startNative(c.req.raw, c.env));
+app.get('/auth/extension/start', c => startNative(c.req.raw, c.env));
 app.get('/auth/github/callback', c => githubCallback(c.req.raw, c.env));
-app.post('/api/v1/auth/exchange', async c => { checkOrigin(c.req.raw, c.env.PUBLIC_ORIGIN); return c.json(await exchangeNative(await requestJSON(c.req.raw), c.env.DB)); });
-app.post('/api/v1/auth/refresh', async c => { checkOrigin(c.req.raw, c.env.PUBLIC_ORIGIN); return c.json(await refreshSession(await requestJSON(c.req.raw), c.env.DB)); });
+app.post('/api/v1/auth/exchange', async c => c.json(await exchangeNative(await requestJSON(c.req.raw), c.env.DB)));
+app.post('/api/v1/auth/refresh', async c => c.json(await refreshSession(await requestJSON(c.req.raw), c.env.DB)));
 app.use('/api/v1/*', async (c, next) => {
-  checkOrigin(c.req.raw, c.env.PUBLIC_ORIGIN);
   const who = await identity(c.req.raw, c.env.DB); c.set('identity', who);
   const epoch = c.req.header('X-Sync-Epoch');
   if (epoch !== undefined && epoch !== who.epoch) throw new ApiError('SYNC_EPOCH_CHANGED', 409);
   if (!(await c.env.API_LIMIT.limit({ key: who.userId })).success) throw new ApiError('RATE_LIMITED', 429, true);
   await next();
 });
+app.post('/api/v1/lookup/translation', async c => {
+  const input = await requestJSON(c.req.raw);
+  if (!object(input)) throw new ApiError('INVALID_REQUEST');
+  keys(input, ['word', 'target'], ['word', 'target']);
+  if (typeof input.word !== 'string' || input.word.length > 500 || input.target !== 'zh-CN'
+    || !/^[a-z](?:[a-z'-]*[a-z])?$/.test(input.word.trim().toLowerCase())) throw new ApiError('INVALID_LOOKUP_WORD');
+  if (!c.env.TRANSLATOR) throw new ApiError('TRANSLATION_NOT_CONFIGURED', 503);
+  return c.json({ translation: await c.env.TRANSLATOR.translate(input.word.trim().toLowerCase()) });
+});
 app.get('/api/v1/me', async c => {
   const who = c.get('identity');
   const profile = await c.env.DB.prepare('SELECT login FROM users WHERE id=? AND deleted_at IS NULL').bind(who.userId).first<{ login: string }>();
   return c.json({ userId: who.userId, deviceId: who.deviceId, epoch: who.epoch, timezone: who.timezone,
     sourceRevision: who.sourceRevision, syncContext: who.syncContext, syncURLs: who.syncURLs, displayName: profile?.login ?? '',
-    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1'] });
+    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2'] });
 });
 app.get('/api/v1/entries/:id', async c => {
   const entryId = c.req.param('id'); if (!id(entryId)) throw new ApiError('INVALID_REQUEST');
@@ -163,4 +190,4 @@ app.notFound(c => {
   return c.env.ASSETS.fetch(c.req.raw);
 });
 export { app };
-export default { fetch: (request, env, ctx) => app.fetch(request, env, ctx) } satisfies ExportedHandler<Env>;
+export default { fetch: (request: Request, env: Bindings) => app.fetch(request, env) };

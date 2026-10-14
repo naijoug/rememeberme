@@ -126,7 +126,7 @@ struct NativeSettingsView: View {
             AccountConnectionView(model: .shared)
             if let account { AccountVocabularyView(model: account) }
             Divider()
-            Text("Vocabulary is saved on this device and uploaded to your chosen account only when you enable sync. WordNet English hits stay local; Chinese lookup uses MyMemory and English misses use Free Dictionary API. Only the lookup word is sent to dictionary providers.").font(.callout)
+            Text("Vocabulary is saved on this device and uploaded to your chosen account only when you enable sync. WordNet English hits stay local. Connected Chinese lookup sends the word to your backend, Hermes and its configured model provider; without a connection it uses MyMemory. English misses use Free Dictionary API. Dictionary requests exclude saved context and URLs.").font(.callout)
             Text("Complete backups include contexts and full URLs and may contain sensitive information. Credentials and pending network requests are excluded.").font(.callout)
         }.padding(24) }.frame(minWidth: 300, idealWidth: 520)
     }

@@ -1,6 +1,7 @@
 import { ApiError, canonical, nextReview, nextVersion, parseEntry, type Json, type WireEntry, type WireEncounter, type WireOperation, type WireReview, type OperationResult, object, definition, review } from '../../contracts/api-v1';
 import type { Identity } from './auth';
 import { sha, token } from './http';
+import type { Database, DatabaseStatement } from './runtime';
 
 interface EntryRow {
   id: string; word: string; normalized_key: string; kind: WireEntry['kind']; count: number | null;
@@ -17,11 +18,11 @@ function decode(row: EntryRow): WireEntry {
     definition: meanings, notes: row.notes, createdAtMs: row.created_at, updatedAtMs: row.updated_at,
     version: row.version, deleted: !!row.deleted, review: schedule, reviewVersion: row.review_version, historyOrdering: row.history_ordering };
 }
-export async function getEntry(db: D1Database, user: string, id: string): Promise<WireEntry | null> {
+export async function getEntry(db: Database, user: string, id: string): Promise<WireEntry | null> {
   const row = await db.prepare('SELECT * FROM vocabulary_entries WHERE user_id=? AND id=?').bind(user, id).first<EntryRow>();
   return row ? decode(row) : null;
 }
-async function result(db: D1Database, user: string, op: WireOperation, hash: string): Promise<OperationResult | null> {
+async function result(db: Database, user: string, op: WireOperation, hash: string): Promise<OperationResult | null> {
   const receipt = await db.prepare('SELECT request_hash,response_json FROM sync_operations WHERE user_id=? AND id=?').bind(user, op.operationId).first<Receipt>();
   if (!receipt) return null;
   if (receipt.request_hash !== hash) throw new ApiError('OPERATION_ID_REUSED', 409);
@@ -32,7 +33,7 @@ async function result(db: D1Database, user: string, op: WireOperation, hash: str
   if (!object(value) || value.status !== 'applied' || value.operationId !== op.operationId || !object(value.entry) || typeof value.cursor !== 'number') throw new ApiError('INVALID_STORED_DATA', 500);
   return { operationId: value.operationId, status: 'applied', entry: parseEntry(value.entry), cursor: value.cursor };
 }
-export async function rememberConflict(db: D1Database, who: Identity, op: WireOperation, failure: ApiError): Promise<OperationResult | null> {
+export async function rememberConflict(db: Database, who: Identity, op: WireOperation, failure: ApiError): Promise<OperationResult | null> {
   const hash = await sha(canonical({ ...op }));
   await db.prepare(`INSERT INTO sync_operations(user_id,id,request_hash,response_json,committed_at)
     SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM sessions s JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id
@@ -47,7 +48,7 @@ function sourcePrivacy(who: Identity, revision: number | undefined, context: Jso
   if (typeof url === 'string' && url && !who.syncURLs) throw new ApiError('URL_SYNC_NOT_ENABLED');
 }
 const fields = 'user_id,id,normalized_key,word,kind,count,definition_json,notes,created_at,updated_at,version,deleted,review_json,review_version,history_ordering';
-function saveEntry(db: D1Database, user: string, entry: WireEntry, create: boolean) {
+function saveEntry(db: Database, user: string, entry: WireEntry, create: boolean) {
   const values = [entry.normalizedKey, entry.word, entry.kind, entry.count, canonical(entry.definition), entry.notes,
     entry.createdAtMs, entry.updatedAtMs, entry.version, Number(entry.deleted), entry.review ? JSON.stringify(entry.review) : null, entry.reviewVersion, entry.historyOrdering ?? 'retained'];
   return create ? db.prepare(`INSERT INTO vocabulary_entries(${fields}) VALUES(${Array(15).fill('?').join(',')})`).bind(user, entry.id, ...values)
@@ -64,13 +65,13 @@ function localDay(time: number, zone: string): string {
   const field = (name: string) => parts.find(p => p.type === name)?.value;
   return `${field('year')}-${field('month')}-${field('day')}`;
 }
-export async function reviewAdmissions(db: D1Database, who: Identity) {
+export async function reviewAdmissions(db: Database, who: Identity) {
   const reviewDay = localDay(Date.now(), who.timezone);
   const rows = await db.prepare('SELECT event_id FROM review_admissions WHERE user_id=? AND local_day=? ORDER BY event_id LIMIT 20')
     .bind(who.userId, reviewDay).all<{ event_id: string }>();
   return { reviewDay, reviewAdmissionIds: rows.results.map(row => row.event_id) };
 }
-export async function applyOperation(db: D1Database, who: Identity, op: WireOperation): Promise<OperationResult> {
+export async function applyOperation(db: Database, who: Identity, op: WireOperation): Promise<OperationResult> {
   const hash = await sha(canonical({ ...op }));
   const cached = await result(db, who.userId, op, hash); if (cached) return cached;
   for (let attempt = 0; attempt < 4; attempt++) {
@@ -93,7 +94,7 @@ export async function applyOperation(db: D1Database, who: Identity, op: WireOper
         definition: p.definition, notes: String(p.notes), createdAtMs: Number(p.createdAtMs), updatedAtMs: Number(p.updatedAtMs),
         version: 1, deleted: false, review: null, reviewVersion: 0, historyOrdering: 'retained' };
     } else { current = { ...old! }; }
-    const mutations: D1PreparedStatement[] = [];
+    const mutations: DatabaseStatement[] = [];
     let changed = creating, quotaDay: string | undefined;
     if (op.kind === 'record' || op.kind === 'importHistory') {
       const events = op.kind === 'record' ? [eventInput(p.event)] : (p.events as Json[]).map(eventInput);
@@ -222,7 +223,7 @@ export async function applyOperation(db: D1Database, who: Identity, op: WireOper
   throw new ApiError('RETRY_LATER', 503, true);
 }
 
-export async function changes(db: D1Database, who: Identity, cursor: number, limit: number, boundary?: number, snapshot = false) {
+export async function changes(db: Database, who: Identity, cursor: number, limit: number, boundary?: number, snapshot = false) {
   const maximum = (await db.prepare('SELECT COALESCE(max(sequence),0) AS n FROM sync_changes WHERE user_id=?').bind(who.userId).first<{ n: number }>())!.n;
   const upper = boundary ?? maximum;
   if (upper > maximum) throw new ApiError('CURSOR_REJECTED', 409);
@@ -237,7 +238,7 @@ export async function changes(db: D1Database, who: Identity, cursor: number, lim
   return { epoch: who.epoch, boundary: upper, nextCursor: page.at(-1)?.sequence ?? cursor,
     hasMore: rows.results.length > limit, changes: page.map(row => ({ sequence: row.sequence, entry: parseEntry(JSON.parse(row.entry_json)) })) };
 }
-export async function entryHistory(db: D1Database, who: Identity, entryId: string, after: string, limit: number, entryVersion: number) {
+export async function entryHistory(db: Database, who: Identity, entryId: string, after: string, limit: number, entryVersion: number) {
   const rows = await db.prepare('SELECT * FROM encounters WHERE user_id=? AND entry_id=? AND entry_version<=? AND id>? ORDER BY id LIMIT ?')
     .bind(who.userId, entryId, entryVersion, after, limit + 1).all<EventRow>();
   const page = rows.results.slice(0, limit);

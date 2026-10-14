@@ -123,6 +123,10 @@ import UIKit
         guard let session, let identity, try await session.restoreIdentity() == identity else { throw AuthenticationError.notSignedIn }
         return session
     }
+    func translationProvider() async throws -> BackendTranslationProvider {
+        guard let session, let identity else { throw AuthenticationError.notSignedIn }
+        return BackendTranslationProvider(session: session, accountID: identity.userId)
+    }
     func disconnect() {
         guard !busy, let session else { return }
         busy = true; error = nil

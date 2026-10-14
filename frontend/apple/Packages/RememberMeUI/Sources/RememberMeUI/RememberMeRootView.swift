@@ -5,6 +5,7 @@ import RememberMeCore
 
 public struct RememberMeRootView: View {
     @StateObject private var model = VocabularyModel()
+    @ObservedObject private var connection = AccountConnectionModel.shared
     @State private var importing = false
     @State private var importMode: ImportMode = .firstMigration
     @State private var adding = false
@@ -134,6 +135,14 @@ public struct RememberMeRootView: View {
             if !Task.isCancelled { await model.reload() }
         }
         .onChange(of: model.selection) { Task { await model.select() } }
+        .task(id: "\(connection.identity?.origin ?? "")|\(connection.identity?.userId ?? "")|\(connection.identity?.deviceId ?? "")|\(model.lookup != nil)") {
+            guard let service = model.lookup else { return }
+            if let provider = try? await connection.translationProvider() {
+                await service.setChineseProvider(provider)
+            } else {
+                await service.setChineseProvider(nil)
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: .rememberMeVocabularyChanged).receive(on: RunLoop.main)) { _ in
             Task {
                 await model.reload()
@@ -226,6 +235,7 @@ struct DefinitionText: View {
             if let phonetic = definition["phonetic"]?.text { Text(verbatim: phonetic).foregroundStyle(.secondary) }
             if definition["source"]?.text == "wordnet" { Text("Offline English · WordNet").font(.caption).foregroundStyle(.secondary) }
             if let text = definition["translation"]?["text"]?.text { Text(verbatim: text) }
+            if definition["translation"]?["source"]?.text == "hermes" { Text("Online translation · Hermes").font(.caption).foregroundStyle(.secondary) }
             let meanings = definition["meanings"]?.items ?? []
             if meanings.isEmpty && definition["translation"] == nil { Text("No definition saved yet.").foregroundStyle(.secondary) }
             ForEach(Array(meanings.enumerated()), id: \.offset) { _, meaning in

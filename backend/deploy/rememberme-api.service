@@ -1,0 +1,27 @@
+[Unit]
+Description=Remember Me API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rememberme
+Group=rememberme
+WorkingDirectory=/opt/rememberme/current
+EnvironmentFile=/etc/rememberme/api.env
+ExecStart=/usr/bin/node /opt/rememberme/current/server.mjs
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+StateDirectory=rememberme
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/rememberme
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

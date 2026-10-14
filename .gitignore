@@ -37,6 +37,7 @@ frontend/apple/Configuration/Signing.local.xcconfig
 # Unified API local data, secret inputs and disposable output
 .wrangler/
 backend/.build/
+backend/data/
 .dev.vars*
 !.dev.vars.example
 .env*

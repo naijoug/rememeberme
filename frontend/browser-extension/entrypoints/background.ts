@@ -11,13 +11,18 @@ import {
   createContextMenu,
   handleContextMenuClick,
 } from '~/services/context-menu-handler';
-import { storageService } from '~/services/storage';
+import { cloudVocabulary as storageService } from '~/services/cloud-vocabulary';
+import { handleCloudMessage } from '~/services/cloud-messages';
 import { handleBackgroundRequest } from '~/services/background-handler';
 import { reconnectLocalPage, startLocalFeedback } from '~/services/local-feedback';
 import { contextMenuStatus } from '~/services/context-menu-status';
 import type { BackgroundResponse } from '~/types';
 
 export default defineBackground(() => {
+  const synchronize = () => void storageService.synchronize().catch(() => {});
+  browser.alarms.onAlarm.addListener(alarm => { if (alarm.name === 'rememberme-sync') synchronize(); });
+  browser.alarms.create('rememberme-sync', { periodInMinutes: 1 });
+  browser.runtime.onStartup.addListener(synchronize);
   if (import.meta.env.MODE === 'feedback' && import.meta.env.COMMAND === 'serve') {
     startLocalFeedback();
   }
@@ -31,7 +36,7 @@ export default defineBackground(() => {
 
   // Listen for context menu clicks
   browser.contextMenus.onClicked.addListener((info, tab) => {
-    handleContextMenuClick(
+    void handleContextMenuClick(
       {
         dictionaryService: { getDefinition: word => lookupForSave(word, dictionaryService, translationService) },
         storageService,
@@ -42,7 +47,7 @@ export default defineBackground(() => {
       },
       info,
       tab
-    );
+    ).finally(synchronize).catch(() => {});
   });
 
   // Listen for messages from content scripts
@@ -51,7 +56,19 @@ export default defineBackground(() => {
     _sender,
     sendResponse: (response: BackgroundResponse<unknown>) => void
   ) => {
-    handleBackgroundRequest(message, dictionaryService, storageService, translationService, phoneticsService)
+    (async () => {
+      const cloudMessage = typeof message === 'object' && message !== null && 'type' in message
+        && typeof message.type === 'string' && message.type.startsWith('CLOUD_');
+      // Account controls are available only to extension pages, never webpage scripts.
+      if (cloudMessage) {
+        if (!_sender.url?.startsWith(browser.runtime.getURL(''))) return { success: false, error: 'Account controls require an extension page.' } as const;
+        return (await handleCloudMessage(message))!;
+      }
+      const result = await handleBackgroundRequest(message, dictionaryService, storageService, translationService, phoneticsService);
+      if (result.success && typeof message === 'object' && message !== null && 'type' in message
+        && ['SAVE_WORD', 'DELETE_WORD', 'RESET_COUNT', 'IMPORT_DATA'].includes(String(message.type))) synchronize();
+      return result;
+    })()
       .then(response => sendResponse(response))
       .catch(error => {
         console.error('Background message handler error:', error);

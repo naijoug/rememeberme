@@ -1,6 +1,6 @@
 # Release preparation
 
-Initial target: Chrome Web Store, version **0.1.0**. No backend deployment is required. This folder contains prepared materials, not evidence of store approval or a published release.
+Initial target: Chrome Web Store, version **0.1.0**. Local lookup works without a backend; optional account/Hermes features require a verified backend deployment and registered extension identity. This folder contains prepared materials, not evidence of store approval or a published release.
 
 ## Materials
 
@@ -47,6 +47,7 @@ Run it after `npm run zip` or `npm run build`. It checks the initial 0.1.0 manif
 - Supply the publisher name, public support contact, and an accessible HTTPS privacy policy URL. Replace draft placeholders and date the policy when published.
 - Review prepared listing copy and privacy declarations against the actual submitted package. Decide distribution visibility in the dashboard; Unlisted is suitable for a link-based pilot but still requires review.
 - Review icon, promotional tile and actual extension screenshots. Use only disposable example words, contexts and URLs.
+- Verify the new identity/alarms permissions, IndexedDB upgrade retention, registered OAuth callbacks, live Hermes, account sync/privacy and recovery-copy behavior. The current materials are unpublished drafts; backend service retention must be specified before submission.
 - Complete and record the remaining installed-browser cases in [testing.md](../testing.md), especially native context menus, live dictionary connectivity, update behavior, and file access if advertised. Mocked APIs or intercepted dictionary fixtures are not live service verification.
 - Register the developer account and complete its account requirements. Upload the ZIP, fill listing/privacy/distribution/test instructions, and submit for review.
 

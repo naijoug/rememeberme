@@ -1,5 +1,7 @@
 import { ApiError, object, text, keys } from '../../contracts/api-v1';
 import { challenge, sha, token, cookie, providerJSON } from './http';
+import { timingSafeEqual } from 'node:crypto';
+import type { Bindings, Database } from './runtime';
 
 export interface Identity { userId: string; deviceId: string; timezone: string; syncContext: boolean; syncURLs: boolean; epoch: string; sourceRevision: number; sessionHash: string }
 interface SessionRow { user_id: string; device_id: string; timezone: string; sync_context: number; sync_urls: number; sync_epoch: string; source_revision: number }
@@ -8,7 +10,7 @@ interface FlowRow {
   provider_verifier: string; expires_at: number; claimed_by: string | null; code_hash: string | null;
   user_id: string | null; code_expires_at: number | null; redeemed_by: string | null;
 }
-export async function identity(request: Request, db: D1Database, now = Date.now()): Promise<Identity> {
+export async function identity(request: Request, db: Database, now = Date.now()): Promise<Identity> {
   const raw = request.headers.get('Authorization');
   if (!raw || !/^Bearer [A-Za-z0-9_-]{43}$/.test(raw)) throw new ApiError('UNAUTHENTICATED', 401);
   const sessionHash = await sha(raw.slice(7));
@@ -20,7 +22,7 @@ export async function identity(request: Request, db: D1Database, now = Date.now(
   return { userId: row.user_id, deviceId: row.device_id, timezone: row.timezone,
     syncContext: !!row.sync_context, syncURLs: !!row.sync_urls, epoch: row.sync_epoch, sourceRevision: row.source_revision, sessionHash };
 }
-export async function startNative(request: Request, env: Env): Promise<Response> {
+export async function startNative(request: Request, env: Bindings): Promise<Response> {
   if (!env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET) throw new ApiError('LOGIN_NOT_CONFIGURED', 503);
   const url = new URL(request.url), state = url.searchParams.get('state'), pkce = url.searchParams.get('challenge');
   const callback = url.searchParams.get('callback'), name = url.searchParams.get('deviceName') ?? 'Remember Me';
@@ -38,11 +40,11 @@ export async function startNative(request: Request, env: Env): Promise<Response>
     'Set-Cookie': `rm_auth_flow=${oauthState}; HttpOnly; Secure; SameSite=Lax; Path=/auth; Max-Age=600`,
     'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' } });
 }
-export async function githubCallback(request: Request, env: Env): Promise<Response> {
+export async function githubCallback(request: Request, env: Bindings): Promise<Response> {
   const url = new URL(request.url), state = url.searchParams.get('state'), code = url.searchParams.get('code'), now = Date.now();
   const browser = cookie(request, 'rm_auth_flow');
   if (!state || !code || !browser || !/^[A-Za-z0-9_-]{43}$/.test(state) || state.length !== browser.length
-    || !crypto.subtle.timingSafeEqual(new TextEncoder().encode(state), new TextEncoder().encode(browser))) throw new ApiError('LOGIN_STATE_REJECTED', 401);
+    || !timingSafeEqual(new TextEncoder().encode(state), new TextEncoder().encode(browser))) throw new ApiError('LOGIN_STATE_REJECTED', 401);
   const hash = await sha(state), nonce = token();
   const claim = await env.DB.prepare('UPDATE auth_flows SET claimed_by=? WHERE state_hash=? AND expires_at>? AND claimed_by IS NULL RETURNING *')
     .bind(nonce, hash, now).all<FlowRow>();
@@ -75,7 +77,7 @@ export async function githubCallback(request: Request, env: Env): Promise<Respon
 function credentials(now: number) {
   return { accessToken: token(), refreshToken: token(), accessExpiresAtMs: now + 900_000, refreshExpiresAtMs: now + 30 * 86_400_000 };
 }
-export async function exchangeNative(input: unknown, db: D1Database) {
+export async function exchangeNative(input: unknown, db: Database) {
   if (!object(input)) throw new ApiError('INVALID_REQUEST'); keys(input, ['code', 'verifier'], ['code', 'verifier']);
   if (!text(input.code, 100) || !/^[A-Za-z0-9_-]{43}$/.test(input.code) || !text(input.verifier, 128)
     || !/^[A-Za-z0-9._~-]{43,128}$/.test(input.verifier)) throw new ApiError('INVALID_REQUEST');
@@ -99,7 +101,7 @@ export async function exchangeNative(input: unknown, db: D1Database) {
   });
   return { ...pair, userId: flow.user_id, deviceId };
 }
-export async function refreshSession(input: unknown, db: D1Database) {
+export async function refreshSession(input: unknown, db: Database) {
   if (!object(input)) throw new ApiError('INVALID_REQUEST'); keys(input, ['refreshToken'], ['refreshToken']);
   if (!text(input.refreshToken, 100) || !/^[A-Za-z0-9_-]{43}$/.test(input.refreshToken)) throw new ApiError('INVALID_REQUEST');
   const now = Date.now(), hash = await sha(input.refreshToken);

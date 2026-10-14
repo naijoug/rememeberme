@@ -24,9 +24,9 @@ Open the toolbar popup to:
 - Delete a word after confirmation.
 - Export your vocabulary as JSON or import an existing backup.
 
-No account or API key is required. Your vocabulary is stored locally. Chinese translations use MyMemory with a local success cache; uncached words are sent to that service. English definitions use packaged WordNet first, with Free Dictionary API as fallback. The sources load independently, so one failure does not hide the other result. Online services have network and quota limits. Saved history and JSON backups include surrounding text and full source URLs; keep backups private when they contain sensitive information.
+Local vocabulary needs no account. Optional GitHub login connects your HTTPS backend for Hermes translation; account copy and sync enablement are explicit choices. Disconnected Chinese translation retains MyMemory. English definitions use packaged WordNet first, with Free Dictionary API as fallback. The sources load independently, so one failure does not hide the other result. Online services have network and quota limits. Saved history and JSON backups include surrounding text and full source URLs; keep backups private when they contain sensitive information.
 
-The extension supports individual English words, not phrases. It does not run on browser-internal or other restricted pages. Import merges counts and history, so importing the same backup repeatedly adds its entries again. There is no cloud sync.
+The extension supports individual English words, not phrases. It does not run on browser-internal or other restricted pages. Import merges counts and history, so importing the same backup repeatedly adds its entries again. Optional account sync uploads words and definition history while keeping outgoing contexts and source URLs local. Conflicts/restored servers pause synchronization and retain private recovery copies.
 
 ## 中文商店文案
 
@@ -40,7 +40,7 @@ The extension supports individual English words, not phrases. It does not run on
 
 在工具栏弹窗中查看词库和历史，按遗忘次数或最近更新时间排序，重置次数但保留历史，确认后删除单词，以及通过 JSON 导入、导出备份。
 
-无需账号或 API key。中文翻译使用 MyMemory，未命中本地翻译缓存时会发送选中的单词；英文释义优先使用内置 WordNet，缺失时使用 Free Dictionary API。中英结果分别加载，一方失败不会隐藏另一方的结果。在线服务有网络和额度限制。词库保存在浏览器本地，历史和导出文件包含上下文与完整来源网址，请妥善保管。仅支持单个英文单词，不支持浏览器内部或其他受限页面。没有云同步；重复导入同一备份会再次累加次数和历史。
+本地词库无需账号。可选 GitHub 登录连接 HTTPS 后端，中文翻译通过 Hermes；未连接时保留 MyMemory。复制词库和启用同步需要明确操作，插件上传单词与释义历史，不上传上下文和来源网址；英文释义优先使用内置 WordNet，缺失时使用 Free Dictionary API。中英结果分别加载，一方失败不会隐藏另一方的结果。在线服务有网络和额度限制。词库保存在浏览器本地，历史和导出文件包含上下文与完整来源网址，请妥善保管。仅支持单个英文单词，不支持浏览器内部或其他受限页面。可选账号同步遇到冲突或服务器恢复会暂停并保留恢复副本；重复导入同一备份会再次累加次数和历史。
 
 ## Privacy dashboard copy
 
@@ -48,13 +48,15 @@ The extension supports individual English words, not phrases. It does not run on
 
 | Permission | Justification |
 | --- | --- |
-| `storage` | Save words, definitions, forget counts, sentence contexts, source URLs and timestamps in local extension storage so users can review and back up their vocabulary. |
+| `storage` | Persist settings, translation caches, origin-scoped device credentials and the original local snapshot; vocabulary and its durable queue use IndexedDB. |
+| `identity` | Complete GitHub/backend PKCE login through the exact extension callback. |
+| `alarms` | Trigger bounded account sync attempts when explicitly enabled. |
 | `contextMenus` | Add a Remember Me action when text is selected, allowing the user to look up and save that word from the page's context menu. |
 | `<all_urls>` / content-script site access | Users read on arbitrary websites. Static content scripts detect selected English words and display a definition card, and capture sentence context and the page URL when the user saves. Host access also permits HTTPS dictionary requests to api.dictionaryapi.dev. The extension does not bulk-upload page content or browsing history. Browser restrictions still apply. |
 
 **Remote code:** No. Executable JavaScript and CSS are bundled in the extension. The external dictionary returns data parsed as JSON, not executable code. Submit the production ZIP; feedback builds use localhost development code and must never be submitted.
 
-**Data handling notes for the owner:** Do not declare that no information leaves the device. Uncached Chinese queries send the selected word to MyMemory even when English lookup hits WordNet; English misses or local file failures may send it to Free Dictionary API. Full saved contexts and URLs remain local unless exported/shared or a history link is opened. Read current dashboard categories against these facts before certifying checkboxes. Selected words are website content even if no vocabulary is saved. Local lookup caching, history, exports and provider connection metadata are described in the policy.
+**Data handling notes for the owner:** Do not declare that no information leaves the device. Connected Chinese queries send the selected word through backend/Hermes and its model provider; disconnected queries use MyMemory, including on WordNet hits; English misses or local file failures may send it to Free Dictionary API. Full saved contexts and URLs remain local unless exported/shared or a history link is opened. Read current dashboard categories against these facts before certifying checkboxes. Selected words are website content even if no vocabulary is saved. Account sync, device credentials, private recovery copies, local caching, history, exports and provider metadata are described in the policy. Do not submit this draft until actual backend retention and installed-client OAuth/privacy flows are verified.
 
 **Privacy policy URL:** pending public hosting of [privacy-policy.md](privacy-policy.md).
 

@@ -1,10 +1,10 @@
 name: Unified API
 on:
   pull_request:
-    paths: ['backend/**', 'contracts/**', '.github/workflows/backend.yml']
+    paths: ['backend/**', 'contracts/**', 'frontend/browser-extension/**', '.github/workflows/backend.yml']
   workflow_dispatch:
 jobs:
-  isolated-worker:
+  isolated-node-api:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -15,8 +15,13 @@ jobs:
         with:
           node-version-file: backend/.nvmrc
       - run: npx --yes --package=npm@11.21.0 npm ci
-      - run: npm rebuild esbuild workerd
-      - run: npm run types
+      - run: npm rebuild esbuild
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build
+      - name: Browser dependencies and checks
+        working-directory: frontend/browser-extension
+        run: npx --yes --package=npm@11.21.0 npm ci && npm run compile && npm test && npm run build
+      - run: npm run test:browser
+      - run: npm run package:deploy
+      - run: npm run test:release
