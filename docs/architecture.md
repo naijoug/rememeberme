@@ -4,7 +4,7 @@ Reviewed against the current working-tree source on 2026-10-14. This is an inven
 
 ## Current application boundary
 
-Remember Me has a WXT browser extension using Vue 3/TypeScript and native macOS/iOS clients using SwiftUI. The extension selects words from webpages, looks up definitions/translations and stores encounters locally. Native targets provide local vocabulary, lookup/editing, backup/restore, review and sharing-draft code; platform/device acceptance and the full release remain in progress. The Node/SQLite package implements shared authentication, conditional sync and private Hermes translation and is deployed on Tencent Lighthouse. A real authenticated synthetic HTTP request through the backend and isolated Hermes has passed. GitHub app credentials are configured and login-start checks pass, while public domain access is blocked pending Tencent filing; exact extension callbacks and completed hosted OAuth remain pending. Native Settings has explicit ownership/account-selection/sync paths; real Swift/HTTP-to-local-Node/SQLite integration passes with separate synthetic device processes. Hosted/signed-device acceptance and the full website remain unfinished. Current host evidence is in [Tencent deployment](../backend/docs/tencent-deployment.md).
+Remember Me has a WXT browser extension using Vue 3/TypeScript and native macOS/iOS clients using SwiftUI. The extension selects words from webpages, looks up definitions/translations and stores encounters locally. Native targets provide local vocabulary, lookup/editing, backup/restore, review and sharing-draft code; platform/device acceptance and the full release remain in progress. The Node/SQLite package implements shared authentication, conditional sync and private Hermes translation and is deployed on Tencent Lighthouse. A real authenticated synthetic HTTP request through the backend and isolated Hermes has passed. GitHub app credentials are configured and login-start checks pass, while canonical public domain access is blocked pending Tencent filing; temporary word-only HTTPS lookup has passed actual installed-Chrome acceptance; exact installed extension callbacks/CORS pass on the host; completed public OAuth remains blocked. Native Settings has explicit ownership/account-selection/sync paths; real Swift/HTTP-to-local-Node/SQLite integration passes with separate synthetic device processes. Hosted/signed-device acceptance and the full website remain unfinished. Current host evidence is in [Tencent deployment](../backend/docs/tencent-deployment.md).
 
 ```text
 rememberme/
@@ -57,17 +57,18 @@ flowchart TD
     API --> SQLite[SQLite WAL database]
     Background --> English[English lookup service]
     English --> WordNet[Packaged WordNet shards]
-    English -->|Miss or local failure| Online[Free Dictionary API]
+    English -->|Miss or local failure; no login| API
+    API --> Online[Free Dictionary API]
     Background --> Chinese[Chinese translation service]
     Chinese --> Cache[Browser local storage: translationCache]
-    Chinese -->|Connected| API
+    Chinese -->|Automatic; no login| API
     API -->|Private translation profile| Hermes[Hermes API]
-    Chinese -->|Disconnected| MyMemory[MyMemory API]
+    Hermes -->|Provider failure; server fallback| MyMemory[MyMemory API]
 ```
 
 The background is part of the installed extension. It owns the vocabulary queue and provider requests; it is not a remote server. The content script extracts the selected sentence and URL and mounts its Vue card inside a closed ShadowRoot. The toolbar popup uses the same UI components/styles for the vocabulary list and reading view. Both use runtime messages for vocabulary operations. The browser context-menu handler runs in the background and uses the same storage service.
 
-English and Chinese lookup are independent. A packaged English hit remains local, but Chinese requests use authenticated backend Hermes when connected and MyMemory when disconnected. An English miss or local-data failure sends the word to Free Dictionary API. Neither provider request includes the saved sentence, webpage URL or full vocabulary list. This extension is not fully offline.
+English and Chinese lookup are independent. Browser-packaged English hits stay local; all online browser lookup uses the fixed product service without a user API input or login. Public routes accept only the selected word and Chinese target, with exact CORS/IP limits. Server English uses the identical WordNet assets before Free Dictionary API; Chinese prefers Hermes with server-side MyMemory fallback. Account synchronization remains separately authenticated and opt-in. The automatic-lookup release is activated and passed host-local HTTPS acceptance; the canonical origin is still blocked by filing. A temporary lookup-only Cloudflare tunnel now serves browser lookup, with its internal origin separate from account sync. Actual Chrome selection passed. Native English/disconnected Chinese paths retain their existing providers. This extension is not fully offline.
 
 ## State ownership and compatibility
 
@@ -133,7 +134,7 @@ The latest recorded host checks on 2026-10-14 confirmed the deployed API and
 isolated Hermes services, live synthetic translation, server-side trusted HTTPS
 and configured GitHub app credentials. The recorded runtime is
 `20261014-80bfe7fb0c9d`; subsequent GitHub configuration/check tools were installed
-without replacing that runtime. This source update has not been deployed.
+without replacing that runtime. The later automatic-lookup release activation is documented in the current deployment record.
 
 Public access remains unaccepted: the last public checks failed, and the host
 record identifies Tencent filing as the blocker. The exact installed-extension
