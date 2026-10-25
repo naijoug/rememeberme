@@ -34,10 +34,20 @@ private actor VocabularyAPI: SyncAPI {
     private var offline = false
     private var sourcePrivacy = SyncPrivacy()
     private var sourceRevision = 0
+    private var reminder = ReminderDeviceSelection(deviceId: nil, revision: 0)
+    private var loseReminderReply = false
     private var lostRemoval: SourceRemovalRequest?
     private var loseRemovalReply = false
     var delay = 0.0
     var capabilities = ["history-order-v1", "history-version-v1", "explicit-lifecycles-v1"]
+    func moveReminderToAnotherDevice() { reminder = .init(deviceId: "other-device", revision: reminder.revision + 1) }
+    func setReminderReplyLoss(_ value: Bool) { loseReminderReply = value }
+    func selectReminderDevice(enabled: Bool, expectedRevision: Int) async throws -> ReminderDeviceSelection {
+        guard reminder.revision == expectedRevision else { throw ClientError.conflict("Reminder selection changed") }
+        reminder = .init(deviceId: enabled ? "synthetic-device" : nil, revision: reminder.revision + 1)
+        if loseReminderReply { throw URLError(.networkConnectionLost) }
+        return reminder
+    }
     func setDelay(_ value: Double) { delay = value }
     func setCapabilities(_ values: [String]) { capabilities = values }
     func setEpoch(_ value: String) { epoch = value }
@@ -64,6 +74,7 @@ private actor VocabularyAPI: SyncAPI {
             "userId": .string("synthetic-account"), "deviceId": .string("synthetic-device"), "epoch": .string(epoch),
             "timezone": .string("UTC"), "syncContext": .bool(sourcePrivacy.context), "syncURLs": .bool(sourcePrivacy.urls), "sourceRevision": .number(Double(sourceRevision)),
             "reviewDay": .string(try ReviewDate.localDay(Date().timeIntervalSince1970 * 1000, timeZoneID: "UTC")), "reviewAdmissionIds": .array([]),
+            "reminderDevice": .object(["deviceId": reminder.deviceId.map(JSONValue.string) ?? .null, "revision": .number(Double(reminder.revision))]),
             "displayName": .string("Synthetic account"), "syncCapabilities": .array(capabilities.map(JSONValue.string))])))
     }
     func page(snapshot: Bool, epoch: String, after: Int, boundary: Int?) async throws -> SyncCheckpointPage {
@@ -309,5 +320,24 @@ private actor SilentLookup: LookupTransport {
     #expect(model.error == nil); #expect(!model.sourceRemovalPending); #expect(model.sourcePrivacy == SyncPrivacy())
     #expect(try await model.repository.syncConfiguration()?.sourceRevision == pending.sourceRevision + 1)
     #expect(!model.syncEnabled); #expect(await api.submitted().isEmpty)
+    try await cleanupVocabulary(url, defaults, model)
+}
+
+@Test @MainActor func accountReminderSelectionHandlesHandoffAndLostReplyWithoutReclaiming() async throws {
+    let (url, defaults, _, _, model, api) = try await vocabularySetup()
+    await api.setCapabilities(["history-order-v1", "history-version-v1", "explicit-lifecycles-v1", "reminder-device-v1"])
+    model.openCloudVocabulary(); while model.busy { await Task.yield() }
+    #expect(model.reminderControlsAvailable)
+    #expect(model.reminderSelection == .init(deviceId: nil, revision: 0))
+    await api.setReminderReplyLoss(true)
+    model.chooseReminderDevice(enabled: true); while model.busy { await Task.yield() }
+    #expect(model.error != nil)
+    #expect(model.reminderSelection == .init(deviceId: "synthetic-device", revision: 1))
+    #expect(try await model.repository.syncConfiguration()?.reminderDevice == model.reminderSelection)
+    await api.moveReminderToAnotherDevice()
+    model.chooseReminderDevice(enabled: true); while model.busy { await Task.yield() }
+    #expect(model.reminderSelection == .init(deviceId: "other-device", revision: 2))
+    await model.refreshReminderSelection()
+    #expect(model.reminderSelection?.deviceId == "other-device")
     try await cleanupVocabulary(url, defaults, model)
 }

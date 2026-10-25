@@ -33,7 +33,7 @@ with tempfile.TemporaryDirectory(prefix="rememberme-clean-source-") as temporary
         mac.result()
         ios.result()
 
-    for scheme, dictionary in [("Mac", Path(temporary) / "mac-build/Build/Products/Debug/RememberMeMac.app/Contents/Resources/wordnet"),
+    for scheme, dictionary in [("Mac", Path(temporary) / "mac-build/Build/Products/Debug/RememberMe.app/Contents/Resources/wordnet"),
                               ("iOS", Path(temporary) / "ios-build/Build/Products/Debug-iphonesimulator/RememberMeiOS.app/wordnet")]:
         subprocess.run(["python3", "frontend/apple/scripts/verify-dictionary-assets.py", str(dictionary)], cwd=clean, check=True)
 

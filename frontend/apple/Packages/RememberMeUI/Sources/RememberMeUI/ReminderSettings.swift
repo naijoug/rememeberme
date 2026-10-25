@@ -3,6 +3,7 @@ import UserNotifications
 import RememberMeCore
 
 extension Notification.Name {
+    static let rememberMeReminderSelectionChanged = Notification.Name("RememberMeReminderSelectionChanged")
     static let rememberMeOpenReview = Notification.Name("RememberMeOpenReview")
 }
 
@@ -75,6 +76,17 @@ private final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate
             if scheduleID == token { center.removeDeliveredNotifications(withIdentifiers: delivered.map { $0.request.identifier }.filter { $0.hasPrefix("rememberme-review-") }) }
             return
         }
+        if repository.owner != "anonymous" {
+            guard let configuration = try? await repository.syncConfiguration(),
+                  configuration.capabilities?.contains("reminder-device-v1") == true,
+                  configuration.reminderDevice?.deviceId == configuration.deviceId else {
+                let delivered = await center.deliveredNotifications()
+                guard scheduleID == token else { return }
+                center.removeDeliveredNotifications(withIdentifiers: delivered.map { $0.request.identifier }.filter { $0.hasPrefix("rememberme-review-") })
+                message = "Choose this device for account reminders while online. Other selected devices cancel when they reconnect."
+                return
+            }
+        }
         let authorization = await center.notificationSettings().authorizationStatus
         guard scheduleID == token else { return }
         guard authorization == .authorized || authorization == .provisional else {
@@ -107,12 +119,13 @@ private final class ReminderDelegate: NSObject, UNUserNotificationCenterDelegate
 struct NativeSettingsView: View {
     let repository: LocalRepository
     var account: AccountVocabularyModel? = nil
+    var showsDone = true
     @ObservedObject private var reminders = ReminderSettings.shared
     @Environment(\.dismiss) private var dismiss
     @AppStorage("rememberme.appearance") private var appearance = "system"
     var body: some View {
         ScrollView { VStack(alignment: .leading, spacing: 20) {
-            HStack { Text("Settings").font(.title2); Spacer(); Button("Done") { dismiss() } }
+            HStack { Text("Settings").font(.title2); Spacer(); if showsDone { Button("Done") { dismiss() } } }
             Picker("Appearance", selection: $appearance) {
                 Text("System").tag("system"); Text("Light").tag("light"); Text("Dark").tag("dark")
             }
@@ -124,10 +137,45 @@ struct NativeSettingsView: View {
             if let message = reminders.message { Text(verbatim: message).font(.caption) }
             Divider()
             AccountConnectionView(model: .shared)
-            if let account { AccountVocabularyView(model: account) }
+            if let account { AccountVocabularyView(model: account); AccountReminderView(model: account) }
             Divider()
             Text("Vocabulary is saved on this device and uploaded to your chosen account only when you enable sync. WordNet English hits stay local. Connected Chinese lookup sends the word to your backend, Hermes and its configured model provider; without a connection it uses MyMemory. English misses use Free Dictionary API. Dictionary requests exclude saved context and URLs.").font(.callout)
             Text("Complete backups include contexts and full URLs and may contain sensitive information. Credentials and pending network requests are excluded.").font(.callout)
         }.padding(24) }.frame(minWidth: 300, idealWidth: 520)
+    }
+}
+
+struct AccountReminderView: View {
+    @ObservedObject var model: AccountVocabularyModel
+    var body: some View {
+        if !model.isAnonymous {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Account reminder device").font(.headline)
+                Text(model.reminderSelection?.deviceId == model.connection.identity?.deviceId && model.reminderSelection?.deviceId != nil
+                     ? "This device is selected. Enable local reminders above to receive notifications."
+                     : model.reminderSelection?.deviceId == nil ? "No reminder device selected." : "Another device is selected.")
+                Button("Use this device for account reminders") { model.chooseReminderDevice(enabled: true) }
+                    .disabled(model.busy || !model.reminderControlsAvailable || model.connection.identity == nil)
+                if model.reminderSelection?.deviceId != nil && model.reminderSelection?.deviceId == model.connection.identity?.deviceId {
+                    Button("Stop account reminders on this device") { model.chooseReminderDevice(enabled: false) }.disabled(model.busy)
+                }
+                Text("A change takes effect on other devices after they reconnect. Offline devices may still deliver previously scheduled reminders.").font(.caption)
+                if !model.reminderControlsAvailable { Text("Update the cloud service to support reminder device selection.").font(.caption) }
+            }.task { await model.refreshReminderSelection() }
+        }
+    }
+}
+
+/// Uses the same repository/account pool as all vocabulary windows.
+public struct RememberMeSettingsView: View {
+    @StateObject private var model = VocabularyModel()
+    public init() {}
+    public var body: some View {
+        Group {
+            if let repository = model.repository {
+                NativeSettingsView(repository: repository, account: model.account, showsDone: false)
+            } else if let error = model.error { Text(verbatim: error).padding() }
+            else { ProgressView("Opening settings…") }
+        }.frame(minWidth: 440, idealWidth: 520, minHeight: 450)
     }
 }

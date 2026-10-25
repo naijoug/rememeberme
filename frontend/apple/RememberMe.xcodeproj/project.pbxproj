@@ -61,12 +61,12 @@
 /* Begin PBXFileReference section */
 		11380EB911C7CEBA5F23EFFF /* RememberMeMacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RememberMeMacUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1238C6AAA3C78503547BA599 /* RememberMeShare.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RememberMeShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BA33F6343599E5796105994 /* RememberMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RememberMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E80E165C48F9E1287AE0525 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		37C6A99DDCC8A09898DE5A65 /* RememberMeiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RememberMeiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AABB293501D7C0A70C1B827 /* RememberMeiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RememberMeiOSApp.swift; sourceTree = "<group>"; };
 		B6B41E05C8C62FA7AB005A04 /* wordnet */ = {isa = PBXFileReference; lastKnownFileType = folder; name = wordnet; path = "../browser-extension/public/dictionary/wordnet"; sourceTree = SOURCE_ROOT; };
 		CAC906C9C9543A46BC4F0517 /* VocabularyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyUITests.swift; sourceTree = "<group>"; };
-		CC0F07707C885E04D67F868E /* RememberMeMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RememberMeMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3C8E64852EE3E9C64DF0A5E /* RememberMeiOSUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RememberMeiOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E00F71A5ED63E49BD96017B0 /* RememberMeCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RememberMeCore; path = Packages/RememberMeCore; sourceTree = SOURCE_ROOT; };
 		E8D0FB11E7A0225B02AF676A /* RememberMeUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RememberMeUI; path = Packages/RememberMeUI; sourceTree = SOURCE_ROOT; };
@@ -117,9 +117,9 @@
 		2C9F65D43AB78B97FE4FD98C /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				1BA33F6343599E5796105994 /* RememberMe.app */,
 				37C6A99DDCC8A09898DE5A65 /* RememberMeiOS.app */,
 				D3C8E64852EE3E9C64DF0A5E /* RememberMeiOSUITests.xctest */,
-				CC0F07707C885E04D67F868E /* RememberMeMac.app */,
 				11380EB911C7CEBA5F23EFFF /* RememberMeMacUITests.xctest */,
 				1238C6AAA3C78503547BA599 /* RememberMeShare.appex */,
 			);
@@ -268,7 +268,7 @@
 				CF1CCF0143EA4F0FB5CDF37D /* RememberMeUI */,
 			);
 			productName = RememberMeMac;
-			productReference = CC0F07707C885E04D67F868E /* RememberMeMac.app */;
+			productReference = 1BA33F6343599E5796105994 /* RememberMe.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -607,13 +607,14 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Configuration/Mac-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Remember Me";
+				INFOPLIST_KEY_CFBundleDisplayName = RememberMe;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rememberme.app.mac;
+				PRODUCT_NAME = RememberMe;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -694,13 +695,14 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Configuration/Mac-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Remember Me";
+				INFOPLIST_KEY_CFBundleDisplayName = RememberMe;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rememberme.app.mac;
+				PRODUCT_NAME = RememberMe;
 				SDKROOT = macosx;
 			};
 			name = Release;

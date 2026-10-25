@@ -36,6 +36,9 @@ import Combine
     @Published var importProgress = 0.0
     @Published var resolving = false
     @Published var restoreChoices: [String: RestoreChoice] = [:]
+    @Published var restoreFields: [String: Set<LocalRestoreField>] = [:]
+    @Published var legacyChoices: [String: LegacyImportSelection] = [:]
+    @Published var legacyCandidates: [String: [VocabularyEntry]] = [:]
     @Published var exportDocument: JSONDocument?
     @Published var exportName = "rememberme-backup"
     @Published var exportLosses: [String] = []
@@ -123,7 +126,7 @@ import Combine
         self.repository = repository; activeOwner = repository.owner
         let scope = scopeID
         selection = nil; detail = nil; entries = []; records = []; recordCount = 0
-        captures = []; preview = nil; previewBytes = nil; restoreChoices = [:]; exportDocument = nil
+        captures = []; preview = nil; previewBytes = nil; restoreChoices = [:]; restoreFields = [:]; legacyChoices = [:]; legacyCandidates = [:]; exportDocument = nil
         error = nil; hasMoreEntries = false
         await reload(); guard scopeID == scope else { return }
         await refreshCaptures(); guard scopeID == scope else { return }
@@ -232,6 +235,13 @@ import Combine
             guard scopeID == scope else { return }; try await preparePreview(bytes, mode: mode)
         } catch { if !(error is CancellationError) { self.error = error.localizedDescription } }
     }
+    func acceptDroppedFiles(_ urls: [URL]) -> Bool {
+        guard !busy, !resolving, preview == nil, accountRestorePreview == nil, repository != nil,
+              urls.count == 1, let url = urls.first, url.isFileURL, url.pathExtension.lowercased() == "json" else { return false }
+        busy = true
+        startPreviewFile(url, mode: .firstMigration, expectedOwner: activeOwner)
+        return true
+    }
     func startPreviewFile(_ url: URL, mode: ImportMode, expectedOwner: String) {
         previewTask?.cancel()
         previewTask = Task { await previewFile(url, mode: mode, expectedOwner: expectedOwner) }
@@ -244,9 +254,17 @@ import Combine
             accountBackupBytes = bytes; accountRestoreChoices = [:]
             try await reloadAccountBackupPreview(); return
         }
-        restoreChoices = [:]; previewBytes = bytes
+        restoreChoices = [:]; restoreFields = [:]; legacyChoices = [:]; legacyCandidates = [:]; previewBytes = bytes
         preview = try await (mode == .firstMigration || mode == .legacyMerge
             ? repository.previewLegacy(bytes, mode: mode) : repository.previewBackup(bytes, mode: mode))
+        if mode == .firstMigration, let preview {
+            let incoming = try LegacyCodec.decode(bytes)
+            for conflict in preview.conflicts {
+                if let entry = incoming.first(where: { $0.id == conflict.id }) {
+                    legacyCandidates[conflict.id] = try await repository.entries(matchingKey: entry.normalizedKey)
+                }
+            }
+        }
         importProgress = 0
     }
     func reloadAccountBackupPreview() async throws {
@@ -296,7 +314,13 @@ import Combine
     func resolvePreview() async {
         guard let bytes = previewBytes, let preview, let repository else { return }
         resolving = true; defer { resolving = false }
-        do { self.preview = try await repository.previewBackup(bytes, mode: preview.mode, choices: restoreChoices) }
+        do {
+            if preview.mode == .firstMigration {
+                self.preview = try await repository.previewLegacy(bytes, mode: preview.mode, choices: legacyChoices)
+            } else {
+                self.preview = try await repository.previewBackup(bytes, mode: preview.mode, choices: restoreChoices, fields: restoreFields)
+            }
+        }
         catch { self.error = error.localizedDescription }
     }
 

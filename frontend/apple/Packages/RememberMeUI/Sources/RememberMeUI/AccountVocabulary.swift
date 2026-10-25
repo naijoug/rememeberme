@@ -8,6 +8,7 @@ import RememberMeCore
         let key = url.standardizedFileURL.path
         if let value = models[key] { return value }
         let value = AccountVocabularyModel(url: url, anonymous: anonymous)
+        value.startNetworkMonitoring()
         models[key] = value
         Task { await value.restoreSelection() }
         return value
@@ -45,6 +46,27 @@ import RememberMeCore
     private var subscription: AnyCancellable?
     private var lastIdentity: ConnectedIdentity?
     private var restoring = false
+    private var networkMonitor: SyncNetworkMonitor?
+    private var foregroundScenes = Set<UUID>()
+    private var retryNeeded = false
+    private lazy var retryScheduler = ForegroundSyncScheduler { [weak self] in
+        guard let self, !self.isAnonymous, self.connection.identity != nil else { return false }
+        if self.busy { return true }
+        // Reminder preference reads are independent of vocabulary upload consent.
+        if !self.syncEnabled { await self.refreshReminderSelection(); return false }
+        self.synchronize(automatic: true)
+        await self.work?.value
+        return self.retryNeeded && self.syncEnabled && !self.epochConflict
+    }
+    func startNetworkMonitoring() {
+        guard networkMonitor == nil, !disposable else { return }
+        networkMonitor = SyncNetworkMonitor { [weak self] online in self?.retryScheduler.networkChanged(online: online) }
+    }
+    func setForeground(_ active: Bool, scene: UUID) {
+        if active { foregroundScenes.insert(scene) } else { foregroundScenes.remove(scene) }
+        retryScheduler.setActive(!foregroundScenes.isEmpty)
+        if foregroundScenes.isEmpty { cancel() }
+    }
     private var recoverySnapshot: ServerSnapshot?
     init(url: URL, anonymous: LocalRepository, connection: AccountConnectionModel = .shared, defaults: UserDefaults = .standard,
          opener: @escaping @MainActor (URL, String) async throws -> LocalRepository = { try await RepositoryPool.open($0, owner: $1) },
@@ -79,6 +101,7 @@ import RememberMeCore
     }
     private func connectionChanged(_ identity: ConnectedIdentity?) async {
         guard identity == connection.identity, identity != lastIdentity else { return }
+        retryScheduler.cancel(); retryNeeded = false
         if restoring { lastIdentity = identity; return }
         lastIdentity = identity; workID = UUID(); work?.cancel(); work = nil; busy = false; preview = nil; choices = [:]
         recoveryPreview = nil; recoverySnapshot = nil; recoveryChoices = [:]
@@ -105,6 +128,7 @@ import RememberMeCore
         }
     }
     func cancel() {
+        retryScheduler.cancel(); retryNeeded = false
         work?.cancel()
         if let coordinator { Task { await coordinator.cancel() } }
     }
@@ -179,11 +203,13 @@ import RememberMeCore
         }
     }
     private func select(_ repository: LocalRepository) {
+        retryScheduler.cancel(); retryNeeded = false
         self.repository = repository
         if !disposable { defaults.set(repository.owner, forKey: preferenceKey) }
     }
     func setSyncEnabled(_ enabled: Bool) {
         guard !isAnonymous else { return }
+        if !enabled { retryScheduler.cancel(); retryNeeded = false }
         launch {
             guard let identity = self.connection.identity, SyncConfiguration.owner(for: identity) == self.repository.owner,
                   let configuration = try await self.repository.syncConfiguration(), configuration.phase != "epochConflict" else { throw AuthenticationError.notSignedIn }
@@ -193,17 +219,64 @@ import RememberMeCore
             if !enabled, let coordinator = self.coordinator { await coordinator.cancel() }
             try await self.repository.configureSync(identity: identity, enabled: enabled, privacy: configuration.privacy)
             await self.refreshStatus()
+            if enabled { self.retryScheduler.trigger() }
         }
     }
-    func synchronize() {
-        guard !busy, !isAnonymous, let coordinator else { return }
+    func synchronize(automatic: Bool = false) {
+        guard !busy, !isAnonymous, syncEnabled, let coordinator else { return }
+        if !automatic { retryScheduler.cancel() }
         launch {
-            for _ in 0..<3 {
-                let result = try await coordinator.run()
+            self.retryNeeded = false
+            defer { if !automatic && self.retryNeeded { self.retryScheduler.trigger(immediate: false) } }
+            do {
+                for _ in 0..<3 {
+                    let result = try await coordinator.run()
+                    await self.refreshStatus()
+                    self.retryNeeded = result.needsContinuation
+                    let configuration = try await self.repository.syncConfiguration()
+                    if !result.needsContinuation || (result.submitted == 0 && result.historyPages == 0 && configuration?.phase != "snapshot" && configuration?.pullBoundary == nil) { break }
+                }
+            } catch {
+                self.retryNeeded = error is URLError
+                if let apiError = error as? APIRequestError, case .server(_, _, let retryable, _) = apiError { self.retryNeeded = retryable }
+                if error is CancellationError { self.retryNeeded = false }
                 await self.refreshStatus()
-                let configuration = try await self.repository.syncConfiguration()
-                if !result.needsContinuation || (result.submitted == 0 && result.historyPages == 0 && configuration?.phase != "snapshot" && configuration?.pullBoundary == nil) { break }
+                throw error
             }
+        }
+    }
+    @Published private(set) var reminderSelection: ReminderDeviceSelection?
+    @Published private(set) var reminderControlsAvailable = false
+    func refreshReminderSelection() async {
+        guard !isAnonymous, !busy, let configuration = try? await repository.syncConfiguration(), connection.identity == configuration.identity else { return }
+        let reader = repository
+        do {
+            let api = try await sourceAPI(for: configuration)
+            let account = try await api.account()
+            guard repository === reader, connection.identity == configuration.identity else { return }
+            try await reader.initializeSyncEpoch(account)
+            await refreshStatus()
+        } catch { /* Offline devices retain the last verified selection; foreground sync reports network failures. */ }
+    }
+    func chooseReminderDevice(enabled: Bool) {
+        guard !isAnonymous, reminderControlsAvailable, let selection = reminderSelection else { return }
+        launch {
+            let reader = self.repository
+            guard let configuration = try await reader.syncConfiguration(), self.connection.identity == configuration.identity else { throw AuthenticationError.superseded }
+            let api = try await self.sourceAPI(for: configuration)
+            do {
+                let result = try await api.selectReminderDevice(enabled: enabled, expectedRevision: selection.revision)
+                guard result.deviceId == (enabled ? configuration.deviceId : nil) else { throw APIRequestError.invalidResponse }
+            } catch {
+                // An unknown write outcome must not trigger an unconditional reclaim.
+                if let account = try? await api.account(), self.repository === reader, self.connection.identity == configuration.identity {
+                    try await reader.initializeSyncEpoch(account); await self.refreshStatus()
+                }
+                throw error
+            }
+            let account = try await api.account()
+            guard self.repository === reader, self.connection.identity == configuration.identity else { throw AuthenticationError.superseded }
+            try await reader.initializeSyncEpoch(account); await self.refreshStatus()
         }
     }
     func setSourcePrivacy(_ privacy: SyncPrivacy) {
@@ -298,10 +371,16 @@ import RememberMeCore
             }
             let incompleteHistory = try await reader.pendingSyncHistory() != nil
             guard repository === reader else { return }
+            let nextReminder = state.configuration?.reminderDevice
+            let changedReminder = reminderSelection != nextReminder
+            reminderSelection = nextReminder
+            reminderControlsAvailable = state.configuration?.capabilities?.contains("reminder-device-v1") == true
+            if changedReminder { NotificationCenter.default.post(name: .rememberMeReminderSelectionChanged, object: nil) }
             sourcePrivacy = state.configuration?.privacy ?? SyncPrivacy()
             sourceRemovalPending = state.configuration?.pendingSourceRemoval != nil
             sourceControlsAvailable = state.configuration?.capabilities?.contains("source-privacy-v1") == true
             syncEnabled = state.configuration?.enabled == true; epochConflict = state.configuration?.phase == "epochConflict"
+            if !syncEnabled || epochConflict { retryScheduler.cancel(); retryNeeded = false }
             pendingCount = state.pending
             accountName = state.configuration?.displayName ?? "Connected account"
             conflicts = current; conflictCopies = copies

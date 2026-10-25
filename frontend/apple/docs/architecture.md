@@ -20,6 +20,8 @@ Store models `RememberMeStore-v1` through `RememberMeStore-v4` are retained in s
 
 Definitions, review values/events, source aliases and permissive optional legacy fields are encoded in entry summaries. Encounter history is stored separately so list/detail-summary fetches do not load it. Review queues use indexed due/creation times and local-date admission checks. Separate review-event paging/query storage remains unfinished; sync protocol state now lives in SyncRecord.
 
+`ReviewModel` backs the shared Learn words/Today’s review sheet with bounded repository queues, a full database due count and a transient per-session answer summary. Answers require revelation and are serialized while saving/reloading; only a committed repository answer produces a summary/next-due receipt. Load identities reject superseded replies, changed entry values reset revelation, and failed loads clear stale cards for explicit retry. The repository’s review-v1/quota/outbox transaction remains the persistence and sync boundary; no new storage or wire format is introduced.
+
 An import candidate copies the current generation, including internal sync state, and applies chunks to its own rows. Normal queries and pending-operation reads only use the partition's active pointer. Publication checks the base revision and commits the pointer and published batch status in one save. Copy chunks save their cursor and cloned rows together, so failure/restart does not repeat rows. Staging uses an immutable private plan with a digest and keeps operation IDs through resume; old JSON plan files and older ready/cancelled receipts remain supported. Import receipt evolution is independent from the V4 sync model upgrade. The model must never recover a load failure by deleting a user's store.
 
 Large plans are encoded/decoded per entry as compact JSON lines, with a small header preserving operation order; encoding an entire duplicated history graph is avoided. The active store remains queryable between bounded copy/stage/cleanup chunks. Revision changes block stale tasks rather than rebase them implicitly. Startup exposes jobs but does not auto-publish. Discard marks the batch cancelled before bounded cleanup; interrupted cleanup remains discoverable. After successful publication, pruning recalculates protected generations in every transaction and retains active, latest recovery and in-flight data. Legacy receipts without enough recovery provenance prevent unsafe pruning.
@@ -63,10 +65,18 @@ shared lookup actor. It sends only the selected word and `zh-CN`; credentials st
 in Keychain and Hermes keys remain server-side. Cache namespaces include backend
 origin and account. Provider changes invalidate old in-flight results; packaged
 English lookup remains independent. Connected failures remain explicit and do
-not silently switch providers. Disconnected lookup retains MyMemory. Definitions
+not switch to a direct client provider. The backend may return server-side MyMemory fallback; both `hermes` and `mymemory` sources are accepted. Disconnected lookup retains MyMemory. Definitions
 accept both `hermes` and historical `mymemory`, with no rewrite of old histories.
 The default API runtime is Node/SQLite. The 2026-10-14 host record confirms its
 Tencent Lighthouse deployment, live isolated Hermes, server-side trusted HTTPS
 and configured GitHub credentials. Public access remains blocked by filing in
 that record; completed hosted OAuth and signed/installed-client synchronization
 remain unaccepted. See [current deployment status](../../../backend/docs/tencent-deployment.md).
+
+## Import choices, retry scheduling and account reminders
+
+Anonymous source resolution retains event IDs and records aliases when attaching history to a live entry. It creates a restore/history intent without adding the imported count; a separate lifecycle uses source-derived stable IDs. Resume still reads the frozen plan. Field-level anonymous backup choices affect selected snapshot fields only; immutable histories and tombstones retain their existing validation.
+
+`ForegroundSyncScheduler` owns only a bounded wakeup flight. `SyncCoordinator` and the repository continue to own request bytes, causal order, retry deadlines and commit state. `NWPathMonitor` is created only by the production account pool; tests inject events and sleep gates. Scene ownership prevents one disappearing window from cancelling another active window's retry eligibility.
+
+The API stores a nullable reminder device and monotonic revision per account. Selection uses authenticated-device identity plus compare-and-set; it does not change source privacy or vocabulary. Native configuration retains the latest verified selection. Settings selection and foreground account refresh work independently of vocabulary sending. Restore publication rechecks reminder selection to avoid publishing an older device preference from its candidate. Reminders are cancelled when a newly observed selection belongs elsewhere; disconnected devices cannot observe transfers immediately.

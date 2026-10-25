@@ -1,43 +1,26 @@
-# Staging and device acceptance
+# Hosted and device acceptance
 
-This is the execution checklist for a hosted/signed run. Local Worker tests, simulator tests and unsigned builds are separate evidence. No remote resources, OAuth registration, signing team or App Group have been created by this checkpoint.
+Updated 2026-10-16. The current API is Node/Hono/SQLite on Tencent; Cloudflare is an independent HTTPS/account gateway. Historical Worker/D1 tests do not establish the currently hosted service. No external deployment or signed-device acceptance was performed by the October 16 gap-closure work.
 
 ## Configuration inputs
 
-| Input | Where to configure | Current state |
-| --- | --- | --- |
-| Cloudflare account and separate staging D1 ID | `backend/wrangler.jsonc` → `env.staging.d1_databases` | Account not selected; ID absent |
-| HTTPS API origin | `env.staging.vars.PUBLIC_ORIGIN` and native Settings | `.invalid` placeholder |
-| GitHub OAuth App Client ID | `env.staging.vars.GITHUB_CLIENT_ID` | Empty |
-| OAuth callback | OAuth App registration | `${PUBLIC_ORIGIN}/auth/github/callback` |
-| OAuth Client Secret | Cloudflare `GITHUB_CLIENT_SECRET` secret | Not verified; never put it in source or chat |
-| Native callback | Server allowlist and both app Info.plists | `rememberme://auth/callback` |
-| Apple Team, all three Bundle IDs | Xcode / `project.yml` | Provisional IDs; no team selected |
-| Registered App Group | iOS app and Share Extension `REMEMBERME_APP_GROUP` | Provisional `group.com.rememberme.app` |
-| Target Mac and physical iPad/iPhone | Device model, OS, provisioning | Not supplied |
-
-`Configuration/Signing.local.xcconfig.example` documents the non-secret local signing settings. Keep app and extension entitlements on the same registered group. If bundle IDs or project settings change, regenerate the checked-in project with XcodeGen; do not edit the generated project alone.
+| Input | Current source / remaining observation |
+| --- | --- |
+| Canonical HTTPS origin and GitHub callback | Backend deployment configuration and `docs/verification/2026-10-15-account-domain.md`; recheck DNS/TLS/health rather than treating that historical pending state as live |
+| Account gateway identity | Follow `../../../../AGENTS.md` / workspace account routing and `../../../backend/docs/cloudflare-account-migration.md`; historical company resources are not deployment targets |
+| API runtime/database | Existing Node/Hono/SQLite service; a new D1 database is not required |
+| API capabilities | Current `/api/v1/health` and authenticated `/api/v1/me`; reminder device selection additionally needs `reminder-device-v1` |
+| Native callback | Exact `rememberme://auth/callback` allowlist and both app Info.plists |
+| Apple Team / Bundle IDs / App Group | `project.yml` and `Configuration/Signing.local.xcconfig.example`; provisional IDs are not registration evidence |
+| Target hardware | Record Mac and physical iPhone model, OS, build and provisioning; use iPad for additional layout checks |
 
 ## Hosted preparation
 
-After the public configuration is supplied, run from `backend` with `.nvmrc` Node and `npm ci`:
+Follow [backend deployment](../../../backend/docs/tencent-deployment.md) and the current personal-account gateway instructions. Use synthetic isolated accounts for acceptance. Confirm canonical HTTPS, health/capabilities, unauthenticated errors, exact callback and allowed client origins before starting native login.
 
-```sh
-node scripts/staging-preflight.mjs
-npx wrangler deploy --env staging --dry-run --outdir /tmp/rememberme-staging-review
-```
+The reminder feature adds SQLite migration `0006_reminder_device.sql`, the optional `/me.reminderDevice` response and `PUT /api/v1/reminder-device`. Apply migrations through the existing reviewed backend deployment procedure. This task prepared source and tested local migration, but did not deploy it. Older services without the capability keep account reminder selection unavailable; anonymous local reminders remain available. Existing clients ignore the additive response fields.
 
-The preflight checks public values only. It cannot establish secret availability, resource ownership or provisioned entitlements. Its current failure is expected for the placeholder configuration.
-
-For an authorized staging deployment, configure the secret through the interactive secret prompt and apply migrations 0001–0005 to the selected staging database before deployment:
-
-```sh
-npx wrangler secret put GITHUB_CLIENT_SECRET --env staging
-npx wrangler d1 migrations apply DB --env staging --remote
-npx wrangler deploy --env staging
-```
-
-These commands change external state and have not been run. Use the exact reviewed environment and resource IDs. The source privacy feature requires migration 0005 and the `source-privacy-v1` capability. Keep test accounts and vocabulary separate from production. Inspect public `/api/v1/health` over HTTPS, and verify TLS, JSON API errors and callback matching before signing in. Logs should contain request IDs/status only, with no request bodies or bearer/callback credentials.
+Account reminder selection is explicit and separate from local notification permission. Verify version conflicts and unknown write outcomes: another device's newer selection must not be overwritten by a stale retry. Device changes cancel previously scheduled account notifications once learned; offline devices may still deliver their earlier schedule.
 
 ## Real acceptance run
 
@@ -50,7 +33,7 @@ Record device/OS, app build, API version, actual outcome and evidence per row. P
 | Two devices | Same old JSON yields one baseline; independent offline encounters each increment once; reset/history independence, current-version conflict, tombstone, logout/switch and network loss/relaunch | Pending |
 | Privacy across devices | Both switches default off per device; enabling A cannot grant B local upload consent; backfill is confirmed; clearing disables account consent; re-enable then retry old requests remains blocked; new explicit backfill works | Pending |
 | Removal failure | Disconnect after server commit, close app, relaunch: sending remains paused; Retry removal completes same receipt without clearing later newly consented uploads | Pending |
-| Notifications | Permission grant/deny, selected vocabulary reminder rebuild, due delivery with app closed, launch to review, timezone/day change and cancellation | Pending |
+| Notifications | Account device claim/transfer/release, offline stale schedule, permission grant/deny, selected vocabulary reminder rebuild, due delivery with app closed, launch to review, timezone/day change and cancellation | Pending |
 | Large store on target hardware | Synthetic 10k words/100k events: backup restore and interruption, full cloud pull/history/upload, scroll/search p95, peak memory and OS termination/relaunch | Pending |
 | Native files | Actual import picker/export sheet, malformed input, complete-backup merge/replacement, cancel and current cloud-version recheck | Pending |
 | Accessibility | VoiceOver labels/order/modal isolation; Mac keyboard-only traversal, iPad external keyboard, Dynamic Type/accessibility sizes, portrait/landscape and Split View, light/dark contrast | Pending |

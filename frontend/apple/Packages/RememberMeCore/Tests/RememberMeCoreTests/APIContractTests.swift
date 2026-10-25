@@ -29,3 +29,16 @@ private let fixtures = URL(fileURLWithPath: #filePath).deletingLastPathComponent
     logical.observedRemoteVersion = 1
     #expect(try SyncProjection.makeWire(logical, privacy: SyncPrivacy(), base: nil) == [request])
 }
+
+@Test func reminderSelectionUsesSharedNullableDeviceAndRevisionFixture() throws {
+    let fixture = try JSONDecoder().decode(JSONValue.self, from: Data(contentsOf: fixtures.appendingPathComponent("reminder-device-v1.json")))
+    for key in ["response", "released"] {
+        let selection = try JSONDecoder().decode(ReminderDeviceSelection.self, from: JSONValue.encoder().encode(fixture[key]!))
+        try selection.validate()
+        #expect(selection.deviceId == fixture[key]?["deviceId"]?.text)
+    }
+    for invalid in fixture["invalidResponses"]!.items! {
+        let selection = try JSONDecoder().decode(ReminderDeviceSelection.self, from: JSONValue.encoder().encode(invalid))
+        #expect(throws: APIRequestError.self) { try selection.validate() }
+    }
+}

@@ -162,3 +162,27 @@ private actor TestTransport: LookupTransport {
     #expect(try await repository.entries().count == 1)
     try await repository.close()
 }
+
+@Test @MainActor func droppedJSONUsesConflictPreviewWithoutAutomaticallySaving() async throws {
+    let url = temporaryURL(); defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+    let repository = try LocalRepository(url: url)
+    try await repository.create(VocabularyEntry(id: "local", word: "synthetic", count: 9, timestamp: 1))
+    let model = VocabularyModel(repository: repository, lookup: LookupService(dictionaryDirectory: nil, transport: TestTransport()))
+    let source = url.deletingLastPathComponent().appendingPathComponent("fixture.json")
+    try LegacyCodec.export([VocabularyEntry(word: "synthetic", count: 2, timestamp: 1)]).write(to: source)
+    #expect(!model.acceptDroppedFiles([URL(string: "https://example.test/fixture.json")!]))
+    #expect(!model.acceptDroppedFiles([source, source]))
+    #expect(model.acceptDroppedFiles([source]))
+    while model.preview == nil && model.error == nil { await Task.yield() }
+    #expect(model.error == nil)
+    #expect(try await repository.entry("local")?.count == 9)
+    let conflict = try #require(model.preview?.conflicts.first)
+    #expect(model.legacyCandidates[conflict.id]?.first?.id == "local")
+    model.legacyChoices[conflict.id] = .init(.replaceFields, targetId: "local", fields: [.count])
+    await model.resolvePreview()
+    #expect(model.preview?.conflicts.isEmpty == true)
+    model.startImport(); while model.busy { await Task.yield() }
+    #expect(model.error == nil)
+    #expect(try await repository.entry("local")?.count == 2)
+    try await repository.close()
+}

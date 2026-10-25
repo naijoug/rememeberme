@@ -6,6 +6,7 @@ import RememberMeCore
 public struct RememberMeRootView: View {
     @StateObject private var model = VocabularyModel()
     @ObservedObject private var connection = AccountConnectionModel.shared
+    @State private var sceneID = UUID()
     @State private var importing = false
     @State private var importMode: ImportMode = .firstMigration
     @State private var adding = false
@@ -26,7 +27,16 @@ public struct RememberMeRootView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     public init() {}
-    public var body: some View {
+    private func foregroundRefresh() async {
+        if let repository = model.repository { await ReminderSettings.shared.reschedule(repository) }
+        await model.refreshCaptures()
+        await model.refreshInterruptedImports()
+        if let account = model.account {
+            await account.refreshReminderSelection()
+            account.synchronize(automatic: false)
+        }
+    }
+    private var navigation: some View {
         NavigationSplitView {
             List(selection: $model.selection) {
                 ForEach(model.entries) { entry in
@@ -50,10 +60,19 @@ public struct RememberMeRootView: View {
                             ? "Add a word or import an exported extension JSON." : "Try another search."))
                 }
             }
+            #if os(macOS)
+            .navigationTitle("RememberMe")
+            #else
             .navigationTitle("Remember Me")
+            #endif
             .searchable(text: $model.search, prompt: "Search vocabulary")
             .toolbar {
                 ToolbarItem { Button { addingOwner = model.activeOwner; adding = true } label: { Label("Add word", systemImage: "plus") }.disabled(model.repository == nil || model.busy) }
+                ToolbarItem {
+                    Button { reviewing = true } label: { Label("Learn words", systemImage: "rectangle.on.rectangle") }
+                        .keyboardShortcut("r", modifiers: [.command, .shift])
+                        .disabled(model.repository == nil || model.busy)
+                }
                 ToolbarItem {
                     Menu {
                         Button("Import extension snapshot") { importingOwner = model.activeOwner; importMode = .firstMigration; importing = true }
@@ -62,8 +81,12 @@ public struct RememberMeRootView: View {
                         Button("Replace anonymous vocabulary…") { replacing = true }.disabled(model.activeOwner != "anonymous")
                         Button("Interrupted imports (\(model.interruptedImports.count))") { showingImportRecovery = true }
                         Divider()
-                        Button("Today’s review") { reviewing = true }.keyboardShortcut("r", modifiers: [.command, .shift])
-                        Button("Settings") { settings = true }.keyboardShortcut(",", modifiers: [.command])
+                        Button("Today’s review") { reviewing = true }
+                        #if os(macOS)
+                        SettingsLink { Text("Settings") }
+                        #else
+                        Button("Settings") { settings = true }
+                        #endif
                         Button("Shared drafts (\(model.captures.count))") { showingCaptures = true }
                         Divider()
                         Button("Export complete backup") { Task { await model.prepareExport(legacy: false) } }
@@ -128,6 +151,12 @@ public struct RememberMeRootView: View {
                     description: Text("Add a word or import an exported extension JSON. No login is needed."))
             }
         }
+    }
+    private var managedNavigation: some View {
+        navigation
+        #if os(macOS)
+        .dropDestination(for: URL.self) { urls, _ in model.acceptDroppedFiles(urls) }
+        #endif
         .tint(Color(red: 0.35, green: 0.47, blue: 0.38))
         .preferredColorScheme(appearance == "light" ? .light : appearance == "dark" ? .dark : nil)
         .task(id: model.search) {
@@ -151,16 +180,21 @@ public struct RememberMeRootView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .rememberMeOpenReview).receive(on: RunLoop.main)) { _ in reviewing = true }
+        .onReceive(NotificationCenter.default.publisher(for: .rememberMeReminderSelectionChanged).receive(on: RunLoop.main)) { _ in
+            if let repository = model.repository { Task { await ReminderSettings.shared.reschedule(repository) } }
+        }
+        .onChange(of: model.account != nil) { model.account?.setForeground(scenePhase != .background, scene: sceneID) }
+        .onAppear { model.account?.setForeground(scenePhase != .background, scene: sceneID) }
+        .onDisappear { model.account?.setForeground(false, scene: sceneID) }
         .onChange(of: scenePhase) {
+            model.account?.setForeground(scenePhase != .background, scene: sceneID)
             if scenePhase == .active {
-                Task {
-                    if let repository = model.repository { await ReminderSettings.shared.reschedule(repository) }
-                    await model.refreshCaptures()
-                    await model.refreshInterruptedImports()
-                    model.account?.synchronize()
-                }
+                Task { await foregroundRefresh() }
             }
         }
+    }
+    private var presentedNavigation: some View {
+        managedNavigation
         .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
             switch result {
             case .success(let url): model.startPreviewFile(url, mode: importMode, expectedOwner: importingOwner)
@@ -193,6 +227,9 @@ public struct RememberMeRootView: View {
         .sheet(isPresented: $settings) {
             if let repository = model.repository { NativeSettingsView(repository: repository, account: model.account) }
         }
+    }
+    public var body: some View {
+        presentedNavigation
         .sheet(isPresented: $showingCaptures) { CaptureDraftsView(model: model) }
         .sheet(isPresented: $showingImportRecovery) { ImportRecoveryView(model: model) }
         .alert("Replace anonymous vocabulary?", isPresented: $replacing) {

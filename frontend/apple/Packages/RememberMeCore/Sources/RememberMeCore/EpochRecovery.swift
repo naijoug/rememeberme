@@ -56,6 +56,8 @@ extension LocalRepository {
             guard Set(snapshot.entries.map { $0.state.id }).count == snapshot.entries.count else { throw ClientError.invalidData("recovery lifecycle identity") }
             let clouds = Dictionary(uniqueKeysWithValues: snapshot.entries.map { ($0.state.id, $0) })
             var configuration = SyncConfiguration(identity: snapshot.identity, enabled: false, privacy: .init(context: previous.privacy.context && snapshot.account.syncContext, urls: previous.privacy.urls && snapshot.account.syncURLs))
+            try snapshot.account.reminderDevice?.validate()
+            configuration.reminderDevice = snapshot.account.reminderDevice
             configuration.sourceRevision = snapshot.account.sourceRevision
             configuration.epoch = snapshot.account.epoch; configuration.cursor = snapshot.boundary; configuration.phase = "ready"
             configuration.timeZoneID = snapshot.account.timezone; configuration.capabilities = snapshot.account.syncCapabilities; configuration.displayName = snapshot.account.displayName
@@ -226,6 +228,7 @@ extension LocalRepository {
               account.epoch == provenance.configuration.epoch, account.timezone == provenance.configuration.timeZoneID,
               account.reviewDay != nil, account.reviewAdmissionIds != nil,
               account.sourceRevision == provenance.configuration.sourceRevision,
+              account.reminderDevice == provenance.configuration.reminderDevice,
               account.syncContext == (provenance.serverPrivacy ?? provenance.configuration.privacy).context, account.syncURLs == (provenance.serverPrivacy ?? provenance.configuration.privacy).urls else { throw ClientError.stalePreview }
         let owner = owner, now = Date().timeIntervalSince1970 * 1000
         try transaction { context in

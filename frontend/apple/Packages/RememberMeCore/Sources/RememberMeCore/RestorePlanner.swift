@@ -1,6 +1,20 @@
 import Foundation
 
 public enum RestoreChoice: String, Sendable { case keepCurrent, useBackup }
+public enum LocalRestoreField: String, Codable, Sendable, CaseIterable {
+    case count, definition, notes, review, spelling, kind, captureOrigin, deletion
+}
+public enum LegacyImportAction: String, Sendable, CaseIterable {
+    case keepCurrent, associateHistory, replaceFields, newLifecycle
+}
+public struct LegacyImportSelection: Sendable, Equatable {
+    public var action: LegacyImportAction
+    public var targetId: String?
+    public var fields: Set<LocalRestoreField>
+    public init(_ action: LegacyImportAction, targetId: String? = nil, fields: Set<LocalRestoreField> = []) {
+        self.action = action; self.targetId = targetId; self.fields = fields
+    }
+}
 public enum BackupCodec {
     public static func decode(_ data: Data) throws -> Backup {
         let root = try JSONDecoder().decode(JSONValue.self, from: data)
@@ -51,7 +65,7 @@ public enum RestorePlanner {
         public var entries: [VocabularyEntry]
         public var conflicts: [RestoreConflict]
     }
-    public static func merge(current: [VocabularyEntry], backup: Backup, choices: [String: RestoreChoice] = [:]) throws -> Result {
+    public static func merge(current: [VocabularyEntry], backup: Backup, choices: [String: RestoreChoice] = [:], fields: [String: Set<LocalRestoreField>] = [:]) throws -> Result {
         var result = Result(entries: [], conflicts: [])
         let byID = Dictionary(uniqueKeysWithValues: current.map { ($0.id, $0) })
         for incoming in backup.entries + backup.tombstones {
@@ -102,10 +116,15 @@ public enum RestorePlanner {
             }
             var merged = existing
             if choices[incoming.id] == .useBackup {
-                merged.count = incoming.count; merged.definition = incoming.definition; merged.notes = incoming.notes
-                merged.kind = incoming.kind; merged.word = incoming.word; merged.normalizedKey = incoming.normalizedKey
-                merged.captureOrigin = incoming.captureOrigin
-                merged.review = incoming.review; merged.deleted = incoming.deleted
+                let selected = fields[incoming.id] ?? Set(LocalRestoreField.allCases)
+                if selected.contains(.count) { merged.count = incoming.count }
+                if selected.contains(.definition) { merged.definition = incoming.definition }
+                if selected.contains(.notes) { merged.notes = incoming.notes }
+                if selected.contains(.kind) { merged.kind = incoming.kind }
+                if selected.contains(.spelling) { merged.word = incoming.word; merged.normalizedKey = incoming.normalizedKey }
+                if selected.contains(.captureOrigin) { merged.captureOrigin = incoming.captureOrigin }
+                if selected.contains(.review) { merged.review = incoming.review }
+                if selected.contains(.deletion) { merged.deleted = incoming.deleted }
                 if merged.review != existing.review {
                     // A restored schedule is a new local state, never a restored CAS token.
                     merged.reviewRevision = try VersionToken.next(existing.effectiveReviewVersion)

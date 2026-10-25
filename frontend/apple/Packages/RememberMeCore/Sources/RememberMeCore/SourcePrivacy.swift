@@ -7,6 +7,9 @@ public struct SourceRemovalRequest: Codable, Sendable, Equatable {
 }
 
 extension SyncAPI {
+    public func selectReminderDevice(enabled: Bool, expectedRevision: Int) async throws -> ReminderDeviceSelection {
+        throw ClientError.conflict("Update the cloud service to choose a reminder device")
+    }
     public func setSourcePrivacy(_ privacy: SyncPrivacy, timezone: String) async throws {
         throw ClientError.conflict("This service does not support source privacy controls")
     }
@@ -15,6 +18,14 @@ extension SyncAPI {
     }
 }
 extension NativeSyncAPI {
+    public func selectReminderDevice(enabled: Bool, expectedRevision: Int) async throws -> ReminderDeviceSelection {
+        let body: JSONValue = .object(["enabled": .bool(enabled), "expectedRevision": .number(Double(expectedRevision))])
+        let data = try await client.request(path: "/api/v1/reminder-device", method: "PUT", body: JSONValue.encoder().encode(body))
+        let selection = try JSONDecoder().decode(ReminderDeviceSelection.self, from: data)
+        try selection.validate()
+        guard selection.revision == expectedRevision + 1 else { throw APIRequestError.invalidResponse }
+        return selection
+    }
     public func setSourcePrivacy(_ privacy: SyncPrivacy, timezone: String) async throws {
         let body: JSONValue = .object(["timezone": .string(timezone), "syncContext": .bool(privacy.context), "syncURLs": .bool(privacy.urls)])
         _ = try await client.request(path: "/api/v1/preferences", method: "PUT", body: JSONValue.encoder().encode(body))

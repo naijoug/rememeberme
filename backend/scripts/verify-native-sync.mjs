@@ -117,6 +117,11 @@ try {
   const translation = await command('A', 'translation');
   assert.deepEqual(translation, { source: 'hermes', target: 'zh-CN', text: '合成释义' });
   console.log('Real Swift authenticated translation -> HTTP -> Node/Hermes adapter passed with synthetic inference.');
+  assert.deepEqual(await command('A', 'reminder-claim'), { deviceId: 'synthetic-device-A', revision: 1 });
+  assert.deepEqual(await command('B', 'reminder-claim'), { deviceId: 'synthetic-device-B', revision: 2 });
+  assert.deepEqual(await command('A', 'reminder-state'), { deviceId: 'synthetic-device-B', revision: 2 });
+  assert.deepEqual(await command('B', 'reminder-release'), { deviceId: null, revision: 3 });
+  console.log('Real Swift reminder selection, cross-device handoff, fresh-process read and release passed.');
   const entry = report => report.entries.find(value => value.word === 'synthetic-shared');
   const a = await command('A', 'prepare'), b = await command('B', 'prepare');
   assert.equal(entry(a).id, entry(b).id); assert.equal(entry(a).count, 1.5); assert.equal(entry(b).count, 1.5);

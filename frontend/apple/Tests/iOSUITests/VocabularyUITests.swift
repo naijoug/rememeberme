@@ -58,7 +58,8 @@ final class VocabularyUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Literal synthetic meaning"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Records (1)"].exists)
         if app.buttons["BackButton"].exists { app.buttons["BackButton"].tap() }
-        app.buttons["Options"].tap(); app.buttons["Today’s review"].tap()
+        XCTAssertTrue(app.buttons["Learn words"].waitForExistence(timeout: 5))
+        app.buttons["Learn words"].tap()
         let reveal = app.buttons["Reveal meaning"]
         XCTAssertTrue(reveal.waitForExistence(timeout: 5))
         let beforeReveal = XCTAttachment(screenshot: app.screenshot())
@@ -69,6 +70,7 @@ final class VocabularyUITests: XCTestCase {
         afterReveal.name = "iPad review after reveal"; afterReveal.lifetime = .keepAlways; add(afterReveal)
         app.buttons["Remembered"].tap()
         XCTAssertTrue(app.staticTexts["Review complete for now"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "This session: 1 answered")).firstMatch.exists)
         let completed = XCTAttachment(screenshot: app.screenshot())
         completed.name = "iPad review completed"; completed.lifetime = .keepAlways; add(completed)
         app.buttons["Done"].tap()

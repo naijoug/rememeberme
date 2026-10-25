@@ -59,6 +59,15 @@ enum NativeSyncProbe {
         // avoiding sleeps while preserving actual HTTP/authentication clocks.
         let coordinator = SyncCoordinator(repository: repository, api: api, clock: { Date().timeIntervalSince1970 * 1000 + 120_000 })
         let action = arguments[1]
+        if ["reminder-claim", "reminder-release", "reminder-state"].contains(action) {
+            let account = try await api.account()
+            guard let current = account.reminderDevice else { throw ClientError.invalidData("reminder capability missing") }
+            let selection = action == "reminder-state" ? current : try await api.selectReminderDevice(enabled: action == "reminder-claim", expectedRevision: current.revision)
+            let report: JSONValue = .object(["deviceId": selection.deviceId.map(JSONValue.string) ?? .null, "revision": .number(Double(selection.revision))])
+            print(String(decoding: try JSONValue.encoder().encode(report), as: UTF8.self))
+            try await repository.close()
+            return
+        }
         if ["source-enable", "source-backfill", "source-clear", "source-clear-loss-exit", "source-freeze"].contains(action) {
             guard let configuration = try await repository.syncConfiguration(), let epoch = configuration.epoch else { throw ClientError.invalidData("source fixture sync configuration") }
             if action == "source-enable" {

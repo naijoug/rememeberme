@@ -100,6 +100,17 @@ public actor LocalRepository {
         }
     }
 
+    public func entries(matchingKey key: String) throws -> [VocabularyEntry] {
+        let owner = owner
+        return try context.performAndWait {
+            let meta = try Self.partition(context, owner)
+            let request = NSFetchRequest<NSManagedObject>(entityName: "Entry")
+            request.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND keyBytes == %@ AND deleted == NO", owner, Self.generation(meta), LegacyCodec.keyBytes(key))
+            request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+            return try context.fetch(request).map { try Self.readEntry($0, context: context, includeHistory: false) }
+        }
+    }
+
     public func entry(_ id: String, includeHistory: Bool = true) throws -> VocabularyEntry? {
         let owner = owner
         return try context.performAndWait {
@@ -382,7 +393,7 @@ public actor LocalRepository {
         }
     }
 
-    public func previewLegacy(_ data: Data, mode: ImportMode) throws -> ImportPreview {
+    public func previewLegacy(_ data: Data, mode: ImportMode, choices: [String: LegacyImportSelection] = [:]) throws -> ImportPreview {
         context.performAndWait { context.reset() }
         guard mode == .firstMigration || mode == .legacyMerge else { throw ClientError.invalidData("legacy mode") }
         let batchID = UUID().uuidString
@@ -404,15 +415,58 @@ public actor LocalRepository {
                 let request = NSFetchRequest<NSManagedObject>(entityName: "Entry")
                 request.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND keyBytes == %@ AND deleted == NO",
                     owner, generation, LegacyCodec.keyBytes(incoming.normalizedKey))
-                request.fetchLimit = 2
                 let matches = hasExistingEntries ? try context.fetch(request) : []
+                let selection = choices[incoming.id]
+                let sameID = hasExistingEntries ? try Self.row(context, "Entry", owner, generation, incoming.id) : nil
+                if mode == .firstMigration, !matches.isEmpty || sameID != nil {
+                    guard owner == "anonymous" else { throw ClientError.conflict("Resolve imported sources in the anonymous vocabulary before account ownership review") }
+                    guard let selection else {
+                        preview.conflicts.append(RestoreConflict(id: incoming.id, reason: "Different source for \(incoming.word)", canUseBackup: false)); continue
+                    }
+                    if selection.action == .keepCurrent { continue }
+                    if selection.action == .newLifecycle {
+                        // Source-derived IDs are stable across previews/devices; a confirmed plan freezes them for resume.
+                        result = try Self.separateLifecycle(incoming, batch: "legacy-source:" + source)
+                        if let prior = try Self.row(context, "Entry", owner, generation, result.id) {
+                            preview.conflicts.append(RestoreConflict(id: incoming.id, reason: prior.value(forKey: "deleted") as? Bool == true ? "Separate lifecycle was deleted" : "Separate lifecycle already exists", canUseBackup: false)); continue
+                        }
+                        result.sourceDigest = nil
+                        preview.entries.append(result)
+                        preview.operations += try Self.ownershipCreation(result, owner: owner, batch: "legacy-source:" + source, duplicates: true)
+                        continue
+                    }
+                    let selectedRows = matches.filter { selection.targetId == nil || ($0.value(forKey: "id") as? String) == selection.targetId }
+                    guard selectedRows.count == 1, let row = selectedRows.first else {
+                        preview.conflicts.append(RestoreConflict(id: incoming.id, reason: "Select one live entry for \(incoming.word)", canUseBackup: false)); continue
+                    }
+                    let peer = try Self.readEntry(row, context: context, includeHistory: true)
+                    result = peer
+                    let eventRequest = NSFetchRequest<NSManagedObject>(entityName: "Encounter")
+                    eventRequest.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND id IN %@", owner, generation, incoming.history.map(\.id))
+                    let eventRows = incoming.history.isEmpty ? [] : try context.fetch(eventRequest)
+                    let eventOwners = Dictionary(grouping: eventRows.compactMap { row -> (String, String)? in
+                        guard let id = row.value(forKey: "id") as? String, let entry = row.value(forKey: "entryID") as? String else { return nil }; return (id, entry)
+                    }, by: { $0.0 })
+                    do { result.history = try Self.ownershipHistory(peer.history, incoming: incoming.history, entryId: peer.id, existing: eventOwners) }
+                    catch { preview.conflicts.append(RestoreConflict(id: incoming.id, reason: error.localizedDescription, canUseBackup: false)); continue }
+                    if selection.action == .replaceFields {
+                        if selection.fields.contains(.count) { result.count = incoming.count }
+                        if selection.fields.contains(.definition) { result.definition = incoming.definition }
+                    }
+                    result.aliases = Array(Set(peer.aliases + [incoming.id] + incoming.aliases)).sorted()
+                    result.version = try VersionToken.next(peer.version)
+                    result.updatedAt = Date().timeIntervalSince1970 * 1000
+                    preview.entries.append(result)
+                    var projection = result
+                    projection.legacyFields = [:]
+                    projection.history = projection.history.map { var event = $0; event.context = ""; event.url = ""; event.legacyFields = [:]; return event }
+                    preview.operations.append(PendingOperation(id: batchID + ":associate:" + incoming.id, owner: owner, entryID: peer.id,
+                        kind: selection.action == .replaceFields ? "restore" : "associateHistory", baseVersion: peer.version, payload: try Self.json(projection)))
+                    continue
+                }
                 guard matches.count <= 1 else { throw ClientError.conflict("multiple entries need source resolution") }
                 let peer = try matches.first.map { try Self.readEntry($0, context: context, includeHistory: mode == .legacyMerge) }
                 if let peer {
-                    if mode == .firstMigration {
-                        preview.conflicts.append(RestoreConflict(id: incoming.id, reason: "Different source for \(incoming.word)", canUseBackup: false))
-                        continue
-                    }
                     let count = (peer.count ?? 0) + incoming.count!
                     guard count.isFinite else { throw ClientError.invalidNumber }
                     result = peer; result.count = count
@@ -444,7 +498,7 @@ public actor LocalRepository {
     }
 
     public func previewBackup(_ data: Data, mode: ImportMode,
-                              choices: [String: RestoreChoice] = [:]) throws -> ImportPreview {
+                              choices: [String: RestoreChoice] = [:], fields: [String: Set<LocalRestoreField>] = [:]) throws -> ImportPreview {
         context.performAndWait { context.reset() }
         guard owner == "anonymous" else { throw ClientError.accountRequired }
         guard mode == .restoreMerge || mode == .replaceAnonymous else { throw ClientError.invalidData("backup mode") }
@@ -470,7 +524,7 @@ public actor LocalRepository {
                     return restored
                 }
                 result = RestorePlanner.Result(entries: entries, conflicts: [])
-            } else { result = try RestorePlanner.merge(current: current, backup: incoming, choices: choices) }
+            } else { result = try RestorePlanner.merge(current: current, backup: incoming, choices: choices, fields: fields) }
             let operations = try result.entries.map { entry in
                 var projection = entry; projection.legacyFields = [:]; projection.captureOrigin = nil
                 projection.history = projection.history.map { var event = $0; event.context = ""; event.url = ""; event.legacyFields = [:]; return event }

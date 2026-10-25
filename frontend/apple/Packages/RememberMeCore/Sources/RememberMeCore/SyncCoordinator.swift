@@ -5,6 +5,7 @@ public protocol SyncAPI: Sendable {
     func account() async throws -> APIAccountIdentity
     func page(snapshot: Bool, epoch: String, after: Int, boundary: Int?) async throws -> SyncCheckpointPage
     func history(entryId: String, after: String, version: Int, epoch: String) async throws -> APIHistoryPage
+    func selectReminderDevice(enabled: Bool, expectedRevision: Int) async throws -> ReminderDeviceSelection
     func setSourcePrivacy(_ privacy: SyncPrivacy, timezone: String) async throws
     func clearSources(_ request: SourceRemovalRequest, epoch: String) async throws -> Int
     func submit(_ wire: SyncWireItem) async throws -> APIOperationResult

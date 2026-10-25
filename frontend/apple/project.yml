@@ -16,6 +16,7 @@ settings:
     REMEMBERME_APP_GROUP: group.com.rememberme.app
 targets:
   RememberMeMac:
+    productName: RememberMe
     type: application
     platform: macOS
     deploymentTarget: '14.0'
@@ -29,12 +30,13 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rememberme.app.mac
+        PRODUCT_NAME: RememberMe
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Configuration/Mac-Info.plist
         ENABLE_APP_SANDBOX: YES
         ENABLE_USER_SELECTED_FILES: readwrite
         ENABLE_OUTGOING_NETWORK_CONNECTIONS: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Remember Me
+        INFOPLIST_KEY_CFBundleDisplayName: RememberMe
   RememberMeiOS:
     type: application
     platform: iOS

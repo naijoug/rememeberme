@@ -68,10 +68,17 @@ private actor TranslationAPI: APITransport {
 @Test func backendChineseProviderRejectsMalformedAndUnexpectedSources() async throws {
     let origin = try APIOrigin("https://api.example.test")
     for body in ["{}", "{\"translation\":{\"text\":\"\",\"target\":\"zh-CN\",\"source\":\"hermes\"}}",
-                 "{\"translation\":{\"text\":\"合成释义\",\"target\":\"zh-CN\",\"source\":\"mymemory\"}}"] {
+                 "{\"translation\":{\"text\":\"合成释义\",\"target\":\"zh-CN\",\"source\":\"unknown\"}}"] {
         let transport = TranslationAPI(body)
         let session = NativeSession(origin: origin, vault: TranslationVault(), transport: transport, clock: { 1000 })
         let provider = BackendTranslationProvider(session: session, accountID: "synthetic-user", transport: transport)
         await #expect(throws: LookupError.self) { try await provider.translate("synthetic") }
     }
+}
+
+@Test func backendChineseProviderAcceptsServerMyMemoryFallback() async throws {
+    let transport = TranslationAPI("{\"translation\":{\"text\":\"备用释义\",\"target\":\"zh-CN\",\"source\":\"mymemory\"}}")
+    let session = NativeSession(origin: try APIOrigin("https://api.example.test"), vault: TranslationVault(), transport: transport, clock: { 1000 })
+    let provider = BackendTranslationProvider(session: session, accountID: "synthetic-user", transport: transport)
+    #expect(try await provider.translate("synthetic")["source"]?.text == "mymemory")
 }

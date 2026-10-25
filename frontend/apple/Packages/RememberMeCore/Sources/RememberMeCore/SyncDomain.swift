@@ -1,5 +1,13 @@
 import Foundation
 
+public struct ReminderDeviceSelection: Codable, Sendable, Equatable {
+    public var deviceId: String?
+    public var revision: Int
+    public init(deviceId: String?, revision: Int) { self.deviceId = deviceId; self.revision = revision }
+    public func validate() throws {
+        guard VersionToken.valid(revision), deviceId == nil || !(deviceId?.isEmpty ?? true) else { throw APIRequestError.invalidResponse }
+    }
+}
 public struct SyncPrivacy: Codable, Sendable, Equatable {
     public var context: Bool
     public var urls: Bool
@@ -21,6 +29,7 @@ public struct SyncConfiguration: Codable, Sendable, Equatable {
     public var serverReviewAdmissionIds: [String]? = nil
     public var snapshotCursor: Int
     public var phase: String
+    public var reminderDevice: ReminderDeviceSelection? = nil
     public var sourceRevision: Int? = nil
     public var pendingSourceRemoval: SourceRemovalRequest? = nil
     public var privacy: SyncPrivacy
@@ -83,6 +92,7 @@ public struct APIAccountIdentity: Codable, Sendable, Equatable {
     public var timezone: String
     public var syncContext: Bool
     public var syncURLs: Bool
+    public var reminderDevice: ReminderDeviceSelection? = nil
     public var sourceRevision: Int? = nil
     public var syncCapabilities: [String]? = nil
     public var displayName: String? = nil

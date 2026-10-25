@@ -116,6 +116,8 @@ extension LocalRepository {
                 return
             }
             guard account.sourceRevision == nil || VersionToken.valid(account.sourceRevision!) else { throw ClientError.invalidData("source revision") }
+            try account.reminderDevice?.validate()
+            configuration.reminderDevice = account.reminderDevice
             configuration.sourceRevision = account.sourceRevision
             configuration.privacy.context = configuration.privacy.context && account.syncContext
             configuration.privacy.urls = configuration.privacy.urls && account.syncURLs
