@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OfflineDictionary, wordnetShard } from './offline-dictionary';
 import { DictionaryService } from './dictionary';
+vi.mock('./backend-client', () => ({ backendClient: { current: async () => undefined } }));
 
 const fetchMock = vi.fn<typeof fetch>();
 let offline: OfflineDictionary;

@@ -2,7 +2,7 @@
 
 Select an English word to see a Chinese translation and English definitions, and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-Vocabulary is stored locally in account-partitioned IndexedDB. The first upgrade retains the old `local:words` snapshot and its original JSON; it does not upload vocabulary. The Cloud account panel connects your HTTPS backend for authenticated Hermes translation. Open/copy account vocabulary and enable sync explicitly to upload words/definition history; this extension excludes contexts and source URLs from outgoing sync. Disconnected Chinese lookup retains MyMemory. Packaged English hits stay local, and misses use Free Dictionary API. Legacy JSON exports retain local sources and remain compatible. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
+Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. Online English lookup uses server WordNet plus Free Dictionary API fallback; Chinese uses server Hermes with MyMemory fallback. Only the selected word is sent. While domain filing is pending, lookup uses an internal temporary HTTPS endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. Optional **More options → Account & sync** enables GitHub login and explicit account copy/sync; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
 
 ## Setup
 
@@ -42,13 +42,13 @@ For ongoing usage and feedback, follow [automatic local updates](docs/local-feed
 ```sh
 npm run build          # Chrome/Edge MV3
 npm run build:firefox  # Firefox MV2
-npm run zip            # Chrome distribution archive
+npm run zip            # Chrome archive from isolated staging + extracted resource checks
 npm run zip:firefox    # Firefox distribution archive
 ```
 
 For a production build:
 
-- Chrome/Edge: open `chrome://extensions/` or `edge://extensions/`, enable Developer mode, select Load unpacked, and choose this package's `.output/chrome-mv3/`.
+- Chrome/Edge: open `chrome://extensions/` or `edge://extensions/`, enable Developer mode, select Load unpacked, and choose this package's `.output/chrome-mv3/`. For a formal ZIP, extract it to a stable installation directory instead. Keep that same directory for updates; do not load the disposable `.output/release-staging/` build directory. The `zip` command deliberately leaves `.output/chrome-mv3/` unchanged to avoid deleting files from an active unpacked installation.
 - Firefox: open `about:debugging#/runtime/this-firefox`, select Load Temporary Add-on, and choose this package's `.output/firefox-mv2/manifest.json`.
 
 Development output paths can differ from production paths. Use the path printed by `npm run dev` or `npm run dev:firefox`; do not load stale output from the repository root. Zip commands print the actual artifact name under this package's `.output/`; names include package/version/browser information.
@@ -83,7 +83,7 @@ Generated `.wxt/` and `.output/` directories are disposable. Static reference de
 - Extension does not load: build the intended target, select its package-local output, and inspect browser extension errors.
 - Selection does not work: verify the extension is enabled, the page allows content scripts, and the dictionary request is reachable. Browser-internal pages are restricted.
 - Do not test selection on `chrome://extensions/` or another browser-internal page. Use a normal webpage. The extension's error page contains past errors; displaying one there does not mean that page was where it originated.
-- Dictionary timeout or connection failure: packaged words such as `serendipity` should show **Offline dictionary · WordNet** without reaching the external provider. If these still time out, confirm the latest build is active and includes `dictionary/wordnet/`. Words outside the local index require the online fallback; changing its timeout cannot repair an unavailable network route. See [coverage and recovery](docs/dictionary.md).
+- Dictionary timeout or connection failure: packaged words such as `serendipity` should show **Dictionary · WordNet** without reaching the external provider. If these still time out, confirm the latest build is active and includes `dictionary/wordnet/`. Words outside the local index require the online fallback; changing its timeout cannot repair an unavailable network route. See [coverage and recovery](docs/dictionary.md).
 - Page connection/notification failure: refresh the source webpage and retry. Local feedback builds also try one targeted script reinjection. If page notifications are unavailable, hover the toolbar icon's `!` badge for the error; `OK` means a save completed despite the missing page notification.
 - Hot reload does not update: reload the extension or restart the development command.
 
@@ -95,23 +95,17 @@ Light mode uses paper-white and sage; dark mode uses the user's selected Codex-i
 
 The page card has one bookmark-and-count button beside the word. Each click adds one to the count and saves a separate encounter with the selected sentence, click time and source URL. The card stays open for repeated recording. Expand **Records**, then a numbered entry to inspect its context, exact time and full source link; the vocabulary reading view shows the same records. Long contents scroll underneath the header. Use Escape, the close button or a deliberate outside click to dismiss the card.
 
-For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual English lookups use the packaged dictionary first; Chinese translations and English fallbacks require their external services.
+For UI feedback with disposable data, open the [component preview](http://127.0.0.1:3937/preview/paper-sage.html) while the local service is running. This preview does not read or write your vocabulary. Actual English lookups use the packaged dictionary first; uncached Chinese translations and English fallbacks require a reachable product service; users do not configure its address or sign in.
 
 Phonetic transcriptions appear beneath a word as **🇺🇸 IPA 🔊 / 🇬🇧 IPA 🔊** in the page card and vocabulary reading view. The interface uses small inline SVG US/UK flags, with country labels for screen readers and accent tooltips. IPA comes from a separate packaged dictionary, so supported words such as `trick` have it even when WordNet supplies the definition. Click the small speaker icon beside an accent to play it, or click again to stop. Playback uses matching browser/device voices, preferring local voices; missing voices show system guidance. No encounter is saved by playing audio. See [pronunciation sources, coverage and privacy](docs/dictionary.md#pronunciation).
 
 ## Backend connection
 
 Build/deploy the API using [Tencent deployment](../../backend/docs/tencent-deployment.md).
-Register the actual installed extension's identity callback and origin in the
-server allowlists before GitHub login. Cloud account controls are restricted to
-extension pages. Login alone enables backend translation, while vocabulary upload
-requires opening/copying the account and enabling sync separately.
+The Chrome release uses a fixed HTTPS lookup gateway backed by a dedicated persistent Cloudflare tunnel to the Tencent API. The service address is internal in `config/backend.ts`; users neither enter nor see it. English WordNet hits stay local; misses and Chinese translation call word-only routes without credentials. The gateway's HTTPS hostname survives connector restarts. `/privacy` hosts the published policy.
 
-Conflicts and server restores pause sending and retain the local overlay/frozen
-queue. The confirmed recovery action archives ALL pending account changes before
-downloading the cloud vocabulary. Recovery copies can be exported as legacy JSON;
-exports omit private request/checkpoint metadata, and importing them adds counts
-again. Sync stays paused after recovery. The macOS client provides richer field
-merge and separate-copy choices. The Tencent backend and live isolated Hermes
-passed server acceptance; public domain access is blocked pending Tencent filing.
-Installed-client OAuth and real cross-client sync remain unverified.
+The release disables account login/synchronization and its identity/alarms permissions. Existing local vocabulary and retained account/recovery partitions are preserved; release startup selects the anonymous local partition. Hosted OAuth/cross-client sync remains a separate unaccepted feature while canonical-domain filing is pending. The publisher is naijoug, with GitHub Issues support. See [Chrome release materials](docs/release/README.md) and dated verification for actual acceptance results and external store steps.
+
+## 0.1.1 popup/package recovery
+
+The release popup bounds stalled background reads at ten seconds with retry guidance; writes are never retried automatically. Production HTML/JS/CSS are bundled and work without the local feedback server. Release ZIP generation uses an isolated staging directory and fails if any linked resource is missing. [Upgrade acceptance](docs/verification/2026-10-15-011-package-upgrade.md) verifies the old formal ZIP upgraded at the same disposable install path/profile, offline popup reloads, data retention and process restart. This does not claim Chrome Web Store delivery or protection against externally deleting an installation folder.

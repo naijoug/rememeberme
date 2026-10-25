@@ -11,13 +11,23 @@ const api = vi.hoisted(() => {
 });
 vi.mock('wxt/utils/storage', () => ({ storage: api.storage }));
 const fetchMock = vi.fn<typeof fetch>();
-const response = (text = '精选') => new Response(JSON.stringify({ responseStatus: 200, responseData: { translatedText: text } }));
 
 beforeEach(() => { vi.resetAllMocks(); api.values.clear(); vi.stubGlobal('fetch', fetchMock); });
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('Chinese translation (mock provider and disposable cache)', () => {
-  it('uses authenticated Hermes with provider/account-separated cache and sends only word/target', async () => {
+  it('accepts server-side MyMemory fallback and retries the server after its shorter cache expires', async () => {
+    const request = vi.fn().mockResolvedValueOnce({ translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } })
+      .mockResolvedValue({ translation: { text: '人工释义', target: 'zh-CN', source: 'hermes' } });
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as BackendClient;
+    const service = new TranslationService(backend);
+    expect((await service.translate('curated')).source).toBe('mymemory');
+    await service.translate('curated'); expect(request).toHaveBeenCalledTimes(1);
+    vi.useFakeTimers(); await vi.advanceTimersByTimeAsync(3_600_001);
+    expect((await service.translate('curated')).source).toBe('hermes');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+  it('uses public Hermes with persisted cache and sends only word/target', async () => {
     const connection: Connection = { origin: 'https://api.example.test', credentials: {
       userId: 'synthetic-user', deviceId: 'synthetic-device', accessToken: '', refreshToken: '',
       accessExpiresAtMs: 0, refreshExpiresAtMs: 0,
@@ -26,13 +36,11 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
     const backend = { current: async () => connection, request } as unknown as BackendClient;
     const first = new TranslationService(backend);
     expect((await first.translate(' Curated ')).source).toBe('hermes');
-    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/lookup/translation', 'POST', { word: 'curated', target: 'zh-CN' });
+    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/public/lookup/translation', 'POST', { word: 'curated', target: 'zh-CN' });
     await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalled());
     expect((await new TranslationService(backend).translate('curated')).source).toBe('hermes');
     expect(request).toHaveBeenCalledTimes(1);
-    connection.credentials.userId = 'another-user';
-    await first.translate('curated');
-    expect(request).toHaveBeenCalledTimes(2); expect(fetchMock).not.toHaveBeenCalled();
+    expect(request).toHaveBeenCalledTimes(1); expect(fetchMock).not.toHaveBeenCalled();
   });
   it('keeps connected backend failures explicit without caching or switching to MyMemory', async () => {
     const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'synthetic-user' } }),
@@ -40,72 +48,42 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
     await expect(new TranslationService(backend).translate('curated')).rejects.toThrow('TRANSLATION_NOT_CONFIGURED');
     expect(fetchMock).not.toHaveBeenCalled(); expect(api.storage.setItem).not.toHaveBeenCalled();
   });
-  it('sends only the selected word and language pair without an API key', async () => {
-    fetchMock.mockResolvedValue(response());
-    const result = await new TranslationService().translate(' Curated ');
-    expect(result).toEqual({ text: '精选', target: 'zh-CN', source: 'mymemory' });
-    const [url, options] = fetchMock.mock.calls[0];
-    const parsed = new URL(String(url));
-    expect(parsed.origin + parsed.pathname).toBe('https://api.mymemory.translated.net/get');
-    expect([...parsed.searchParams]).toEqual([['q', 'curated'], ['langpair', 'en|zh-CN']]);
-    expect(options).toMatchObject({ credentials: 'omit', referrerPolicy: 'no-referrer' });
-  });
-
-  it('coalesces requests and reuses a persisted cache after a new service instance', async () => {
-    fetchMock.mockResolvedValue(response());
+  it('uses the built-in service without login and retains legacy anonymous cached translations', async () => {
+    api.values.set('local:translationCache', { curated: { text: '旧值', timestamp: Date.now() - 2 * 86_400_000 } });
+    fetchMock.mockResolvedValue(new Response(JSON.stringify({ translation: { text: '合成释义', target: 'zh-CN', source: 'hermes' } }), { headers: { 'Content-Type': 'application/json' } }));
     const service = new TranslationService();
-    const [first, second] = await Promise.all([service.translate('curated'), service.translate('CURATED')]);
-    expect(first).toEqual(second);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalled());
-    expect(await new TranslationService().translate('curated')).toEqual(first);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(api.values.has('local:words')).toBe(false);
+    expect(await service.translate('curated')).toEqual({ text: '旧值', target: 'zh-CN', source: 'mymemory' });
+    const [a, b] = await Promise.all([service.translate('synthetic'), service.translate('SYNTHETIC')]);
+    expect(a.source).toBe('hermes'); expect(a).toEqual(b); expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls[0][0]).toBe('https://lookup.couplelabs.cn/api/v1/public/lookup/translation');
+    const init = fetchMock.mock.calls[0][1]!;
+    expect(init.credentials).toBe('omit'); expect(init.headers).not.toHaveProperty('Authorization');
+    expect(JSON.parse(String(init.body))).toEqual({ word: 'synthetic', target: 'zh-CN' });
+    expect(api.values.has('local:backendConnection')).toBe(false); expect(api.values.has('local:words')).toBe(false);
   });
 
-  it('refreshes expired cache entries', async () => {
-    api.values.set('local:translationCache', { curated: { text: '旧值', timestamp: Date.now() - 8 * 86400000 } });
-    fetchMock.mockResolvedValue(response());
-    expect((await new TranslationService().translate('curated')).text).toBe('精选');
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-  });
-
-  it.each([403, 429])('reports provider quota status %s without caching the error', async status => {
-    fetchMock.mockResolvedValue(new Response(JSON.stringify({ responseStatus: status, responseData: { translatedText: 'QUOTA EXHAUSTED' } })));
-    await expect(new TranslationService().translate('curated')).rejects.toThrow(/quota/i);
-    expect(api.storage.setItem).not.toHaveBeenCalled();
-  });
-
-  it('reports HTTP 429 and permits a later fresh request', async () => {
-    fetchMock.mockResolvedValueOnce(new Response('', { status: 429 })).mockResolvedValueOnce(response());
-    const service = new TranslationService();
-    await expect(service.translate('curated')).rejects.toThrow(/quota/i);
-    expect((await service.translate('curated')).text).toBe('精选');
-  });
-
-  it('rejects unchanged text and malformed results', async () => {
-    fetchMock.mockResolvedValueOnce(response('curated')).mockResolvedValueOnce(response(''));
-    const service = new TranslationService();
-    await expect(service.translate('curated')).rejects.toThrow(/No Chinese translation/);
-    await expect(service.translate('curated')).rejects.toThrow(/No Chinese translation/);
-  });
-
-  it.each([false, true])('bounds stalled requests including response bodies (%s)', async bodyOnly => {
+  it('bounds stalled backend requests and permits later retries', async () => {
     vi.useFakeTimers();
-    fetchMock.mockImplementation(() => bodyOnly ? Promise.resolve({ ok: true, status: 200, json: () => new Promise(() => {}) } as Response) : new Promise(() => {}));
-    const assertion = expect(new TranslationService().translate('curated')).rejects.toThrow(/timed out/);
-    await vi.advanceTimersByTimeAsync(TRANSLATION_TIMEOUT_MS);
-    await assertion;
-    expect(fetchMock.mock.calls[0][1]?.signal?.aborted).toBe(true);
+    const request = vi.fn().mockImplementation(() => new Promise(() => {}));
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as BackendClient;
+    const service = new TranslationService(backend);
+    const assertion = expect(service.translate('curated')).rejects.toThrow(/timed out/);
+    await vi.advanceTimersByTimeAsync(TRANSLATION_TIMEOUT_MS); await assertion;
+    request.mockResolvedValue({ translation: { text: '合成释义', source: 'hermes', target: 'zh-CN' } });
+    expect((await service.translate('curated')).source).toBe('hermes');
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('works when cache storage fails and rejects phrase input', async () => {
+  it('rejects malformed server results and phrases, and works when cache storage fails', async () => {
     api.storage.getItem.mockRejectedValue(new Error('Storage unavailable'));
     api.storage.setItem.mockRejectedValue(new Error('Storage unavailable'));
-    fetchMock.mockResolvedValue(response());
-    const service = new TranslationService();
-    expect((await service.translate('curated')).text).toBe('精选');
+    const request = vi.fn().mockResolvedValueOnce({ translation: { text: '', source: 'hermes', target: 'zh-CN' } })
+      .mockResolvedValue({ translation: { text: '合成释义', source: 'hermes', target: 'zh-CN' } });
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as BackendClient;
+    const service = new TranslationService(backend);
+    await expect(service.translate('curated')).rejects.toThrow(/invalid translation/);
+    expect((await service.translate('curated')).text).toBe('合成释义');
     await expect(service.translate('two words')).rejects.toThrow(/one English word/);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(request).toHaveBeenCalledTimes(2); expect(fetchMock).not.toHaveBeenCalled();
   });
 });

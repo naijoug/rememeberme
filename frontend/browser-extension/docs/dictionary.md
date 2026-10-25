@@ -1,18 +1,14 @@
 # Dictionary sources and offline coverage
 
-Chinese translation and English definitions are independent. English lookup first reads packaged WordNet 3.1; a hit needs no external **English dictionary** request and is marked **Offline dictionary · WordNet**. English misses or unavailable local assets use Free Dictionary API. In parallel, Chinese translation checks a separate local cache, then uses authenticated backend Hermes when connected, or MyMemory when disconnected. Thus even a word present in WordNet can make a Chinese translation request. The extension is not completely offline.
+Chinese translation and English definitions are independent. English reads packaged WordNet first; local hits need no external English request. WordNet attribution uses **Dictionary · WordNet** for both local and service copies; it does not imply that every lookup stayed offline. Local misses or broken assets call the built-in service. Chinese uses a separate success cache, then the same service. No user API input or login is required. The plugin never directly calls third-party dictionary/translation providers. It is not completely offline.
 
-## Chinese translation and API keys
+## Service dictionary, translation and API keys
 
-MyMemory's public `GET https://api.mymemory.translated.net/get?q=<word>&langpair=en|zh-CN` endpoint needs no key. Only the word and language pair are sent: no sentence, page URL, email, key, or vocabulary list. Successful responses are marked **Online translation · MyMemory**. Translation is word-level and may not capture the meaning of the surrounding sentence.
+Public `POST /api/v1/public/lookup/dictionary` sends `{ word }`; the fixed gateway tries [Free Dictionary API](https://dictionaryapi.dev/) through Cloudflare egress and recovers through the Tencent server’s checked-in WordNet/fallback chain. Private/direct API calls retain the server’s local-first order. Public `POST /api/v1/public/lookup/translation` sends `{ word, target: 'zh-CN' }`; the server prefers isolated Hermes and falls back to MyMemory for timeout/busy/upstream errors. Profile-isolation failures remain explicit. The built-in service origin is internal configuration, not a UI input. Routes are word-only, origin-checked, limited to 30 requests/minute per IP and eight distinct concurrent requests per service. Public requests omit credentials and never enable sync or create an account.
 
-The [official API specification](https://mymemory.translated.net/doc/spec.php) makes `key` optional. The [usage limits](https://mymemory.translated.net/doc/usagelimits.php), checked 2026-09-30, specify 5,000 characters/day for anonymous use. Availability, quality and quota are not guaranteed. Exhausted quota, timeout, unavailable service and missing translation have distinct messages; no account or quota upgrade is configured automatically.
+Hermes/model credentials remain server-side. [MyMemory](https://mymemory.translated.net/doc/spec.php) receives only the word and language pair. No page sentence/URL, email or vocabulary list is sent to lookup providers. Cloudflare carries that same selected word through HTTPS and a persistent private connection. The server shares its anonymous MyMemory quota; `MYMEMORY_ENABLED=false` disables fallback. Returned text displays actual **Hermes**, **MyMemory**, **WordNet** or **Free Dictionary** attribution. Translation is word-level; quality and availability are not guaranteed.
 
-`local:translationCache` holds up to 500 successful word translations. Entries are reused for seven days, expired entries are ignored and removed on subsequent successful cache writes. The cache is separate from vocabulary and exports; closing the card does not add vocabulary, but a successful translation can still be cached. Concurrent requests for one normalized word are coalesced. Client network/body reads have a fifteen-second deadline; the content-side message deadline is seventeen seconds. Connected refresh adds its own transport deadline. Hermes itself has a twelve-second backend deadline. Cache keys separate providers, origins and accounts.
-
-Results render as each source finishes. The bookmark counter records the selected word, sentence, click time and URL even if neither source has succeeded, using an empty definition snapshot in that case. Saving stores results available when clicked, not future responses. The separate context-menu shortcut waits for both bounded sources and retains whichever succeed; if both fail, that shortcut still reports failure without saving.
-
-Chinese translation display converts recognized bracketed numbered pinyin to tone marks: `哄騙 哄骗 [hong3 pian4]` appears as `哄騙 哄骗 [hǒng piàn]`. Tones 1–4 receive diacritics; 0/5 are neutral, and `v` / `u:` normalize to `ü`. The formatter checks complete syllable annotations following Chinese text, preserving ordinary numbers, non-pinyin brackets, malformed annotations and already marked pinyin. Traditional/simplified wording is retained. This is display formatting only: provider text, existing translation caches, saved snapshots and exported JSON are unchanged. Both the page card and saved-word reading view use it, including older cached/imported entries; text is still rendered literally with Vue interpolation.
+`local:translationCache` retains at most 500 successes, separate from vocabulary/exports. Public service keys use `public:v1:`; old anonymous entries remain usable, while account caches are not reused as public results. Hermes/legacy anonymous successes last seven days; service MyMemory fallback lasts one hour so later requests retry Hermes. Chinese has a twenty-second service/client deadline and twenty-two-second UI deadline. Server provider budgets are twelve seconds for Hermes plus four seconds for MyMemory. English keeps an 8.5-second service/ten-second UI budget; the server local dictionary has 1.5 seconds and the remote fallback six seconds.
 
 ## Pronunciation
 
@@ -50,14 +46,10 @@ The optional `Definition.translation` object contains `{ text, target: 'zh-CN', 
 
 Word-form matching uses the regular detachment rules documented in [WordNet Morphy](https://wordnet.princeton.edu/documentation/morphy7wn), with exact-match priority. It is not a complete implementation of Morphy's exception handling. Saving keeps the user's selected word as the vocabulary key and the matched headword in `definition.word`; counts and history are not silently merged into a different word.
 
-## Connected Hermes provider
+## Deployment status
 
-Cloud login routes Chinese requests through the authenticated business API.
-Hermes runs privately on the server with an isolated translation profile, no
-tools/MCP/memory, and a server-side bearer key. Only the selected word and target
-are accepted by the business endpoint; webpage context/URL and vocabulary are
-excluded. The model provider configured in Hermes may receive that word. Hermes
-results display their own attribution; existing MyMemory snapshots are unchanged.
-An unavailable/misconfigured connected backend reports an error and does not
-silently send the word to a different provider. The live server API is not yet
-configured/verified. See [deployment status](../../../backend/docs/tencent-deployment.md).
+The fixed custom HTTPS lookup gateway routes through a dedicated named QUIC tunnel to Tencent’s loopback-only bridge. It admits only health/word lookup and public privacy paths, never accounts or sync. Restarting the connector keeps the public hostname. Workers VPC is beta; this is not a guaranteed service SLA.
+
+Live fixed-gateway Hermes translation and Free Dictionary results have been observed. Tencent egress to Free Dictionary timed out, so the public gateway uses Cloudflare egress first for English misses. Uncovered inflections such as curated may still return provider failure; Chinese remains independent. WordNet and IPA coverage remain bounded. Canonical Tencent account access is blocked by pending filing, and login/sync is disabled in the Chrome release.
+
+See [release materials](release/README.md) for package acceptance and [deployment](../../../backend/docs/tencent-deployment.md) for host recovery. Historical [temporary lookup verification](verification/2026-10-14-temporary-lookup.md) describes the replaced random Quick Tunnel, not the current configuration.

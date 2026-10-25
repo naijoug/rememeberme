@@ -1,0 +1,18 @@
+{
+  "version": "0.1.1",
+  "previousVersion": "0.1.0",
+  "extensionId": "aifdnhpllgjgbhgjlfifpcelcljneaik",
+  "browser": "151.0.7922.34",
+  "archiveSha256": "37c0326dc2a85c8d1f9a545a3a2c0aa00a525d88f485cb1372a59de20b50c269",
+  "checks": [
+    "Actual 0.1.0 ZIP -> new ZIP update retained the same extension ID/profile, fractional count, literal context and full source URL.",
+    "Three popup reopenings with all network offline succeeded using packaged HTML/JS/CSS and local vocabulary.",
+    "A controlled stalled GET_WORDS transport in the real packaged popup produced a bounded retry error; a new genuine popup recovered with unchanged vocabulary.",
+    "Chrome action.openPopup opened the real browser action popup offline after update/restart; packaged UI and retained vocabulary rendered.",
+    "Process restart offline retained vocabulary; no extension-file request failures or localhost dependency were observed."
+  ],
+  "limits": [
+    "Completed replacement while the test browser is closed; Chrome Web Store signing/update delivery is external.",
+    "The stalled-read case deliberately substitutes a test transport; it does not claim a real backend outage."
+  ]
+}

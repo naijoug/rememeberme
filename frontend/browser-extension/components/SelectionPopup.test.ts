@@ -36,8 +36,30 @@ describe('lookup card interaction and viewport fit', () => {
     expect(host.querySelector('.record-count')?.textContent).toBe('3');
     expect(host.querySelector('.btn-remember, .btn-forget')).toBeNull();
     host.querySelector<HTMLButtonElement>('.lookup-header .record-button')!.click();
-    host.querySelector<HTMLButtonElement>('.lookup-header .record-button')!.click();
-    expect(record).toHaveBeenCalledTimes(2);
+    expect(record).toHaveBeenCalledTimes(1);
+  });
+
+  it('replaces the bookmark with a spinner, then a solid bookmark and blocks repeat actions', async () => {
+    const record = vi.fn();
+    const state = reactive({ saving: false, recorded: false });
+    host = document.createElement('div'); document.body.appendChild(host);
+    app = createApp({ render: () => h(SelectionPopup, { word: 'apple', visible: true, position: { x: 200, y: 20 }, ...state, onRecord: record }) });
+    app.mount(host); await nextTick();
+    const button = host.querySelector<HTMLButtonElement>('.record-button')!;
+    const outline = button.querySelector('svg')!.innerHTML;
+    state.saving = true; await nextTick();
+    expect(button.disabled).toBe(true);
+    expect(button.getAttribute('aria-busy')).toBe('true');
+    expect(button.querySelectorAll('svg')).toHaveLength(1);
+    expect(button.querySelector('.record-icon.rm-spinner')).not.toBeNull();
+    button.click();
+    state.saving = false; state.recorded = true; await nextTick();
+    expect(button.disabled).toBe(true);
+    expect(button.querySelector('.rm-spinner')).toBeNull();
+    expect(button.querySelector('svg')!.innerHTML).not.toBe(outline);
+    expect(button.getAttribute('aria-label')).toContain('Recorded apple');
+    button.click();
+    expect(record).not.toHaveBeenCalled();
   });
 
   it('keeps controls in place when content grows after the reader enters the card', async () => {

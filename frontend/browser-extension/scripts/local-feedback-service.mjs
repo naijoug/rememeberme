@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readLaunchAgentState, checkFeedbackAssets, serviceStartAction } from './local-feedback-health.mjs';
+import { readLaunchAgentState, checkFeedbackAssets, checkFeedbackFiles, serviceStartAction, toolchainFingerprint, bootstrapWithRetry } from './local-feedback-health.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const label = `com.rememberme.local-feedback-${createHash('sha256').update(root).digest('hex').slice(0, 8)}`;
@@ -34,6 +34,9 @@ function xml(value) {
 function getState() {
   return readLaunchAgentState(launchctl('print', `${domain}/${label}`));
 }
+function runtimeDigest() {
+  return toolchainFingerprint(readFileSync(join(root, 'package.json'), 'utf8'), readFileSync(join(root, 'package-lock.json'), 'utf8'), process.version);
+}
 async function showStatus() {
   const current = getState();
   let healthy = false;
@@ -44,6 +47,10 @@ async function showStatus() {
   } else {
     try {
       await checkFeedbackAssets();
+      await checkFeedbackFiles();
+      if (!existsSync(agentFile) || !readFileSync(agentFile, 'utf8').includes(`<key>REMEMBERME_TOOLCHAIN_DIGEST</key><string>${runtimeDigest()}</string>`)) {
+        throw new Error('The toolchain changed. Run npm run local:start to restart this watcher with the current dependencies.');
+      }
       healthy = true;
       console.log('Local feedback service is running; Chrome development assets are reachable.');
     } catch (error) {
@@ -62,6 +69,7 @@ async function waitUntilReady() {
     try {
       if (!getState().running) throw new Error('The watcher process is not running');
       await checkFeedbackAssets();
+      await checkFeedbackFiles();
       return;
     } catch (error) {
       lastError = error;
@@ -88,13 +96,14 @@ try {
     mkdirSync(dirname(agentFile), { recursive: true });
     mkdirSync(dirname(logFile), { recursive: true });
     const args = [process.execPath, binary, '--config', 'wxt.feedback.config.ts', '--mode', 'feedback'];
+    const toolchain = runtimeDigest();
     const configuration = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>Label</key><string>${label}</string>
 <key>ProgramArguments</key><array>${args.map(arg => `<string>${xml(arg)}</string>`).join('')}</array>
 <key>WorkingDirectory</key><string>${xml(root)}</string>
-<key>EnvironmentVariables</key><dict><key>PATH</key><string>${xml(dirname(process.execPath))}:/usr/bin:/bin:/usr/sbin:/sbin</string></dict>
+<key>EnvironmentVariables</key><dict><key>PATH</key><string>${xml(dirname(process.execPath))}:/usr/bin:/bin:/usr/sbin:/sbin</string><key>REMEMBERME_TOOLCHAIN_DIGEST</key><string>${toolchain}</string></dict>
 <key>RunAtLoad</key><true/>
 <key>KeepAlive</key><true/>
 <key>ThrottleInterval</key><integer>10</integer>
@@ -106,7 +115,7 @@ try {
     check(spawnSync('/usr/bin/plutil', ['-lint', agentFile], { encoding: 'utf8' }));
     const action = serviceStartAction(current, configChanged);
     if (action === 'replace') check(launchctl('bootout', `${domain}/${label}`));
-    if (action === 'replace' || action === 'bootstrap') check(launchctl('bootstrap', domain, agentFile));
+    if (action === 'replace' || action === 'bootstrap') check(await bootstrapWithRetry(() => launchctl('bootstrap', domain, agentFile)));
     if (action === 'kickstart') check(launchctl('kickstart', `${domain}/${label}`));
     await waitUntilReady();
     await showStatus();

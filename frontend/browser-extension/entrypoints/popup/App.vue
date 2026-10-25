@@ -6,6 +6,7 @@ import { storageClient } from '~/services/storage-client';
 import { saveTheme, watchTheme } from '~/services/theme';
 import type { WordEntry } from '~/types';
 import type { ThemePreference, ThemeState } from '~/types/theme';
+import { ACCOUNT_SYNC_ENABLED } from '~/config/backend';
 
 const words = ref<WordEntry[]>([]);
 const loading = ref(true);
@@ -69,7 +70,6 @@ async function exportData() {
 </script>
 
 <template>
-  <CloudConnection :data-theme="theme.resolved" @changed="loadWords" />
   <VocabularyPanel
     :words="words" :loading="loading" :busy="busy" :error="error" :success="success"
     :theme="theme.resolved"
@@ -77,5 +77,7 @@ async function exportData() {
     @delete="mutate(() => storageClient.deleteWord($event))"
     @reset="mutate(() => storageClient.resetCount($event))"
     @import="mutate(() => storageClient.importData($event), 'Data imported successfully!')"
-  />
+  >
+    <template v-if="ACCOUNT_SYNC_ENABLED" #account><CloudConnection :data-theme="theme.resolved" @changed="loadWords" /></template>
+  </VocabularyPanel>
 </template>

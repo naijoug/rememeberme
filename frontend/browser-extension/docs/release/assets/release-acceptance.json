@@ -1,0 +1,18 @@
+{
+  "version": "0.1.1",
+  "checks": [
+    "Exact extracted ZIP loaded in clean Chrome; live no-login translation, packaged definition and hidden service address passed.",
+    "Two intentional bookmark clicks saved count 2, two histories, fixture sentence and source URL.",
+    "Popup reset retains history; deletion cancel/confirm, export/import, malformed import, reload persistence and absent sync/API controls passed.",
+    "Live requests used only internal lookup paths and exact word/target bodies; no context/URL/vocabulary upload.",
+    "Real browser process restart preserved counts/history from the extracted formal ZIP.",
+    "Actual chrome.storage legacy upgrade retained fractional count, literal HTML/non-HTTP source and original snapshot; migrated count reset retained history."
+  ],
+  "limitations": [
+    "Native toolbar anchoring and browser-native right-click menu are separate manual checks.",
+    "Cloud account sync is disabled in this release.",
+    "This exercises a disposable Chrome for Testing profile, not the user profile or Chrome Web Store review."
+  ],
+  "browser": "151.0.7922.34",
+  "extensionId": "jlackchffdhfjimkpjljjealelcaladm"
+}

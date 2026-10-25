@@ -6,6 +6,7 @@ import type { ResolvedTheme, ThemePreference } from '~/types/theme';
 import WordList from './WordList.vue';
 import WordDetail from './WordDetail.vue';
 import ConfirmDelete from './ConfirmDelete.vue';
+import { PRIVACY_POLICY_URL } from '~/config/backend';
 
 const props = withDefaults(defineProps<{
   words: WordEntry[]; loading?: boolean; busy?: boolean; error?: string; success?: string;
@@ -20,6 +21,7 @@ const query = ref('');
 const listScrollTop = ref(0);
 const sortBy = ref<'count' | 'updatedAt'>('count');
 const menuOpen = ref(false);
+const accountOpen = ref(false);
 const confirmWord = ref<string | null>(null);
 const fileInput = ref<HTMLInputElement>();
 const menu = ref<HTMLElement>();
@@ -46,11 +48,12 @@ function menuKeys(event: KeyboardEvent) {
 function outsideMenu(event: MouseEvent) { if (!menu.value?.contains(event.target as Node) && event.target !== menuButton.value && !menuButton.value?.contains(event.target as Node)) menuOpen.value = false; }
 function keydown(event: KeyboardEvent) {
   if (event.key !== 'Escape' || confirmWord.value) return;
-  if (menuOpen.value) closeMenu(); else selected.value = null;
+  if (menuOpen.value) closeMenu(); else if (accountOpen.value) accountOpen.value = false; else selected.value = null;
 }
 onMounted(() => document.addEventListener('click', outsideMenu));
 onUnmounted(() => document.removeEventListener('click', outsideMenu));
 function triggerImport() { menuOpen.value = false; fileInput.value?.click(); }
+function openPrivacy() { window.open(PRIVACY_POLICY_URL, '_blank', 'noopener,noreferrer'); closeMenu(); }
 async function importFile(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
@@ -75,6 +78,8 @@ async function importFile(event: Event) {
         <div v-if="menuOpen" ref="menu" class="rm-menu" role="menu" aria-label="Vocabulary options" @keydown="menuKeys">
           <button role="menuitem" :disabled="busy" @click="triggerImport"><Upload width="17" height="17" aria-hidden="true" />Import backup</button>
           <button role="menuitem" :disabled="busy || loading" @click="emit('export'); closeMenu()"><Download width="17" height="17" aria-hidden="true" />Export vocabulary</button>
+          <button role="menuitem" @click="openPrivacy">Privacy &amp; support</button>
+          <button v-if="$slots.account" role="menuitem" @click="accountOpen = true; closeMenu()">Account &amp; sync</button>
         </div>
       </div>
       <input ref="fileInput" type="file" accept=".json,application/json" hidden @change="importFile" />
@@ -83,7 +88,11 @@ async function importFile(event: Event) {
     <div v-if="success" class="rm-banner success" role="status">{{ success }}</div>
     <div v-if="error || importError" class="rm-banner error" role="alert">{{ error || importError }} <button v-if="!words.length && !importError" class="rm-text-action" @click="emit('retry')">Try again</button></div>
 
-    <main class="vocabulary-main" :aria-busy="loading || busy">
+    <div v-if="accountOpen" class="account-settings">
+      <button class="back-link" @click="accountOpen = false"><NavArrowLeft width="17" height="17" aria-hidden="true" />Vocabulary</button>
+      <slot name="account" />
+    </div>
+    <main v-else class="vocabulary-main" :aria-busy="loading || busy">
       <div v-if="loading && !words.length" class="loading" role="status">Opening your vocabulary…</div>
       <div v-else-if="selectedEntry" class="detail-view">
         <button ref="backButton" class="back-link" @click="selected = null"><NavArrowLeft width="17" height="17" aria-hidden="true" /><span>Vocabulary</span><span aria-hidden="true">/</span><span>{{ selectedEntry.word }}</span></button>

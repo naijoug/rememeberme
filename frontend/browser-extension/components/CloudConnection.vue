@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import type { CloudStatus } from '~/services/cloud-vocabulary';
+import { SERVICE_ORIGIN } from '~/config/backend';
 const emit = defineEmits<{ changed: [] }>();
-const opened = ref(false), busy = ref(false), origin = ref(''), error = ref('');
+const busy = ref(false), error = ref('');
 const status = ref<CloudStatus>();
 async function action(type: string, extra: Record<string, unknown> = {}) {
   if (busy.value) return; busy.value = true; error.value = '';
   try {
     const reply = await browser.runtime.sendMessage({ type, ...extra });
     if (!reply?.success) throw new Error(reply?.error || 'The backend connection could not be updated.');
-    status.value = reply.data; origin.value = reply.data.origin ?? origin.value;
+    status.value = reply.data;
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : 'Cloud action failed.';
     if (type !== 'CLOUD_STATUS') {
@@ -42,15 +43,13 @@ onMounted(() => { void action('CLOUD_STATUS'); });
 </script>
 <template>
   <div class="cloud-connection rm-theme">
-    <button class="cloud-toggle" @click="opened = !opened">Cloud account · {{ status?.enabled ? 'Sync enabled' : 'Local vocabulary retained' }}</button>
-    <section v-if="opened" aria-label="Cloud account settings">
-      <p>Connect your HTTPS backend for Hermes translation. Vocabulary upload starts only after you open the account and enable sync.</p>
+    <section aria-label="Account and sync settings">
+      <h2>Account &amp; sync</h2>
+      <p>Translation works without signing in. Sign in only if you want to sync your vocabulary across devices.</p>
       <template v-if="!status?.connected">
-        <input v-model="origin" aria-label="HTTPS API address" placeholder="https://your-api-domain" :disabled="busy" />
-        <button :disabled="busy || !origin" @click="action('CLOUD_CONNECT', { origin })">Sign in with GitHub</button>
+        <button :disabled="busy" @click="action('CLOUD_CONNECT', { origin: SERVICE_ORIGIN })">Sign in with GitHub</button>
       </template>
       <template v-else>
-        <p>{{ status.origin }}</p>
         <p>{{ status.owner === 'anonymous' ? 'Local vocabulary' : 'Account vocabulary' }} · {{ status.pending }} pending · {{ status.conflicts }} conflicts</p>
         <button :disabled="busy" @click="action('CLOUD_OPEN')">Open account vocabulary</button>
         <button :disabled="busy" @click="copyLocal">Copy local vocabulary ({{ status.localWords }})</button>
@@ -63,13 +62,13 @@ onMounted(() => { void action('CLOUD_STATUS'); });
         <button v-for="archive in status.archives" :key="archive.key" :disabled="busy" @click="exportArchive(archive.key)">Export recovery copy · {{ new Date(archive.createdAt).toLocaleString() }}</button>
       </template>
       <p v-if="error" role="alert">{{ error }}</p>
-      <p>Hermes receives the lookup word and may call its configured model provider. Account sync excludes context and source URLs in this version. Exported files retain your local source text.</p>
+      <p>Your vocabulary stays on this device until you choose to copy it and enable sync. Exported backups include your saved sentences and source links.</p>
     </section>
   </div>
 </template>
 <style scoped>
 .cloud-connection { padding: 8px 16px; border-bottom: 1px solid var(--rm-border); background: var(--rm-bg); font-size: 12px; }
-.cloud-toggle { width: 100%; text-align: left; }
+h2 { font-size: 16px; margin: 8px 0; }
 section { padding: 8px 0; }
 p { margin: 8px 0; overflow-wrap: anywhere; line-height: 1.45; }
 button, input { padding: 6px 9px; margin: 3px; border: 1px solid var(--rm-border); border-radius: 6px; background: var(--rm-surface); color: inherit; font: inherit; }

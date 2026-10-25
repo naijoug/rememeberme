@@ -343,7 +343,7 @@ describe('content selection flow (mock browser runtime)', () => {
     expect(saveWord).not.toHaveBeenCalled();
   });
 
-  it('records every intentional click and ignores out-of-order write responses', async () => {
+  it('records once per popup, including rapid clicks before rendering and clicks after success', async () => {
     await select('apple');
     await resolve(lookups[0]);
     const complete: Array<(entry: WordEntry) => void> = [];
@@ -352,16 +352,77 @@ describe('content selection flow (mock browser runtime)', () => {
     button.click();
     button.click();
     await vi.advanceTimersByTimeAsync(20);
-    expect(saveWord).toHaveBeenCalledTimes(2);
-    expect(ui<HTMLButtonElement>('.record-button')?.disabled).toBe(false);
-    complete[1](savedFixture('apple', 2));
-    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledTimes(1);
+    expect(button.disabled).toBe(true);
+    expect(button.querySelector('.record-icon.rm-spinner')).not.toBeNull();
     complete[0](savedFixture('apple', 1));
     await vi.advanceTimersByTimeAsync(20);
-    expect(ui('.record-count')?.textContent).toBe('2');
+    button.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledTimes(1);
+    expect(button.disabled).toBe(true);
+    expect(button.classList.contains('is-recorded')).toBe(true);
+    expect(button.querySelector('.rm-spinner')).toBeNull();
+    expect(ui('.record-count')?.textContent).toBe('1');
     expect(ui('.vocab-counter-popup')).not.toBeNull();
-    expect(ui('.record-number')?.textContent).toBe('#2');
+    expect(ui('.record-number')?.textContent).toBe('#1');
     expect(ui('.lookup-note[role=status]')).toBeNull();
+  });
+
+  it('allows another encounter after closing and reopening the same word', async () => {
+    saveWord.mockResolvedValueOnce(savedFixture('apple', 1)).mockResolvedValueOnce(savedFixture('apple', 2));
+    await select('apple');
+    ui<HTMLButtonElement>('.record-button')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    ui<HTMLButtonElement>('[aria-label="Close definition"]')!.click();
+    await select('apple');
+    expect(ui<HTMLButtonElement>('.record-button')!.disabled).toBe(false);
+    ui<HTMLButtonElement>('.record-button')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledTimes(2);
+    expect(ui('.record-count')?.textContent).toBe('2');
+  });
+
+  it('keeps an in-flight save and the success lock when retrying definitions', async () => {
+    await select('apple');
+    let finish!: (entry: WordEntry) => void;
+    saveWord.mockReturnValue(new Promise<WordEntry>(resolve => { finish = resolve; }));
+    ui<HTMLButtonElement>('.record-button')!.click();
+    lookups[0].respond({ success: false, error: 'Lookup failed' });
+    await vi.advanceTimersByTimeAsync(20);
+    ui<HTMLButtonElement>('.retry-btn')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui<HTMLButtonElement>('.record-button')!.disabled).toBe(true);
+    expect(ui('.record-icon.rm-spinner')).not.toBeNull();
+    finish(savedFixture('apple', 1));
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.record-button.is-recorded')).not.toBeNull();
+    lookups[1].respond({ success: false, error: 'Lookup failed again' });
+    await vi.advanceTimersByTimeAsync(20);
+    ui<HTMLButtonElement>('.retry-btn')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    ui<HTMLButtonElement>('.record-button')!.click();
+    expect(saveWord).toHaveBeenCalledTimes(1);
+    expect(ui<HTMLButtonElement>('.record-button')!.disabled).toBe(true);
+  });
+
+  it('ignores a closed popup’s save reply while a new popup is saving', async () => {
+    const complete: Array<(entry: WordEntry) => void> = [];
+    saveWord.mockImplementation(() => new Promise<WordEntry>(resolve => { complete.push(resolve); }));
+    await select('apple');
+    ui<HTMLButtonElement>('.record-button')!.click();
+    ui<HTMLButtonElement>('[aria-label="Close definition"]')!.click();
+    await select('banana');
+    ui<HTMLButtonElement>('.record-button')!.click();
+    complete[0](savedFixture('apple', 8));
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.word')?.textContent).toBe('banana');
+    expect(ui('.record-count')?.textContent).toBe('0');
+    expect(ui('.record-icon.rm-spinner')).not.toBeNull();
+    complete[1](savedFixture('banana', 1));
+    await vi.advanceTimersByTimeAsync(20);
+    expect(ui('.record-count')?.textContent).toBe('1');
+    expect(ui('.record-button.is-recorded')).not.toBeNull();
   });
 
   it('loads the existing count and does not expose prior records through the host DOM', async () => {
@@ -408,6 +469,14 @@ describe('content selection flow (mock browser runtime)', () => {
     expect(ui('.record-count')?.textContent).toBe('2');
     expect(saveWord).toHaveBeenCalledTimes(1);
     expect(ui('.vocab-counter-popup')).not.toBeNull();
+    expect(ui<HTMLButtonElement>('.record-button')!.disabled).toBe(false);
+    expect(ui('.record-button.is-recorded')).toBeNull();
+    saveWord.mockResolvedValue(savedFixture('apple', 3));
+    ui<HTMLButtonElement>('.record-button')!.click();
+    await vi.advanceTimersByTimeAsync(20);
+    expect(saveWord).toHaveBeenCalledTimes(2);
+    expect(ui('.record-count')?.textContent).toBe('3');
+    expect(ui<HTMLButtonElement>('.record-button')!.disabled).toBe(true);
   });
 
   it('updates the isolated card theme without changing page styles', async () => {

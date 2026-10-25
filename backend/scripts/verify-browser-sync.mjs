@@ -9,7 +9,7 @@ import { join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
-import { app, createRuntime, HermesTranslator, WindowLimiter } from '../.build/library.mjs';
+import { app, createRuntime, HermesTranslator, WindowLimiter, ServerDictionary, ServerTranslator, MyMemoryTranslator } from '../.build/library.mjs';
 
 const backend = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const extension = resolve(backend, '../frontend/browser-extension');
@@ -53,14 +53,26 @@ try {
   runtime = createRuntime({ databasePath: join(directory, 'fixture.sqlite'), migrations: join(backend, 'migrations'),
     publicDirectory: join(backend, 'public'), configuration: { PUBLIC_ORIGIN: origin, ENVIRONMENT: 'local' } });
   runtime.AUTH_LIMIT = new WindowLimiter(1000); runtime.API_LIMIT = new WindowLimiter(10_000);
-  runtime.TRANSLATOR = new HermesTranslator({ baseURL: 'http://127.0.0.1:8643/v1', key: 'synthetic-fixture-key',
+  const hermes = new HermesTranslator({ baseURL: 'http://127.0.0.1:8643/v1', key: 'synthetic-fixture-key',
     model: 'synthetic-model', fetch: async url => new Response(JSON.stringify(String(url).endsWith('/toolsets')
       ? [] : { choices: [{ message: { content: '{"text":"合成释义"}' } }] }), { headers: { 'Content-Type': 'application/json' } }) });
+  const providerJSON = value => new Response(JSON.stringify(value), { headers: { 'Content-Type': 'application/json' } });
+  runtime.DICTIONARY = new ServerDictionary(async url => {
+    assert.equal(String(url), 'https://api.dictionaryapi.dev/api/v2/entries/en/synthetic');
+    return providerJSON([{ ...definition, meanings: [{ partOfSpeech: 'adjective', definitions: [{ definition: 'Artificial.' }] }] }]);
+  });
+  runtime.TRANSLATOR = new ServerTranslator(hermes, new MyMemoryTranslator(async url => {
+    assert.equal(new URL(url).searchParams.get('q'), 'fallback');
+    return providerJSON({ responseStatus: 200, responseData: { translatedText: '备用释义' } });
+  }));
   const bundle = join(directory, 'browser.mjs');
   await build({ stdin: { contents: `
     export { BackendClient } from './services/backend-client';
     export { CloudVocabulary } from './services/cloud-vocabulary';
     export { VocabularyDB } from './services/vocabulary-db';
+    export { DictionaryService } from './services/dictionary';
+    export { PublicLookupClient } from './services/public-lookup';
+    export { TranslationService } from './services/translation';
     export { MAX_BODY_BYTES, MAX_EVENTS } from '../../contracts/api-v1';
     export { fixtureDisk } from 'wxt/utils/storage';`, resolveDir: extension },
     outfile: bundle, bundle: true, platform: 'node', format: 'esm', target: 'node22',
@@ -113,6 +125,22 @@ try {
   assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
   const translation = await a.client.request('/api/v1/lookup/translation', 'POST', { word: 'synthetic', target: 'zh-CN' });
   assert.equal(translation.translation.source, 'hermes');
+  const publicClient = new a.module.PublicLookupClient(origin, globalThis.fetch);
+  const dictionary = new a.module.DictionaryService(async () => null, publicClient);
+  assert.equal((await dictionary.getDefinition('synthetic')).source, 'dictionary-api');
+  const translator = new a.module.TranslationService(publicClient);
+  assert.equal((await translator.translate('synthetic')).source, 'hermes');
+  const originalTranslate = hermes.translate.bind(hermes);
+  hermes.translate = async word => {
+    if (word === 'fallback') {
+      // Return a real adapter provider error, so server policy performs the fallback.
+      const unavailable = new HermesTranslator({ baseURL: 'http://127.0.0.1:8643/v1', key: 'fixture', model: 'fixture',
+        fetch: async () => new Response('', { status: 503 }) });
+      return unavailable.translate(word);
+    }
+    return originalTranslate(word);
+  };
+  assert.equal((await translator.translate('fallback')).source, 'mymemory');
   await a.repository.resetCount('synthetic');
   await b.repository.saveWord('synthetic', definition, '', '', 31); await b.repository.synchronize();
   await assert.rejects(a.repository.synchronize(), /VERSION_CONFLICT/);
@@ -160,6 +188,7 @@ try {
   assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
   console.log('Extension repository and authenticated client -> real Node/SQLite HTTP: refresh, exact restart retry, cross-device history, privacy, conflict archive and epoch fencing passed. Hermes protocol uses a synthetic provider.');
   console.log('Large copy/import histories: UTF-8 byte/count limits, full SQLite history, later resets and uninterrupted sync passed.');
+  console.log('Actual anonymous extension lookup services -> public HTTP routes: server dictionary, Hermes and server-side MyMemory fallback passed with synthetic providers; no client provider requests.');
 } finally {
   globalThis.fetch = originalFetch; Date.now = originalNow;
   await new Promise(resolve => { server.close(resolve); server.closeAllConnections(); });

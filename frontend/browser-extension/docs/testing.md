@@ -10,7 +10,7 @@ Run commands from `frontend/browser-extension/` after the setup in [README](../R
 | Service logic | Run the affected test files and `npm run compile`; add cases for changed behavior or reproduced bugs |
 | Vue behavior or rendering | Mount the affected component, exercise its interactions and run `npm run compile` |
 | Content/background entrypoints, messaging, runtime or build configuration | Relevant tests, `npm run compile`, a Chrome build, and browser checks for affected flows when available |
-| Release or cross-browser behavior | Complete suite, Chrome and Firefox builds, then record actual browser checks for each claimed target |
+| Release or cross-browser behavior | Complete suite and production package for each claimed target; record installed browser acceptance for that target. The current release scope is Chrome only |
 
 For example: `npm test -- components/HistoryItem.test.ts`. Run `npm test` for shared changes spanning several flows. Repeat or broaden verification when changes or failures justify it; passing checks do not need repeated runs without a reason.
 
@@ -21,7 +21,7 @@ For example: `npm test -- components/HistoryItem.test.ts`. Run `npm test` for sh
 - `services/storage-client.test.ts`: real client, background handler and storage service over a mocked message transport; simultaneous page requests and context-menu writes, completed-write acknowledgements and failures without local fallback.
 - `services/word-utils.test.ts` and `services/context-extractor.test.ts`: validation, ordinals and sentence extraction.
 - `services/context-menu-handler.test.ts`: handler behavior using fake dictionary, storage and tab-message dependencies. This does not exercise a browser's native context menu.
-- Record regressions cover single-word reads, one queued write per counter click, sentence/time/URL round-tripping, reset retaining history, delayed/out-of-order replies and write failure without automatic retry. Context extraction uses real DOM ranges, including inline links/emphasis, repeated words, split text nodes and code URLs.
+- Record regressions cover single-word reads, one successful write per popup session, rapid duplicate clicks, spinner/solid bookmark rendering, closing and reopening the same word, definition retries during/after saving, stale replies from earlier sessions, sentence/time/URL round-tripping, reset retaining history and manual recovery after write failure without automatic retry. Context extraction uses real DOM ranges, including inline links/emphasis, repeated words, split text nodes and code URLs.
 - Context-menu regression tests cover connection checks before dictionary requests, frame/URL targeting, one local reconnect attempt, restricted-page rejection, and toolbar fallback without duplicate saves. `services/context-menu-status.test.ts` checks action/browserAction badge/title calls using mocks.
 - `services/dictionary.test.ts`: local-hit network avoidance, online fallback after local failure, mocked slow responses, deadlines covering stalled JSON bodies, coalesced requests, network-error recovery and non-retried 404/429 responses. Live service access is a separate diagnostic, not part of automated tests.
 - `services/phonetics.test.ts`: real packaged US/UK IPA for reported words and inflections, exact spelling, coalesced local reads, misses, invalid data, bounded stalled-body recovery, all 64 shard/source mappings, source hashes and shipped notices. No external network is used. Background tests validate and dispatch `GET_PHONETICS` separately without definition requests or vocabulary writes.
@@ -37,13 +37,13 @@ For example: `npm test -- components/HistoryItem.test.ts`. Run `npm test` for sh
 - `components/WordPronunciation.test.ts`: distinct exact US/UK voices, local preference, asynchronous voice discovery, selected spelling, stop/switch/word-change/unmount, stale callbacks, retryable failures/timeouts, unsupported browsers, literal/malformed phonetics, loaded US/UK IPA beside icon-only controls, stale IPA replies and separate retry. Speech and message data are mocked; these checks do not establish audible output or accent quality.
 - `services/theme.test.ts`: system preference changes, cross-surface storage notifications, stale initial-read protection, separate preference storage and cleanup after extension invalidation.
 - `components/HighlightedText.test.ts`: literal untrusted examples and malformed legacy optional example values.
-- `tests/content.test.ts`: content entrypoint with real DOM selection and popup components, but a mocked browser runtime; ShadowRoot isolation, reopening, saving, out-of-order responses, UI deadline/retry, Escape, one write per intentional click and theme updates. Keep entrypoint tests outside the top level of `entrypoints/` so WXT does not discover them as extension entrypoints.
+- `tests/content.test.ts`: content entrypoint with real DOM selection and popup components, but a mocked browser runtime; ShadowRoot isolation, reopening, saving, stale responses, UI deadline/retry, Escape, one successful write per popup session and theme updates. Keep entrypoint tests outside the top level of `entrypoints/` so WXT does not discover them as extension entrypoints.
 - Content tests also exercise the real WXT context's invalidation and reinjection cleanup (with deterministic postMessage delivery). `services/local-feedback.test.ts` covers script registration/replacement without tab reloads, restricted-tab failures and server reconnection with mocked browser/WebSocket APIs.
 - Content interaction regressions cover page/body scrolling, drags beginning inside and ending outside, deliberate outside clicks, captured selection snapshots, new selection clicks and cancellation of delayed opening on Escape/close.
 - The page card now uses a closed shadow root to encapsulate encounter history. Content tests capture it through a test-owned `attachShadow` spy; production code does not expose a debug root. Browser validation must not assume `host.shadowRoot` or ordinary page selectors can read the card.
 - `scripts/local-feedback-health.test.mjs`: a registered job with `state = not running` / exit code 0 is recovered, healthy jobs are reused, permission failures are not mistaken for absent jobs, and both popup development assets must be reachable as JavaScript. These tests do not start real LaunchAgents or enable browser extensions.
 
-These are not installed-extension E2E tests. A successful build also does not prove runtime browser compatibility, native menu behavior, live API availability or real storage quotas. The optional [release smoke script](release/README.md#optional-installed-browser-smoke-check) uses an externally available Playwright installation and a disposable Chrome for Testing profile; it is separate from `npm test`, uses packaged definitions and blocks online dictionary access. Playwright and MSW are not project dependencies.
+These are not installed-extension E2E tests. A successful build also does not prove runtime browser compatibility, native menu behavior, live API availability or real storage quotas. The optional [release smoke script](release/README.md#optional-installed-browser-smoke-check) uses an externally available Playwright installation and a disposable Chrome for Testing profile; it is separate from `npm test`, extracts the formal ZIP, verifies packaged English and live server translation in a disposable profile, and checks legacy migration and process restart. Native toolbar/context-menu checks remain distinct. Playwright and MSW are not project dependencies.
 
 ## Manual browser checklist
 
@@ -59,7 +59,8 @@ Mark each case **Not run**, **Pass**, **Fail**, or **Blocked**, with evidence. T
 | Use a word missing one or both IPA entries, or force a local shard/message failure | Available IPA stays literal; missing IPA is explicit; a load error offers retry without changing definition/history or blocking speech; base-form IPA is not substituted |
 | Switch accents, click the active button, change words, or close during speech | Previous playback stops; controls return to idle; late speech callbacks cannot change a newer playback |
 | Use a browser/device without one accent voice or force a speech failure | Missing accent is disabled with system-voice guidance; no substituted accent; error/timeout remains retryable without affecting definitions |
-| Click the bookmark counter twice, including while the first write is pending | Count increases twice after persistence; two sentence/time/URL records are retained and the card stays open |
+| Click the bookmark counter repeatedly while saving and after success; then close and reselect the same fixture word | Spinner replaces the outline bookmark without changing button width; success shows a solid bookmark and one count/history increment. Further clicks in that card do nothing. A newly opened card can record once again. Actual installed-Chrome count/history acceptance: [2026-10-14 record](verification/2026-10-14-installed-forget-button.md); the transient spinner was not captured in that browser run |
+| Retry failed definitions while a save is pending and after it succeeds; separately fail a fixture save | Definition retry preserves the spinner/success lock. A failed save leaves the count unchanged and restores manual retry without an automatic write |
 | Open Records and expand one numbered entry | The sentence, local date/time including seconds and complete source URL match that record; only HTTP(S) URLs are links |
 | Reset a fixture word, record it again, then export/import | Count restarts while old history survives; record numbers need not equal count; all contexts, timestamps and URLs round-trip |
 | Save fixture words concurrently from two pages and the context menu | Every save survives; same-word counts/history include every successful operation |
@@ -79,7 +80,7 @@ Mark each case **Not run**, **Pass**, **Fail**, or **Blocked**, with evidence. T
 | Open the toolbar popup, sort, open a word, reset, cancel deletion, confirm deletion | Display and stored data agree; reset preserves history and cancel preserves the word |
 | Load over 100 fixture words, open a long history, go back and scroll to the final word | Detail scroll does not affect virtual rows; list position restores on back and the last word is reachable |
 | Switch Light / Dark using the toolbar header sun/moon button | Toolbar and open page card update consistently; the choice persists without changing vocabulary; no footer theme selector appears |
-| Stop both online responses for a word absent from the local index | Within the source-specific deadline (10 seconds English, 17 seconds Chinese) the loading UI becomes a retryable error; the counter can still record the selected word/context |
+| Stop both online responses for a word absent from the local index | Within the source-specific deadline (10 seconds English, 22 seconds Chinese) the loading UI becomes a retryable error; the counter can still record the selected word/context |
 | Delete a word after scrolling deep into a large vocabulary list | Confirmation covers the viewport; cancel preserves the entry and confirm deletes it |
 | Export fixtures, import into an empty disposable profile | Counts and history survive the round trip |
 | Import a malformed file | Clear error and existing vocabulary remains intact |
@@ -144,3 +145,22 @@ synthetic. The harness additionally sends both large copy/import histories throu
 the real HTTP body reader, verifies every event in SQLite and syncs later resets.
 Installed upgrade, OAuth callback IDs, real Hermes, cross-client hosted
 sync and storage-quota/large-vocabulary performance still require browser checks.
+
+## Server lookup routing
+
+Dictionary tests cover local hits, anonymous server misses/shard recovery and deadlines without direct provider requests or login. Translation tests cover server Hermes/MyMemory sources, short fallback-cache expiry and persisted public/legacy caches, malformed output, service timeouts and retained anonymous caches. Provider quota/body/timeout tests now run in `backend/tests/lookup.test.ts`; all providers there are synthetic.
+
+`npm run test:browser` additionally bundles the actual dictionary/translation services and verifies server dictionary, Hermes and MyMemory fallback through anonymous real loopback HTTP. Its network guard forbids direct client provider requests. Installed Chrome and live provider acceptance are separate; see [2026-10-14 server lookup verification](verification/2026-10-14-server-lookups.md).
+
+Public route tests verify exact CORS, word-only validation, IP limits and no account/session/vocabulary creation. Popup tests require no initial connection panel or API input; the Chrome release gates account controls and background sync off. Latest host/fixture UI evidence: [automatic lookup deployment](verification/2026-10-14-auto-lookup-deployment.md). A fixture component preview does not establish installed-extension update or public access.
+
+
+Temporary transport verification uses `backend/tests/lookup-bridge.test.mjs` for route/credential/IP/body boundaries with disposable loopback HTTP. Current public and actual installed-Chrome lookup evidence is in [2026-10-14 temporary lookup](verification/2026-10-14-temporary-lookup.md). Browser checks only select/read a synthetic test word and close the card; never click the counter or transfer real vocabulary to test the transport.
+
+Fixed entry/Chrome ZIP and native menu acceptance: [2026-10-15 release candidate](verification/2026-10-15-release-candidate.md). This supersedes the temporary-origin/dependency/store-material status; account sync and store approval remain excluded.
+
+## 0.1.1 package integrity and upgrade
+
+`npm run zip` uses a separate release staging directory and rejects incomplete extracted ZIPs. `scripts/release-integrity.test.mjs` exercises missing popup, transitive module/stylesheet/image and unsafe/development-reference failures using disposable fixtures. `services/storage-client.test.ts` now checks stalled read recovery without write retries or mutation timeouts.
+
+Run `scripts/release-upgrade.cjs` with the accepted previous ZIP and an existing Playwright runtime for same-identity real 0.1.0 -> 0.1.1 upgrade/offline/restart evidence. This is completed-directory replacement in a disposable profile, not Chrome Web Store signing/delivery. The actual action popup check uses Chrome’s own action API. No real vocabulary or installed user profile is used. See the dated [0.1.1 package record](verification/2026-10-15-011-package-upgrade.md).

@@ -173,7 +173,9 @@
 .rm-theme .lookup-meaning + .lookup-meaning { margin-top: 16px; }
 .rm-theme .lookup-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .rm-theme .record-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 32px; min-width: 58px; padding: 6px 10px; background: var(--rm-primary-soft); color: var(--rm-primary); border: 1px solid var(--rm-border); border-radius: 8px; font-size: 14px; font-weight: 600; }
-.rm-theme .record-button:hover { background: var(--rm-soft); }
+.rm-theme .record-button:hover:not(:disabled) { background: var(--rm-soft); }
+.rm-theme .record-button:disabled { opacity: 1; }
+.rm-theme .record-icon { flex-shrink: 0; }
 .rm-theme .record-count { font-variant-numeric: tabular-nums; }
 .rm-theme .lookup-records { margin-top: 16px; border-top: 1px solid var(--rm-border); }
 .rm-theme .records-toggle { cursor: pointer; padding: 12px 0 0; color: var(--rm-muted); font-size: 12px; }

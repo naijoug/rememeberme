@@ -34,12 +34,17 @@ const version = ref(0);
 const initialLookup = params.get('lookup');
 const cardState = ref(initialLookup === 'error' || initialLookup === 'loading' ? initialLookup : 'ready');
 const cardVisible = ref(true);
+const saving = ref(false);
+const recorded = ref(false);
 const preference = ref<ThemePreference>('system');
 const feedback = ref('');
 const compare = params.get('compare');
 const themes = computed(() => compare ? [compare === 'dark' || compare === 'codex' ? 'dark' : 'light'] as const : ['light', 'dark'] as const);
 let retryTimer: ReturnType<typeof setTimeout> | undefined;
-onUnmounted(() => clearTimeout(retryTimer));
+let saveTimer: ReturnType<typeof setTimeout> | undefined;
+onUnmounted(() => { clearTimeout(retryTimer); clearTimeout(saveTimer); });
+function closeCard() { cardVisible.value = false; clearTimeout(saveTimer); saving.value = false; }
+function showCard() { if (!cardVisible.value) recorded.value = false; cardVisible.value = true; }
 function setMode(value: string) {
   mode.value = value;
   words.value = value === 'empty' ? [] : structuredClone(initial);
@@ -49,11 +54,17 @@ function setMode(value: string) {
 function reset(word: string) { const entry = words.value.find(item => item.word === word); if (entry) entry.count = 0; }
 function remove(word: string) { words.value = words.value.filter(item => item.word !== word); }
 function recordWord() {
-  const entry = words.value.find(item => item.word === sampleWord);
-  const history = { timestamp: Date.now(), context: sampleContext, url: 'https://example.com/article', definition };
-  if (entry) { entry.count++; entry.history.push(history); }
-  else words.value.push({ word: sampleWord, count: 1, history: [history], createdAt: Date.now(), updatedAt: Date.now() });
-  feedback.value = 'Saved in this preview only.';
+  if (saving.value || recorded.value) return;
+  saving.value = true;
+  saveTimer = setTimeout(() => {
+    const entry = words.value.find(item => item.word === sampleWord);
+    const history = { timestamp: Date.now(), context: sampleContext, url: 'https://example.com/article', definition };
+    if (entry) { entry.count++; entry.history.push(history); }
+    else words.value.push({ word: sampleWord, count: 1, history: [history], createdAt: Date.now(), updatedAt: Date.now() });
+    feedback.value = 'Saved in this preview only.';
+    saving.value = false;
+    recorded.value = true;
+  }, 600);
 }
 function retry() { cardState.value = 'loading'; retryTimer = setTimeout(() => { cardState.value = 'ready'; }, 600); }
 function exportData() {
@@ -75,8 +86,8 @@ function importData(text: string) {
     <header class="preview-header"><div><p class="eyebrow">REMEMBER ME · INTERACTIVE PREVIEW</p><h1>Paper &amp; Sage</h1><p>Sample vocabulary only. This page does not access your extension data.</p></div>
       <div class="preview-tools">
         <label>Popup <select :value="mode" @change="setMode(($event.target as HTMLSelectElement).value)"><option value="detail">Word detail</option><option value="list">Vocabulary list</option><option value="empty">Empty state</option></select></label>
-        <label>Lookup <select v-model="cardState" @change="cardVisible = true"><option value="ready">Definition</option><option value="loading">Loading</option><option value="error">Error</option></select></label>
-        <button @click="cardVisible = true">Show lookup card</button>
+        <label>Lookup <select v-model="cardState" @change="showCard"><option value="ready">Definition</option><option value="loading">Loading</option><option value="error">Error</option></select></label>
+        <button @click="showCard">Show lookup card</button>
       </div>
     </header>
     <p v-if="feedback" class="preview-feedback" role="status">{{ feedback }}</p>
@@ -100,7 +111,7 @@ function importData(text: string) {
         <h2>In-page lookup</h2>
         <div class="lookup-stage rm-theme" :data-theme="preference === 'system' ? theme : preference">
           <SelectionPopup :word="sampleWord" :position="{ x: 0, y: 0 }" :visible="cardVisible" :definition="cardState === 'ready' ? definition : undefined" :loading="cardState === 'loading'" :error="cardState === 'error' ? 'The dictionary is taking too long. Please try again.' : ''" inline
-            :saved-word="words.find(entry => entry.word === sampleWord) ?? null" @close="cardVisible = false" @record="recordWord" @retry="retry" />
+            :saved-word="words.find(entry => entry.word === sampleWord) ?? null" :saving="saving" :recorded="recorded" @close="closeCard" @record="recordWord" @retry="retry" />
         </div>
       </section>
     </main>

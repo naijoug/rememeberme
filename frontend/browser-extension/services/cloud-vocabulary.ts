@@ -3,6 +3,7 @@ import { BackendError, backendClient, type BackendClient } from './backend-clien
 import { VocabularyDB } from './vocabulary-db';
 import { StorageService } from './storage';
 import { isDefinition } from './definition-utils';
+import { ACCOUNT_SYNC_ENABLED } from '~/config/backend';
 import type { Definition, WordEntry } from '~/types';
 import { MAX_BODY_BYTES, MAX_EVENTS, parseEntry, type WireEntry, type WireOperation, type WireEncounter, type OperationResult, type Json } from '../../../contracts/api-v1';
 
@@ -43,7 +44,7 @@ export class CloudVocabulary {
   private generation = 0;
   private ready?: Promise<void>;
   private flight?: Promise<void>;
-  constructor(private database = new VocabularyDB(), private client: BackendClient = backendClient) {}
+  constructor(private database = new VocabularyDB(), private client: BackendClient = backendClient, private allowAccountSelection = true) {}
   private serialize<T>(action: () => Promise<T>): Promise<T> {
     const result = this.queue.then(action);
     this.queue = result.catch(() => {}); return result;
@@ -64,7 +65,7 @@ export class CloudVocabulary {
       const selected = await this.database.read<string>('selected');
       const connection = await this.client.current();
       const expected = connection ? 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId : undefined;
-      if (selected && selected === expected) this.owner = selected;
+      if (this.allowAccountSelection && selected && selected === expected) this.owner = selected;
     })());
   }
   private async state(owner?: string): Promise<Partition> {
@@ -465,4 +466,4 @@ export class CloudVocabulary {
     }
   }
 }
-export const cloudVocabulary = new CloudVocabulary();
+export const cloudVocabulary = new CloudVocabulary(undefined, undefined, ACCOUNT_SYNC_ENABLED);

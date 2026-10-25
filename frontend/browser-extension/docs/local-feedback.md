@@ -14,7 +14,7 @@ npm run local:stop     # stop and remove login startup; retain browser vocabular
 
 The macOS helper creates a checkout-specific LaunchAgent in `~/Library/LaunchAgents/`, using the absolute Node and checkout paths. Logs live in this package's ignored `.local-feedback/service.log`. If Node or the checkout moves, run stop/start again. Stop the service before removing the checkout.
 
-`local:start` repairs a registered-but-stopped job, updates older startup settings, and waits for both development scripts used by the popup to respond. It reuses a running service with matching settings instead of starting a second watcher. The job restarts after any process exit, including a clean exit; use `local:stop` to intentionally stop it and remove login startup. `local:status` returns a nonzero status for stopped/unhealthy services and does not confuse registration with a running process. A healthy server still does not prove the extension is enabled in Chrome.
+`local:start` repairs a registered-but-stopped job, updates older startup settings, and checks both the development scripts and the actual manifest, popup, background and referenced local chunks. It fingerprints the package/lockfile and Node version, replacing the existing watcher after a toolchain change. Run it after `npm ci` or dependency upgrades. A bounded retry handles launchd’s transient unload/start EIO; permission failures are not retried. It reuses a running service with matching settings instead of starting a second watcher. The job restarts after any process exit, including a clean exit; use `local:stop` to intentionally stop it and remove login startup. `local:status` returns a nonzero status for stopped/unhealthy services and does not confuse registration with a running process. An incomplete output or stale toolchain fails `local:status`. Passing health checks still does not prove the installed Chrome loaded an update.
 
 For a foreground session (including other operating systems), use `npm run dev:local` and keep the terminal running. Do not run it alongside the background service: both use `127.0.0.1:3937`. The listener is loopback-only.
 
@@ -44,7 +44,7 @@ To distinguish retained records from a new failure: refresh the specific affecte
 - Content changes register the new scripts and reinject them into eligible open tabs. The local mode replaces WXT's default whole-tab refresh, preserving page input and scroll position. Old content contexts remove their listeners, popup, notifications and pending timers to avoid duplicate saves.
 - New eligible pages use the latest registered script. Browser-internal/restricted pages remain unsupported; pages that close or reject injection during an update can be refreshed manually.
 - After the development server restarts, the local update client reconnects, waits for a build-complete signal, then reloads the extension to restore its WXT connection. This avoids reloading while the manifest is temporarily absent during a build.
-- The current WXT 0.20 leading-only debounce can skip the last rapid save; feedback mode disables that debounce and retains WXT's serialized build queue.
+- The WXT leading-only debounce can skip the last rapid save; feedback mode disables that debounce and retains WXT's serialized build queue.
 
 Keep the service running while using this build: its popup loads development assets from localhost. Source errors must be fixed before a new build can succeed. This workflow does not mean automated tests run or pass on each save. Run the checks in [testing.md](testing.md) before declaring a change complete.
 
@@ -57,3 +57,9 @@ WXT references: [browser startup/manual profiles](https://wxt.dev/guide/essentia
 The [Paper & Sage component preview](http://127.0.0.1:3937/preview/paper-sage.html) uses disposable in-memory sample vocabulary and simulated lookup states. It renders the same UI components as the extension without accessing browser vocabulary. Use it to compare light/dark, empty/loading/error and reading/list states. It is not an installed-extension or live dictionary check. The preview files are outside extension entrypoints and are not shipped in production output.
 
 Use [the trick fixture](http://127.0.0.1:3937/preview/paper-sage.html?word=trick) to check packaged US/UK IPA and Chinese numbered-pinyin display in both views. Its raw sample translation contains `[hong3 pian4]`, which should render as `[hǒng piàn]`; definitions/translations remain fixture data.
+
+## File-not-found recovery
+
+`ERR_FILE_NOT_FOUND` in the toolbar popup means Chrome could not load its local popup file; it does not establish a Tencent lookup outage. A full WXT rebuild briefly replaces its output directory. Wait for `local:status` to pass, close and reopen the popup. If an already-loaded extension remains stuck after the server recovered, reload that same entry in Chrome's extension manager once; do not remove/reinstall it or import vocabulary again. Keep the loaded directory and extension ID unchanged. Never delete profile storage to recover this error.
+
+The [2026-10-15 recovery](verification/2026-10-15-popup-recovery.md) rebuilt/restarted the same watcher and passed a disposable Chrome popup/background check. After the user unlocked macOS, reloading the existing installed entry restored the actual toolbar vocabulary and live Hermes/WordNet/IPA selection card, without saving a fixture or reinstalling the extension.

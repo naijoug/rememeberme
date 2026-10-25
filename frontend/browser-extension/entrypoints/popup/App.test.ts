@@ -38,6 +38,8 @@ async function mount(words: WordEntry[] = []) {
   app = createApp(App);
   app.mount(container);
   await vi.waitFor(() => expect(container.querySelector('.loading')).toBeNull());
+  expect(container.querySelector('.cloud-connection')).toBeNull();
+  expect(container.querySelector('[aria-label="HTTPS API address"]')).toBeNull();
 }
 
 function click(selector: string) {

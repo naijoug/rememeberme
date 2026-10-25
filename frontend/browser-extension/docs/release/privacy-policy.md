@@ -1,59 +1,69 @@
 # Remember Me Privacy Policy
 
-Draft for version 0.1.0 · Updated 2026-10-14 · Unpublished draft
-
-Publication checklist: replace the developer/contact placeholders below, set the effective date, and publish this policy at an accessible HTTPS URL before submitting the store listing.
+Version 0.1.0 · Effective 2026-10-15 · Developer: naijoug
 
 ## What Remember Me does
 
-Remember Me helps you look up single English words while reading and keep a vocabulary history of words you forget. Local vocabulary does not require an account. Optional GitHub login connects an HTTPS backend for Hermes translation and explicitly enabled account vocabulary synchronization.
+Remember Me translates single English words selected on supported webpages and lets you keep a local vocabulary with encounter counts and history. You do not need an account. Optional GitHub sign-in and account synchronization let you share vocabulary with the macOS client. Lookup works without signing in. Service addresses are internal configuration and are not shown or entered in the interface.
 
 ## Information processed on your device
 
-On supported pages, the extension reads your selected text to recognize an English word and show its definition. When you click the bookmark counter or use the **Remember Me** context-menu item, it stores the word, dictionary definition, forget count, surrounding sentence context, full source page URL, and timestamps in the browser's extension IndexedDB. The full URL may include query parameters or fragments. Imported JSON files are also processed and merged locally.
+The extension reads selected text to recognize an English word and display its Chinese translation, English definitions and pronunciation. When you click the bookmark counter or use the Remember Me selection context-menu action, it stores the word, encounter count, definition/translation snapshot, surrounding sentence, complete page URL and timestamps in extension IndexedDB. URLs may contain query parameters or fragments. Imported JSON backups are processed locally. Closing the card does not save vocabulary.
 
-This information is used to display your vocabulary, sort it, show encounter history, and support import/export. Without enabled account sync, saved vocabulary stays local. After explicit account copy/import and sync enablement, words, definitions, counts, timestamps and encounter identities are sent to your configured backend. This extension excludes surrounding sentence context and source URLs from outgoing synchronization. It does not include advertising or analytics code, and does not sell this data or use it for advertising, profiling, or credit decisions.
+The saved vocabulary supports reading history, search, sorting, count reset, deletion and JSON import/export. Saved vocabulary remains local until you explicitly copy it to an account and enable synchronization. The extension excludes saved sentences and source URLs from outgoing sync requests. Local theme preferences and successful translation caches use separate extension storage. The extension contains no advertising or analytics integration and does not sell or use vocabulary for advertising or profiling.
 
-## External dictionary requests
+## Online lookup and service providers
 
-Selecting a valid English word automatically starts English lookup and Chinese translation before you choose whether to record the word. The context-menu shortcut starts both after a page connection is established. English first checks packaged WordNet and its in-memory cache; misses or local file failures send the selected word to **Free Dictionary API** at `https://api.dictionaryapi.dev/api/v2/entries/en/<word>`. Disconnected Chinese lookup checks its local success cache, then sends uncached words and the language pair `en|zh-CN` to **MyMemory** at `https://api.mymemory.translated.net/get`. A local English hit therefore does not imply that no external request occurs.
+Selecting a supported word can send an online request before you decide whether to save it. English lookup first uses packaged WordNet and local caches. A local miss or unavailable asset sends only the selected word to the Remember Me lookup service; the service may call Free Dictionary API through Cloudflare for an uncovered word, with the server's packaged WordNet as a recovery source. Chinese lookup uses a local success cache, then sends only the selected word and target language to the lookup service.
 
-These providers receive the queried word and connection information normally exposed by HTTPS, including your IP address. The extension does not add your saved vocabulary, sentence context, source page URL or email to those requests. Provider practices govern their processing and retention; this policy makes no retention promises on their behalf. Service information: <https://dictionaryapi.dev/> and <https://mymemory.translated.net/>.
+Cloudflare carries lookup traffic over HTTPS and a private service connection to the backend hosted on Tencent Cloud. These infrastructure providers process connection information such as IP address and request timing. Anonymous lookups use a gateway that accepts only word lookup and strips account credentials and cookies. A separate authenticated account gateway on the same HTTPS service carries optional login and synchronization to the original backend database. It preserves only the required OAuth flow cookie and authenticated API headers. Provider keys and tunnel credentials remain on the server and are not included in the extension or backups.
 
-Connected Chinese lookup sends the selected word and `zh-CN` to the authenticated backend, which calls a private Hermes translation profile and its configured model provider. The backend receives device credentials and connection metadata; Hermes credentials stay server-side. Connected translation does not silently switch to MyMemory on failure. Provider/account caches are kept separate. GitHub handles authentication and the backend stores an opaque account/device identity with hashed session credentials. Browser device access/refresh credentials are retained in extension local storage; they are excluded from vocabulary exports.
+The backend normally uses an isolated Hermes translation profile and its configured GLM model provider. The selected word may be processed by that model provider. If the preferred translation provider times out, is busy or returns invalid/unavailable output, the backend may send that same word to MyMemory and return its translation. Results show the provider actually used. The backend does not pass page sentences, page URLs, saved vocabulary lists, email addresses or personal memory to lookup providers. It does not enable agent tools or MCP for translation.
 
-Chinese translation and the English fallback need a network connection; the extension is not completely offline. Closing the card does not add vocabulary, but does not undo requests already sent. Successful Chinese translations are cached locally for reuse for seven days, up to 500 entries; expired entries are ignored and removed on subsequent successful cache writes. This cache is separate from vocabulary and is excluded from vocabulary exports. Use browser site-access controls to restrict where selection lookup runs.
+Third-party processing and retention are governed by each provider's practices; this policy makes no promises on their behalf. Service references: [Cloudflare](https://www.cloudflare.com/privacypolicy/), [Tencent Cloud](https://www.tencentcloud.com/document/product/301/17345), [Hermes](https://hermes-agent.nousresearch.com/), [GLM provider](https://www.bigmodel.cn/), [MyMemory](https://mymemory.translated.net/) and [Free Dictionary API](https://dictionaryapi.dev/).
+
+A packaged English hit does not mean that the separate Chinese request is offline. Closing a card cannot undo a request already sent. The extension requires internet access for uncached online results, and the provider may have availability or quota limits. Browser site-access controls can restrict where the extension runs.
+
+## Caches and operational records
+
+Successful Chinese translations are retained on the device in a cache with at most 500 entries. Hermes results last up to seven days; MyMemory fallback results from the lookup service last up to one hour. Retained older anonymous translation caches keep their seven-day policy. English results use a bounded in-memory cache; packaged dictionary shards also have bounded memory caches. Translation caches are excluded from vocabulary exports.
+
+The backend keeps bounded in-memory lookup caches, request coalescing and rate-limit counters. Successful server lookup caches hold at most 1,000 entries per service; translation successes use the same seven-day/one-hour provider policy. Restarting the backend clears its in-memory records. Normal lookup creates no account, session or vocabulary database record.
+
+Application diagnostic logs use request IDs and response status, without word text, page sentences, URLs or credentials. The fixed gateway disables invocation logging and does not add request-body logging. Hosting platforms may retain infrastructure metadata according to their own settings and policies. This version does not promise a specific retention period for provider/platform records.
 
 ## Backups and history links
 
-Export creates a JSON file on your device containing all saved entries, including sentence contexts and full source URLs. These files can contain sensitive browsing information. You control where they are stored and with whom they are shared. Import processes the file locally. In an account partition, it prepares word/definition/history operations for transmission when sync is enabled, excluding local contexts and URLs. Repeated imports add counts and history again.
+Export creates a JSON file on your device containing saved vocabulary, counts, definition snapshots, sentences, URLs and timestamps. Such backups can contain sensitive browsing information. You decide where to keep or share them. Import adds counts and history, so repeatedly importing the same backup can duplicate those values. No import/export file is sent to the lookup service.
 
-Opening a saved HTTP(S) history link navigates to that website, which receives a normal browser request and is governed by its own privacy practices. Other URL schemes are displayed as text rather than opened from history.
+Opening a saved HTTP(S) source link makes a normal request to that website. Other URL schemes are displayed as text and are not opened as links. Websites you visit have their own privacy practices.
 
 ## Retention and deletion
 
-Vocabulary remains in extension IndexedDB until browser storage is removed. Deleting a word requires confirmation and hides its active lifecycle; account deletion operations create cloud tombstones to prevent accidental resurrection. Reset retains history. Upgrade snapshots and explicitly created recovery copies retain old words/requests privately, including local source text, until extension storage is removed; deleting an active word does not erase those copies. Server retention/account erasure must be documented for the actual deployed service before publication.
+Vocabulary remains in extension storage until it is deleted or the browser removes extension data. Deleting a word requires confirmation and removes it from the active vocabulary; resetting its count retains encounter history. Compatibility snapshots and existing local recovery copies can retain prior records until extension storage is cleared. Deleting an active word does not erase those snapshots, recovery copies or exported files. To remove all local extension data, remove the extension or clear its storage using browser controls; exported backups must be deleted separately.
 
-Disconnecting clears local device credentials and attempts server revocation, while retaining local/account vocabulary copies. It does not erase cloud data. Exported files remain separate copies and must be deleted separately. This version adds no extension-managed local encryption layer.
+This version adds no extension-managed encryption layer. Optional account data is protected in transit by HTTPS; this is not end-to-end encryption. GitHub sign-in supplies your GitHub numeric identity and login name to create or reopen your Remember Me account; the application requests no additional GitHub scopes. Session credentials are retained in extension storage, and the macOS client uses Keychain. After you confirm copying local vocabulary and enable sync, the service stores words, counts, definition snapshots, encounter identities/timestamps, review schedules/events and deletion state in your account. The original anonymous vocabulary remains on the device. Opening an account alone does not upload it. Contexts and URLs are excluded by the extension; native source sharing additionally requires explicit per-device/account consent. Pausing or disconnecting stops sending but does not delete already uploaded account data. Local backups and recovery copies remain independent. Account deletion and device revocation are explicit authenticated actions; provider/platform backup retention is not controlled by removing the extension.
 
 ## Pronunciation
 
-Phonetic transcriptions are read from a separately packaged IPA dictionary. This lookup is local and does not send the selected word to an external service. It does not rewrite saved vocabulary or history. Missing transcriptions are not generated from your context or uploaded for processing.
-
-Pronunciation uses browser speech synthesis only when you click **US** or **UK**, and prefers a matching local device voice. When only a matching remote voice is available, the browser's speech provider may process the clicked word. The extension passes no sentence context, source URL or vocabulary list to speech synthesis, and does not fetch audio URLs from dictionary or imported data. Voice availability and any remote processing depend on your browser/device.
+IPA is read from packaged US/UK dictionaries and does not require an online lookup. Clicking a speaker button uses browser speech synthesis and prefers an exact matching local voice. If a matching remote voice is used, the browser's speech provider may receive the clicked word. The extension sends no sentence, URL or vocabulary list to speech synthesis and does not fetch audio URLs from dictionary/imported data. Playback never records an encounter automatically.
 
 ## Permissions
 
-- **Storage:** retain settings, translation caches, device credentials and the original vocabulary snapshot. Vocabulary/outbox use IndexedDB.
-- **Identity:** open GitHub/backend PKCE login with an exact installed-extension callback.
-- **Alarms:** trigger bounded synchronization attempts while sync is enabled.
-- **Context menus:** offer the Remember Me shortcut for selected text.
-- **Site access:** detect selections, extract surrounding text when saving, show lookup cards and notifications on supported pages, and reach dictionary providers and your configured backend. Browser-internal and other restricted pages are unsupported. Local-file access requires the browser's separate permission where applicable.
+- Storage: retain local vocabulary, caches, theme and compatibility/recovery snapshots.
+- Context menus: offer the Remember Me shortcut for selected text.
+- Identity: open the GitHub login flow and return to this installed extension through its exact registered callback.
+- Alarms: request bounded synchronization of an explicitly enabled account.
+- Site access: detect selections and display cards on supported pages, capture a sentence/URL only when recording, and reach the internal lookup service. Browser-internal pages and other restricted sites are not supported. File pages require the browser's separate file-access permission.
 
-## Changes and contact
+Remember Me handles user data only to provide its word lookup and local vocabulary features, consistent with the Chrome Web Store User Data Policy and Limited Use requirements. Data is not transferred for advertising, sold, or used to determine creditworthiness.
 
-Changes to these practices will be reflected in this policy and, where necessary, in the extension's permissions or consent flow.
+Account-enabled builds request identity and alarms permissions for optional sign-in and synchronization. Development feedback builds have additional localhost/update permissions and are not the store package.
 
-- Developer/publisher: **[DEVELOPER NAME — required before publication]**
-- Privacy/support contact: **[PUBLIC EMAIL OR SUPPORT URL — required before publication]**
-- Effective date: **[PUBLICATION DATE]**
+## Contact and changes
+
+Developer/publisher: **naijoug**. Support and privacy questions: [Remember Me GitHub Issues](https://github.com/naijoug/rememeberme/issues).
+
+Issues are public. Do not post vocabulary exports, private page links, credentials or other sensitive information. If a request needs private details, first ask for a private communication method without including those details. GitHub processes support messages under its own policies.
+
+Changes to these practices will be reflected in this policy and, where required, in the extension's permissions or user choices.

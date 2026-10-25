@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { createApp, h, nextTick, type App } from 'vue';
 import CloudConnection from './CloudConnection.vue';
+import { SERVICE_ORIGIN } from '~/config/backend';
 import type { CloudStatus } from '~/services/cloud-vocabulary';
 let app: App, container: HTMLDivElement;
 const initial = (): CloudStatus => ({ connected: true, origin: 'https://api.example.test', owner: 'account:fixture',
@@ -14,7 +15,7 @@ afterEach(() => { app?.unmount(); container.remove(); vi.unstubAllGlobals(); });
 async function mount(send: ReturnType<typeof vi.fn>) {
   vi.stubGlobal('browser', { runtime: { sendMessage: send } });
   app = createApp({ render: () => h(CloudConnection) }); app.mount(container); await tick();
-  button('Cloud account').click(); await tick();
+
 }
 
 it('requires an explicit copy confirmation and does not send copy or enable from mounting', async () => {
@@ -49,4 +50,14 @@ it('refreshes the paused conflict state after a failed sync and confirms full re
   confirm.mockReturnValue(true);
   button('Archive changes').click(); await tick();
   expect(send).toHaveBeenLastCalledWith({ type: 'CLOUD_RECOVER' });
+});
+
+it('keeps service addresses hidden and uses the configured origin only for optional sync sign-in', async () => {
+  const send = vi.fn().mockResolvedValue({ success: true, data: { ...initial(), connected: false } });
+  await mount(send);
+  expect(container.querySelector('input')).toBeNull();
+  expect(container.textContent).not.toContain('https://');
+  expect(container.textContent).toContain('Translation works without signing in');
+  button('Sign in with GitHub').click(); await tick();
+  expect(send).toHaveBeenLastCalledWith({ type: 'CLOUD_CONNECT', origin: SERVICE_ORIGIN });
 });

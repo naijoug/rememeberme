@@ -17,12 +17,15 @@ import { handleBackgroundRequest } from '~/services/background-handler';
 import { reconnectLocalPage, startLocalFeedback } from '~/services/local-feedback';
 import { contextMenuStatus } from '~/services/context-menu-status';
 import type { BackgroundResponse } from '~/types';
+import { ACCOUNT_SYNC_ENABLED } from '~/config/backend';
 
 export default defineBackground(() => {
-  const synchronize = () => void storageService.synchronize().catch(() => {});
-  browser.alarms.onAlarm.addListener(alarm => { if (alarm.name === 'rememberme-sync') synchronize(); });
-  browser.alarms.create('rememberme-sync', { periodInMinutes: 1 });
-  browser.runtime.onStartup.addListener(synchronize);
+  const synchronize = () => { if (ACCOUNT_SYNC_ENABLED) void storageService.synchronize().catch(() => {}); };
+  if (ACCOUNT_SYNC_ENABLED) {
+    browser.alarms.onAlarm.addListener(alarm => { if (alarm.name === 'rememberme-sync') synchronize(); });
+    browser.alarms.create('rememberme-sync', { periodInMinutes: 1 });
+    browser.runtime.onStartup.addListener(synchronize);
+  }
   if (import.meta.env.MODE === 'feedback' && import.meta.env.COMMAND === 'serve') {
     startLocalFeedback();
   }
@@ -61,6 +64,7 @@ export default defineBackground(() => {
         && typeof message.type === 'string' && message.type.startsWith('CLOUD_');
       // Account controls are available only to extension pages, never webpage scripts.
       if (cloudMessage) {
+        if (!ACCOUNT_SYNC_ENABLED) return { success: false, error: 'Account sync is unavailable in this release.' } as const;
         if (!_sender.url?.startsWith(browser.runtime.getURL(''))) return { success: false, error: 'Account controls require an extension page.' } as const;
         return (await handleCloudMessage(message))!;
       }

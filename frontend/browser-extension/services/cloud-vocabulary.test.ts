@@ -126,6 +126,20 @@ it('rejects an invalid import before publishing any vocabulary change', async ()
   await expect(repository.importData(JSON.stringify([...legacy, { word: 'bad', count: -1 }]))).rejects.toThrow();
   expect(JSON.parse(await repository.exportData())).toEqual(legacy);
 });
+it('opens retained local vocabulary when account selection is disabled without erasing the old account', async () => {
+  local.values.set('local:words', legacy);
+  const name = 'fixture-' + crypto.randomUUID(), api = fixture();
+  const previous = new CloudVocabulary(new VocabularyDB(name), api.client);
+  await previous.openAccount(true);
+  await previous.saveWord('cloudonly', { ...definition, word: 'cloudonly' }, 'private fixture', 'https://example.test/account', 3);
+  const released = new CloudVocabulary(new VocabularyDB(name), api.client, false);
+  expect(JSON.parse(await released.exportData())).toEqual(legacy);
+  expect(await released.getWord('cloudonly')).toBeNull();
+  expect(api.calls).toHaveLength(0);
+  const restored = new CloudVocabulary(new VocabularyDB(name), api.client);
+  expect(await restored.getWord('cloudonly')).not.toBeNull();
+  expect(local.values.get('local:words')).toEqual(legacy);
+});
 
 it('retains the offline reset version through pull instead of overwriting another device count', async () => {
   local.values.set('local:words', legacy);

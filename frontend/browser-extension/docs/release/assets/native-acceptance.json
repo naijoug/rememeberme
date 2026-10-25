@@ -1,0 +1,13 @@
+{
+  "browser": "151.0.7922.34",
+  "extensionId": "fmbhpmdlbhbhpoldabodlgejiagpbjih",
+  "checks": [
+    "Native selected-text context menu displayed Remember Me and saved serendipity once with an encounter notification.",
+    "Actual browser toolbar popup displayed one word and count 1.",
+    "Popup menu contained Import, Export, Privacy & support and no API address/account controls.",
+    "Privacy & support opened trusted HTTPS policy with naijoug and GitHub Issues."
+  ],
+  "fixtureOnly": true,
+  "wordCount": 1,
+  "historyCount": 1
+}

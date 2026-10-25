@@ -1,6 +1,6 @@
-# Chrome Web Store listing — 0.1.0
+# Chrome Web Store materials — 0.1.1
 
-Prepared copy for the current implementation. Publishing account, contact and public policy URL remain owner-supplied. UI language is English; the Chinese copy is an optional localized listing, not a claim of Chinese UI support.
+Publisher: **naijoug**. Support: [GitHub Issues](https://github.com/naijoug/rememeberme/issues). Public privacy policy: [Remember Me Privacy Policy](https://lookup.couplelabs.cn/privacy). UI language is English; the Chinese listing is an optional localization.
 
 ## English listing
 
@@ -10,70 +10,56 @@ Prepared copy for the current implementation. Publishing account, contact and pu
 
 **Description:**
 
-Remember Me helps you keep track of English words you forget while reading.
+Select a single English word on a supported webpage to see a Chinese translation, English definition and pronunciation. No login or service setup is needed. English lookup uses the packaged WordNet dictionary first. Online requests go through the Remember Me service, which combines isolated Hermes AI translation with MyMemory fallback and Free Dictionary API. Results identify the source actually used. Online results require internet access and may be limited by service availability or quotas.
 
-Select a single English word on a supported webpage to see its definition. Click the bookmark counter to save the word and its sentence, click time and source URL. Each click increases the count and creates a separate record while the card stays open. Expand Records, then an individual entry to inspect its context. Use X or Escape to close without recording.
+Click the bookmark counter to save the word, its sentence, encounter time and source URL. Each intentional click adds one record and increases its count. Closing the card with X or Escape does not save it. The selection context-menu shortcut looks up and records the selected word.
 
-You can also select a word and choose Remember Me from the right-click menu to look it up and save it.
+Open the toolbar popup to search and sort vocabulary, review encounter history, reset a count while keeping history, delete with confirmation, and import/export JSON backups. Vocabulary remains on your device. This release has no login or cloud synchronization controls.
 
-Open the toolbar popup to:
-
-- Review definitions, forget counts, and encounter history.
-- Sort words by count or last updated time.
-- Reset a count while retaining history.
-- Delete a word after confirmation.
-- Export your vocabulary as JSON or import an existing backup.
-
-Local vocabulary needs no account. Optional GitHub login connects your HTTPS backend for Hermes translation; account copy and sync enablement are explicit choices. Disconnected Chinese translation retains MyMemory. English definitions use packaged WordNet first, with Free Dictionary API as fallback. The sources load independently, so one failure does not hide the other result. Online services have network and quota limits. Saved history and JSON backups include surrounding text and full source URLs; keep backups private when they contain sensitive information.
-
-The extension supports individual English words, not phrases. It does not run on browser-internal or other restricted pages. Import merges counts and history, so importing the same backup repeatedly adds its entries again. Optional account sync uploads words and definition history while keeping outgoing contexts and source URLs local. Conflicts/restored servers pause synchronization and retain private recovery copies.
+Only single English words are supported. Browser-internal pages, the Chrome Web Store and other restricted pages are unsupported. Saved histories and exports include surrounding text and complete URLs; keep sensitive backups private. Selecting a word can send that word for translation before saving. Sentences, page URLs and vocabulary lists are not uploaded. Repeated imports add counts and history again.
 
 ## 中文商店文案
 
 **名称：** Remember Me
 
-**简介：** 阅读时查询英文单词，记录遗忘次数、上下文和来源，建立保存在浏览器本地的词库。
+**简介：** 划词查询英文释义和中文翻译，记录遗忘次数、上下文和来源，词库保存在浏览器本地。
 
 **详细介绍：**
 
-在支持的网页上选中一个英文单词，即可查看释义。点击书签计数按钮，每次加 1，并保存当时的句子、点击时间和来源链接；弹窗保持打开。展开 Records 后点击单条记录即可查看上下文；X 或 Esc 关闭卡片。也可以在选中单词后，使用右键菜单中的 Remember Me 查询并保存。
+在支持的网页上选中一个英文单词，即可查看中文翻译、英文释义和发音。无需登录或配置服务地址。英文优先使用内置 WordNet；在线查询统一通过 Remember Me 服务，整合隔离的 Hermes AI 翻译、MyMemory 回退和 Free Dictionary API，并显示实际使用的来源。
 
-在工具栏弹窗中查看词库和历史，按遗忘次数或最近更新时间排序，重置次数但保留历史，确认后删除单词，以及通过 JSON 导入、导出备份。
+点击书签计数按钮，每次加 1，并保存当时的句子、时间和来源链接。X 或 Esc 关闭卡片不会保存；划词后使用 Remember Me 右键菜单会查询并记录该词。在工具栏弹窗中搜索、排序词库、查看历史，重置次数但保留历史，确认后删除，以及导入、导出 JSON 备份。
 
-本地词库无需账号。可选 GitHub 登录连接 HTTPS 后端，中文翻译通过 Hermes；未连接时保留 MyMemory。复制词库和启用同步需要明确操作，插件上传单词与释义历史，不上传上下文和来源网址；英文释义优先使用内置 WordNet，缺失时使用 Free Dictionary API。中英结果分别加载，一方失败不会隐藏另一方的结果。在线服务有网络和额度限制。词库保存在浏览器本地，历史和导出文件包含上下文与完整来源网址，请妥善保管。仅支持单个英文单词，不支持浏览器内部或其他受限页面。可选账号同步遇到冲突或服务器恢复会暂停并保留恢复副本；重复导入同一备份会再次累加次数和历史。
+本版本没有登录或云同步入口。词库、句子和完整来源网址保存在本地，不上传到查询服务。选词时可能先发送该单词进行在线翻译；在线结果受网络和额度限制。历史和备份可能包含敏感信息，请妥善保管。仅支持单个英文单词；浏览器内部页、商店等受限页面不支持。重复导入会再次累加次数和历史。插件界面语言为英文。
 
-## Privacy dashboard copy
+## Privacy dashboard fields
 
-**Single purpose:** Help users learn English vocabulary encountered while reading by showing definitions and keeping a local history of words they forget.
+**Single purpose:** Help users learn English words encountered while reading by showing definitions/translations and keeping a local encounter history.
 
 | Permission | Justification |
 | --- | --- |
-| `storage` | Persist settings, translation caches, origin-scoped device credentials and the original local snapshot; vocabulary and its durable queue use IndexedDB. |
-| `identity` | Complete GitHub/backend PKCE login through the exact extension callback. |
-| `alarms` | Trigger bounded account sync attempts when explicitly enabled. |
-| `contextMenus` | Add a Remember Me action when text is selected, allowing the user to look up and save that word from the page's context menu. |
-| `<all_urls>` / content-script site access | Users read on arbitrary websites. Static content scripts detect selected English words and display a definition card, and capture sentence context and the page URL when the user saves. Host access also permits HTTPS dictionary requests to api.dictionaryapi.dev. The extension does not bulk-upload page content or browsing history. Browser restrictions still apply. |
+| `storage` | Keep local settings, translation caches and compatibility/recovery snapshots; vocabulary uses IndexedDB. |
+| `contextMenus` | Offer the Remember Me action for selected text to look up and record a word. |
+| Site/host access | Detect English selections on arbitrary supported HTTP(S) pages and show a card. Capture sentence and URL locally only when the user records the word. Reach the internal HTTPS lookup service for word-only queries. Restricted browser pages remain unsupported. |
 
-**Remote code:** No. Executable JavaScript and CSS are bundled in the extension. The external dictionary returns data parsed as JSON, not executable code. Submit the production ZIP; feedback builds use localhost development code and must never be submitted.
+**Remote code:** No. Executable code and styles are packaged. Online services return validated JSON data. Submit the production Chrome ZIP; never submit development feedback output.
 
-**Data handling notes for the owner:** Do not declare that no information leaves the device. Connected Chinese queries send the selected word through backend/Hermes and its model provider; disconnected queries use MyMemory, including on WordNet hits; English misses or local file failures may send it to Free Dictionary API. Full saved contexts and URLs remain local unless exported/shared or a history link is opened. Read current dashboard categories against these facts before certifying checkboxes. Selected words are website content even if no vocabulary is saved. Account sync, device credentials, private recovery copies, local caching, history, exports and provider metadata are described in the policy. Do not submit this draft until actual backend retention and installed-client OAuth/privacy flows are verified.
-
-**Privacy policy URL:** pending public hosting of [privacy-policy.md](privacy-policy.md).
-
-**Developer identity/support:** pending owner-provided public details.
+**Data-use disclosure:** Selected words are website content and can leave the device for lookup before saving. Infrastructure processes connection metadata such as IP address and timing. Saved context, complete URLs and vocabulary remain local; exports may contain sensitive browsing information. Do not select a blanket “no data leaves the device” declaration. Declare website content and the applicable interaction/connection metadata categories based on the live dashboard wording, consistently with the policy. This release collects no account identifiers, authentication information, payment, health or precise-location data for its lookup feature. No advertising, sale, analytics, profiling or creditworthiness use. Data-use certifications are the publisher's final submission action.
 
 ## Reviewer instructions
 
-No login or paid account is needed. Install the production build in a disposable profile and open an ordinary English webpage. Select `apple`, wait for a definition, and click the bookmark counter. Open the extension popup to inspect the stored entry; select it again and use X to close without saving. Test the right-click shortcut separately. Export a fixture backup and import into an empty disposable profile. Reset retains history; deletion opens a confirmation dialog. See [testing.md](../testing.md) for full expected behavior.
+No login or payment is needed. Install the production ZIP in a disposable profile. Open an ordinary English webpage and select `serendipity`: packaged English and online Chinese load independently. Click the bookmark counter twice to save count 2 and two histories. Select another word and close the card without saving. Test the native right-click shortcut separately. In the popup, reset the count (history remains), cancel a deletion, export a fixture, confirm deletion and import that fixture once. Invalid JSON must leave vocabulary unchanged. Restart the browser and check persistence.
 
-Packaged English entries such as `apple` and `serendipity` remain usable without an external connection. Check Chinese translation separately using `curated`; if English lookup fails but Chinese succeeds, the Chinese result stays visible and can be saved. If both lookups fail, the page counter can still record the word/context when explicitly clicked. Browser-internal pages, the web store, and other restricted pages are not supported. After an update, reload existing webpages so their content scripts match the installed version.
+No service address or login configuration is displayed. “Privacy & support” opens the public policy. Online failures must leave a useful English result visible; explicit saving can still record a word when providers fail. Reload existing webpages after an extension update. Use only disposable examples; never submit private vocabulary or URLs as review evidence.
 
-## Image assets
+## Assets and evidence
 
-- Extension icon: [128 px PNG](../../public/icon/128.png), with [editable SVG](assets/icon.svg).
-- Small promotional tile: [440 × 280 PNG](assets/promo-small.png), with [editable SVG](assets/promo-small.svg).
-- [Selection screenshot](assets/screenshot-selection.png): 1280 × 800, captured from the installed production extension in a disposable Chrome for Testing profile, with synthetic article text and a fixture dictionary definition.
-- [Popup verification image](assets/popup-verification.png): 400 × 600, for review only, not a store-sized upload. Captures count reset retaining history.
-- Do not use historical design prototypes as product screenshots. See the release verification record for the limits of these captures.
+- [128 × 128 icon](../../public/icon/128.png), [editable icon](assets/icon.svg).
+- [440 × 280 promotional tile](assets/promo-small.png).
+- [1280 × 800 installed selection screenshot](assets/screenshot-selection.png).
+- [400 × 600 popup verification image](assets/popup-verification.png), for engineering review rather than store upload.
+- [0.1.1 upgrade/offline popup acceptance](assets/upgrade-acceptance.json).
+- [Historical 0.1.0 native toolbar and right-click acceptance](assets/native-acceptance.json) and [native screenshot](assets/native-toolbar.jpg).
+- [Formal ZIP acceptance result](assets/release-acceptance.json) and the dated verification record distinguish actual checks from remaining manual/external steps.
 
-Official references checked 2026-09-29: [privacy fields](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy), [image requirements](https://developer.chrome.com/docs/webstore/images), [publishing](https://developer.chrome.com/docs/webstore/publish/).
+Official requirements checked 2026-10-15: [privacy fields](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy), [images](https://developer.chrome.com/docs/webstore/images). Prepared materials do not constitute store submission or approval.

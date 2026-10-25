@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { Bookmark, Refresh, WarningTriangle, Xmark, IconoirProvider } from '@iconoir/vue';
+import { Bookmark, BookmarkSolid, Refresh, WarningTriangle, Xmark, IconoirProvider } from '@iconoir/vue';
 import type { Definition, Position, WordEntry } from '~/types';
 import HighlightedText from './HighlightedText.vue';
 import DefinitionSource from './DefinitionSource.vue';
@@ -10,9 +10,9 @@ import WordPronunciation from './WordPronunciation.vue';
 
 const props = defineProps<{
   word: string; position: Position; visible: boolean; definition?: Definition;
-  loading?: boolean; error?: string; saving?: boolean; saveError?: string; inline?: boolean;
+  loading?: boolean; error?: string; saving?: boolean; recorded?: boolean; saveError?: string; inline?: boolean;
   englishLoading?: boolean; translationLoading?: boolean; englishError?: string; translationError?: string;
-  savedWord?: WordEntry | null; recordsLoading?: boolean; recordsError?: string; pendingSaves?: number;
+  savedWord?: WordEntry | null; recordsLoading?: boolean; recordsError?: string;
 }>();
 const emit = defineEmits<{ record: []; close: []; retry: [] }>();
 const card = ref<HTMLElement>();
@@ -66,9 +66,11 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener('resize',
         <WordPronunciation :word="word" :definition="definition" />
       </div>
       <div class="lookup-actions" role="group" aria-label="Word actions">
-        <button class="record-button" :aria-label="'Add a record for ' + word + ' (+1), count ' + displayedCount" title="Add to vocabulary and record this encounter (+1)" :aria-busy="saving" @click="emit('record')">
-          <Bookmark width="18" height="18" aria-hidden="true" /><span class="record-count" aria-live="polite">{{ displayedCount }}</span>
-          <Refresh v-if="pendingSaves" class="rm-spinner" width="12" height="12" aria-hidden="true" />
+        <button class="record-button" :class="{ 'is-recorded': recorded }" :disabled="saving || recorded" :aria-label="(saving ? 'Saving a record for ' : recorded ? 'Recorded ' : 'Add a record for ') + word + ', count ' + displayedCount" :title="recorded ? 'Recorded for this popup' : saving ? 'Saving this encounter…' : 'Add to vocabulary and record this encounter (+1)'" :aria-busy="saving" @click="!saving && !recorded && emit('record')">
+          <Refresh v-if="saving" class="record-icon rm-spinner" width="18" height="18" aria-hidden="true" />
+          <BookmarkSolid v-else-if="recorded" class="record-icon" width="18" height="18" aria-hidden="true" />
+          <Bookmark v-else class="record-icon" width="18" height="18" aria-hidden="true" />
+          <span class="record-count" aria-live="polite">{{ displayedCount }}</span>
         </button>
         <button class="rm-icon-btn" aria-label="Close definition" @click="emit('close')"><Xmark width="18" height="18" aria-hidden="true" /></button>
       </div>
@@ -104,7 +106,7 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener('resize',
       <WordHistory :word="word" :history="savedWord.history" :heading="false" />
     </details>
     <p v-if="saveError" class="save-error" role="alert">{{ saveError }}</p>
-    <p v-if="pendingSaves" class="lookup-note" role="status">Saving {{ pendingSaves }} {{ pendingSaves === 1 ? 'record' : 'records' }}…</p>
+    <p v-if="saving" class="lookup-note" role="status">Saving this encounter…</p>
     <p v-if="recordsError" class="lookup-note" role="alert">{{ recordsError }}</p>
     </div>
   </section>

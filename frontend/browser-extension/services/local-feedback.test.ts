@@ -20,14 +20,14 @@ afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 describe('local feedback updates', () => {
   it('reconnects only the clicked frame without reloading the page', async () => {
     await reconnectLocalPage(7, 3);
-    expect(api.scripting.executeScript).toHaveBeenCalledExactlyOnceWith({ target: { tabId: 7, frameIds: [3] }, files: ['content-scripts/content.js'] });
+    expect(api.scripting.executeScript).toHaveBeenCalledExactlyOnceWith({ target: { tabId: 7, frameIds: [3] }, files: ['/content-scripts/content.js'] });
     expect(api.tabs.reload).not.toHaveBeenCalled();
   });
   it('registers the current scripts and replaces them on open pages without reloading pages', async () => {
     await refreshLocalContent(payload);
     expect(api.scripting.registerContentScripts).toHaveBeenCalledWith([{ ...payload.contentScript, id: 'wxt:content-scripts/content.js' }]);
     expect(api.scripting.executeScript).toHaveBeenCalledTimes(2);
-    expect(api.scripting.executeScript).toHaveBeenCalledWith({ target: { tabId: 1, allFrames: false }, files: payload.contentScript.js });
+    expect(api.scripting.executeScript).toHaveBeenCalledWith({ target: { tabId: 1, allFrames: false }, files: ['/content-scripts/content.js'] });
     expect(api.scripting.removeCSS).toHaveBeenCalledTimes(2);
     expect(api.scripting.insertCSS).toHaveBeenCalledTimes(2);
     expect(api.tabs.reload).not.toHaveBeenCalled();

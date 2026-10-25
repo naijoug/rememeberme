@@ -6,12 +6,15 @@ export async function reconnectLocalPage(tabId: number, frameId: number): Promis
   const files = ['content-scripts/content.css'];
   await browser.scripting.removeCSS({ target, files });
   await browser.scripting.insertCSS({ target, files });
-  await browser.scripting.executeScript({ target, files: ['content-scripts/content.js'] });
+  await browser.scripting.executeScript({ target, files: ['/content-scripts/content.js'] });
 }
 
 export async function refreshLocalContent({ contentScript }: ReloadContentScriptPayload): Promise<void> {
   const files = contentScript.js;
   if (!files?.length) return;
+  const scriptFiles = files.map(file => file.startsWith('/') ? file : '/' + file)
+    .filter((file): file is '/content-scripts/content.js' => file === '/content-scripts/content.js');
+  if (scriptFiles.length !== files.length) throw new Error('Unexpected local content script path');
   const id = `wxt:${files[0]}`;
   const registered = await browser.scripting.getRegisteredContentScripts();
   const updated = { ...contentScript, id, css: contentScript.css ?? [] };
@@ -31,7 +34,7 @@ export async function refreshLocalContent({ contentScript }: ReloadContentScript
         await browser.scripting.insertCSS({ target, files: contentScript.css });
       }
       // WXT invalidates the previous content context when this script starts.
-      await browser.scripting.executeScript({ target, files });
+      await browser.scripting.executeScript({ target, files: scriptFiles });
     } catch {
       // Restricted pages or tabs closed during an update cannot be injected.
       // New/reloaded eligible pages still use the registered current version.

@@ -27,9 +27,29 @@ beforeEach(() => {
   vi.stubGlobal('browser', { runtime: { sendMessage } });
   vi.spyOn(console, 'error').mockImplementation(() => {});
 });
-afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('vocabulary client through the background handler (mock transport/storage)', () => {
+  it('ends a stalled read with a retryable error and lets the next read recover without writes', async () => {
+    vi.useFakeTimers();
+    sendMessage.mockImplementationOnce(() => new Promise(() => {}));
+    const failed = expect(storageClient.getAllWords()).rejects.toThrow('extension is restarting');
+    await vi.advanceTimersByTimeAsync(10_000); await failed;
+    expect(await storageClient.getAllWords()).toEqual([]);
+    expect(sendMessage).toHaveBeenCalledTimes(2); expect(store.setItem).not.toHaveBeenCalled();
+  });
+
+  it('does not time out or retry a pending write while bounding read requests', async () => {
+    vi.useFakeTimers();
+    let release!: (value: any) => void;
+    sendMessage.mockImplementationOnce(() => new Promise(resolve => { release = resolve; }));
+    const settled = vi.fn();
+    const saving = save('apple').then(settled);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(settled).not.toHaveBeenCalled(); expect(sendMessage).toHaveBeenCalledTimes(1);
+    release({ success: true, data: { word: 'apple', count: 1 } });
+    await saving; expect(settled).toHaveBeenCalledWith({ word: 'apple', count: 1 });
+  });
   it('persists one count and distinct sentence/time/URL per click and retains records after reset', async () => {
     const word = 'architecture';
     const meaning = { ...definition, word };
