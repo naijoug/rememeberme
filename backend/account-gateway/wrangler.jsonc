@@ -1,0 +1,17 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "rememberme-account",
+  "account_id": "5c11819c6fdb08421e6d58084e37f028",
+  "main": "index.ts",
+  "compatibility_date": "2026-10-14",
+  "workers_dev": false,
+  "preview_urls": false,
+  "send_metrics": false,
+  "observability": { "enabled": false },
+  "vars": {
+    "PUBLIC_ORIGIN": "https://rememberme.couplelabs.cn",
+    "CLIENT_ORIGIN": "chrome-extension://blmbjchnpodecheenfmajdjfpmgimdcj"
+  },
+  "vpc_services": [{ "binding": "ACCOUNT_SERVICE", "service_id": "00000000-0000-0000-0000-000000000000" }],
+  "ratelimits": [{ "name": "ACCOUNT_RATE", "namespace_id": "21002", "simple": { "limit": 300, "period": 60 } }]
+}

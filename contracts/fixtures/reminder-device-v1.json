@@ -1,0 +1,6 @@
+{
+  "request": {"enabled": true, "expectedRevision": 0},
+  "response": {"deviceId": "synthetic-device-A", "revision": 1},
+  "released": {"deviceId": null, "revision": 2},
+  "invalidResponses": [{"deviceId": "", "revision": 1}, {"deviceId": null, "revision": -1}, {"deviceId": null, "revision": 9007199254740992}]
+}

@@ -22,7 +22,10 @@
     "dev:worker": "wrangler dev --local --ip 127.0.0.1 --port 8787",
     "build:worker": "wrangler deploy --env \"\" --dry-run --outdir .build",
     "test:worker": "vitest run",
-    "typecheck:worker": "tsc --noEmit"
+    "typecheck:worker": "tsc --noEmit",
+    "cf:check": "node scripts/cloudflare.mjs check",
+    "cf:deploy": "node scripts/cloudflare.mjs deploy",
+    "test:cloudflare": "node --test scripts/cloudflare.test.mjs"
   },
   "dependencies": {
     "@hono/node-server": "2.1.5",

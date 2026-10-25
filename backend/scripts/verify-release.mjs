@@ -16,6 +16,7 @@ try {
   assert.ok(names.includes('runtime/server.mjs') && names.includes('runtime/scripts/restore.mjs'));
   assert.ok(names.every(name => !name.includes('..') && !name.startsWith('/') && !/\.(sqlite|db)(-|$)/.test(name)
     && !name.endsWith('/api.env') && !name.endsWith('/.env')), 'Archive must exclude databases and credentials');
+  assert.ok(names.every(name => !name.split('/').includes('__pycache__') && !/\.py[cod]$/.test(name)), 'Archive must exclude Python caches');
   assert.equal(spawnSync('tar', ['-xzf', archive, '-C', directory]).status, 0);
   const reservation = createServer(); reservation.listen(0, '127.0.0.1'); await once(reservation, 'listening');
   const port = reservation.address().port; await new Promise(resolve => reservation.close(resolve));
@@ -37,12 +38,16 @@ try {
     child.once('exit', code => { clearTimeout(timer); reject(new Error('Release stopped: ' + code + ' ' + output.slice(-2000))); });
   });
   for (const [path, status, mime] of [['/api/v1/health', 200, 'application/json'], ['/api/v1/me', 401, 'application/json'],
+    ['/api/v1/lookup/dictionary', 401, 'application/json'], ['/api/v1/lookup/translation', 401, 'application/json'],
     ['/auth/missing', 404, 'application/json'], ['/', 200, 'text/html']]) {
     const response = await fetch(origin + path, { redirect: 'error' });
     assert.equal(response.status, status); assert.ok(response.headers.get('content-type').includes(mime)); await response.body.cancel();
   }
   const capability = await (await fetch(origin + '/api/v1/capabilities')).json();
-  assert.equal(capability.translation, false); assert.ok(capability.translationSources.includes('hermes'));
+  assert.equal(capability.translation, true); assert.equal(capability.dictionary, true);
+  assert.equal(capability.publicLookup, true);
+  assert.ok(names.includes('runtime/public/dictionary/wordnet/metadata.json') && names.includes('runtime/public/dictionary/wordnet/LICENSE.txt'));
+  assert.ok(capability.translationSources.includes('hermes') && capability.translationSources.includes('mymemory'));
   // A second SQLite connection produces a live WAL fixture for the online backup.
   const writer = new DatabaseSync(databasePath);
   writer.exec("PRAGMA journal_mode=WAL; INSERT INTO users(id,provider_id,login,sync_epoch,created_at) VALUES('synthetic-user','synthetic-provider','Synthetic','old-epoch',1)");

@@ -1,13 +1,18 @@
 import { ApiError, MAX_BODY_BYTES, json } from '../../contracts/api-v1';
 
-export async function boundedJSON(body: ReadableStream<Uint8Array> | null, maximum = MAX_BODY_BYTES): Promise<unknown> {
+export async function boundedJSON(body: ReadableStream<Uint8Array> | null, maximum = MAX_BODY_BYTES, signal?: AbortSignal): Promise<unknown> {
   if (!body) throw new ApiError('INVALID_JSON');
   const reader = body.getReader(); const chunks: Uint8Array[] = []; let bytes = 0;
   let timeout: ReturnType<typeof setTimeout> | undefined;
   const deadline = new Promise<never>((_, reject) => { timeout = setTimeout(() => reject(new ApiError('BODY_TIMEOUT', 408, true)), 10_000); });
+  let onAbort: (() => void) | undefined;
+  const aborted = new Promise<never>((_, reject) => {
+    onAbort = () => reject(new ApiError('BODY_TIMEOUT', 408, true));
+    if (signal?.aborted) onAbort(); else signal?.addEventListener('abort', onAbort, { once: true });
+  });
   try {
     while (true) {
-      const result = await Promise.race([reader.read(), deadline]);
+      const result = await Promise.race([reader.read(), deadline, aborted]);
       if (result.done) break;
       bytes += result.value.byteLength;
       if (bytes > maximum) throw new ApiError('REQUEST_TOO_LARGE', 413);
@@ -22,7 +27,7 @@ export async function boundedJSON(body: ReadableStream<Uint8Array> | null, maxim
     await reader.cancel().catch(() => undefined);
     if (error instanceof ApiError) throw error;
     throw new ApiError('INVALID_JSON');
-  } finally { clearTimeout(timeout); reader.releaseLock(); }
+  } finally { clearTimeout(timeout); if (onAbort) signal?.removeEventListener('abort', onAbort); reader.releaseLock(); }
 }
 export async function requestJSON(request: Request): Promise<unknown> {
   if (!request.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase().endsWith('/json')) throw new ApiError('JSON_REQUIRED', 415);

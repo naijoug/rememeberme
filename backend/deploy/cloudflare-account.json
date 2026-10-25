@@ -1,0 +1,8 @@
+{
+  "expectedEmail": "naijoug@outlook.com",
+  "credentialsFile": "/Users/guojian/Workspace/naijoug/.cloudflare/credentials.env",
+  "accountId": "5c11819c6fdb08421e6d58084e37f028",
+  "blockedAccountIds": [
+    "83d5b273d7ceb2b02a9f454f67ac495b"
+  ]
+}

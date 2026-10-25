@@ -1,0 +1,20 @@
+[Unit]
+Description=Remember Me temporary lookup-only bridge
+After=network-online.target rememberme-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rememberme
+Group=rememberme
+ExecStart=/usr/bin/node /opt/rememberme/temporary/lookup-bridge.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+MemoryMax=96M
+
+[Install]
+WantedBy=multi-user.target

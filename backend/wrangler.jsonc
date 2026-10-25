@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
+  "account_id": "00000000000000000000000000000000",
   "name": "remember-me-api-local",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-09",

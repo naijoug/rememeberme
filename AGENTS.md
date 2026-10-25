@@ -1,5 +1,12 @@
 # Working in Remember Me
 
+## Personal Cloudflare account
+
+- Before external account operations, read `/Users/guojian/Workspace/naijoug/AGENTS.md`. This also applies to worktrees and temporary checkouts originating here.
+- Cloudflare must use verified `naijoug@outlook.com`; never use `guojian@hoxigames.com` or account `83d5b273d7ceb2b02a9f454f67ac495b` for deployment.
+- Use `backend/scripts/cloudflare.mjs` for gateway/Pages deployment. It explicitly reads the shared workspace token from `/Users/guojian/Workspace/naijoug/.cloudflare/credentials.env` and verifies email, active membership and explicit account ID. Do not bypass it with raw Wrangler, inherited credentials or a global login.
+- Read `backend/docs/cloudflare-account-migration.md` before migration work. Zero VPC IDs intentionally block gateway deployment until personal resources are verified; historical company IDs are inventory, not deployment targets.
+
 - The browser package is `frontend/browser-extension/` (WXT, Vue 3, TypeScript). Run extension npm commands there. The unified Node/SQLite API has its own package/lockfile under `backend/`; use its README, `.nvmrc` and package commands for backend work. Native Apple clients use Xcode / SwiftPM under `frontend/apple/`; see its README and `docs/testing.md`. The repository root has no Node package.
 - Use the package's `.nvmrc` and `npm ci`. Keep `package.json` and `package-lock.json` in sync when changing dependencies or runtime requirements.
 - Edit source files, not generated `.wxt/`, `.output/`, or `node_modules/` directories. `frontend/designs/` contains reference prototypes, not the extension runtime.

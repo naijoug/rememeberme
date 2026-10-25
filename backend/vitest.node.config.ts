@@ -7,5 +7,6 @@ export default defineConfig({
     { find: 'cloudflare:test', replacement: path('./tests/node-bindings.ts') },
     { find: path('./tests/network.ts'), replacement: path('./tests/network-node.ts') },
   ] },
-  test: { environment: 'node', setupFiles: ['./tests/setup-node.ts'], fileParallelism: false },
+  // scripts/cloudflare.test.mjs uses node:test and must run via test:cloudflare.
+  test: { include: ['tests/**/*.test.{ts,mjs}'], environment: 'node', setupFiles: ['./tests/setup-node.ts'], fileParallelism: false },
 });

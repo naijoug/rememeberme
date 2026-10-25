@@ -3,6 +3,8 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SQLiteDatabase } from './sqlite';
 import { HermesTranslator } from './hermes';
+import { ServerDictionary, ServerTranslator, MyMemoryTranslator } from './lookup';
+import { ServerWordNet } from './wordnet';
 import type { Bindings, Limiter } from './runtime';
 
 export class WindowLimiter implements Limiter {
@@ -42,8 +44,11 @@ export function createRuntime(options: {
       NATIVE_CALLBACKS: config.NATIVE_CALLBACKS || 'rememberme://auth/callback',
       CLIENT_ORIGINS: config.CLIENT_ORIGINS || '',
       GITHUB_CLIENT_ID: config.GITHUB_CLIENT_ID || '', GITHUB_CLIENT_SECRET: config.GITHUB_CLIENT_SECRET || '',
-      AUTH_LIMIT: new WindowLimiter(30), API_LIMIT: new WindowLimiter(300),
-      TRANSLATOR: hermes,
+      AUTH_LIMIT: new WindowLimiter(30), API_LIMIT: new WindowLimiter(300), LOOKUP_LIMIT: new WindowLimiter(30),
+      DICTIONARY: new ServerDictionary(fetch, 6000, new ServerWordNet(existsSync(resolve(options.publicDirectory, 'dictionary/wordnet'))
+        ? resolve(options.publicDirectory, 'dictionary/wordnet') : resolve(options.publicDirectory, '../.build/dictionary/wordnet'))),
+      TRANSLATOR: hermes || config.MYMEMORY_ENABLED !== 'false'
+        ? new ServerTranslator(hermes, config.MYMEMORY_ENABLED === 'false' ? undefined : new MyMemoryTranslator()) : undefined,
       ASSETS: { fetch: () => new Response(homepage, { headers: { 'Content-Type': 'text/html; charset=utf-8' } }) },
     };
   } catch (error) { database.close(); throw error; }

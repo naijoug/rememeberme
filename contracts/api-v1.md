@@ -68,12 +68,29 @@ sharing Hermes snapshots: old validators may reject that new source.
 
 Authenticated `POST /api/v1/lookup/translation` accepts exactly
 `{"word":"synthetic","target":"zh-CN"}` and returns
-`{"translation":{"text":"...","target":"zh-CN","source":"hermes"}}`.
-Only a normalized single English word is supported. Provider failures remain
-separate from local English lookup and vocabulary persistence. Hermes credentials,
+`{"translation":{"text":"...","target":"zh-CN","source":"hermes"}}` or the same shape with `source: mymemory` for server fallback.
+Only a normalized single English word is supported. The server prefers Hermes and uses MyMemory on timeout/busy/upstream failure; profile-isolation failures remain explicit. `MYMEMORY_ENABLED=false` disables the fallback. Provider failures remain separate from local English lookup and vocabulary persistence. Hermes credentials,
 URLs, model selection and tools are never client parameters.
 
 The default runtime now uses Node/SQLite with the existing SQL/atomic guards.
 Exact extension callback/CORS allowlists support browser PKCE device sessions.
 The API remains v1; the source extension does not change legacy number/history
-semantics or operation IDs. Hosted deployment remains pending.
+semantics or operation IDs. Node/SQLite and Hermes have a private Tencent deployment; the automatic lookup release is activated and server-local acceptance passes; public/installed-client acceptance remains blocked by filing.
+
+## Server dictionary lookup (2026-10-14)
+
+Authenticated `POST /api/v1/lookup/dictionary` accepts exactly `{"word":"synthetic"}` and returns `{"definition":{...}}` using the existing Definition shape and `source: wordnet` or `source: dictionary-api`. The server checks its licensed packaged WordNet first, then a fixed Free Dictionary API URL, bounds body/timeout/concurrency and caches successful results. Both lookup routes normalize one English word, reject context/URL/provider parameters and use normal account authentication/rate limits. `capabilities.dictionary` reports configuration, not upstream readiness. Unknown words return `DICTIONARY_NOT_FOUND` (404); quota/unavailable/busy return 503, timeout 504 and invalid response 502. No vocabulary write or sync enablement occurs. The current Tencent release implements these routes and server-local acceptance passes; public access remains blocked by filing.
+
+## Automatic public lookup (2026-10-14)
+
+The browser's normal lookup uses public `POST /api/v1/public/lookup/dictionary` and `POST /api/v1/public/lookup/translation`. They accept the same exact word-only bodies and responses as the authenticated routes above, but require no account/session. They are registered before account middleware, after exact origin checking, and limited to 30 requests/minute/IP. No public route grants access to account data or vocabulary. Public lookup creates no user/session/vocabulary rows. `capabilities.publicLookup` reports availability of the limiter/configuration, not upstream readiness.
+
+Dictionary source can be `wordnet` from server-packaged licensed assets or `dictionary-api` from the fixed external provider. Server WordNet uses identical spelling/shard/suffix rules as the extension. Uncovered words still require the remote provider; Tencent's observed Free Dictionary egress timeout remains a provider limitation. Hermes has twelve seconds, MyMemory four, and updated browser translation has a twenty-second service/twenty-two-second UI deadline. No API address or key appears as a user input.
+
+## Account reminder device (`reminder-device-v1`)
+
+SQLite migration `0006_reminder_device.sql` adds a nullable selected device and a monotonic revision to each account. `/api/v1/capabilities` and `/api/v1/me` advertise `reminder-device-v1`. `/me` adds `reminderDevice: { deviceId: string | null, revision: integer }`; older clients may ignore it. Missing capability/field means unsupported, not permission to schedule on every signed-in device.
+
+`PUT /api/v1/reminder-device` accepts exactly `{ enabled: boolean, expectedRevision: integer }`. A true request selects the authenticated device; false releases only that device's own selection. Clients cannot supply another device/user ID. The database update atomically checks revision, live account/session/device and increments revision. Stale or unauthorized release returns nonretryable `REMINDER_SELECTION_CHANGED` (409). Exhausted revisions return `VERSION_EXHAUSTED`; malformed input is rejected. Response is the new `{ deviceId, revision }`.
+
+This preference is separate from timezone, source-upload consent, vocabulary and local notification permission. Repeating a request after an unknown outcome does not bypass revision checks: reread `/me`, display the resulting selection, and require another explicit choice before reclaiming. Other devices cancel scheduled account notifications after refreshing the account. Offline schedules may continue until reconnection. Shared request/response fixtures and schema: `fixtures/reminder-device-v1.json`, `reminder-device-v1.schema.json`.

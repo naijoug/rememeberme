@@ -11,9 +11,12 @@ await copyFile('.build/server.mjs', join(runtime, 'server.mjs'));
 await copyFile('.build/library.mjs', join(runtime, 'library.mjs'));
 await cp('migrations', join(runtime, 'migrations'), { recursive: true });
 await cp('public', join(runtime, 'public'), { recursive: true });
-await cp('deploy', join(stage, 'deploy'), { recursive: true });
+await cp('.build/dictionary', join(runtime, 'public/dictionary'), { recursive: true });
+await cp('deploy', join(stage, 'deploy'), { recursive: true,
+  filter: source => !source.split(/[\\/]/).includes('__pycache__') && !/\.py[cod]$/.test(source),
+});
 await mkdir(join(runtime, 'scripts'));
-for (const name of ['backup.mjs', 'restore.mjs', 'check-server.sh', 'verify-live-hermes.mjs', 'verify-github-login.mjs']) await copyFile('scripts/' + name, join(runtime, 'scripts', name));
+for (const name of ['backup.mjs', 'restore.mjs', 'check-server.sh', 'verify-live-hermes.mjs', 'verify-live-lookups.mjs', 'verify-github-login.mjs']) await copyFile('scripts/' + name, join(runtime, 'scripts', name));
 await mkdir(resolve(output, '..'), { recursive: true });
 const tar = spawnSync('tar', ['--no-xattrs', '-czf', output, '-C', stage, 'runtime', 'deploy'], {
   stdio: 'inherit', env: { ...process.env, COPYFILE_DISABLE: '1' },

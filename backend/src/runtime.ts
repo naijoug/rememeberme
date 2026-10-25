@@ -20,12 +20,13 @@ export interface Limiter {
 export interface Translation {
   text: string;
   target: 'zh-CN';
-  source: 'hermes';
+  source: 'hermes' | 'mymemory';
 }
 export interface Bindings {
   DB: Database;
   AUTH_LIMIT: Limiter;
   API_LIMIT: Limiter;
+  LOOKUP_LIMIT?: Limiter;
   ASSETS: { fetch(request: Request): Promise<Response> | Response };
   ENVIRONMENT: string;
   PUBLIC_ORIGIN: string;
@@ -35,4 +36,5 @@ export interface Bindings {
   CLIENT_ORIGINS?: string;
   CLIENT_IP?: string;
   TRANSLATOR?: { translate(word: string): Promise<Translation> };
+  DICTIONARY?: { getDefinition(word: string): Promise<import('../../contracts/api-v1').Json> };
 }

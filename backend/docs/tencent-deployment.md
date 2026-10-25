@@ -5,29 +5,13 @@ full synchronous commits and atomic conditional batches. The checked-in D1
 migrations are reused verbatim. Existing migrations are checked by digest; an
 edited applied migration stops startup.
 
-## Current recorded status (2026-10-14)
+## Current recorded status (2026-10-15)
 
-The API and isolated Hermes are deployed and enabled on the inspected Tencent
-Lighthouse host. The recorded API runtime is
-`/opt/rememberme/releases/20261014-80bfe7fb0c9d/runtime`, with listeners restricted
-to loopback 8787 and 8643. Live synthetic translation, database integrity/backup,
-server-side trusted HTTPS and GitHub login-start checks passed. GitHub client
-credentials are configured; the earlier Passkey/secret-creation blocker was
-resolved in the final checkpoint below.
+The Tencent API and isolated Hermes remain active under `/opt/rememberme/releases/20261014-4c2222236a8a/runtime`, on loopback 8787/8643. Word lookup now has a fixed trusted HTTPS entry independent of the filing-blocked canonical account domain. Its named private connector and loopback lookup bridge are enabled; connector restart and subsequent formal/native Chrome lookup have been verified. The former random Quick Tunnel has been disabled.
 
-Public service acceptance remains pending. The last public HTTP/HTTPS checks
-failed; the deployment record identifies domain filing as the blocker. Tencent
-review passed in the recorded console inspection, with authority submission
-waiting for the domain real-name verification delay. That console state has not
-been rechecked by the subsequent local source review. The installed extension's
-exact callback and origin allowlist, completed hosted OAuth and real Mac/browser
-cross-client sync are still outstanding.
+The Chrome candidate disables account login/sync and identity/alarms permissions. Real fixed-gateway Hermes Chinese translation, Free Dictionary data, packaged WordNet/IPA, no-login selected-word requests and public privacy hosting have been accepted. Browser account OAuth and cross-client hosted sync remain separate unaccepted features, pending canonical-domain access. Filing was submitted to the communications authority; SMS verification was delayed and the user had not received the SMS.
 
-The serving DNS-01 certificate has manual renewal and expires 2027-01-12 at
-09:40:43 Asia/Shanghai. Off-host backup and a production restore drill have not
-been accepted. The browser scope/byte-budget fixes are local source changes;
-passing local tests or rebuilding an archive does not update this host release.
-The dated sections below preserve the successive inspection/deployment states.
+The canonical DNS-01 certificate has manual renewal and expires 2027-01-12 at 09:40:43 Asia/Shanghai. Off-host backup/production restore drills are not claimed by lookup-only acceptance. See [2026-10-15 fixed entry and Chrome candidate](../../frontend/browser-extension/docs/verification/2026-10-15-release-candidate.md). The historical sections below preserve earlier inspection/deployment states.
 
 ## Prepare and deploy
 
@@ -109,9 +93,9 @@ destination. Configure `DATABASE_PATH` to that new file and inspect it before
 resuming. Old queues must enter explicit recovery, never replay silently.
 Code rollback must not reverse already-applied schema migrations.
 
-Client defaults retain MyMemory while disconnected. Once connected, translation
-uses the authenticated backend and reports backend errors without silently
-switching providers. Account sync and legacy data copy are separate explicit
+Normal browser word lookup uses the fixed product service's public word-only routes, without login or user-entered API URLs. Exact origin checking and 30 lookups/minute/IP apply; vocabulary/account APIs remain authenticated. Server English lookup reads packaged WordNet then Free Dictionary API for uncovered words. Chinese uses Hermes with server-side MyMemory fallback, preserving source attribution. Hermes tools/profile isolation failures remain explicit. The active release includes licensed dictionary assets and the real-provider acceptance script. See [automatic lookup deployment verification](../../frontend/browser-extension/docs/verification/2026-10-14-auto-lookup-deployment.md).
+
+Account sync and legacy data copy are separate explicit
 choices. A copied unchanged browser baseline uses its retained snapshot digest;
 an anonymously modified vocabulary copies its current fields as a new create
 intent, rather than relabeling changed counts as an old migration baseline.
@@ -305,3 +289,46 @@ Lighthouse instance details restored the existing TAT connection without adding
 SSH credentials or changing instance permissions. Host runtime remains
 `/opt/rememberme/releases/20261014-80bfe7fb0c9d/runtime`; this turn installed the
 operating/check scripts under root-only `/etc/rememberme` without replacing it.
+
+## Automatic lookup release activation on 2026-10-14
+
+Archive SHA-256 `4c2222236a8ab67f9ab0d92f584706f4fc2d1f436540fd5637fa26975f0a6780` was uploaded through the existing authenticated OrcaTerm connection and checked on the host. It is active under `/opt/rememberme/releases/20261014-4c2222236a8a/runtime`. The previous `20261014-80bfe7fb0c9d` runtime is retained for rollback. The earlier staged `44b2b737a600` candidate was not activated because real Free Dictionary lookup timed out.
+
+The final release adds server WordNet from the extension's identical licensed source assets, public read-only lookup routes and a four-second MyMemory deadline. Preflight with a disposable database passed real Hermes (about 5.96 seconds), server WordNet and forced server-side fallback to actual MyMemory. `scripts/verify-live-lookups.mjs` never uses production vocabulary or OAuth accounts.
+
+Before activation, a verified consistent production backup was created at `/var/lib/rememberme/backups/pre-auto-lookup-20261014-2112.sqlite`, and `/etc/rememberme/api.env.pre-auto-lookup-20261014-2112` retained the prior private configuration. Only the actual observed installed Chrome identity was appended: origin `chrome-extension://blmbjchnpodecheenfmajdjfpmgimdcj` and callback `https://blmbjchnpodecheenfmajdjfpmgimdcj.chromiumapp.org/auth/callback`. Other fields/allowlist entries were retained; the file remains root-owned mode 0600. No credential rotation occurred.
+
+The release symlink was switched atomically and only `rememberme-api` restarted. Server-local certificate-validated HTTPS passed anonymous dictionary (`wordnet`), anonymous translation (`hermes`), account API 401, exact CORS preflight 204, different-origin rejection 403, and installed extension callback GitHub redirect 302. Production users/sessions/vocabulary/encounter counts were unchanged by anonymous acceptance. API, Hermes, Caddy and lesson-ledger were active afterward. Caddy, firewall, DNS and other services were not reconfigured.
+
+Tencent-to-Free-Dictionary egress timed out for both published IPv4 addresses under certificate validation. MyMemory responded HTTP 200 in about 2.47 seconds, which exceeded the initial 1.8-second deadline; the deadline is now four seconds. Server WordNet restores covered words without that egress dependency. Uncovered English words still require the external provider, and that observed egress limitation remains unresolved. Native clients retain their existing fifteen-second deadline; slow Hermes-plus-fallback can exceed it, so full native timing changes remain separate work.
+
+No public extension OAuth exchange or real public translation was completed: the domain is still blocked pending filing/SMS/authority review. The user should complete the 12381 SMS verification after it arrives; the console requires verification within 24 hours of receipt. No duplicate application or identity data change was made.
+
+
+## Temporary HTTPS lookup on 2026-10-14
+
+The user requested a temporary internal service address until filing completes. The existing business HTTPS hostname also failed from the Mac, so a Cloudflare Quick Tunnel was created without changing canonical DNS/Caddy/OAuth settings. Its public origin is recorded in `/etc/rememberme/temporary-lookup-origin` and the plugin's internal `LOOKUP_SERVICE_ORIGIN`; the UI never displays it. The canonical account `SERVICE_ORIGIN` remains separate.
+
+Official cloudflared 2026.10.0 was downloaded from Cloudflare's package CDN after the direct GitHub asset transfer was too slow. Debian package SHA-256 `9721287c28f78cb623e77c7b95a63feea87e909054d75666a0ec9eff20e5d548` matched the official package index; its extracted binary SHA-256 `d33ff2d14475178d2012c2c56beba87389ac5ded27649519f198a7d3134a99db` also matched the official GitHub release digest. It is scoped to `/opt/rememberme/temporary/cloudflared`; no system package repository or credential was added.
+
+`rememberme-lookup-bridge.service` listens on `127.0.0.1:8788`, permitting only public dictionary/translation POST and OPTIONS plus health GET. Its body/concurrency limits are 2 KiB/eight, and it strips client credentials/cookies/XFF while preserving the Cloudflare edge IP for backend limits. `rememberme-lookup-tunnel.service` uses HTTP/2 and targets only that bridge. Both are enabled/active as the existing dedicated rememberme user with restricted filesystem/systemd settings. Existing API/Hermes release, database, OAuth, proxy/firewall and application services were retained.
+
+Mac certificate-validated public HTTPS passed health 200, dictionary 200/WordNet, translation 200/real Hermes, excluded account/auth routes 404, and extra-context lookup rejection 400. Requests with the installed extension origin received the expected CORS header. Actual installed Chrome selection of ephemeral on the local static test page then showed Chinese Hermes translation, WordNet English meanings and packaged IPA. No login/URL input appeared and no bookmark/save operation was performed. This is actual browser lookup acceptance, not OAuth/sync acceptance.
+
+The Quick Tunnel hostname changes when its process is recreated and has no uptime guarantee. Normal network reconnections keep the running process, but a process restart/reboot requires maintainers to read the new journal address, update `/etc/rememberme/temporary-lookup-origin` and `LOOKUP_SERVICE_ORIGIN`, rebuild/verify the plugin. Do not publish credentials or infer a new address. After canonical health/public lookup passes, set the lookup origin back to the canonical service, verify installed Chrome and disable the two temporary units. Account login/sync remain blocked by filing, and uncovered English words retain the separate Free Dictionary egress limitation.
+
+See [temporary lookup verification](../../frontend/browser-extension/docs/verification/2026-10-14-temporary-lookup.md) and [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/) for the hostname lifecycle.
+
+## Fixed lookup entry activated on 2026-10-15
+
+DNSPod's dedicated `lookup` CNAME points to `rememberme-lookup.pages.dev`; existing `rememberme` and other application's records were retained. Cloudflare verified the custom domain `lookup.couplelabs.cn` and activated its trusted certificate. A Pages advanced-mode `_worker.js` forwards through the `LOOKUP_GATEWAY` service binding to Worker `rememberme-lookup` in the company account (incorrect ownership; see [personal-account migration](cloudflare-account-migration.md)), avoiding dependency on direct workers.dev/pages.dev access from the client network.
+
+Worker source/configuration is `backend/lookup-gateway/`; Pages forwarding source is `backend/lookup-entry/`. Deployment must run in the correct subdirectory/config so legacy root Worker/D1 configuration is never selected. The Worker currently active version is `2920d7a7-ea23-4ea7-a840-d6f44b762d0c`. It serves a static `/privacy`, validates single-word JSON, enforces an edge IP quota and exact Chrome-origin syntax, and strips client credentials/cookies. Private account and OAuth routes return 404. The private backend keeps its own exact origin/callback allowlist for authenticated clients; the anonymous gateway admits syntactically valid store/test Chrome identities without opening account access.
+
+VPC Service `01a13b1f-f04b-7892-ada7-d9092b7ff0f4` restricts access to HTTP `127.0.0.1:8788` through named tunnel `d8b5791c-9173-4a12-9c0d-e58d3da01d5f`. Remote ingress defaults to 404 and no database/account ports are exposed. `rememberme-lookup-stable-tunnel.service` uses QUIC (required by Workers VPC), restart-always and systemd `LoadCredential`. The source token is root:root 0600 under the existing 0700 private configuration directory. Token material was never packaged or printed; the local transfer file was removed.
+
+Cloudflare fetch does not support the initially used redirect-error mode. The final gateway uses manual mode and rejects redirect responses instead of following them. Temporary diagnostic responses/logging have been removed; normal diagnostics emit only whitelisted static VPC error codes, never input words or credentials. The public dictionary gateway calls the fixed Free Dictionary endpoint through Cloudflare egress because Tencent's direct provider connection timed out, then recovers through the existing server-local WordNet/provider chain. Unsupported inflections can still fail independently of Chinese translation.
+
+Recovery: inspect `systemctl status rememberme-lookup-bridge rememberme-lookup-stable-tunnel` and the named connector connections, verify loopback health, then the same public HTTPS health and synthetic word lookup. Restart only those dedicated services when needed; their identity/hostname remains fixed. Do not weaken certificate verification, change unrelated DNS/proxies, reopen private database ports or rotate credentials as a connectivity workaround. The disabled old Quick Tunnel is historical rollback context, not an automatic client fallback.
+
+Workers VPC remains a beta product. A persistent custom domain is not a guaranteed availability SLA. Some local terminal requests timed out or were rejected while browser HTTPS and the accepted Chrome lookup succeeded; default workers.dev/pages.dev were not accepted as client endpoints. Continuous network/uptime and load coverage remain outside this single-session acceptance.

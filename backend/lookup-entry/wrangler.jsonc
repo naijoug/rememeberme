@@ -1,0 +1,10 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "account_id": "5c11819c6fdb08421e6d58084e37f028",
+  "name": "rememberme-lookup",
+  "pages_build_output_dir": "public",
+  "compatibility_date": "2026-10-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "send_metrics": false,
+  "services": [{ "binding": "LOOKUP_GATEWAY", "service": "rememberme-lookup" }]
+}

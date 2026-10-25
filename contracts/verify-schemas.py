@@ -22,3 +22,10 @@ replies = Draft202012Validator(json.loads((root / "sync-responses-v1.schema.json
 replies.validate(wire["response"])
 replies.validate(json.loads((root / "fixtures/sync-errors-v1.json").read_text()))
 print("Unified wire request/response/error fixtures passed.")
+reminder = Draft202012Validator(json.loads((root / "reminder-device-v1.schema.json").read_text()))
+reminder_fixture = json.loads((root / "fixtures/reminder-device-v1.json").read_text())
+for key in ["request", "response", "released"]:
+    reminder.validate(reminder_fixture[key])
+for invalid in reminder_fixture["invalidResponses"]:
+    assert not reminder.is_valid(invalid)
+print("Reminder device selection fixtures passed.")

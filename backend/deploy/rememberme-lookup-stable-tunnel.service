@@ -1,0 +1,23 @@
+[Unit]
+Description=Remember Me persistent private lookup tunnel
+After=network-online.target rememberme-lookup-bridge.service
+Wants=network-online.target
+Requires=rememberme-lookup-bridge.service
+
+[Service]
+Type=simple
+User=rememberme
+Group=rememberme
+WorkingDirectory=/opt/rememberme/temporary
+LoadCredential=lookup-token:/etc/rememberme/lookup-tunnel.token
+ExecStart=/opt/rememberme/temporary/cloudflared tunnel --no-autoupdate --protocol quic run --token-file %d/lookup-token
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+MemoryMax=128M
+
+[Install]
+WantedBy=multi-user.target

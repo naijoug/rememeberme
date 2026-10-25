@@ -1,11 +1,28 @@
+import { selectReminderDevice } from './reminder';
 import { Hono } from 'hono';
 import { ApiError, id, object, keys, parseOperation, version } from '../../contracts/api-v1';
 import { requestJSON, checkOrigin } from './http';
 import { identity, exchangeNative, refreshSession, startNative, githubCallback, type Identity } from './auth';
 import { applyOperation, changes, getEntry, entryHistory, rememberConflict, reviewAdmissions } from './store';
 import type { Bindings } from './runtime';
+import type { Context } from 'hono';
 
-const app = new Hono<{ Bindings: Bindings; Variables: { requestId: string; identity: Identity } }>();
+type AppEnvironment = { Bindings: Bindings; Variables: { requestId: string; identity: Identity } };
+const app = new Hono<AppEnvironment>();
+async function lookup(c: Context<AppEnvironment>, translation: boolean) {
+  const input = await requestJSON(c.req.raw);
+  if (!object(input)) throw new ApiError('INVALID_REQUEST');
+  keys(input, translation ? ['word', 'target'] : ['word'], translation ? ['word', 'target'] : ['word']);
+  if (typeof input.word !== 'string' || input.word.length > 500 || (translation && input.target !== 'zh-CN')
+    || !/^[a-z](?:[a-z'-]*[a-z])?$/.test(input.word.trim().toLowerCase())) throw new ApiError('INVALID_LOOKUP_WORD');
+  const word = input.word.trim().toLowerCase();
+  if (translation) {
+    if (!c.env.TRANSLATOR) throw new ApiError('TRANSLATION_NOT_CONFIGURED', 503);
+    return c.json({ translation: await c.env.TRANSLATOR.translate(word) });
+  }
+  if (!c.env.DICTIONARY) throw new ApiError('DICTIONARY_NOT_CONFIGURED', 503);
+  return c.json({ definition: await c.env.DICTIONARY.getDefinition(word) });
+}
 app.use('*', async (c, next) => {
   c.set('requestId', crypto.randomUUID());
   c.header('Cache-Control', 'no-store'); c.header('Referrer-Policy', 'no-referrer');
@@ -22,7 +39,9 @@ app.onError((error, c) => {
 app.get('/api/v1/health', c => c.json({ apiVersion: 1, status: 'ok' }));
 app.get('/api/v1/capabilities', c => c.json({ apiVersion: 1,
   translationSources: ['mymemory', 'hermes'], translation: Boolean(c.env.TRANSLATOR),
-  syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2'] }));
+  dictionary: Boolean(c.env.DICTIONARY),
+  publicLookup: Boolean(c.env.LOOKUP_LIMIT),
+  syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2', 'reminder-device-v1'] }));
 app.use('*', async (c, next) => {
   const origin = c.req.header('Origin');
   checkOrigin(c.req.raw, c.env.PUBLIC_ORIGIN, c.env.CLIENT_ORIGINS);
@@ -50,6 +69,13 @@ app.get('/auth/extension/start', c => startNative(c.req.raw, c.env));
 app.get('/auth/github/callback', c => githubCallback(c.req.raw, c.env));
 app.post('/api/v1/auth/exchange', async c => c.json(await exchangeNative(await requestJSON(c.req.raw), c.env.DB)));
 app.post('/api/v1/auth/refresh', async c => c.json(await refreshSession(await requestJSON(c.req.raw), c.env.DB)));
+app.use('/api/v1/public/lookup/*', async (c, next) => {
+  if (!c.env.LOOKUP_LIMIT) throw new ApiError('PUBLIC_LOOKUP_NOT_CONFIGURED', 503);
+  if (!(await c.env.LOOKUP_LIMIT.limit({ key: c.env.CLIENT_IP ?? c.req.header('CF-Connecting-IP') ?? 'local' })).success) throw new ApiError('RATE_LIMITED', 429, true);
+  await next();
+});
+app.post('/api/v1/public/lookup/dictionary', c => lookup(c, false));
+app.post('/api/v1/public/lookup/translation', c => lookup(c, true));
 app.use('/api/v1/*', async (c, next) => {
   const who = await identity(c.req.raw, c.env.DB); c.set('identity', who);
   const epoch = c.req.header('X-Sync-Epoch');
@@ -57,21 +83,15 @@ app.use('/api/v1/*', async (c, next) => {
   if (!(await c.env.API_LIMIT.limit({ key: who.userId })).success) throw new ApiError('RATE_LIMITED', 429, true);
   await next();
 });
-app.post('/api/v1/lookup/translation', async c => {
-  const input = await requestJSON(c.req.raw);
-  if (!object(input)) throw new ApiError('INVALID_REQUEST');
-  keys(input, ['word', 'target'], ['word', 'target']);
-  if (typeof input.word !== 'string' || input.word.length > 500 || input.target !== 'zh-CN'
-    || !/^[a-z](?:[a-z'-]*[a-z])?$/.test(input.word.trim().toLowerCase())) throw new ApiError('INVALID_LOOKUP_WORD');
-  if (!c.env.TRANSLATOR) throw new ApiError('TRANSLATION_NOT_CONFIGURED', 503);
-  return c.json({ translation: await c.env.TRANSLATOR.translate(input.word.trim().toLowerCase()) });
-});
+app.post('/api/v1/lookup/dictionary', c => lookup(c, false));
+app.post('/api/v1/lookup/translation', c => lookup(c, true));
 app.get('/api/v1/me', async c => {
   const who = c.get('identity');
-  const profile = await c.env.DB.prepare('SELECT login FROM users WHERE id=? AND deleted_at IS NULL').bind(who.userId).first<{ login: string }>();
+  const profile = await c.env.DB.prepare('SELECT login,reminder_device_id,reminder_revision FROM users WHERE id=? AND deleted_at IS NULL').bind(who.userId).first<{ login: string; reminder_device_id: string | null; reminder_revision: number }>();
   return c.json({ userId: who.userId, deviceId: who.deviceId, epoch: who.epoch, timezone: who.timezone,
     sourceRevision: who.sourceRevision, syncContext: who.syncContext, syncURLs: who.syncURLs, displayName: profile?.login ?? '',
-    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2'] });
+    reminderDevice: { deviceId: profile?.reminder_device_id ?? null, revision: profile?.reminder_revision ?? 0 },
+    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2', 'reminder-device-v1'] });
 });
 app.get('/api/v1/entries/:id', async c => {
   const entryId = c.req.param('id'); if (!id(entryId)) throw new ApiError('INVALID_REQUEST');
@@ -109,6 +129,7 @@ app.get('/api/v1/sync/:mode', async c => {
   if (!version(after) || !Number.isSafeInteger(limit) || limit < 1 || limit > 50 || (boundary !== undefined && !version(Number(boundary)))) throw new ApiError('INVALID_REQUEST');
   return c.json(await changes(c.env.DB, who, after, limit, boundary === undefined ? undefined : Number(boundary), mode === 'snapshot'));
 });
+app.put('/api/v1/reminder-device', async c => c.json(await selectReminderDevice(c.env.DB, c.get('identity'), await requestJSON(c.req.raw))));
 app.put('/api/v1/preferences', async c => {
   const input = await requestJSON(c.req.raw); if (!object(input)) throw new ApiError('INVALID_REQUEST');
   keys(input, ['timezone', 'syncContext', 'syncURLs'], ['timezone', 'syncContext', 'syncURLs']);
