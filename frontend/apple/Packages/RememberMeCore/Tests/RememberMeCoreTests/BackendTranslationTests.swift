@@ -27,7 +27,7 @@ private actor SyntheticChineseProvider: ChineseTranslationProvider {
     await second.setChineseProvider(other)
     _ = try await second.chinese("synthetic")
     #expect(await other.calls() == ["synthetic"])
-    for source in ["mymemory", "hermes"] {
+    for source in ["mymemory", "hermes", "magpie"] {
         let definition = JSONValue.object(["word": .string("synthetic"), "phonetics": .array([]), "meanings": .array([]),
             "translation": .object(["text": .string("合成释义"), "source": .string(source), "target": .string("zh-CN")])])
         #expect(LegacyCodec.validDefinition(definition))
@@ -61,6 +61,7 @@ private actor TranslationAPI: APITransport {
     let sent = try #require(await transport.sent())
     #expect(sent.url?.absoluteString == "https://api.example.test/api/v1/lookup/translation")
     #expect(sent.httpMethod == "POST")
+    #expect(sent.timeoutInterval == 20)
     #expect(sent.value(forHTTPHeaderField: "Authorization") == "Bearer " + String(repeating: "a", count: 43))
     #expect(try JSONDecoder().decode(JSONValue.self, from: #require(sent.httpBody)) == .object(["word": .string("synthetic"), "target": .string("zh-CN")]))
     #expect(provider.cacheNamespace != BackendTranslationProvider(session: session, accountID: "another-user").cacheNamespace)
@@ -81,4 +82,24 @@ private actor TranslationAPI: APITransport {
     let session = NativeSession(origin: try APIOrigin("https://api.example.test"), vault: TranslationVault(), transport: transport, clock: { 1000 })
     let provider = BackendTranslationProvider(session: session, accountID: "synthetic-user", transport: transport)
     #expect(try await provider.translate("synthetic")["source"]?.text == "mymemory")
+}
+
+@Test func magpieTranslationSurvivesBackendCacheRestartAndLegacyRoundTrip() async throws {
+    let transport = TranslationAPI("{\"translation\":{\"text\":\"合成释义\",\"target\":\"zh-CN\",\"source\":\"magpie\"}}")
+    let session = NativeSession(origin: try APIOrigin("https://api.example.test"), vault: TranslationVault(), transport: transport, clock: { 1000 })
+    let provider = BackendTranslationProvider(session: session, accountID: "synthetic-user", transport: transport)
+    #expect(provider.cacheNamespace.hasPrefix("backend-v3:"))
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let cache = directory.appendingPathComponent("cache.json")
+    let first = LookupService(dictionaryDirectory: nil, cacheURL: cache, chineseProvider: provider)
+    #expect(try await first.chinese("synthetic")["source"]?.text == "magpie")
+    let reopened = LookupService(dictionaryDirectory: nil, cacheURL: cache, chineseProvider: provider)
+    #expect(try await reopened.chinese("synthetic")["source"]?.text == "magpie")
+    let bytes = Data("[{\"word\":\"synthetic\",\"count\":0,\"createdAt\":1,\"updatedAt\":2,\"history\":[{\"timestamp\":2,\"context\":\"literal <b>text</b>\",\"url\":\"javascript:fixture\",\"definition\":{\"word\":\"synthetic\",\"phonetics\":[],\"meanings\":[],\"translation\":{\"text\":\"合成\",\"source\":\"magpie\",\"target\":\"zh-CN\"}}}]}]".utf8)
+    let entries = try LegacyCodec.decode(bytes)
+    #expect(entries[0].count == 0)
+    #expect(entries[0].history.count == 1)
+    #expect(entries[0].history[0].definition["translation"]?["source"]?.text == "magpie")
+    #expect(try JSONDecoder().decode(JSONValue.self, from: LegacyCodec.export(entries)) == JSONDecoder().decode(JSONValue.self, from: bytes))
 }

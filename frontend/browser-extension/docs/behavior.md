@@ -1,5 +1,15 @@
 # Browser extension behavior
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
+source. Older installed clients must be updated before consuming Magpie results.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 Selection saving updated against the working-tree source on 2026-10-15; pronunciation and lookup layout on 2026-10-10; other behavior was reviewed on 2026-09-29. This describes the current product contract and explicitly tracks differences from the original specification. Historical plans are in [archive/](archive/README.md).
 
 ## Selection and saving

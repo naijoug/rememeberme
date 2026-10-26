@@ -1,5 +1,17 @@
 # Native architecture
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Connected native lookup uses a `backend-v3:` cache namespace and a twenty-second
+deadline; server MyMemory fallback caches for one hour. Disconnected native
+lookup still uses its existing MyMemory provider. Update installed native apps
+before consuming Magpie snapshots.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 `Apps/macOS` and `Apps/iOS` own platform application lifecycles. `RememberMeUI` owns shared native views and a MainActor presentation model. `RememberMeCore` owns value models, codecs, restore planning, review-v1 rules and the actor-isolated repository. These packages do not import browser storage or Vue/WXT code.
 
 The repository owns a private Core Data context and SQLite coordinator. Each mutation runs on the context queue, commits to the persistent store, then returns domain values. Managed objects never cross actor/UI boundaries. A failed save rolls back and resets the context; UI acknowledgements follow committed results.

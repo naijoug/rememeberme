@@ -1,5 +1,15 @@
 # Dictionary sources and offline coverage
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
+source. Older installed clients must be updated before consuming Magpie results.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 Chinese translation and English definitions are independent. English reads packaged WordNet first; local hits need no external English request. WordNet attribution uses **Dictionary · WordNet** for both local and service copies; it does not imply that every lookup stayed offline. Local misses or broken assets call the built-in service. Chinese uses a separate success cache, then the same service. No user API input or login is required. The plugin never directly calls third-party dictionary/translation providers. It is not completely offline.
 
 ## Service dictionary, translation and API keys

@@ -1,5 +1,17 @@
 # Apple clients
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Connected native lookup uses a `backend-v3:` cache namespace and a twenty-second
+deadline; server MyMemory fallback caches for one hour. Disconnected native
+lookup still uses its existing MyMemory provider. Update installed native apps
+before consuming Magpie snapshots.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 Native macOS and iOS targets now share `RememberMeCore` and `RememberMeUI`. This is the implementation foundation, not the completed first release. The browser extension remains independently installed and stores its own vocabulary.
 
 Implemented: local SQLite/Core Data repository and durable logical outbox; legacy migration/explicit merge and cancellable staged publication; complete backup export and anonymous merge/replacement restore with conflict preview; shared native adding/editing, literal history and pagination, reset and confirmed deletion; bundled WordNet and independent English/Chinese providers; review-v1 queues/events with durable daily admission limits; appearance and opt-in local reminder settings. No production vocabulary is seeded or read from Chrome.

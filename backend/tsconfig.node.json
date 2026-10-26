@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "paths": { "cloudflare:workers": ["./tests/node-bindings.ts"] }
   },
-  "include": ["src/**/*.ts", "vitest.node.config.ts", "tests/node-bindings.ts", "tests/hermes.test.ts", "tests/lookup.test.ts", "tests/runtime-node.test.ts"],
+  "include": ["src/**/*.ts", "vitest.node.config.ts", "tests/node-bindings.ts", "tests/hermes.test.ts", "tests/lookup.test.ts", "tests/magpie.test.ts", "tests/runtime-node.test.ts"],
   "exclude": ["worker-configuration.d.ts"]
 }

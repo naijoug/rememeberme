@@ -1,5 +1,28 @@
 # Remember Me API
 
+## Magpie translation (2026-10-24)
+
+The deployed runtime uses `TRANSLATION_PROVIDER=magpie`, calling the same-host
+`http://127.0.0.1:3425/v1/chat/completions` gateway and
+`MAGPIE_MODEL=zhipu/glm-5.3-flash`. Set `MAGPIE_API_KEY=magpie-rememberme` for
+the verified loopback app label, or a private gateway key for a remote gateway.
+The web administration key is not an API credential. No provider secret is sent
+to clients. See [Magpie's integration contract](https://github.com/yetone/magpie/blob/main/docs/integrating.md).
+
+`MagpieTranslator` makes word-only inference requests, rejects tools/truncated
+or malformed output, caps output at 64 KiB, limits concurrency to two and aborts
+after twelve seconds. `ServerTranslator` retains coalescing, bounded successful
+caches and the four-second MyMemory fallback. `MYMEMORY_ENABLED=false` disables
+fallback. `TRANSLATION_PROVIDER=hermes` retains the isolated legacy provider;
+`none` permits MyMemory-only operation. Unknown provider names fail startup.
+
+Responses carry the actual source (`magpie`, `hermes` or `mymemory`). Install
+extension 0.1.2 or the updated Apple build to consume Magpie snapshots; older
+validators reject the new source. Existing histories are not migrated. New
+client cache namespaces avoid reusing old backend results after upgrading.
+The historical deployment descriptions below predate this migration; the
+[dated Magpie deployment record](docs/verification/2026-10-24-magpie.md) records actual cutover and verification.
+
 The default runtime is Node/Hono with SQLite, deployed privately on Tencent
 Lighthouse with an isolated live Hermes translator. Server-local HTTPS passes,
 but Tencent's domain-filing block prevents canonical public access. A temporary Cloudflare HTTPS tunnel now serves word-only lookup and passed actual Chrome selection acceptance. GitHub credentials are

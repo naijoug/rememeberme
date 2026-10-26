@@ -180,11 +180,11 @@ public actor LookupService {
         loadCache()
         let provider = chineseProvider, generation = providerGeneration
         let key = provider.map { $0.cacheNamespace + ":" + word } ?? word
-        if !refresh, let cached = chineseCache[key], clock() >= cached.at, clock() - cached.at < 604_800_000 { return cached.value }
+        if !refresh, let cached = chineseCache[key], clock() >= cached.at, clock() - cached.at < Self.translationLifetime(key, cached.value) { return cached.value }
         let transport = transport, seconds = budgets.chinese
         let value = try await chineseRequests.get(key) {
             if let provider {
-                return try await deadline(15) { try await provider.translate(word) }
+                return try await deadline(20) { try await provider.translate(word) }
             }
             return try await deadline(seconds) {
                 var components = URLComponents(string: "https://api.mymemory.translated.net/get")!
@@ -214,15 +214,18 @@ public actor LookupService {
         return value
     }
     func englishSubscriberCount(_ word: String) async -> Int { await englishRequests.subscriberCount(LegacyCodec.normalize(word)) }
+    private static func translationLifetime(_ key: String, _ value: JSONValue) -> Double {
+        key.hasPrefix("backend-v3:") && value["source"]?.text == "mymemory" ? 3_600_000 : 604_800_000
+    }
     private func loadCache() {
         guard !loadedCache else { return }; loadedCache = true
         guard let cacheURL, let data = try? Data(contentsOf: cacheURL),
               let cache = try? JSONDecoder().decode([String: Cached].self, from: data) else { return }
         for (word, entry) in cache.sorted(by: { $0.value.at < $1.value.at }).suffix(500) {
-            guard (LegacyCodec.isEnglishWord(word) || word.hasPrefix("hermes:")), entry.at.isFinite, clock() >= entry.at,
-                  clock() - entry.at < 604_800_000,
+            guard (LegacyCodec.isEnglishWord(word) || word.hasPrefix("hermes:") || word.hasPrefix("backend-v3:")), entry.at.isFinite, clock() >= entry.at,
+                  clock() - entry.at < Self.translationLifetime(word, entry.value),
                   let text = entry.value["text"]?.text, !text.isEmpty, text.utf16.count <= 2000,
-                  ["mymemory", "hermes"].contains(entry.value["source"]?.text ?? ""), entry.value["target"]?.text == "zh-CN" else { continue }
+                  ["mymemory", "hermes", "magpie"].contains(entry.value["source"]?.text ?? ""), entry.value["target"]?.text == "zh-CN" else { continue }
             chineseCache[word] = entry
         }
     }

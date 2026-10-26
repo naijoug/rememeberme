@@ -22,7 +22,7 @@ export class TranslationService {
     const word = input.trim().toLowerCase();
     if (!isEnglishWord(word) || word.length > 500) throw new Error('Select one English word to translate.');
     await (this.loaded ??= this.loadCache());
-    const key = 'public:v1:' + word;
+    const key = 'public:v3:' + word;
     const cacheKey = this.cache.has(key) ? key : word;
     const cached = this.cache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < lifetime(cacheKey, cached)) return { text: cached.text, source: cached.source ?? 'mymemory', target: 'zh-CN' };
@@ -57,7 +57,7 @@ export class TranslationService {
       if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return;
       for (const [word, entry] of Object.entries(stored).slice(-MAX_CACHE_ENTRIES)) {
         if ((isEnglishWord(word) || word.startsWith('public:')) && entry && typeof entry.text === 'string' && entry.text.trim() && entry.text.length <= 2000 &&
-            (entry.source === undefined || entry.source === 'mymemory' || entry.source === 'hermes') &&
+            (entry.source === undefined || entry.source === 'mymemory' || entry.source === 'hermes' || entry.source === 'magpie') &&
             Number.isFinite(entry.timestamp) && entry.timestamp <= Date.now() && Date.now() - entry.timestamp < lifetime(word, entry)) {
           this.cache.set(word, entry);
         }

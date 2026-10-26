@@ -8,7 +8,7 @@ import { spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { app, createRuntime, WindowLimiter, HermesTranslator } from '../.build/library.mjs';
+import { app, createRuntime, WindowLimiter, MagpieTranslator } from '../.build/library.mjs';
 
 const backend = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const probe = process.argv[2] && resolve(process.argv[2]);
@@ -75,14 +75,14 @@ try {
     configuration: { PUBLIC_ORIGIN: origin, ENVIRONMENT: 'local' },
   });
   runtime.AUTH_LIMIT = new WindowLimiter(1000); runtime.API_LIMIT = new WindowLimiter(10_000);
-  runtime.TRANSLATOR = new HermesTranslator({ baseURL: 'http://127.0.0.1:8643/v1',
+  runtime.TRANSLATOR = new MagpieTranslator({ baseURL: 'http://127.0.0.1:3425/v1',
     key: 'synthetic-fixture-key', model: 'synthetic-model', fetch: async (url, init) => {
       if (String(url).endsWith('/chat/completions')) {
         const input = JSON.parse(init.body);
         assert.deepEqual(input.messages[1], { role: 'user', content: 'synthetic-shared' });
       }
       return new Response(JSON.stringify(String(url).endsWith('/toolsets') ? []
-        : { choices: [{ message: { content: '{"text":"合成释义"}' } }] }), { headers: { 'Content-Type': 'application/json' } });
+        : { choices: [{ finish_reason: 'stop', message: { content: '{"text":"合成释义"}' } }] }), { headers: { 'Content-Type': 'application/json' } });
     } });
   worker = {
     dispatchFetch: (url, init) => app.fetch(new Request(url, init), runtime),
@@ -115,8 +115,8 @@ try {
     return report ? JSON.parse(report) : null;
   }
   const translation = await command('A', 'translation');
-  assert.deepEqual(translation, { source: 'hermes', target: 'zh-CN', text: '合成释义' });
-  console.log('Real Swift authenticated translation -> HTTP -> Node/Hermes adapter passed with synthetic inference.');
+  assert.deepEqual(translation, { source: 'magpie', target: 'zh-CN', text: '合成释义' });
+  console.log('Real Swift authenticated translation -> HTTP -> Node/Magpie adapter passed with synthetic inference.');
   assert.deepEqual(await command('A', 'reminder-claim'), { deviceId: 'synthetic-device-A', revision: 1 });
   assert.deepEqual(await command('B', 'reminder-claim'), { deviceId: 'synthetic-device-B', revision: 2 });
   assert.deepEqual(await command('A', 'reminder-state'), { deviceId: 'synthetic-device-B', revision: 2 });

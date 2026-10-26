@@ -79,8 +79,10 @@ public struct APIHTTPClient: Sendable {
                         accessToken: String? = nil, epoch: String? = nil) async throws -> Data {
         if let body, body.count > 256 * 1024 { throw ClientError.invalidData("API request exceeds the supported size") }
         var request = URLRequest(url: try origin.endpoint(path, query: query)); request.httpMethod = method
+        // A twelve-second model timeout can still be followed by four seconds of fallback.
+        if path == "/api/v1/lookup/translation" { request.timeoutInterval = 20 }
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("translation-source-v2", forHTTPHeaderField: "X-Client-Capabilities")
+        request.setValue("translation-source-v2,translation-source-v3", forHTTPHeaderField: "X-Client-Capabilities")
         if let body { request.httpBody = body; request.setValue("application/json", forHTTPHeaderField: "Content-Type") }
         if let accessToken { request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization") }
         if let epoch { request.setValue(epoch, forHTTPHeaderField: "X-Sync-Epoch") }

@@ -272,7 +272,8 @@ struct DefinitionText: View {
             if let phonetic = definition["phonetic"]?.text { Text(verbatim: phonetic).foregroundStyle(.secondary) }
             if definition["source"]?.text == "wordnet" { Text("Offline English · WordNet").font(.caption).foregroundStyle(.secondary) }
             if let text = definition["translation"]?["text"]?.text { Text(verbatim: text) }
-            if definition["translation"]?["source"]?.text == "hermes" { Text("Online translation · Hermes").font(.caption).foregroundStyle(.secondary) }
+            if definition["translation"]?["source"]?.text == "magpie" { Text("Online translation · Magpie").font(.caption).foregroundStyle(.secondary) }
+            else if definition["translation"]?["source"]?.text == "hermes" { Text("Online translation · Hermes").font(.caption).foregroundStyle(.secondary) }
             let meanings = definition["meanings"]?.items ?? []
             if meanings.isEmpty && definition["translation"] == nil { Text("No definition saved yet.").foregroundStyle(.secondary) }
             ForEach(Array(meanings.enumerated()), id: \.offset) { _, meaning in

@@ -47,7 +47,7 @@ try {
   assert.equal(capability.translation, true); assert.equal(capability.dictionary, true);
   assert.equal(capability.publicLookup, true);
   assert.ok(names.includes('runtime/public/dictionary/wordnet/metadata.json') && names.includes('runtime/public/dictionary/wordnet/LICENSE.txt'));
-  assert.ok(capability.translationSources.includes('hermes') && capability.translationSources.includes('mymemory'));
+  assert.ok(capability.translationSources.includes('magpie') && capability.translationSources.includes('hermes') && capability.translationSources.includes('mymemory'));
   // A second SQLite connection produces a live WAL fixture for the online backup.
   const writer = new DatabaseSync(databasePath);
   writer.exec("PRAGMA journal_mode=WAL; INSERT INTO users(id,provider_id,login,sync_epoch,created_at) VALUES('synthetic-user','synthetic-provider','Synthetic','old-epoch',1)");

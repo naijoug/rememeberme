@@ -1,6 +1,6 @@
 # Remember Me Privacy Policy
 
-Version 0.1.0 · Effective 2026-10-15 · Developer: naijoug
+Version 0.1.2 · Effective 2026-10-24 · Developer: naijoug
 
 ## What Remember Me does
 
@@ -18,19 +18,19 @@ Selecting a supported word can send an online request before you decide whether 
 
 Cloudflare carries lookup traffic over HTTPS and a private service connection to the backend hosted on Tencent Cloud. These infrastructure providers process connection information such as IP address and request timing. Anonymous lookups use a gateway that accepts only word lookup and strips account credentials and cookies. A separate authenticated account gateway on the same HTTPS service carries optional login and synchronization to the original backend database. It preserves only the required OAuth flow cookie and authenticated API headers. Provider keys and tunnel credentials remain on the server and are not included in the extension or backups.
 
-The backend normally uses an isolated Hermes translation profile and its configured GLM model provider. The selected word may be processed by that model provider. If the preferred translation provider times out, is busy or returns invalid/unavailable output, the backend may send that same word to MyMemory and return its translation. Results show the provider actually used. The backend does not pass page sentences, page URLs, saved vocabulary lists, email addresses or personal memory to lookup providers. It does not enable agent tools or MCP for translation.
+The backend normally uses the same-server Magpie gateway with the zhipu/glm-5.3-flash model. The selected word may be processed by that model provider. If the preferred translation provider times out, is busy or returns invalid/unavailable output, the backend may send that same word to MyMemory and return its translation. Results show the provider actually used. The backend does not pass page sentences, page URLs, saved vocabulary lists, email addresses or personal memory to lookup providers. It does not enable agent tools or MCP for translation.
 
-Third-party processing and retention are governed by each provider's practices; this policy makes no promises on their behalf. Service references: [Cloudflare](https://www.cloudflare.com/privacypolicy/), [Tencent Cloud](https://www.tencentcloud.com/document/product/301/17345), [Hermes](https://hermes-agent.nousresearch.com/), [GLM provider](https://www.bigmodel.cn/), [MyMemory](https://mymemory.translated.net/) and [Free Dictionary API](https://dictionaryapi.dev/).
+Third-party processing and retention are governed by each provider's practices; this policy makes no promises on their behalf. Service references: [Cloudflare](https://www.cloudflare.com/privacypolicy/), [Tencent Cloud](https://www.tencentcloud.com/document/product/301/17345), [Magpie](https://usemagpie.ai/docs/privacy), [GLM provider](https://www.bigmodel.cn/), [MyMemory](https://mymemory.translated.net/) and [Free Dictionary API](https://dictionaryapi.dev/).
 
 A packaged English hit does not mean that the separate Chinese request is offline. Closing a card cannot undo a request already sent. The extension requires internet access for uncached online results, and the provider may have availability or quota limits. Browser site-access controls can restrict where the extension runs.
 
 ## Caches and operational records
 
-Successful Chinese translations are retained on the device in a cache with at most 500 entries. Hermes results last up to seven days; MyMemory fallback results from the lookup service last up to one hour. Retained older anonymous translation caches keep their seven-day policy. English results use a bounded in-memory cache; packaged dictionary shards also have bounded memory caches. Translation caches are excluded from vocabulary exports.
+Successful Chinese translations are retained on the device in a cache with at most 500 entries. Magpie and retained Hermes results last up to seven days; MyMemory fallback results from the lookup service last up to one hour. Retained older anonymous translation caches keep their seven-day policy. English results use a bounded in-memory cache; packaged dictionary shards also have bounded memory caches. Translation caches are excluded from vocabulary exports.
 
 The backend keeps bounded in-memory lookup caches, request coalescing and rate-limit counters. Successful server lookup caches hold at most 1,000 entries per service; translation successes use the same seven-day/one-hour provider policy. Restarting the backend clears its in-memory records. Normal lookup creates no account, session or vocabulary database record.
 
-Application diagnostic logs use request IDs and response status, without word text, page sentences, URLs or credentials. The fixed gateway disables invocation logging and does not add request-body logging. Hosting platforms may retain infrastructure metadata according to their own settings and policies. This version does not promise a specific retention period for provider/platform records.
+Remember Me application diagnostic logs use request IDs and response status, without word text, page sentences, URLs or credentials. The fixed gateway disables invocation logging and does not add request-body logging. Magpie maintains gateway usage and routing records under its server configuration. Hosting platforms may retain infrastructure metadata according to their own settings and policies. This version does not promise a specific retention period for provider/platform records.
 
 ## Backups and history links
 

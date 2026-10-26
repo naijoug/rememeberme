@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SQLiteDatabase } from './sqlite';
 import { HermesTranslator } from './hermes';
+import { MagpieTranslator } from './magpie';
 import { ServerDictionary, ServerTranslator, MyMemoryTranslator } from './lookup';
 import { ServerWordNet } from './wordnet';
 import type { Bindings, Limiter } from './runtime';
@@ -36,8 +37,13 @@ export function createRuntime(options: {
     database.migrate(options.migrations);
     if (options.databasePath !== ':memory:') chmodSync(options.databasePath, 0o600);
     const homepage = readFileSync(resolve(options.publicDirectory, 'index.html'), 'utf8');
-    const hermes = config.HERMES_BASE_URL ? new HermesTranslator({
-      baseURL: config.HERMES_BASE_URL, key: config.HERMES_API_KEY || '', model: config.HERMES_MODEL || 'hermes-agent',
+    const provider = config.TRANSLATION_PROVIDER ?? (config.HERMES_BASE_URL ? 'hermes' : 'none');
+    if (!['magpie', 'hermes', 'none'].includes(provider)) throw new Error('Invalid TRANSLATION_PROVIDER');
+    const primary = provider === 'magpie' ? new MagpieTranslator({
+      baseURL: config.MAGPIE_BASE_URL || 'http://127.0.0.1:3425/v1',
+      key: config.MAGPIE_API_KEY || '', model: config.MAGPIE_MODEL || 'zhipu/glm-5.3-flash',
+    }) : provider === 'hermes' ? new HermesTranslator({
+      baseURL: config.HERMES_BASE_URL || '', key: config.HERMES_API_KEY || '', model: config.HERMES_MODEL || 'hermes-agent',
     }) : undefined;
     return {
       DB: database, ENVIRONMENT: environment, PUBLIC_ORIGIN: origin.origin,
@@ -47,8 +53,8 @@ export function createRuntime(options: {
       AUTH_LIMIT: new WindowLimiter(30), API_LIMIT: new WindowLimiter(300), LOOKUP_LIMIT: new WindowLimiter(30),
       DICTIONARY: new ServerDictionary(fetch, 6000, new ServerWordNet(existsSync(resolve(options.publicDirectory, 'dictionary/wordnet'))
         ? resolve(options.publicDirectory, 'dictionary/wordnet') : resolve(options.publicDirectory, '../.build/dictionary/wordnet'))),
-      TRANSLATOR: hermes || config.MYMEMORY_ENABLED !== 'false'
-        ? new ServerTranslator(hermes, config.MYMEMORY_ENABLED === 'false' ? undefined : new MyMemoryTranslator()) : undefined,
+      TRANSLATOR: primary || config.MYMEMORY_ENABLED !== 'false'
+        ? new ServerTranslator(primary, config.MYMEMORY_ENABLED === 'false' ? undefined : new MyMemoryTranslator()) : undefined,
       ASSETS: { fetch: () => new Response(homepage, { headers: { 'Content-Type': 'text/html; charset=utf-8' } }) },
     };
   } catch (error) { database.close(); throw error; }

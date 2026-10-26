@@ -1,5 +1,15 @@
 # Remember Me browser extension
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
+source. Older installed clients must be updated before consuming Magpie results.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 Select an English word to see a Chinese translation and English definitions, and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
 Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. Online English lookup uses server WordNet plus Free Dictionary API fallback; Chinese uses server Hermes with MyMemory fallback. Only the selected word is sent. While domain filing is pending, lookup uses an internal temporary HTTPS endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. Optional **More options → Account & sync** enables GitHub login and explicit account copy/sync; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).

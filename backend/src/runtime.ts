@@ -20,7 +20,7 @@ export interface Limiter {
 export interface Translation {
   text: string;
   target: 'zh-CN';
-  source: 'hermes' | 'mymemory';
+  source: 'hermes' | 'mymemory' | 'magpie';
 }
 export interface Bindings {
   DB: Database;

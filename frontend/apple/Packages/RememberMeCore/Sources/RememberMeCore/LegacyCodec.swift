@@ -30,7 +30,7 @@ public enum LegacyCodec {
         guard value["word"]?.text != nil, value["phonetics"]?.items != nil,
               let meanings = value["meanings"]?.items else { return false }
         if let translation = value["translation"] {
-            guard ["mymemory", "hermes"].contains(translation["source"]?.text ?? ""), translation["target"]?.text == "zh-CN",
+            guard ["mymemory", "hermes", "magpie"].contains(translation["source"]?.text ?? ""), translation["target"]?.text == "zh-CN",
                   let text = translation["text"]?.text, !normalize(text).isEmpty, text.utf16.count <= 2000 else { return false }
         }
         return meanings.allSatisfy { meaning in

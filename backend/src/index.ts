@@ -38,10 +38,10 @@ app.onError((error, c) => {
 });
 app.get('/api/v1/health', c => c.json({ apiVersion: 1, status: 'ok' }));
 app.get('/api/v1/capabilities', c => c.json({ apiVersion: 1,
-  translationSources: ['mymemory', 'hermes'], translation: Boolean(c.env.TRANSLATOR),
+  translationSources: ['mymemory', 'hermes', 'magpie'], translation: Boolean(c.env.TRANSLATOR),
   dictionary: Boolean(c.env.DICTIONARY),
   publicLookup: Boolean(c.env.LOOKUP_LIMIT),
-  syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2', 'reminder-device-v1'] }));
+  syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2', 'translation-source-v3', 'reminder-device-v1'] }));
 app.use('*', async (c, next) => {
   const origin = c.req.header('Origin');
   checkOrigin(c.req.raw, c.env.PUBLIC_ORIGIN, c.env.CLIENT_ORIGINS);
@@ -91,7 +91,7 @@ app.get('/api/v1/me', async c => {
   return c.json({ userId: who.userId, deviceId: who.deviceId, epoch: who.epoch, timezone: who.timezone,
     sourceRevision: who.sourceRevision, syncContext: who.syncContext, syncURLs: who.syncURLs, displayName: profile?.login ?? '',
     reminderDevice: { deviceId: profile?.reminder_device_id ?? null, revision: profile?.reminder_revision ?? 0 },
-    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2', 'reminder-device-v1'] });
+    ...await reviewAdmissions(c.env.DB, who), syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'source-privacy-v1', 'translation-source-v2', 'translation-source-v3', 'reminder-device-v1'] });
 });
 app.get('/api/v1/entries/:id', async c => {
   const entryId = c.req.param('id'); if (!id(entryId)) throw new ApiError('INVALID_REQUEST');

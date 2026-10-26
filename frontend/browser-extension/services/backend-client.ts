@@ -98,7 +98,7 @@ export class BackendClient {
     if (connection.credentials.accessExpiresAtMs < Date.now() + 60_000) await refresh();
     const send = () => this.response(connection.origin, path, {
       method, headers: { Accept: 'application/json', Authorization: 'Bearer ' + connection.credentials.accessToken,
-        'X-Client-Capabilities': 'translation-source-v2',
+        'X-Client-Capabilities': 'translation-source-v2,translation-source-v3',
         ...(epoch ? { 'X-Sync-Epoch': epoch } : {}),
         ...(body !== undefined || frozenBody !== undefined ? { 'Content-Type': 'application/json' } : {}) },
       ...(body !== undefined || frozenBody !== undefined ? { body: frozenBody ?? JSON.stringify(body) } : {}),

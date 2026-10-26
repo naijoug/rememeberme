@@ -1,5 +1,15 @@
 # Chrome Web Store materials — 0.1.1
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
+source. Older installed clients must be updated before consuming Magpie results.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 Publisher: **naijoug**. Support: [GitHub Issues](https://github.com/naijoug/rememeberme/issues). Public privacy policy: [Remember Me Privacy Policy](https://lookup.couplelabs.cn/privacy). UI language is English; the Chinese listing is an optional localization.
 
 ## English listing

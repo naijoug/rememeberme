@@ -60,6 +60,26 @@ Native account-backup merge now previews current cloud lifecycles/tombstones and
 
 ## Translation source extension (2026-10-14)
 
+### Magpie extension (2026-10-24)
+
+`translation-source-v3` additionally accepts `source: magpie`. Hermes and
+MyMemory snapshots remain valid and are never rewritten. The public and
+authenticated translation route/body are unchanged. Updated browser and native
+clients validate, display, cache, import and export all three sources. Deploy
+the compatible clients before consuming Magpie results; older installed clients
+can reject new-source responses or snapshots. The server advertises both v2 and
+v3 for discovery; this does not retrofit source support into old clients.
+
+`TRANSLATION_PROVIDER=magpie` selects server-only Chat Completions at
+`MAGPIE_BASE_URL`, with `MAGPIE_API_KEY` and `MAGPIE_MODEL`. The initial model is
+`zhipu/glm-5.3-flash`. Requests contain a system instruction and one word, no
+tools/session/context/URL, with a 12-second deadline and bounded JSON output.
+MyMemory remains the four-second fallback; its source stays `mymemory`.
+Magpie/Hermes successes cache for seven days, fallback successes for one hour.
+`TRANSLATION_PROVIDER=hermes` retains the old isolated adapter for rollback.
+
+The following v2 section describes the pre-Magpie deployment contract.
+
 `Definition.translation.source` accepts both `mymemory` and `hermes`, with
 `target: zh-CN` and nonempty bounded text. Existing histories are never rewritten.
 Updated clients send `X-Client-Capabilities: translation-source-v2`; `/me` and

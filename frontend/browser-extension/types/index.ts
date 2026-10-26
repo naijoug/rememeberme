@@ -39,7 +39,7 @@ export interface Definition {
 export interface Translation {
   text: string;
   target: 'zh-CN';
-  source: 'mymemory' | 'hermes';
+  source: 'mymemory' | 'hermes' | 'magpie';
 }
 
 /** Independent display data from the packaged IPA dictionary; not vocabulary. */

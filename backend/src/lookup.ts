@@ -84,12 +84,12 @@ export class MyMemoryTranslator {
 
 export class ServerTranslator {
   private cache = new LookupCache<Translation>();
-  constructor(private hermes?: { translate(word: string): Promise<Translation> },
+  constructor(private primary?: { translate(word: string): Promise<Translation> },
     private fallback?: { translate(word: string): Promise<Translation> }) {}
   translate(word: string): Promise<Translation> {
     return this.cache.get(word, 'TRANSLATION', async () => {
-      if (this.hermes) {
-        try { return await this.hermes.translate(word); } catch (error) {
+      if (this.primary) {
+        try { return await this.primary.translate(word); } catch (error) {
           // Profile isolation/configuration failures remain explicit. Only provider failures fall back.
           if (!this.fallback || !(error instanceof ApiError) || !['TRANSLATION_BUSY', 'TRANSLATION_TIMEOUT',
             'TRANSLATION_UNAVAILABLE', 'TRANSLATION_INVALID_RESPONSE'].includes(error.code)) throw error;
@@ -97,6 +97,6 @@ export class ServerTranslator {
       }
       if (!this.fallback) throw new ApiError('TRANSLATION_NOT_CONFIGURED', 503);
       return this.fallback.translate(word);
-    }, value => value.source === 'hermes' ? 7 * 86_400_000 : 3_600_000);
+    }, value => value.source === 'mymemory' ? 3_600_000 : 7 * 86_400_000);
   }
 }

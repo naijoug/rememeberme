@@ -8,7 +8,7 @@ const path = require('node:path');
 const os = require('node:os');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
-const assets = path.join(root, 'docs/release/assets');
+const assets = process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root, 'docs/release/assets');
 const article = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Remember Me release acceptance</title><style>body{margin:0;background:#f7f6f2;color:#273343;font-family:Georgia,serif}main{max-width:760px;margin:65px auto}small{font:13px system-ui;letter-spacing:2px;color:#526c91}h1{font-size:42px}p{font-size:24px;line-height:1.9}</style><main><small>READING NOTES · DISPOSABLE EXAMPLE</small><h1>A pleasant discovery</h1><p>A quiet afternoon brings a little <span id="target">serendipity</span>.</p><p>Some ideas are <span id="second">ephemeral</span>, but an encounter can stay in your vocabulary.</p></main></html>`;
 (async () => {
   const fixture = await mkdtemp(path.join(os.tmpdir(), 'rememberme-release-acceptance-'));
@@ -75,7 +75,7 @@ const article = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Rem
     const legacyWords = words => words.map(({ id, currentDefinition, countKnown, ...word }) => word);
     assert.deepEqual(await getWords(), []);
     await page.locator('#target').dblclick();
-    try { await poll(async () => /WordNet/.test(await cardText()) && /Online translation.*(?:Hermes|MyMemory)/.test(await cardText())); }
+    try { await poll(async () => /WordNet/.test(await cardText()) && /Online translation.*(?:Magpie|Hermes|MyMemory)/.test(await cardText())); }
     catch (error) {
       console.error('Synthetic card state:', await cardText());
       console.error('Synthetic lookup requests:', proxyRequests);
@@ -87,13 +87,20 @@ const article = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Rem
     results.checks.push('Exact extracted ZIP loaded in clean Chrome; live no-login translation, packaged definition and hidden service address passed.');
     await page.screenshot({ path: path.join(assets, 'screenshot-selection.png') });
     for (let i = 0; i < 2; i++) {
-      await clickCard(`Add a record for serendipity (+1), count ${i}`);
+      if (i > 0) {
+        await page.keyboard.press('Escape');
+        await page.locator('#target').dblclick();
+        await poll(async () => /WordNet/.test(await cardText()));
+      }
+      await clickCard(`Add a record for serendipity, count ${i}`);
       await poll(async () => (await getWords())[0]?.count === i + 1);
     }
     await poll(async () => (await getWords())[0]?.count === 2);
     const saved = await getWords(); assert.equal(saved[0].history.length, 2); assert.equal(saved[0].history[0].url, url);
     assert.match(saved[0].history[0].context, /serendipity/);
-    results.checks.push('Two intentional bookmark clicks saved count 2, two histories, fixture sentence and source URL.');
+    assert.ok(['magpie', 'hermes', 'mymemory'].includes(saved[0].history[0].definition.translation?.source));
+    results.translationSource = saved[0].history[0].definition.translation.source;
+    results.checks.push('One bookmark click per separately opened popup saved count 2, two histories, translation source, fixture sentence and source URL.');
     await page.keyboard.press('Escape');
     await page.locator('#second').dblclick(); await poll(async () => /ephemeral/.test(await cardText()) && /WordNet/.test(await cardText()));
     assert.equal((await getWords()).length, 1); await page.keyboard.press('Escape');

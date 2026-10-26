@@ -11,7 +11,7 @@ it('keeps Hermes results compatible with stored definitions and historical MyMem
   expect((await request('/api/v1/lookup/translation', undefined, 'POST', { word: 'synthetic', target: 'zh-CN' })).status).toBe(401);
   const reply = await request('/api/v1/lookup/translation', user.access, 'POST', { word: 'synthetic', target: 'zh-CN' });
   expect(await reply.json()).toEqual({ translation: { text: '合成释义', source: 'hermes', target: 'zh-CN' } });
-  for (const source of ['mymemory', 'hermes']) {
+  for (const source of ['mymemory', 'hermes', 'magpie']) {
     const operation = create(source, source);
     operation.payload.definition = { word: source, phonetics: [], meanings: [], translation: { text: '合成释义', source, target: 'zh-CN' } };
     expect((await send(user.access, operation)).status).toBe(200);

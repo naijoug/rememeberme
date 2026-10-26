@@ -1,5 +1,12 @@
 # Apple verification
 
+Magpie compatibility adds shared-schema/legacy validation, authenticated source
+decoding and backend-v3 persistent-cache checks. Native HTTP integration uses
+the Magpie adapter with synthetic inference; the original Hermes unit suite is
+retained. Connected translation has a twenty-second client budget so the
+twelve-second primary plus four-second fallback can complete. Updated native
+builds accept all three sources; old installed builds require an update.
+
 Use Xcode 16/Swift 6 or later. Node commands use the extension's `.nvmrc` (currently 22.22.3). Package tests use synthetic fixtures and disposable SQLite stores; no production accounts, real vocabulary or live dictionary requests are involved.
 
 ## Contracts and disk tests

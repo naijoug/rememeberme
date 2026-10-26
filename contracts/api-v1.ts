@@ -41,7 +41,7 @@ export function definition(v: unknown): v is Json {
   if (!object(v) || !json(v) || !text(v.word) || !Array.isArray(v.phonetics) || !Array.isArray(v.meanings)) return false;
   if (v.translation !== undefined) {
     const t = v.translation;
-    if (!object(t) || !['mymemory', 'hermes'].includes(String(t.source)) || t.target !== 'zh-CN' || !text(t.text, 2000) || !t.text.trim()) return false;
+    if (!object(t) || !['mymemory', 'hermes', 'magpie'].includes(String(t.source)) || t.target !== 'zh-CN' || !text(t.text, 2000) || !t.text.trim()) return false;
   }
   return v.meanings.every(m => object(m) && typeof m.partOfSpeech === 'string' && Array.isArray(m.definitions)
     && m.definitions.every(d => object(d) && typeof d.definition === 'string'));

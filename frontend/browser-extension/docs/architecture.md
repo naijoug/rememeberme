@@ -1,5 +1,15 @@
 # Extension architecture and data boundaries
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
+source. Older installed clients must be updated before consuming Magpie results.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 Use this document for changes to messaging, persistence or external data flow. Setup is in the [package README](../README.md); observable behavior and unresolved requirements are in [behavior.md](behavior.md).
 
 Reviewed against the current working-tree source on 2026-10-14. This source review is not a new browser verification run. See the [project architecture](../../../docs/architecture.md) for repository structure and the separate website/backend plan.

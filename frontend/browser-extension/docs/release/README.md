@@ -1,5 +1,17 @@
 # Chrome release preparation
 
+## Magpie client update (2026-10-24)
+
+The current build is 0.1.2 and accepts Magpie, Hermes and MyMemory translation
+snapshots. The backend now uses Magpie; installed 0.1.1 clients need updating.
+The new ZIP passed disposable Chrome selection, source rendering, storage,
+export/import and restart checks. Historical records below apply to their
+original artifacts, not this ZIP. See [deployment and acceptance](../../../../backend/docs/verification/2026-10-24-magpie.md).
+
+Set `REMEMBERME_ACCEPTANCE_DIR` when running `scripts/release-smoke.cjs` to save
+new evidence separately from historical release screenshots.
+
+
 Target: Chrome Web Store **0.1.1**. Publisher **naijoug**; support [GitHub Issues](https://github.com/naijoug/rememeberme/issues). This release includes local vocabulary and automatic server lookup; account login/synchronization is disabled until its hosted flow is accepted. Addresses are internal configuration. No store submission or approval is implied.
 
 ## Materials

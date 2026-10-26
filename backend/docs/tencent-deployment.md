@@ -5,7 +5,16 @@ full synchronous commits and atomic conditional batches. The checked-in D1
 migrations are reused verbatim. Existing migrations are checked by digest; an
 edited applied migration stops startup.
 
-## Current recorded status (2026-10-15)
+## Current recorded status (2026-10-24)
+
+The API now runs `/opt/rememberme/releases/20261024-magpie-84793192d5c7/runtime`
+with direct same-host Magpie translation, model `zhipu/glm-5.3-flash` and
+MyMemory fallback. Migration 0006 is applied. Verified database/config backups
+and the old Hermes runtime remain for rollback. Both live provider checks and
+the exact extension 0.1.2 ZIP's disposable Chrome acceptance passed; installed
+user clients still require updating. See [Magpie deployment evidence](verification/2026-10-24-magpie.md).
+
+## Previous recorded status (2026-10-15)
 
 The Tencent API and isolated Hermes remain active under `/opt/rememberme/releases/20261014-4c2222236a8a/runtime`, on loopback 8787/8643. Word lookup now has a fixed trusted HTTPS entry independent of the filing-blocked canonical account domain. Its named private connector and loopback lookup bridge are enabled; connector restart and subsequent formal/native Chrome lookup have been verified. The former random Quick Tunnel has been disabled.
 

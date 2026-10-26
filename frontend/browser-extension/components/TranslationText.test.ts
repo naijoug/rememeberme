@@ -9,6 +9,15 @@ afterEach(() => { app?.unmount(); app = undefined; host?.remove(); });
 const translation = (text: string): Translation => ({ text, source: 'mymemory', target: 'zh-CN' });
 
 describe('Chinese translation display', () => {
+  it('labels Magpie accurately while rendering its output as untrusted text', () => {
+    host = document.createElement('div');
+    app = createApp(TranslationText, { translation: { text: '<b>合成</b>', target: 'zh-CN', source: 'magpie' } });
+    app.mount(host);
+    expect(host.querySelector('.definition-source')?.textContent).toContain('Magpie');
+    expect(host.querySelector('.definition-source')?.textContent).not.toContain('MyMemory');
+    expect(host.querySelector('b')).toBeNull();
+    expect(host.querySelector('.translation-text')?.textContent).toBe('<b>合成</b>');
+  });
   it('formats existing provider/cache/history text reactively while preserving raw data', async () => {
     const original = translation('哄騙 哄骗 [hong3 pian4]');
     const props = reactive({ translation: original });

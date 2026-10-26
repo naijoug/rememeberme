@@ -9,7 +9,7 @@ import { join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
-import { app, createRuntime, HermesTranslator, WindowLimiter, ServerDictionary, ServerTranslator, MyMemoryTranslator } from '../.build/library.mjs';
+import { app, createRuntime, MagpieTranslator, WindowLimiter, ServerDictionary, ServerTranslator, MyMemoryTranslator } from '../.build/library.mjs';
 
 const backend = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const extension = resolve(backend, '../frontend/browser-extension');
@@ -53,15 +53,15 @@ try {
   runtime = createRuntime({ databasePath: join(directory, 'fixture.sqlite'), migrations: join(backend, 'migrations'),
     publicDirectory: join(backend, 'public'), configuration: { PUBLIC_ORIGIN: origin, ENVIRONMENT: 'local' } });
   runtime.AUTH_LIMIT = new WindowLimiter(1000); runtime.API_LIMIT = new WindowLimiter(10_000);
-  const hermes = new HermesTranslator({ baseURL: 'http://127.0.0.1:8643/v1', key: 'synthetic-fixture-key',
+  const magpie = new MagpieTranslator({ baseURL: 'http://127.0.0.1:3425/v1', key: 'synthetic-fixture-key',
     model: 'synthetic-model', fetch: async url => new Response(JSON.stringify(String(url).endsWith('/toolsets')
-      ? [] : { choices: [{ message: { content: '{"text":"合成释义"}' } }] }), { headers: { 'Content-Type': 'application/json' } }) });
+      ? [] : { choices: [{ finish_reason: 'stop', message: { content: '{"text":"合成释义"}' } }] }), { headers: { 'Content-Type': 'application/json' } }) });
   const providerJSON = value => new Response(JSON.stringify(value), { headers: { 'Content-Type': 'application/json' } });
   runtime.DICTIONARY = new ServerDictionary(async url => {
     assert.equal(String(url), 'https://api.dictionaryapi.dev/api/v2/entries/en/synthetic');
     return providerJSON([{ ...definition, meanings: [{ partOfSpeech: 'adjective', definitions: [{ definition: 'Artificial.' }] }] }]);
   });
-  runtime.TRANSLATOR = new ServerTranslator(hermes, new MyMemoryTranslator(async url => {
+  runtime.TRANSLATOR = new ServerTranslator(magpie, new MyMemoryTranslator(async url => {
     assert.equal(new URL(url).searchParams.get('q'), 'fallback');
     return providerJSON({ responseStatus: 200, responseData: { translatedText: '备用释义' } });
   }));
@@ -124,17 +124,17 @@ try {
   assert.equal((await a.repository.getWord('synthetic')).history[0].context, legacy[0].history[0].context);
   assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
   const translation = await a.client.request('/api/v1/lookup/translation', 'POST', { word: 'synthetic', target: 'zh-CN' });
-  assert.equal(translation.translation.source, 'hermes');
+  assert.equal(translation.translation.source, 'magpie');
   const publicClient = new a.module.PublicLookupClient(origin, globalThis.fetch);
   const dictionary = new a.module.DictionaryService(async () => null, publicClient);
   assert.equal((await dictionary.getDefinition('synthetic')).source, 'dictionary-api');
   const translator = new a.module.TranslationService(publicClient);
-  assert.equal((await translator.translate('synthetic')).source, 'hermes');
-  const originalTranslate = hermes.translate.bind(hermes);
-  hermes.translate = async word => {
+  assert.equal((await translator.translate('synthetic')).source, 'magpie');
+  const originalTranslate = magpie.translate.bind(magpie);
+  magpie.translate = async word => {
     if (word === 'fallback') {
       // Return a real adapter provider error, so server policy performs the fallback.
-      const unavailable = new HermesTranslator({ baseURL: 'http://127.0.0.1:8643/v1', key: 'fixture', model: 'fixture',
+      const unavailable = new MagpieTranslator({ baseURL: 'http://127.0.0.1:3425/v1', key: 'fixture', model: 'fixture',
         fetch: async () => new Response('', { status: 503 }) });
       return unavailable.translate(word);
     }
@@ -186,9 +186,9 @@ try {
     assert.equal((await repository.status()).enabled, true);
   }
   assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
-  console.log('Extension repository and authenticated client -> real Node/SQLite HTTP: refresh, exact restart retry, cross-device history, privacy, conflict archive and epoch fencing passed. Hermes protocol uses a synthetic provider.');
+  console.log('Extension repository and authenticated client -> real Node/SQLite HTTP: refresh, exact restart retry, cross-device history, privacy, conflict archive and epoch fencing passed. Magpie protocol uses a synthetic provider.');
   console.log('Large copy/import histories: UTF-8 byte/count limits, full SQLite history, later resets and uninterrupted sync passed.');
-  console.log('Actual anonymous extension lookup services -> public HTTP routes: server dictionary, Hermes and server-side MyMemory fallback passed with synthetic providers; no client provider requests.');
+  console.log('Actual anonymous extension lookup services -> public HTTP routes: server dictionary, Magpie and server-side MyMemory fallback passed with synthetic providers; no client provider requests.');
 } finally {
   globalThis.fetch = originalFetch; Date.now = originalNow;
   await new Promise(resolve => { server.close(resolve); server.closeAllConnections(); });

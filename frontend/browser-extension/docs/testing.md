@@ -1,5 +1,11 @@
 # Verification and browser checklist
 
+Magpie regressions cover persisted v3 caches, literal source rendering, all
+three translation sources through import/export, unchanged reset/history
+semantics, and real loopback HTTP through the backend Magpie adapter with a
+synthetic provider. Older installed clients require the 0.1.2 update before
+consuming Magpie results. A packaged build is not proof of an installed update.
+
 Run commands from `frontend/browser-extension/` after the setup in [README](../README.md). Automated tests use happy-dom and disposable browser/storage mocks. They have no production access and do not call the live dictionary API.
 
 ## Choose checks for the change

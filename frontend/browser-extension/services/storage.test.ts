@@ -41,6 +41,17 @@ describe('Storage Service - Export/Import Functionality', () => {
     vi.clearAllMocks();
   });
 
+  it('round-trips Magpie, Hermes and MyMemory snapshots without changing counts or histories', async () => {
+    for (const source of ['magpie', 'hermes', 'mymemory'] as const) {
+      await storageService.saveWord(source, { ...mockDefinition, translation: { text: '<b>合成</b>', source, target: 'zh-CN' } }, 'fixture', 'https://example.test');
+    }
+    await storageService.resetCount('magpie');
+    const exported = await storageService.exportData();
+    storageApiMock.values.clear();
+    await new StorageService().importData(exported);
+    expect(JSON.parse(await new StorageService().exportData())).toEqual(JSON.parse(exported));
+  });
+
   it('round-trips offline source attribution alongside legacy definitions without migration', async () => {
     const localDefinition: Definition = { ...mockDefinition, source: 'wordnet' };
     await storageService.saveWord('offline', localDefinition, 'Offline fixture context.', 'https://example.com/fixture');

@@ -16,6 +16,14 @@ beforeEach(() => { vi.resetAllMocks(); api.values.clear(); vi.stubGlobal('fetch'
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('Chinese translation (mock provider and disposable cache)', () => {
+  it('uses the new cache namespace for Magpie and persists the actual source across restarts', async () => {
+    api.values.set('local:translationCache', { 'public:v1:synthetic': { text: '旧服务结果', source: 'hermes', timestamp: Date.now() } });
+    const request = vi.fn().mockResolvedValue({ translation: { text: '合成', target: 'zh-CN', source: 'magpie' } });
+    expect((await new TranslationService({ request }).translate('synthetic')).source).toBe('magpie');
+    await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalled());
+    expect((await new TranslationService({ request }).translate('synthetic')).source).toBe('magpie');
+    expect(request).toHaveBeenCalledTimes(1);
+  });
   it('accepts server-side MyMemory fallback and retries the server after its shorter cache expires', async () => {
     const request = vi.fn().mockResolvedValueOnce({ translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } })
       .mockResolvedValue({ translation: { text: '人工释义', target: 'zh-CN', source: 'hermes' } });

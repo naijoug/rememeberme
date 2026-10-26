@@ -1,5 +1,17 @@
 # Native client behavior
 
+## Magpie update (2026-10-24)
+
+Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+and server-side MyMemory fallback. The new `magpie` source is accepted alongside
+legacy `hermes` and `mymemory` snapshots without rewriting saved history.
+Connected native lookup uses a `backend-v3:` cache namespace and a twenty-second
+deadline; server MyMemory fallback caches for one hour. Disconnected native
+lookup still uses its existing MyMemory provider. Update installed native apps
+before consuming Magpie snapshots.
+The descriptions and dated acceptance links below retain pre-Magpie context;
+use the new deployment record for current host acceptance.
+
 This describes the current implementation foundation. The full [Apple plan](../../../docs/apple-clients-implementation-plan.md) remains the release scope.
 
 - Both native apps start with an empty anonymous local vocabulary. No login is required. The app does not inspect Chrome profiles or extension storage.
