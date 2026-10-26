@@ -14,6 +14,13 @@ import UIKit
     private var active: ASWebAuthenticationSession?
     private var continuation: CheckedContinuation<URL, Error>?
     private var flight: UUID?
+    // AuthenticationServices may invoke its ObjC completion on an XPC queue.
+    // Keep the outer closure nonisolated; an inherited MainActor closure traps
+    // in Swift 6 before its inner Task can hop to the main executor.
+    nonisolated static func completionHandler(_ action: @escaping @MainActor @Sendable (URL?, Error?) -> Void)
+        -> @Sendable (URL?, Error?) -> Void {
+        { url, error in Task { @MainActor in action(url, error) } }
+    }
     func authenticate(_ attempt: NativeLoginAttempt) async throws -> URL {
         guard continuation == nil else { throw AuthenticationError.superseded }
         let id = UUID(); flight = id
@@ -21,13 +28,12 @@ import UIKit
             try await withCheckedThrowingContinuation { continuation in
                 if Task.isCancelled { continuation.resume(throwing: CancellationError()); flight = nil; return }
                 self.continuation = continuation
-                let browser = ASWebAuthenticationSession(url: attempt.authorizationURL, callbackURLScheme: attempt.callback.scheme) { url, error in
-                    Task { @MainActor in
-                        guard self.flight == id else { return }
+                let browser = ASWebAuthenticationSession(url: attempt.authorizationURL, callbackURLScheme: attempt.callback.scheme,
+                    completionHandler: Self.completionHandler { [weak self] url, error in
+                        guard let self, self.flight == id else { return }
                         if let url { self.finish(.success(url)) }
                         else { self.finish(.failure(error ?? AuthenticationError.invalidCallback)) }
-                    }
-                }
+                    })
                 browser.presentationContextProvider = self; browser.prefersEphemeralWebBrowserSession = true
                 active = browser
                 if !browser.start() { finish(.failure(AuthenticationError.invalidCallback)) }
@@ -132,7 +138,11 @@ import UIKit
         busy = true; error = nil
         work = Task {
             defer { busy = false; work = nil }
-            do { try await session.logout(); identity = nil; status = "Account disconnected · Local vocabulary retained" }
+            do {
+                let revoked = try await session.logout(); identity = nil
+                status = revoked ? "Account disconnected · Local vocabulary retained"
+                    : "Disconnected on this device · Server revocation could not be confirmed"
+            }
             catch { self.error = error.localizedDescription }
         }
     }

@@ -92,3 +92,25 @@ Anonymous source resolution retains event IDs and records aliases when attaching
 `ForegroundSyncScheduler` owns only a bounded wakeup flight. `SyncCoordinator` and the repository continue to own request bytes, causal order, retry deadlines and commit state. `NWPathMonitor` is created only by the production account pool; tests inject events and sleep gates. Scene ownership prevents one disappearing window from cancelling another active window's retry eligibility.
 
 The API stores a nullable reminder device and monotonic revision per account. Selection uses authenticated-device identity plus compare-and-set; it does not change source privacy or vocabulary. Native configuration retains the latest verified selection. Settings selection and foreground account refresh work independently of vocabulary sending. Restore publication rechecks reminder selection to avoid publishing an older device preference from its candidate. Reminders are cancelled when a newly observed selection belongs elsewhere; disconnected devices cannot observe transfers immediately.
+
+## Recoverable account sessions (2026-10-25)
+
+`APICredentials.refreshRequestId` is an optional Keychain-only pending rotation
+intent. NativeSession saves it before refreshing and reuses it after network
+failure or process restart. A completed flight remains available after a vault
+write failure. Logout sends the refresh credential and reports when server
+revocation could not be confirmed. Backend migration 0007 must be deployed first;
+see the [shared authentication contract](../../../contracts/api-v1.md).
+
+
+## Hosted OAuth callback verification (2026-10-25)
+
+Actual installed-Mac login exposed a Swift 6 executor trap when
+AuthenticationServices invoked the completion on a SafariLaunchAgent XPC queue.
+AppleWebAuthenticator now supplies a nonisolated Sendable callback and hops to
+MainActor before touching continuation/session state. A detached-task regression
+covers that boundary. The rebuilt installed app completed GitHub login as
+naijoug, synced a synthetic account word, and retained the session after restart.
+See [hosted evidence](../../../backend/docs/verification/2026-10-25-account-deployment.md)
+for deployment backups and completed installed Chrome↔Mac record/reset/delete
+synchronization, with the original anonymous browser vocabulary retained.

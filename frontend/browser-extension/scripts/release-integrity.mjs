@@ -50,7 +50,7 @@ export async function verifyReleaseDirectory(directory, expectedVersion) {
   const manifest = JSON.parse(await readFile(join(root, 'manifest.json'), 'utf8'));
   assert.equal(manifest.manifest_version, 3);
   assert.equal(manifest.version, expectedVersion);
-  assert.deepEqual(manifest.permissions, ['storage', 'contextMenus']);
+  assert.deepEqual(manifest.permissions, ['storage', 'contextMenus', 'identity', 'alarms']);
   assert.ok(!/localhost|127\.0\.0\.1|3937|unsafe-eval/.test(JSON.stringify(manifest)), 'Development manifest');
   await resource(manifest.action?.default_popup);
   await resource(manifest.background?.service_worker);

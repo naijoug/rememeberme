@@ -90,13 +90,28 @@
 .rm-theme .error { color: var(--rm-error); background: var(--rm-error-soft); }
 .rm-theme .success { color: var(--rm-primary); background: var(--rm-primary-soft); }
 .vocabulary-counter.rm-theme { display: flex; flex-direction: column; width: 400px; max-width: 100vw; max-height: 600px; background: var(--rm-bg); position: relative; overflow: hidden; }
+.rm-theme .settings-page { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 16px 20px; font-size: 13px; }
+.rm-theme .settings-title { margin: 0 0 20px; font-size: 20px; font-weight: 650; letter-spacing: -.4px; line-height: 1.25; }
+.rm-theme .settings-select { max-width: 160px; border: 0; background: transparent; color: var(--rm-muted); text-align: right; padding: 3px 0 3px 8px; }
+.rm-theme .settings-section { margin-bottom: 18px; }
+.rm-theme .settings-section h3 { margin: 0 12px 7px; color: var(--rm-muted); font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+.rm-theme .settings-group { border: 1px solid var(--rm-border); border-radius: 10px; background: var(--rm-surface); overflow: hidden; }
+.rm-theme .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 43px; margin: 0; padding: 11px 13px; line-height: 1.4; }
+.rm-theme .setting-row + .setting-row { border-top: 1px solid var(--rm-border); }
+.rm-theme .setting-row dt { flex-shrink: 0; }
+.rm-theme .setting-row dd { margin: 0; min-width: 0; text-align: right; color: var(--rm-muted); overflow-wrap: anywhere; }
+.rm-theme .row-action { border: 0; background: transparent; color: inherit; text-align: left; font-size: inherit; }
+.rm-theme .row-action > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.rm-theme .row-action:hover:not(:disabled) { background: var(--rm-soft); }
+.rm-theme .row-action:focus-visible { outline-offset: -3px; }
+.rm-theme .row-chevron, .rm-theme .row-value { color: var(--rm-muted); }
+.rm-theme .row-trailing { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.rm-theme .setting-row small { display: block; color: var(--rm-muted); font-size: 11px; margin-top: 3px; }
+.rm-theme .section-note { margin: 7px 12px 0; color: var(--rm-muted); font-size: 11px; line-height: 1.5; }
 .rm-theme .rm-header { min-height: 58px; display: flex; align-items: center; gap: 8px; padding: 11px 20px; border-bottom: 1px solid var(--rm-border); flex-shrink: 0; }
 .rm-theme .brand-mark { width: 36px; height: 36px; flex-shrink: 0; }
 .rm-theme .rm-brand { font-size: 17px; font-weight: 600; letter-spacing: -.025em; flex: 1; }
 .rm-theme .rm-header-actions { display: flex; gap: 4px; position: relative; }
-.rm-theme .rm-menu { position: absolute; top: 42px; right: 0; z-index: 10; min-width: 180px; padding: 5px; background: var(--rm-surface); border: 1px solid var(--rm-border); box-shadow: var(--rm-shadow); border-radius: 9px; }
-.rm-theme .rm-menu button { display: flex; align-items: center; gap: 10px; width: 100%; background: transparent; border: 0; padding: 10px; font-size: 13px; text-align: left; border-radius: 5px; }
-.rm-theme .rm-menu button:hover { background: var(--rm-soft); }
 .rm-theme .vocabulary-main { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
 .rm-theme .list-tools { padding: 18px 22px 8px; flex-shrink: 0; }
 .rm-theme .search-field { display: flex; align-items: center; gap: 9px; min-height: 39px; padding: 0 11px; background: var(--rm-soft); border: 1px solid var(--rm-border); border-radius: 7px; color: var(--rm-muted); }

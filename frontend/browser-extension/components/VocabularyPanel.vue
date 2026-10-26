@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { Bookmark, Download, HalfMoon, MoreVert, NavArrowLeft, Refresh, Search, SunLight, Trash, Upload , IconoirProvider } from '@iconoir/vue';
+import { computed, nextTick, ref, watch } from 'vue';
+import { Bookmark, Download, Settings, NavArrowLeft, NavArrowRight, Refresh, Search, Trash, Upload, IconoirProvider } from '@iconoir/vue';
 import type { WordEntry } from '~/types';
 import type { ResolvedTheme, ThemePreference } from '~/types/theme';
 import WordList from './WordList.vue';
@@ -10,8 +10,8 @@ import { PRIVACY_POLICY_URL } from '~/config/backend';
 
 const props = withDefaults(defineProps<{
   words: WordEntry[]; loading?: boolean; busy?: boolean; error?: string; success?: string;
-  theme?: ResolvedTheme; initialWord?: string; logoUrl?: string;
-}>(), { theme: 'light', logoUrl: '/icon/48.png' });
+  theme?: ResolvedTheme; themePreference?: ThemePreference; initialWord?: string; logoUrl?: string;
+}>(), { theme: 'light', themePreference: 'system', logoUrl: '/icon/48.png' });
 const emit = defineEmits<{
   delete: [word: string]; reset: [word: string]; import: [text: string]; export: [];
   'theme-change': [theme: ThemePreference]; retry: [];
@@ -20,12 +20,11 @@ const selected = ref<string | null>(props.initialWord || null);
 const query = ref('');
 const listScrollTop = ref(0);
 const sortBy = ref<'count' | 'updatedAt'>('count');
-const menuOpen = ref(false);
-const accountOpen = ref(false);
+const settingsOpen = ref(false);
 const confirmWord = ref<string | null>(null);
 const fileInput = ref<HTMLInputElement>();
-const menu = ref<HTMLElement>();
-const menuButton = ref<HTMLButtonElement>();
+const settingsButton = ref<HTMLButtonElement>();
+const settingsHeading = ref<HTMLHeadingElement>();
 const backButton = ref<HTMLButtonElement>();
 const importError = ref('');
 const selectedEntry = computed(() => props.words.find(entry => (entry.id ?? entry.word) === selected.value));
@@ -33,27 +32,25 @@ const displayedWords = computed(() => props.words.filter(entry => entry.word.toL
   .slice().sort((a, b) => sortBy.value === 'count' ? b.count - a.count : b.updatedAt - a.updatedAt));
 watch(selectedEntry, entry => { if (!entry) { selected.value = null; confirmWord.value = null; listScrollTop.value = 0; } });
 async function openWord(word: string) { selected.value = word; await nextTick(); backButton.value?.focus(); }
-async function openMenu() { menuOpen.value = !menuOpen.value; await nextTick(); if (menuOpen.value) menu.value?.querySelector('button')?.focus(); }
-function closeMenu() { menuOpen.value = false; menuButton.value?.focus(); }
-function menuKeys(event: KeyboardEvent) {
-  const buttons = [...(menu.value?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)') ?? [])];
-  const index = buttons.indexOf(document.activeElement as HTMLButtonElement);
-  if (!buttons.length) return;
-  if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-    event.preventDefault();
-    const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length;
-    buttons[next].focus();
-  }
+async function openSettings() {
+  if (settingsOpen.value) return;
+  settingsOpen.value = true;
+  await nextTick(); settingsHeading.value?.focus();
 }
-function outsideMenu(event: MouseEvent) { if (!menu.value?.contains(event.target as Node) && event.target !== menuButton.value && !menuButton.value?.contains(event.target as Node)) menuOpen.value = false; }
+async function closeSettings() {
+  settingsOpen.value = false;
+  await nextTick(); settingsButton.value?.focus();
+}
 function keydown(event: KeyboardEvent) {
   if (event.key !== 'Escape' || confirmWord.value) return;
-  if (menuOpen.value) closeMenu(); else if (accountOpen.value) accountOpen.value = false; else selected.value = null;
+  if (settingsOpen.value) { event.preventDefault(); void closeSettings(); }
+  else selected.value = null;
 }
-onMounted(() => document.addEventListener('click', outsideMenu));
-onUnmounted(() => document.removeEventListener('click', outsideMenu));
-function triggerImport() { menuOpen.value = false; fileInput.value?.click(); }
-function openPrivacy() { window.open(PRIVACY_POLICY_URL, '_blank', 'noopener,noreferrer'); closeMenu(); }
+function triggerImport() { fileInput.value?.click(); }
+function changeAppearance(event: Event) {
+  const value = (event.target as HTMLSelectElement).value;
+  if (value === 'system' || value === 'light' || value === 'dark') emit('theme-change', value);
+}
 async function importFile(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
@@ -71,16 +68,10 @@ async function importFile(event: Event) {
       <img class="brand-mark" :src="logoUrl" width="30" height="30" alt="" />
       <h1 class="rm-brand">Remember Me</h1>
       <div class="rm-header-actions">
-        <button class="rm-icon-btn" :aria-label="theme === 'dark' ? 'Use light theme' : 'Use dark theme'" :title="theme === 'dark' ? 'Use light theme' : 'Use dark theme'" @click="emit('theme-change', theme === 'dark' ? 'light' : 'dark')">
-          <HalfMoon v-if="theme === 'dark'" width="21" height="21" aria-hidden="true" /><SunLight v-else width="23" height="23" aria-hidden="true" />
+        <button ref="settingsButton" class="rm-icon-btn" aria-label="Settings" title="Settings"
+          aria-controls="vocabulary-settings" :aria-expanded="settingsOpen" @click="openSettings">
+          <Settings width="21" height="21" aria-hidden="true" />
         </button>
-        <button ref="menuButton" class="rm-icon-btn" aria-label="More options" aria-haspopup="menu" :aria-expanded="menuOpen" @click.stop="openMenu"><MoreVert width="21" height="21" aria-hidden="true" /></button>
-        <div v-if="menuOpen" ref="menu" class="rm-menu" role="menu" aria-label="Vocabulary options" @keydown="menuKeys">
-          <button role="menuitem" :disabled="busy" @click="triggerImport"><Upload width="17" height="17" aria-hidden="true" />Import backup</button>
-          <button role="menuitem" :disabled="busy || loading" @click="emit('export'); closeMenu()"><Download width="17" height="17" aria-hidden="true" />Export vocabulary</button>
-          <button role="menuitem" @click="openPrivacy">Privacy &amp; support</button>
-          <button v-if="$slots.account" role="menuitem" @click="accountOpen = true; closeMenu()">Account &amp; sync</button>
-        </div>
       </div>
       <input ref="fileInput" type="file" accept=".json,application/json" hidden @change="importFile" />
     </header>
@@ -88,10 +79,46 @@ async function importFile(event: Event) {
     <div v-if="success" class="rm-banner success" role="status">{{ success }}</div>
     <div v-if="error || importError" class="rm-banner error" role="alert">{{ error || importError }} <button v-if="!words.length && !importError" class="rm-text-action" @click="emit('retry')">Try again</button></div>
 
-    <div v-if="accountOpen" class="account-settings">
-      <button class="back-link" @click="accountOpen = false"><NavArrowLeft width="17" height="17" aria-hidden="true" />Vocabulary</button>
+    <section v-if="settingsOpen" id="vocabulary-settings" class="settings-page" aria-labelledby="settings-title">
+      <button class="back-link" @click="closeSettings"><NavArrowLeft width="17" height="17" aria-hidden="true" />Vocabulary</button>
+      <h2 id="settings-title" ref="settingsHeading" class="settings-title" tabindex="-1">Settings</h2>
+
+      <section class="settings-section" aria-labelledby="appearance-heading">
+        <h3 id="appearance-heading">Appearance</h3>
+        <div class="settings-group">
+          <label class="setting-row" for="appearance-preference">
+            <span>Theme</span>
+            <select id="appearance-preference" class="settings-select" aria-label="Theme" :value="themePreference" @change="changeAppearance">
+              <option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
       <slot name="account" />
-    </div>
+
+      <section class="settings-section" aria-labelledby="backups-heading">
+        <h3 id="backups-heading">Backups</h3>
+        <div class="settings-group">
+          <button class="setting-row row-action" :disabled="busy" @click="triggerImport">
+            <span>Import backup</span><Upload class="row-chevron" width="17" height="17" aria-hidden="true" />
+          </button>
+          <button class="setting-row row-action" :disabled="busy || loading" @click="emit('export')">
+            <span>Export vocabulary</span><Download class="row-chevron" width="17" height="17" aria-hidden="true" />
+          </button>
+        </div>
+        <p class="section-note">Imports add to the current vocabulary. Backups include saved sentences and source links.</p>
+      </section>
+
+      <section class="settings-section" aria-labelledby="support-heading">
+        <h3 id="support-heading">Support</h3>
+        <div class="settings-group">
+          <a class="setting-row row-action" :href="PRIVACY_POLICY_URL" target="_blank" rel="noopener noreferrer">
+            <span>Privacy &amp; support</span><NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+    </section>
     <main v-else class="vocabulary-main" :aria-busy="loading || busy">
       <div v-if="loading && !words.length" class="loading" role="status">Opening your vocabulary…</div>
       <div v-else-if="selectedEntry" class="detail-view">

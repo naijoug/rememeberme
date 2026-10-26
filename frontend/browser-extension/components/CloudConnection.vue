@@ -1,12 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import type { CloudStatus } from '~/services/cloud-vocabulary';
+import { computed, nextTick, onMounted, ref } from 'vue';
+import { NavArrowRight, Refresh } from '@iconoir/vue';
+import type { CloudStatus, MigrationPreview } from '~/services/cloud-vocabulary';
 import { SERVICE_ORIGIN } from '~/config/backend';
 const emit = defineEmits<{ changed: [] }>();
 const busy = ref(false), error = ref('');
 const status = ref<CloudStatus>();
+const preview = ref<MigrationPreview>();
+const previewPanel = ref<HTMLElement>();
+const accountSelected = computed(() => Boolean(status.value?.connected && status.value.owner !== 'anonymous'));
+const needsRecovery = computed(() => Boolean(status.value?.conflicts || status.value?.failure === 'SYNC_EPOCH_CHANGED'));
+const syncState = computed(() => {
+  if (!accountSelected.value) return 'Local only';
+  if (needsRecovery.value || status.value?.failure) return 'Needs attention';
+  return status.value?.enabled ? 'Enabled' : 'Paused';
+});
+const syncDisabled = computed(() => busy.value || !accountSelected.value || (!status.value?.enabled && needsRecovery.value));
+
 async function action(type: string, extra: Record<string, unknown> = {}) {
   if (busy.value) return; busy.value = true; error.value = '';
+  preview.value = undefined;
   try {
     const reply = await browser.runtime.sendMessage({ type, ...extra });
     if (!reply?.success) throw new Error(reply?.error || 'The backend connection could not be updated.');
@@ -22,8 +35,27 @@ async function action(type: string, extra: Record<string, unknown> = {}) {
     if (type !== 'CLOUD_STATUS') emit('changed');
   }
 }
+async function previewLocal() {
+  if (busy.value) return;
+  busy.value = true; error.value = ''; preview.value = undefined;
+  try {
+    const reply = await browser.runtime.sendMessage({ type: 'CLOUD_PREVIEW_LOCAL' });
+    if (!reply?.success) throw new Error(reply?.error || 'Could not preview local vocabulary.');
+    preview.value = reply.data;
+    await nextTick(); previewPanel.value?.focus();
+  } catch (cause) { error.value = cause instanceof Error ? cause.message : 'Could not preview local vocabulary.'; }
+  finally {
+    const latest = await browser.runtime.sendMessage({ type: 'CLOUD_STATUS' }).catch(() => undefined);
+    if (latest?.success) status.value = latest.data;
+    busy.value = false; emit('changed');
+  }
+}
 async function copyLocal() {
-  if (confirm('Copy this device’s local vocabulary into the connected account? This prepares words and definition history for upload when you enable sync. Context and source URLs remain local. The original local vocabulary is retained.')) await action('CLOUD_COPY_LOCAL');
+  const plan = preview.value;
+  if (!plan || busy.value) return;
+  if (confirm(`Copy ${plan.copy} new words to GitHub account @${plan.displayName}? Skip ${plan.skip} existing words without changing their counts. Context and source URLs remain local. The original local vocabulary is retained. Sync stays paused until you enable it.`)) {
+    await action('CLOUD_COPY_LOCAL', { previewToken: plan.token });
+  }
 }
 async function recoverCloud() {
   if (confirm('Archive ALL pending account changes and use the current cloud vocabulary? Your current words and frozen requests will be retained in a private recovery copy. Old requests will not be replayed. Sync stays paused; you can export the recovery vocabulary before making further choices.')) await action('CLOUD_RECOVER');
@@ -42,37 +74,136 @@ async function exportArchive(key: string) {
 onMounted(() => { void action('CLOUD_STATUS'); });
 </script>
 <template>
-  <div class="cloud-connection rm-theme">
-    <section aria-label="Account and sync settings">
-      <h2>Account &amp; sync</h2>
-      <p>Translation works without signing in. Sign in only if you want to sync your vocabulary across devices.</p>
-      <template v-if="!status?.connected">
-        <button :disabled="busy" @click="action('CLOUD_CONNECT', { origin: SERVICE_ORIGIN })">Sign in with GitHub</button>
-      </template>
-      <template v-else>
-        <p>{{ status.owner === 'anonymous' ? 'Local vocabulary' : 'Account vocabulary' }} · {{ status.pending }} pending · {{ status.conflicts }} conflicts</p>
-        <button :disabled="busy" @click="action('CLOUD_OPEN')">Open account vocabulary</button>
-        <button :disabled="busy" @click="copyLocal">Copy local vocabulary ({{ status.localWords }})</button>
-        <button :disabled="busy || status.owner === 'anonymous'" @click="action('CLOUD_ENABLE', { enabled: !status.enabled })">{{ status.enabled ? 'Pause sync' : 'Enable sync' }}</button>
-        <button :disabled="busy || status.owner === 'anonymous'" @click="action('CLOUD_SYNC')">Sync now</button>
-        <button :disabled="busy" @click="action('CLOUD_USE_LOCAL')">Use local vocabulary</button>
-        <button :disabled="busy" @click="action('CLOUD_DISCONNECT')">Disconnect</button>
-        <p v-if="status.failure" role="status">{{ status.failure }}. Local vocabulary and pending requests are retained.</p>
-        <button v-if="status.conflicts || status.failure === 'SYNC_EPOCH_CHANGED'" :disabled="busy" @click="recoverCloud">Archive changes and use cloud vocabulary</button>
-        <button v-for="archive in status.archives" :key="archive.key" :disabled="busy" @click="exportArchive(archive.key)">Export recovery copy · {{ new Date(archive.createdAt).toLocaleString() }}</button>
-      </template>
-      <p v-if="error" role="alert">{{ error }}</p>
-      <p>Your vocabulary stays on this device until you choose to copy it and enable sync. Exported backups include your saved sentences and source links.</p>
+  <section class="cloud-connection rm-theme" aria-label="Account and sync settings" :aria-busy="busy">
+    <section class="settings-section" aria-labelledby="account-heading">
+      <h3 id="account-heading">Account</h3>
+      <div class="settings-group">
+        <template v-if="status?.connected">
+          <dl class="setting-row">
+            <dt>GitHub</dt>
+            <dd>{{ status.displayName ? `@${status.displayName}` : 'Username unavailable' }}</dd>
+          </dl>
+          <dl class="setting-row">
+            <dt>Vocabulary</dt>
+            <dd>{{ accountSelected ? 'GitHub account' : 'On this device' }}</dd>
+          </dl>
+          <button class="setting-row row-action" :disabled="busy" @click="action(accountSelected ? 'CLOUD_USE_LOCAL' : 'CLOUD_OPEN')">
+            <span>{{ accountSelected ? 'Use local vocabulary' : 'Open account vocabulary' }}</span>
+            <NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
+          </button>
+        </template>
+        <template v-else>
+          <dl class="setting-row"><dt>GitHub</dt><dd>Not connected</dd></dl>
+          <button class="setting-row row-action" :disabled="busy" @click="action('CLOUD_CONNECT', { origin: SERVICE_ORIGIN })">
+            <span>Sign in with GitHub</span>
+            <NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
+          </button>
+        </template>
+      </div>
+      <p v-if="!status?.connected" class="section-note">Translation works without signing in. Connect to sync words across your devices.</p>
     </section>
-  </div>
+
+    <template v-if="status?.connected">
+      <section class="settings-section" aria-labelledby="sync-heading">
+        <h3 id="sync-heading">Synchronization</h3>
+        <div class="settings-group">
+          <div class="setting-row">
+            <span id="cloud-sync-label">Cloud sync</span>
+            <button class="sync-switch" type="button" role="switch" :aria-checked="status.enabled"
+              aria-labelledby="cloud-sync-label" :aria-describedby="!accountSelected ? 'sync-local-hint' : needsRecovery ? 'sync-recovery-hint' : undefined"
+              :disabled="syncDisabled" @click="action('CLOUD_ENABLE', { enabled: !status.enabled })">
+              <span class="switch-thumb" aria-hidden="true" />
+            </button>
+          </div>
+          <dl class="setting-row sync-status">
+            <dt>Status</dt>
+            <dd>
+              <span>{{ syncState }}</span>
+              <small>{{ status.pending }} pending · {{ status.conflicts }} {{ status.conflicts === 1 ? 'conflict' : 'conflicts' }}</small>
+            </dd>
+          </dl>
+          <button v-if="accountSelected" class="setting-row row-action" :disabled="busy || !status.enabled" @click="action('CLOUD_SYNC')">
+            <span>Sync now</span><Refresh class="row-chevron" width="16" height="16" aria-hidden="true" />
+          </button>
+        </div>
+        <p v-if="!accountSelected" id="sync-local-hint" class="section-note">Open account vocabulary to enable sync.</p>
+        <p v-else-if="needsRecovery" id="sync-recovery-hint" class="section-note">Review recovery options before enabling sync.</p>
+      </section>
+
+      <section class="settings-section" aria-labelledby="local-heading">
+        <h3 id="local-heading">On this device</h3>
+        <div class="settings-group">
+          <button class="setting-row row-action" :disabled="busy" @click="previewLocal">
+            <span>Preview local vocabulary</span>
+            <span class="row-trailing"><span class="row-value">{{ status.localWords }} {{ status.localWords === 1 ? 'word' : 'words' }}</span><NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" /></span>
+          </button>
+        </div>
+        <p class="section-note">Review before copying. Your local original is kept.</p>
+      </section>
+
+      <section v-if="preview" ref="previewPanel" tabindex="-1" aria-label="Local vocabulary migration preview" class="migration-preview settings-section">
+        <div class="preview-heading"><h3>Copy to @{{ preview.displayName }}</h3><button class="text-action" :disabled="busy" @click="preview = undefined">Cancel preview</button></div>
+        <div class="settings-group">
+          <div class="preview-summary">
+            <p>{{ preview.total }} local words · {{ preview.copy }} new · {{ preview.skip }} skipped</p>
+            <p class="section-note">Existing words are skipped without adding counts. Sync stays paused.</p>
+          </div>
+          <div class="migration-items" tabindex="0" aria-label="Words to copy or skip">
+            <table>
+              <thead><tr><th>Word</th><th>Count</th><th>History</th><th>Action</th></tr></thead>
+              <tbody><tr v-for="(item, index) in preview.items" :key="index"><td>{{ item.word }}</td><td>{{ item.count }}</td><td>{{ item.histories }}</td><td>{{ item.action === 'copy' ? 'Copy' : 'Skip existing' }}</td></tr></tbody>
+            </table>
+          </div>
+          <button class="setting-row row-action" :disabled="busy || !preview.copy" @click="copyLocal">
+            <span>Confirm copy of {{ preview.copy }} new words</span><NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
+          </button>
+        </div>
+      </section>
+
+      <p v-if="status.failure && status.failure !== error" class="feedback" role="status">{{ status.failure }}. Local vocabulary and pending requests are retained.</p>
+      <section v-if="needsRecovery || status.archives.length" class="settings-section" aria-labelledby="recovery-heading">
+        <h3 id="recovery-heading">Recovery</h3>
+        <div class="settings-group">
+          <button v-if="needsRecovery" class="setting-row row-action" :disabled="busy" @click="recoverCloud">
+            <span>Archive changes and use cloud vocabulary</span><NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
+          </button>
+          <button v-for="archive in status.archives" :key="archive.key" class="setting-row row-action" :disabled="busy" @click="exportArchive(archive.key)">
+            <span>Export recovery copy<small>{{ new Date(archive.createdAt).toLocaleString() }}</small></span><NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
+          </button>
+        </div>
+      </section>
+
+      <div class="settings-group disconnect-group">
+        <button class="setting-row row-action disconnect-action" :disabled="busy" @click="action('CLOUD_DISCONNECT')">Disconnect account</button>
+      </div>
+    </template>
+    <p v-if="status?.notice" class="feedback" role="status">{{ status.notice }}</p>
+    <p v-if="error" class="feedback error" role="alert">{{ error }}</p>
+  </section>
 </template>
 <style scoped>
-.cloud-connection { padding: 8px 16px; border-bottom: 1px solid var(--rm-border); background: var(--rm-bg); font-size: 12px; }
-h2 { font-size: 16px; margin: 8px 0; }
-section { padding: 8px 0; }
-p { margin: 8px 0; overflow-wrap: anywhere; line-height: 1.45; }
-button, input { padding: 6px 9px; margin: 3px; border: 1px solid var(--rm-border); border-radius: 6px; background: var(--rm-surface); color: inherit; font: inherit; }
-input { width: 90%; }
-button:not(:disabled) { cursor: pointer; }
-button:disabled { opacity: .5; }
+.cloud-connection { --switch-on: #3e775e; --switch-knob: #fff; font-size: 13px; background: var(--rm-bg); }
+.cloud-connection[data-theme='dark'] { --switch-on: #8cba9d; --switch-knob: #173523; }
+.sync-status dd > span { color: var(--rm-text); }
+.sync-switch { position: relative; width: 42px; height: 25px; flex-shrink: 0; border: 1px solid var(--rm-muted); border-radius: 99px; padding: 2px; background: var(--rm-border); transition: background .15s, border-color .15s; }
+.switch-thumb { display: block; width: 19px; height: 19px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px #0003; transition: transform .15s; }
+.sync-switch[aria-checked='true'] { background: var(--switch-on); border-color: var(--switch-on); }
+.sync-switch[aria-checked='true'] .switch-thumb { transform: translateX(17px); background: var(--switch-knob); }
+.sync-switch:disabled { opacity: .48; }
+.disconnect-group { margin: 2px 0 18px; }
+.cloud-connection .disconnect-action { color: var(--rm-error); }
+.cloud-connection .feedback { margin: 12px 0; padding: 10px 12px; border-radius: 8px; background: var(--rm-soft); color: var(--rm-muted); overflow-wrap: anywhere; }
+.cloud-connection .feedback.error { background: var(--rm-error-soft); color: var(--rm-error); }
+.preview-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 12px 7px; }
+.cloud-connection .preview-heading h3 { margin: 0; text-transform: none; letter-spacing: 0; overflow-wrap: anywhere; }
+.text-action { flex-shrink: 0; padding: 0; border: 0; color: var(--rm-muted); background: transparent; font-size: 11px; }
+.preview-summary { padding: 12px; }
+.cloud-connection .preview-summary .section-note { margin: 5px 0 0; }
+.migration-items { max-height: 180px; overflow: auto; border-block: 1px solid var(--rm-border); }
+.migration-items:focus-visible { outline: 2px solid var(--rm-primary); outline-offset: -2px; }
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: 11px; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--rm-border); overflow-wrap: anywhere; }
+th { color: var(--rm-muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { .sync-switch, .switch-thumb { transition: none; } }
 </style>

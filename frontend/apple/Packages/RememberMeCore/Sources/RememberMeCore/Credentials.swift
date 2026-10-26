@@ -8,6 +8,8 @@ public struct APICredentials: Codable, Sendable, Equatable {
     public var refreshExpiresAtMs: Double
     public var userId: String
     public var deviceId: String
+    /// Durable rotation intent; omitted from server replies and cleared on success.
+    public var refreshRequestId: String? = nil
     public init(accessToken: String, refreshToken: String, accessExpiresAtMs: Double, refreshExpiresAtMs: Double,
                 userId: String, deviceId: String) {
         self.accessToken = accessToken; self.refreshToken = refreshToken
@@ -19,6 +21,7 @@ public struct APICredentials: Codable, Sendable, Equatable {
         let identityPattern = "^[A-Za-z0-9:_-]{1,200}$"
         guard accessToken.range(of: tokenPattern, options: .regularExpression) != nil,
               refreshToken.range(of: tokenPattern, options: .regularExpression) != nil,
+              refreshRequestId == nil || refreshRequestId?.range(of: tokenPattern, options: .regularExpression) != nil,
               userId.range(of: identityPattern, options: .regularExpression) != nil,
               deviceId.range(of: identityPattern, options: .regularExpression) != nil,
               accessExpiresAtMs.isFinite, refreshExpiresAtMs.isFinite,

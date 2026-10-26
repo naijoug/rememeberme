@@ -162,7 +162,7 @@ Dictionary tests cover local hits, anonymous server misses/shard recovery and de
 
 `npm run test:browser` additionally bundles the actual dictionary/translation services and verifies server dictionary, Hermes and MyMemory fallback through anonymous real loopback HTTP. Its network guard forbids direct client provider requests. Installed Chrome and live provider acceptance are separate; see [2026-10-14 server lookup verification](verification/2026-10-14-server-lookups.md).
 
-Public route tests verify exact CORS, word-only validation, IP limits and no account/session/vocabulary creation. Popup tests require no initial connection panel or API input; the Chrome release gates account controls and background sync off. Latest host/fixture UI evidence: [automatic lookup deployment](verification/2026-10-14-auto-lookup-deployment.md). A fixture component preview does not establish installed-extension update or public access.
+Public route tests verify exact CORS, word-only validation, IP limits and no account/session/vocabulary creation. Popup tests require no initial connection panel or API input. Current source exposes optional Account & sync controls; its tests verify explicit preview/copy/enable boundaries. Latest host/fixture UI evidence: [automatic lookup deployment](verification/2026-10-14-auto-lookup-deployment.md). A fixture component preview does not establish installed-extension update or public access.
 
 
 Temporary transport verification uses `backend/tests/lookup-bridge.test.mjs` for route/credential/IP/body boundaries with disposable loopback HTTP. Current public and actual installed-Chrome lookup evidence is in [2026-10-14 temporary lookup](verification/2026-10-14-temporary-lookup.md). Browser checks only select/read a synthetic test word and close the card; never click the counter or transfer real vocabulary to test the transport.
@@ -174,3 +174,37 @@ Fixed entry/Chrome ZIP and native menu acceptance: [2026-10-15 release candidate
 `npm run zip` uses a separate release staging directory and rejects incomplete extracted ZIPs. `scripts/release-integrity.test.mjs` exercises missing popup, transitive module/stylesheet/image and unsafe/development-reference failures using disposable fixtures. `services/storage-client.test.ts` now checks stalled read recovery without write retries or mutation timeouts.
 
 Run `scripts/release-upgrade.cjs` with the accepted previous ZIP and an existing Playwright runtime for same-identity real 0.1.0 -> 0.1.1 upgrade/offline/restart evidence. This is completed-directory replacement in a disposable profile, not Chrome Web Store signing/delivery. The actual action popup check uses Chrome’s own action API. No real vocabulary or installed user profile is used. See the dated [0.1.1 package record](verification/2026-10-15-011-package-upgrade.md).
+
+## 2026-10-25 session recovery and migration preview
+
+The account-enabled source is covered by response-loss/restart and failed-save
+refresh tests, bounded server retry/revocation tests, username rendering, literal
+migration rows, stale-preview rejection, duplicate skipping and explicit copy
+confirmation. The browser HTTP harness now deliberately drops a committed refresh
+response, recreates the client, confirms identical retry bytes, tests migration
+preview and revokes an expired-access session. See the [executed checks](verification/2026-10-25-account-sessions.md).
+
+`preview/account.html` mounts the real account component with synthetic in-memory
+messages only. It never reads extension storage or calls a backend. Use the
+existing local watcher to inspect light/dark migration previews; this is separate
+from installed-extension OAuth acceptance.
+
+
+Installed Chrome and Mac follow-up: [2026-10-26 hosted account verification](../../../backend/docs/verification/2026-10-25-account-deployment.md#completed-browser--mac-acceptance-2026-10-26)
+records actual GitHub device sessions, browser record → Mac pull, Mac reset with
+retained history, deletion propagation and synthetic-word cleanup. The original
+six anonymous browser words were not copied or uploaded. `preview/sync-acceptance.html`
+is an ordinary static HTTP test page for this installed-extension flow; it has no
+storage/API hooks and does not bypass internal extension-page restrictions.
+
+Account settings presentation: [2026-10-26 grouped settings verification](verification/2026-10-26-account-settings.md)
+covers read-only metadata, switch state/disabled/error behavior, duplicate-click
+suppression, keyboard operation, migration focus and light/dark layout in the
+actual 400 px popup shell with synthetic data.
+
+
+Unified settings navigation: [2026-10-26 single settings page](verification/2026-10-26-unified-settings.md)
+checks direct gear navigation, one Settings heading with all sections, Escape/back
+focus restoration, preserved reading context, System/Light/Dark persistence and
+import/export while remaining on the page. The browser preview shares the real
+popup shell and uses synthetic data only.

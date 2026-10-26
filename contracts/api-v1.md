@@ -9,12 +9,21 @@ The wire API is implemented/tested locally in `backend/`. It is separate from `o
 | GET `/auth/native/start?state=…&challenge=…&callback=…&deviceName=…` | Exact configured callback allowlist, 32–128-character client state, S256 challenge; creates a ten-minute browser flow and separate provider PKCE verifier, sets HttpOnly/Secure/SameSite=Lax flow cookie, redirects to GitHub |
 | GET `/auth/github/callback` | Verifies server state against the same browser cookie, claims flow once, exchanges provider code and revalidates `/user`; returns a two-minute one-time native code plus the original client state |
 | POST `/api/v1/auth/exchange` | `{code, verifier}` proves the native challenge; atomic redemption creates one device/session; response includes access/refresh credentials and their expiry milliseconds |
-| POST `/api/v1/auth/refresh` | `{refreshToken}` rotates both credentials and rejects used/expired/revoked credentials |
-| POST `/api/v1/auth/logout` | Bearer-authenticated current session revocation |
+| POST `/api/v1/auth/refresh` | `{refreshToken, requestId?}` rotates both credentials; a persisted 43-character random request ID enables bounded recovery of the identical rotation |
+| POST `/api/v1/auth/logout` | JSON `{refreshToken}` revokes the owning device and its sessions, even after access expiry; legacy bodyless bearer logout still revokes its current session |
 | GET/DELETE `/api/v1/devices[/id]` | Own-account device listing/revocation, with credentials invalidated |
 | DELETE `/api/v1/account` | Erases this account's active data/credentials; native UI must confirm the user action before calling it |
 
-The custom callback contains no long-term token. Client state/verifier must be generated and retained for the active ASWebAuthenticationSession. Access lifetime is 15 minutes; refresh lifetime is 30 days. Secrets/configuration for actual OAuth and HTTPS hosting remain unset. The native core implements origin-scoped Keychain credentials, PKCE callback validation, one concurrent refresh path and persisted sync bases/wire items/checkpoints. Settings now connects ownership, vocabulary selection and explicit sync controls; hosted/system-browser/device/end-to-end acceptance remains unfinished.
+The custom callback contains no long-term token. Client state/verifier must be generated and retained for the active ASWebAuthenticationSession. Access lifetime is 15 minutes; refresh lifetime is 30 days. Hosted OAuth readiness is tracked separately in backend deployment records. The native core implements origin-scoped Keychain credentials, PKCE callback validation, one concurrent refresh path and persisted sync bases/wire items/checkpoints. Settings now connects ownership, vocabulary selection and explicit sync controls; hosted/system-browser/device/end-to-end acceptance remains unfinished.
+
+### Recoverable session rotation (migration 0007)
+
+`GET /api/v1/capabilities` advertises `authCapabilities: ["refresh-retry-v1", "refresh-logout-v1"]`. Updated browser sign-in checks both before starting OAuth. Deploy the backend and migration before distributing the updated clients.
+
+Clients durably save a cryptographically random 32-byte base64url `requestId` before refreshing. A lost response or failed result save retries exactly the same old refresh token and ID, including after restart. The server stores only their hashes, the successor access-token hash and a 24-hour retry deadline. Domain-separated HMAC-SHA256 keyed by the old refresh token derives the successor credentials, so no recoverable bearer secret is stored in SQLite. Replies retain the original successor expiry times. Recovery also requires the original refresh token to be unexpired and the successor session/user/device to remain active. A different request ID, an expired recovery window or a rotated/revoked successor rejects recovery; the client must sign in again. Legacy refresh requests without an ID retain single-use rotation behavior.
+
+Refresh-authenticated logout needs no valid access token. Within the same recovery window, the old refresh token can revoke its device even if its rotation response was lost. It cannot access vocabulary. Unknown/expired tokens return the same idempotent logout acknowledgement without affecting another device. CORS, bounded JSON parsing and auth rate limits still apply. Local logout clears credentials even when offline; clients explicitly report when remote revocation could not be confirmed.
+
 
 ## Operations and state
 

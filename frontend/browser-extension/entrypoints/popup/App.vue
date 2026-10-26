@@ -72,7 +72,7 @@ async function exportData() {
 <template>
   <VocabularyPanel
     :words="words" :loading="loading" :busy="busy" :error="error" :success="success"
-    :theme="theme.resolved"
+    :theme="theme.resolved" :theme-preference="theme.preference"
     @retry="loadWords" @theme-change="changeTheme" @export="exportData"
     @delete="mutate(() => storageClient.deleteWord($event))"
     @reset="mutate(() => storageClient.resetCount($event))"

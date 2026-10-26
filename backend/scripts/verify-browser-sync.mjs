@@ -20,7 +20,8 @@ const legacy = [{ word: 'synthetic', count: 0.5, createdAt: 0.5, updatedAt: 1e10
   history: Array.from({ length: 26 }, (_, index) => ({ timestamp: 26 - index, definition,
     context: 'Synthetic private context ' + index, url: 'https://example.test/private/' + index })) }];
 const originalFetch = globalThis.fetch, originalNow = Date.now;
-let clock = originalNow(), runtime, loss = true;
+let clock = originalNow(), runtime, loss = true, refreshLoss = true;
+const refreshBodies = [];
 Date.now = () => clock;
 const bodies = [];
 const server = createServer(async (incoming, outgoing) => {
@@ -30,6 +31,10 @@ const server = createServer(async (incoming, outgoing) => {
     delete headers.host; delete headers.connection;
     const request = new Request(origin + incoming.url, { method: incoming.method, headers, ...(body.length ? { body } : {}) });
     const response = await app.fetch(request, runtime);
+    if (incoming.url === '/api/v1/auth/refresh') {
+      refreshBodies.push(body.toString());
+      if (refreshLoss && response.ok) { refreshLoss = false; incoming.socket.destroy(); return; }
+    }
     if (incoming.url === '/api/v1/sync/operations') {
       bodies.push(body.toString());
       if (loss && response.ok && JSON.parse(body).kind === 'seed') {
@@ -105,7 +110,15 @@ try {
     devices.push({ module, client, database, repository: new module.CloudVocabulary(database, client) });
   }
   const [a, b] = devices;
-  await a.repository.openAccount(true);
+  await assert.rejects(a.client.request('/api/v1/me'));
+  a.client = new a.module.BackendClient();
+  a.repository = new a.module.CloudVocabulary(a.database, a.client);
+  const preview = await a.repository.previewLocalMigration();
+  assert.equal(preview.displayName, 'Synthetic User'); assert.equal(preview.copy, 1);
+  assert.equal(bodies.length, 0, 'Preview cannot upload vocabulary');
+  await a.repository.confirmLocalMigration(preview.token);
+  assert.equal(bodies.length, 0, 'Confirmation only stages changes with sync paused');
+  assert.equal(refreshBodies[1], refreshBodies[0], 'Restart retries identical refresh bytes');
   await assert.rejects(a.repository.setEnabled(true));
   const first = bodies[0];
   clock += 31_000;
@@ -186,6 +199,14 @@ try {
     assert.equal((await repository.status()).enabled, true);
   }
   assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
+  const beforeLogout = await a.client.current();
+  await runtime.DB.prepare('UPDATE sessions SET access_expires_at=0 WHERE device_id=?').bind(beforeLogout.credentials.deviceId).run();
+  assert.equal(await a.client.disconnect(), true);
+  const rejected = await fetch(origin + '/api/v1/auth/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken: beforeLogout.credentials.refreshToken }) });
+  assert.equal(rejected.status, 401);
+  assert.equal((await b.client.request('/api/v1/me')).deviceId, (await b.client.current()).credentials.deviceId);
+  console.log('Lost refresh response + restart, GitHub migration preview and expired-access logout passed over real HTTP.');
   console.log('Extension repository and authenticated client -> real Node/SQLite HTTP: refresh, exact restart retry, cross-device history, privacy, conflict archive and epoch fencing passed. Magpie protocol uses a synthetic provider.');
   console.log('Large copy/import histories: UTF-8 byte/count limits, full SQLite history, later resets and uninterrupted sync passed.');
   console.log('Actual anonymous extension lookup services -> public HTTP routes: server dictionary, Magpie and server-side MyMemory fallback passed with synthetic providers; no client provider requests.');

@@ -23,7 +23,7 @@ function fixture() {
     current: async () => connection,
     request: async (path: string, _method?: string, _body?: unknown, _epoch?: string, frozen?: string) => {
       if (path === '/api/v1/me') return { userId: connection.credentials.userId, deviceId: connection.credentials.deviceId, epoch,
-        sourceRevision: 0, syncContext: false, syncURLs: false, syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'translation-source-v2'] };
+        displayName: 'synthetic-github', sourceRevision: 0, syncContext: false, syncURLs: false, syncCapabilities: ['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'translation-source-v2'] };
       if (path.includes('/sync/snapshot') || path.includes('/sync/changes')) {
         const boundary = expose ? [...states.values()].reduce((sum, entry) => sum + entry.version, 0) : 0;
         const after = Number(new URL('https://example.test' + path).searchParams.get('after'));
@@ -373,4 +373,42 @@ it.each(['copy', 'import'])('rejects a single oversize history during account %s
   expect(await repository.status()).toMatchObject({ pending: 0, conflicts: 0 });
   expect(api.calls).toHaveLength(0);
   await repository.useLocal(); expect(JSON.parse(await repository.exportData())).toEqual(tooLarge);
+});
+
+it('previews the verified GitHub target, skips duplicates and copies only new words without uploading', async () => {
+  local.values.set('local:words', legacy);
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('migration-' + crypto.randomUUID()), api.client);
+  await repository.openAccount(true); await repository.setEnabled(true); api.expose();
+  await repository.useLocal(); await repository.saveWord('new-word', definition, 'private', 'https://example.test/private', 4);
+  const original = await repository.exportData(), sent = api.calls.length;
+  const preview = await repository.previewLocalMigration();
+  expect(preview).toMatchObject({ displayName: 'synthetic-github', total: 2, copy: 1, skip: 1 });
+  expect(preview.items.map(item => [item.word, item.action])).toEqual([['synthetic', 'skip'], ['new-word', 'copy']]);
+  expect((await repository.status()).displayName).toBe('synthetic-github');
+  expect((await repository.status()).enabled).toBe(false);
+  expect(api.calls).toHaveLength(sent);
+  await repository.confirmLocalMigration(preview.token);
+  expect((await repository.status()).pending).toBe(2);
+  expect(api.calls).toHaveLength(sent);
+  expect((await repository.getWord('synthetic'))?.count).toBe(0.5);
+  await expect(repository.confirmLocalMigration(preview.token)).rejects.toThrow();
+  await repository.useLocal(); expect(await repository.exportData()).toBe(original);
+});
+
+it('rejects stale migration previews after vocabulary edits, account switches or restart', async () => {
+  local.values.set('local:words', legacy);
+  const api = fixture(), name = 'migration-' + crypto.randomUUID();
+  const repository = new CloudVocabulary(new VocabularyDB(name), api.client);
+  const preview = await repository.previewLocalMigration();
+  await repository.useLocal(); await repository.saveWord('later', definition, '', '', 4);
+  await repository.openAccount();
+  await expect(repository.confirmLocalMigration(preview.token)).rejects.toThrow('changed');
+  expect((await repository.status()).pending).toBe(0);
+  const latest = await repository.previewLocalMigration();
+  const reopened = new CloudVocabulary(new VocabularyDB(name), api.client);
+  await reopened.getAllWords();
+  await expect(reopened.confirmLocalMigration(latest.token)).rejects.toThrow('changed');
+  api.connection.credentials.userId = 'different-user';
+  await expect(repository.confirmLocalMigration(latest.token)).rejects.toThrow('Account changed');
+  expect(api.calls).toHaveLength(0);
 });

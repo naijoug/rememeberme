@@ -17,7 +17,7 @@ public struct NativeLoginAttempt: Sendable {
             URLQueryItem(name: "challenge", value: Self.challenge(verifier)), URLQueryItem(name: "callback", value: callback.absoluteString),
             URLQueryItem(name: "deviceName", value: deviceName)])
     }
-    private static func random() throws -> String {
+    static func random() throws -> String {
         var bytes = [UInt8](repeating: 0, count: 32)
         let status = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
         guard status == errSecSuccess else { throw AuthenticationError.randomGeneration(status) }

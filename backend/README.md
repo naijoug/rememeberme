@@ -1,5 +1,21 @@
 # Remember Me API
 
+## Session recovery and account controls (2026-10-25)
+
+Migration `0007_session_rotation.sql` adds hashed, bounded refresh retry metadata.
+Browser and Apple clients persist a random refresh request ID before network I/O;
+the server can replay the same rotation for up to 24 hours while its successor
+remains active. Refresh-authenticated logout revokes the device even when the
+access token expired or a rotation response was lost. Legacy clients remain
+supported. See [the authentication contract](../contracts/api-v1.md).
+
+Deploy this backend and migration before updating clients. Browser GitHub sign-in
+checks the advertised `refresh-retry-v1` and `refresh-logout-v1` capabilities and
+shows a server-update message for an older backend. The account backend and migration were deployed on 2026-10-25. Actual installed
+Chrome/Mac GitHub login and record/reset/delete sync were verified on 2026-10-26;
+see [hosted evidence](docs/verification/2026-10-25-account-deployment.md). [Local verification](../frontend/browser-extension/docs/verification/2026-10-25-account-sessions.md)
+uses only synthetic accounts and vocabulary.
+
 ## Magpie translation (2026-10-24)
 
 The deployed runtime uses `TRANSLATION_PROVIDER=magpie`, calling the same-host

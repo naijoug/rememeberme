@@ -61,14 +61,18 @@ public actor NativeSession {
         try restore()
         guard let old = credentials else { throw AuthenticationError.notSignedIn }
         let force = rejectedToken == old.accessToken
-        if !force && old.accessExpiresAtMs > clock() + 60_000 {
+        if !force && old.refreshRequestId == nil && old.accessExpiresAtMs > clock() + 60_000 {
             return AccessLease(identity: ConnectedIdentity(origin: origin.string, userId: old.userId, deviceId: old.deviceId), accessToken: old.accessToken, generation: generation)
         }
         guard old.refreshExpiresAtMs > clock() else { try disconnect(); throw AuthenticationError.expired }
         let activeGeneration = generation
         if refreshing == nil {
             let http = http
-            let body = try JSONValue.encoder().encode(JSONValue.object(["refreshToken": .string(old.refreshToken)]))
+            var intent = old
+            if intent.refreshRequestId == nil { intent.refreshRequestId = try NativeLoginAttempt.random() }
+            try vault.save(intent); credentials = intent
+            let body = try JSONValue.encoder().encode(JSONValue.object(["refreshToken": .string(old.refreshToken),
+                "requestId": .string(intent.refreshRequestId!)]))
             let task = Task {
                 let bytes = try await http.request(path: "/api/v1/auth/refresh", method: "POST", body: body)
                 let pair = try JSONDecoder().decode(APICredentials.self, from: bytes); try pair.validate()
@@ -109,15 +113,18 @@ public actor NativeSession {
         credentials = nil; loaded = true; pendingLogin = nil; generation = UUID()
         refreshing?.task.cancel(); refreshing = nil
     }
-    public func logout() async throws {
+    @discardableResult public func logout() async throws -> Bool {
         try restore()
         let previous = credentials
         try disconnect()
         if let previous {
             // Local credential removal is authoritative even if offline. This
             // best-effort revocation never reconnects or rewrites the vault.
-            _ = try? await http.request(path: "/api/v1/auth/logout", method: "POST", accessToken: previous.accessToken)
+            let body = try JSONValue.encoder().encode(JSONValue.object(["refreshToken": .string(previous.refreshToken)]))
+            do { _ = try await http.request(path: "/api/v1/auth/logout", method: "POST", body: body); return true }
+            catch { return false }
         }
+        return true
     }
 }
 

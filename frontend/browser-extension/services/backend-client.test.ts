@@ -33,8 +33,8 @@ it('shares refresh, scopes bearer credentials to the configured origin and sends
 
 it('retries saving a completed refresh instead of consuming the spent refresh token again', async () => {
   const updated = { ...pair(), accessExpiresAtMs: Date.now() + 900_000, refreshToken: 'd'.repeat(43) };
-  const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async url => String(url).endsWith('/auth/refresh') ? reply(updated) : reply({ ok: true }));
-  vi.stubGlobal('fetch', fetch); disk.failWrite = true;
+  const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async url => String(url).endsWith('/auth/refresh') ? (disk.failWrite = true, reply(updated)) : reply({ ok: true }));
+  vi.stubGlobal('fetch', fetch);
   const client = new BackendClient();
   await expect(client.request('/api/v1/me')).rejects.toThrow('disk failure');
   await expect(client.request('/api/v1/me')).resolves.toEqual({ ok: true });
@@ -68,11 +68,75 @@ it('validates PKCE and the exact browser callback before exchanging a one-time c
       return callback + '?state=' + start.searchParams.get('state') + '&code=' + 'e'.repeat(43);
     }),
   } });
-  const fetch = vi.fn<typeof globalThis.fetch>().mockResolvedValue(reply({ ...pair(), accessExpiresAtMs: Date.now() + 900_000 }));
+  const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async url => String(url).endsWith('/capabilities')
+    ? reply({ authCapabilities: ['refresh-retry-v1', 'refresh-logout-v1'] })
+    : reply({ ...pair(), accessExpiresAtMs: Date.now() + 900_000 }));
   vi.stubGlobal('fetch', fetch);
   await new BackendClient().signIn('https://api.example.test');
-  const body = JSON.parse(String(fetch.mock.calls[0][1]?.body));
+  const body = JSON.parse(String(fetch.mock.calls.find(([url]) => String(url).endsWith('/auth/exchange'))![1]?.body));
   expect(body.verifier).toMatch(/^[A-Za-z0-9_-]{43}$/);
   expect((disk.value as Connection).origin).toBe('https://api.example.test');
   expect(() => apiOrigin('https://attacker:password@api.example.test')).toThrow();
+});
+
+it('persists the rotation intent before I/O and retries identical bytes after a response loss and restart', async () => {
+  const updated = { ...pair(), accessToken: 'c'.repeat(43), refreshToken: 'd'.repeat(43), accessExpiresAtMs: Date.now() + 900_000 };
+  const bodies: string[] = [];
+  const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async (url, init) => {
+    if (!String(url).endsWith('/auth/refresh')) return reply({ ok: true });
+    const body = JSON.parse(String(init?.body));
+    expect((disk.value as Connection).refreshRequestId).toBe(body.requestId);
+    bodies.push(String(init?.body));
+    if (bodies.length === 1) throw new TypeError('Committed response lost');
+    return reply(updated);
+  });
+  vi.stubGlobal('fetch', fetch);
+  await expect(new BackendClient().request('/api/v1/me')).rejects.toThrow('response lost');
+  await expect(new BackendClient().request('/api/v1/me')).resolves.toEqual({ ok: true });
+  expect(bodies).toHaveLength(2); expect(bodies[1]).toBe(bodies[0]);
+  expect((disk.value as Connection).refreshRequestId).toBeUndefined();
+});
+
+it('does not spend a refresh token if saving its intent fails', async () => {
+  const fetch = vi.fn(); vi.stubGlobal('fetch', fetch); disk.failWrite = true;
+  await expect(new BackendClient().request('/api/v1/me')).rejects.toThrow('disk failure');
+  expect(fetch).not.toHaveBeenCalled();
+});
+
+it('recovers after a crash between receiving a refresh and saving its credentials', async () => {
+  const updated = { ...pair(), accessToken: 'c'.repeat(43), refreshToken: 'd'.repeat(43), accessExpiresAtMs: Date.now() + 900_000 };
+  const bodies: string[] = [];
+  vi.stubGlobal('fetch', vi.fn<typeof globalThis.fetch>().mockImplementation(async (url, init) => {
+    if (!String(url).endsWith('/auth/refresh')) return reply({ ok: true });
+    bodies.push(String(init?.body));
+    if (bodies.length === 1) disk.failWrite = true;
+    return reply(updated);
+  }));
+  await expect(new BackendClient().request('/api/v1/me')).rejects.toThrow('disk failure');
+  expect((disk.value as Connection).credentials.refreshToken).toBe(pair().refreshToken);
+  await expect(new BackendClient().request('/api/v1/me')).resolves.toEqual({ ok: true });
+  expect(bodies[1]).toBe(bodies[0]);
+  expect((disk.value as Connection).credentials.refreshToken).toBe(updated.refreshToken);
+});
+
+it('logs out using the refresh token even when access has expired and reports offline revocation failure', async () => {
+  const fetch = vi.fn<typeof globalThis.fetch>().mockResolvedValue(reply({ loggedOut: true }));
+  vi.stubGlobal('fetch', fetch);
+  expect(await new BackendClient().disconnect()).toBe(true);
+  const init = fetch.mock.calls[0][1]!;
+  expect(JSON.parse(String(init.body))).toEqual({ refreshToken: pair().refreshToken });
+  expect(new Headers(init.headers).has('Authorization')).toBe(false);
+  expect(disk.value).toBeUndefined();
+  disk.value = { origin: 'https://api.example.test', credentials: pair() };
+  fetch.mockRejectedValue(new TypeError('offline'));
+  expect(await new BackendClient().disconnect()).toBe(false);
+  expect(disk.value).toBeUndefined();
+});
+
+it('blocks sign-in before launching OAuth when the server lacks safe session support', async () => {
+  disk.value = undefined;
+  const launch = vi.fn(); vi.stubGlobal('browser', { identity: { launchWebAuthFlow: launch } });
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue(reply({ apiVersion: 1 })));
+  await expect(new BackendClient().signIn('https://api.example.test')).rejects.toThrow('server update');
+  expect(launch).not.toHaveBeenCalled(); expect(disk.value).toBeUndefined();
 });

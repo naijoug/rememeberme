@@ -35,7 +35,7 @@ Chinese translation text in the page card and vocabulary reading view displays b
 
 ## Vocabulary and backups
 
-- The Paper & Sage toolbar popup lists saved words with a brief definition and count, initially sorted by count. Search filters by word; the sort control can switch to last-updated time. Opening a word shows a dedicated reading view with definition and history, and a Vocabulary back button. Import/export are in More options. Empty and error states remain actionable.
+- The Paper & Sage toolbar popup lists saved words with a brief definition and count, initially sorted by count. Search filters by word; the sort control can switch to last-updated time. Opening a word shows a dedicated reading view with definition and history, and a Vocabulary back button. The header gear opens the unified Settings page, including import/export. Empty and error states remain actionable.
 - Above 100 words the list uses fixed-height virtual rows. Details and long histories are outside that virtual list, so scrolling inside a definition cannot remove it. Returning to the list restores its position; replacing/sorting/filtering the list starts at the top. Delete confirmation stays outside translated rows, initially focuses Cancel and supports Escape.
 - Saves from pages and the context menu, imports, deletes and resets share the background's operation queue. Reads and exports wait for earlier queued operations. A failed operation reports an error and does not block later requests.
 - Deletion requires confirmation; cancelling preserves the word. Reset sets count to zero and retains history. Count therefore need not equal history length.
@@ -45,7 +45,7 @@ Chinese translation text in the page card and vocabulary reading view displays b
 
 ## Appearance
 
-Both the toolbar and page card use the selected Paper & Sage layout: paper-white/sage in light mode, with a Codex-inspired neutral charcoal palette in dark mode at the user's request. Dark surfaces use `#1e1e1e` / `#29292a`, gray-white text and `#303030` selections; buttons, highlights and overlays share the neutral palette. Errors retain a distinct red tone. The header sun/moon button switches Light / Dark and persists the choice separately from vocabulary, syncing to open extension surfaces. The footer theme selector has been removed. New installations and an existing saved System preference follow the OS/browser media preference until manually switched; the webpage's own theme is not inferred. Word headings use a local serif font; UI controls use the system sans-serif stack. Imported text and examples remain literal text, including highlighted matches.
+Both the toolbar and page card use the selected Paper & Sage layout: paper-white/sage in light mode, with a Codex-inspired neutral charcoal palette in dark mode at the user's request. Dark surfaces use `#1e1e1e` / `#29292a`, gray-white text and `#303030` selections; buttons, highlights and overlays share the neutral palette. Errors retain a distinct red tone. Settings → Appearance selects System / Light / Dark and persists the choice separately from vocabulary, syncing to open extension surfaces. The header has a single Settings gear; there is no separate theme shortcut or footer selector. New installations and an existing saved System preference follow the OS/browser media preference until manually switched; the webpage's own theme is not inferred. Word headings use a local serif font; UI controls use the system sans-serif stack. Imported text and examples remain literal text, including highlighted matches.
 
 ## Original specification differences requiring a product decision
 
@@ -75,6 +75,25 @@ or reduce its definition before a new account copy/import. Previously frozen
 oversize requests are retained; use explicit archive/cloud recovery rather than
 expecting the update to change an already-submitted request.
 
-The Chrome release displays local vocabulary immediately and exposes no connection banner, API URL or login/sync menu. `ACCOUNT_SYNC_ENABLED=false` disables account actions and background sending while retaining existing anonymous/account/recovery data. The supported menu includes import/export and Privacy & support.
+The current source enables `ACCOUNT_SYNC_ENABLED=true` after local session and migration tests. The gear opens Settings with embedded GitHub sign-in and synchronization controls; the initial vocabulary view still has no connection banner or API address input. GitHub sign-in checks backend support for recoverable refresh and refresh-authenticated logout. Existing published packages may still have account controls disabled.
 
-Lookup uses an internal fixed HTTPS gateway and persistent private connector. Connector restarts retain the hostname. English packaged hits remain local; Chinese and English misses call the service without login. Source attribution identifies Hermes, MyMemory, WordNet or Free Dictionary. The canonical account domain’s filing/OAuth is a separate release gate and is not advertised as available.
+The account panel displays the verified GitHub username. Preview local vocabulary pauses sync and downloads the account state, then lists each local word, count and history size as Copy or Skip existing. Existing normalized words or lifecycle IDs are skipped without adding counts. Confirm copy names the target GitHub account, retains the anonymous original and leaves sync paused. Account/vocabulary changes or a background restart invalidate the preview; retrying a confirmed preview cannot duplicate its copy. Very large downloads may require Preview again until paging completes. Browser exports remain legacy arrays with local context/URLs.
+
+Refresh intents survive response loss, failed credential persistence and restart. The server permits the exact retry for up to 24 hours while the successor remains active; after that, sign in again. Disconnect clears local credentials and uses the refresh credential to revoke the device even if access expired. Offline disconnection reports that server revocation was not confirmed.
+
+Lookup uses an internal fixed HTTPS gateway and persistent private connector. Connector restarts retain the hostname. English packaged hits remain local; Chinese and English misses call the service without login. Source attribution identifies Hermes, MyMemory, WordNet or Free Dictionary. Hosted OAuth and public account routing still require separate deployment and installed-client acceptance; local feature enablement does not establish those results.
+
+### Account settings presentation
+
+The single Settings page uses grouped lists for appearance, account identity,
+synchronization, local vocabulary, backups and privacy/support. The header gear
+opens this page directly; there is no intermediate menu or separate account page. GitHub username, vocabulary location and pending/conflict
+counts are read-only rows. Cloud sync is an accessible switch reflecting the
+confirmed setting; it is disabled while a request is pending, when local
+vocabulary is selected, or when recovery is required before enabling. A failed
+request restores the confirmed status rather than leaving an optimistic switch.
+
+Only the applicable vocabulary-switch action is shown. Sync now is unavailable
+while sync is paused. Migration, recovery and disconnect remain explicit list
+row actions. Opening a migration preview focuses it inside the scrollable popup;
+copy/recovery confirmation and anonymous-data retention remain unchanged.

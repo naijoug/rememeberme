@@ -2,7 +2,7 @@ import { selectReminderDevice } from './reminder';
 import { Hono } from 'hono';
 import { ApiError, id, object, keys, parseOperation, version } from '../../contracts/api-v1';
 import { requestJSON, checkOrigin } from './http';
-import { identity, exchangeNative, refreshSession, startNative, githubCallback, type Identity } from './auth';
+import { identity, exchangeNative, refreshSession, logoutWithRefresh, startNative, githubCallback, type Identity } from './auth';
 import { applyOperation, changes, getEntry, entryHistory, rememberConflict, reviewAdmissions } from './store';
 import type { Bindings } from './runtime';
 import type { Context } from 'hono';
@@ -39,6 +39,7 @@ app.onError((error, c) => {
 });
 app.get('/api/v1/health', c => c.json({ apiVersion: 1, status: 'ok' }));
 app.get('/api/v1/capabilities', c => c.json({ apiVersion: 1,
+  authCapabilities: ['refresh-retry-v1', 'refresh-logout-v1'],
   translationSources: ['mymemory', 'hermes', 'magpie'], translation: Boolean(c.env.TRANSLATOR),
   dictionary: Boolean(c.env.DICTIONARY),
   publicLookup: Boolean(c.env.LOOKUP_LIMIT),
@@ -70,6 +71,15 @@ app.get('/auth/extension/start', c => startNative(c.req.raw, c.env));
 app.get('/auth/github/callback', c => githubCallback(c.req.raw, c.env));
 app.post('/api/v1/auth/exchange', async c => c.json(await exchangeNative(await requestJSON(c.req.raw), c.env.DB)));
 app.post('/api/v1/auth/refresh', async c => c.json(await refreshSession(await requestJSON(c.req.raw), c.env.DB)));
+app.post('/api/v1/auth/logout', async c => {
+  if (c.req.header('Content-Type')?.includes('application/json')) {
+    return c.json(await logoutWithRefresh(await requestJSON(c.req.raw), c.env.DB));
+  }
+  // Older clients may still revoke their current session with a valid bearer.
+  const who = await identity(c.req.raw, c.env.DB);
+  await c.env.DB.prepare('UPDATE sessions SET revoked_at=? WHERE user_id=? AND token_hash=?').bind(Date.now(), who.userId, who.sessionHash).run();
+  return c.json({ loggedOut: true });
+});
 app.use('/api/v1/public/lookup/*', async (c, next) => {
   if (!c.env.LOOKUP_LIMIT) throw new ApiError('PUBLIC_LOOKUP_NOT_CONFIGURED', 503);
   if (!(await c.env.LOOKUP_LIMIT.limit({ key: c.env.CLIENT_IP ?? c.req.header('CF-Connecting-IP') ?? 'local' })).success) throw new ApiError('RATE_LIMITED', 429, true);
@@ -185,11 +195,6 @@ app.delete('/api/v1/devices/:id', async c => {
     c.env.DB.prepare('UPDATE devices SET revoked_at=? WHERE user_id=? AND id=?').bind(Date.now(), who.userId, deviceId),
     c.env.DB.prepare('UPDATE sessions SET revoked_at=? WHERE user_id=? AND device_id=?').bind(Date.now(), who.userId, deviceId)
   ]); return c.json({ revoked: true });
-});
-app.post('/api/v1/auth/logout', async c => {
-  const who = c.get('identity');
-  await c.env.DB.prepare('UPDATE sessions SET revoked_at=? WHERE user_id=? AND token_hash=?').bind(Date.now(), who.userId, who.sessionHash).run();
-  return c.json({ loggedOut: true });
 });
 app.delete('/api/v1/account', async c => {
   const who = c.get('identity');

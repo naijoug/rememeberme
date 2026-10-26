@@ -3,6 +3,18 @@ import Testing
 import RememberMeCore
 @testable import RememberMeUI
 
+@Test @MainActor func systemAuthenticationCompletionAcceptsAnXPCBackgroundExecutor() async {
+    let expected = URL(string: "rememberme://auth/callback?state=synthetic&code=synthetic")!
+    let received: URL? = await withCheckedContinuation { continuation in
+        let handler = AppleWebAuthenticator.completionHandler { url, _ in
+            MainActor.assertIsolated()
+            continuation.resume(returning: url)
+        }
+        Task.detached { handler(expected, nil) }
+    }
+    #expect(received == expected)
+}
+
 private final class AccountVault: CredentialVault, @unchecked Sendable {
     private let lock = NSLock(); private var pair: APICredentials?
     func load() throws -> APICredentials? { lock.withLock { pair } }

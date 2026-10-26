@@ -61,7 +61,9 @@ beforeEach(() => {
   vi.useFakeTimers();
   vi.clearAllMocks();
   vi.stubGlobal('browser', { runtime: {
-    sendMessage: (message: unknown) => handleBackgroundRequest(message, { getDefinition: vi.fn() }, storageService),
+    sendMessage: (message: unknown) => (message as { type?: string }).type === 'CLOUD_STATUS'
+      ? Promise.resolve({ success: true, data: { connected: false, owner: 'anonymous', enabled: false, pending: 0, conflicts: 0, localWords: 0, archives: [] } })
+      : handleBackgroundRequest(message, { getDefinition: vi.fn() }, storageService),
   } });
   storageApiMock.values.clear();
   container = document.createElement('div');
@@ -78,6 +80,62 @@ afterEach(() => {
 });
 
 describe('mounted vocabulary popup', () => {
+  it('opens one settings page directly from the gear with appearance, account, backups and privacy', async () => {
+    const original = [entry('local-word', 2, 1)];
+    await mount(original);
+    expect(container.textContent).toContain('local-word');
+    expect(container.querySelector('[aria-label="More options"]')).toBeNull();
+    expect(container.querySelector('[aria-label="Use dark theme"]')).toBeNull();
+    click('[aria-label="Settings"]');
+    await vi.waitFor(() => expect(container.textContent).toContain('Sign in with GitHub'));
+    expect(container.querySelector('[role="menu"]')).toBeNull();
+    expect(container.querySelectorAll('h2')).toHaveLength(1);
+    expect(container.querySelector('h2')?.textContent).toBe('Settings');
+    expect(container.querySelector('[aria-label="Theme"]')).not.toBeNull();
+    expect(container.textContent).toContain('Import backup');
+    expect(container.textContent).toContain('Export vocabulary');
+    const privacy = container.querySelector<HTMLAnchorElement>('a[target="_blank"]')!;
+    expect(privacy.textContent).toContain('Privacy & support');
+    expect(privacy.href).toBe('https://lookup.couplelabs.cn/privacy');
+    expect(privacy.rel).toBe('noopener noreferrer');
+    expect(document.activeElement).toBe(container.querySelector('#settings-title'));
+    expect(storageApiMock.values.get('local:words')).toEqual(original);
+    document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await vi.waitFor(() => expect(container.querySelector('.settings-page')).toBeNull());
+    expect(document.activeElement).toBe(container.querySelector('[aria-label="Settings"]'));
+    expect(container.textContent).toContain('local-word');
+  });
+
+  it('returns from settings to the same reading view without changing its saved count', async () => {
+    await mount([entry('apple', 3, 1)]);
+    click('.word-header'); await vi.waitFor(() => expect(container.querySelector('.word-title')?.textContent).toBe('apple'));
+    click('[aria-label="Settings"]');
+    await vi.waitFor(() => expect(container.querySelector('.settings-page')).not.toBeNull());
+    click('.settings-page .back-link');
+    await vi.waitFor(() => expect(container.querySelector('.word-title')?.textContent).toBe('apple'));
+    expect((await storageService.getWord('apple'))?.count).toBe(3);
+  });
+
+  it('imports and exports from the unified settings without navigating away', async () => {
+    const original = entry('apple', 3, 1);
+    await mount([original]); click('[aria-label="Settings"]');
+    await vi.waitFor(() => expect(container.querySelector('.settings-page')).not.toBeNull());
+    const input = container.querySelector<HTMLInputElement>('input[type=file]')!;
+    const choose = vi.spyOn(input, 'click').mockImplementation(() => {});
+    [...container.querySelectorAll<HTMLButtonElement>('.settings-page button')].find(button => button.textContent?.includes('Import backup'))!.click();
+    expect(choose).toHaveBeenCalledOnce();
+    const download = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    const createURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:synthetic-backup');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    [...container.querySelectorAll<HTMLButtonElement>('.settings-page button')].find(button => button.textContent?.includes('Export vocabulary'))!.click();
+    await vi.waitFor(() => expect(download).toHaveBeenCalledOnce());
+    expect(JSON.parse(await (createURL.mock.calls[0][0] as Blob).text())).toEqual([original]);
+    importFile(JSON.stringify([entry('banana', 1, 2)]));
+    await vi.waitFor(() => expect(container.querySelector('.success')).not.toBeNull());
+    expect(container.querySelector('.settings-page')).not.toBeNull();
+    expect((await storageService.getAllWords()).map(word => word.word).sort()).toEqual(['apple', 'banana']);
+    expect((await storageService.getWord('apple'))?.count).toBe(3);
+  });
   it('shows saved Chinese-only translations in the list and reading view', async () => {
     const word = entry('curated', 1, 1);
     word.history[0].definition.translation = { text: '精选', target: 'zh-CN', source: 'mymemory' };
@@ -166,9 +224,17 @@ describe('mounted vocabulary popup', () => {
 
   it('persists the theme separately without changing vocabulary', async () => {
     await mount([entry('apple', 3, 1)]);
-    click('[aria-label="Use dark theme"]');
+    click('[aria-label="Settings"]');
+    await vi.waitFor(() => expect(container.querySelector('[aria-label="Theme"]')).not.toBeNull());
+    const theme = container.querySelector<HTMLSelectElement>('[aria-label="Theme"]')!;
+    expect(theme.value).toBe('system');
+    theme.value = 'dark'; theme.dispatchEvent(new Event('change', { bubbles: true }));
     await vi.waitFor(() => expect(container.querySelector('.rm-theme')?.getAttribute('data-theme')).toBe('dark'));
     expect(storageApiMock.values.get('local:appearance')).toBe('dark');
+    theme.value = 'light'; theme.dispatchEvent(new Event('change', { bubbles: true }));
+    await vi.waitFor(() => expect(storageApiMock.values.get('local:appearance')).toBe('light'));
+    theme.value = 'system'; theme.dispatchEvent(new Event('change', { bubbles: true }));
+    await vi.waitFor(() => expect(storageApiMock.values.get('local:appearance')).toBe('system'));
     expect((await storageService.getWord('apple'))?.count).toBe(3);
   });
 });

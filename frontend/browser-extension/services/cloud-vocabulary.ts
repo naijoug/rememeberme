@@ -13,6 +13,7 @@ interface Pending {
   body?: string; epoch?: string; error?: string; retryAt?: number;
 }
 interface Partition {
+  displayName?: string;
   schema: 2; entries: Entry[]; outbox: Pending[]; enabled: boolean; epoch?: string;
   cursor: number; boundary?: number; snapshot: boolean; history: string[]; failure?: string;
   original?: { json: string; digest: string };
@@ -20,11 +21,16 @@ interface Partition {
   archives?: { key: string; createdAt: number }[];
 }
 interface RemoteEvent { id: string; timestamp: number; definition: Definition; position: number; context?: string; url?: string }
-interface Account { userId: string; deviceId: string; epoch: string; syncCapabilities: string[]; sourceRevision: number; syncContext: boolean; syncURLs: boolean }
+interface Account { userId: string; deviceId: string; displayName?: string; epoch: string; syncCapabilities: string[]; sourceRevision: number; syncContext: boolean; syncURLs: boolean }
 interface VocabularyScope { owner: string; generation: number }
 export interface CloudStatus {
+  displayName?: string; notice?: string;
   connected: boolean; origin?: string; owner: string; enabled: boolean; pending: number; conflicts: number;
   failure?: string; localWords: number; archives: { key: string; createdAt: number }[];
+}
+export interface MigrationPreview {
+  token: string; displayName: string; total: number; copy: number; skip: number;
+  items: { word: string; count: number; histories: number; action: 'copy' | 'skip' }[];
 }
 const parser = new StorageService();
 const emptyDefinition = (word: string): Definition => ({ word, phonetics: [], meanings: [] });
@@ -44,6 +50,8 @@ export class CloudVocabulary {
   private generation = 0;
   private ready?: Promise<void>;
   private flight?: Promise<void>;
+  private notice?: string;
+  private previewSession = crypto.randomUUID();
   constructor(private database = new VocabularyDB(), private client: BackendClient = backendClient, private allowAccountSelection = true) {}
   private serialize<T>(action: () => Promise<T>): Promise<T> {
     const result = this.queue.then(action);
@@ -212,22 +220,38 @@ export class CloudVocabulary {
   async status(): Promise<CloudStatus> {
     return this.serialize(async () => {
       const state = await this.state(), connection = await this.client.current();
+      const account = connection ? await this.state('account:' + await sha(connection.origin) + ':' + connection.credentials.userId) : undefined;
       return { connected: Boolean(connection), origin: connection?.origin, owner: this.owner, enabled: state.enabled,
+        displayName: account?.displayName, notice: this.notice,
         pending: state.outbox.length, conflicts: state.outbox.filter(item => item.error).length, failure: state.failure,
         localWords: (await this.state('anonymous')).entries.filter(entry => !entry.deleted).length, archives: state.archives ?? [] };
     });
   }
   async connect(origin: string): Promise<void> {
     await this.pause(); await this.serialize(async () => { this.generation++; }); await this.client.signIn(origin);
+    this.notice = undefined;
+    const connection = await this.client.current();
+    const profile = await this.client.request<Account>('/api/v1/me');
+    if (!connection || profile.userId !== connection.credentials.userId || profile.deviceId !== connection.credentials.deviceId
+      || typeof profile.displayName !== 'string' || !profile.displayName || profile.displayName.length > 100) throw new Error('Could not verify the GitHub account. Open account vocabulary to retry.');
+    await this.serialize(async () => {
+      const current = await this.client.current();
+      if (current?.credentials.userId !== connection.credentials.userId || current.origin !== connection.origin) throw new Error('Account connection changed.');
+      const owner = 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId;
+      const state = await this.state(owner); state.displayName = profile.displayName; await this.database.write(owner, state);
+    });
   }
   async pause(): Promise<void> {
     await this.serialize(async () => { const state = await this.state(); state.enabled = false; await this.database.write(this.owner, state); });
   }
   async disconnect(): Promise<void> {
-    await this.pause(); await this.serialize(async () => { this.generation++; }); await this.client.disconnect();
+    await this.pause(); await this.serialize(async () => { this.generation++; });
+    const revoked = await this.client.disconnect();
+    this.notice = revoked ? 'Signed out. Local vocabulary is retained.'
+      : 'Disconnected on this device. Server revocation could not be confirmed; reconnect when online to manage your devices.';
     await this.serialize(async () => { await this.database.write('selected', 'anonymous'); this.owner = 'anonymous'; });
   }
-  async openAccount(copyLocal = false): Promise<void> {
+  async openAccount(copyLocal = false, pauseSync = false): Promise<void> {
     const connection = await this.client.current(); if (!connection) throw new Error('Connect an account first.');
     const owner = 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId;
     await this.serialize(async () => {
@@ -235,7 +259,9 @@ export class CloudVocabulary {
       if (this.owner !== owner) {
         const previous = await this.state(); previous.enabled = false; await this.database.write(this.owner, previous);
       }
-      await this.database.initialize(owner, fresh()); await this.database.write('selected', owner);
+      const account = await this.database.initialize(owner, fresh());
+      if (pauseSync) { account.enabled = false; await this.database.write(owner, account); }
+      await this.database.write('selected', owner);
       if (this.owner !== owner) { this.owner = owner; this.generation++; }
     });
     await this.synchronize(true);
@@ -245,18 +271,57 @@ export class CloudVocabulary {
       if (state.outbox.length) throw new Error('Complete or resolve pending account changes before copying local vocabulary.');
       const collisions = local.entries.filter(entry => !entry.deleted && state.entries.some(remote => remote.id === entry.id || (!remote.deleted && normalized(remote.value.word) === normalized(entry.value.word))));
       if (collisions.length) throw new Error(`${collisions.length} local words already exist in this account. Export the local vocabulary and use an explicit import to add its counts.`);
-      const currentJSON = JSON.stringify(local.entries.filter(entry => !entry.deleted).map(entry => entry.value));
-      const baseline = local.original && JSON.stringify(parser.parseImportedWords(local.original.json)) === currentJSON;
-      const digest = baseline ? local.original!.digest : await sha(currentJSON);
-      for (const source of local.entries.filter(entry => !entry.deleted)) {
-        const entry = structuredClone(source); delete entry.base; state.entries.push(entry);
-        this.add(state, { operationId: baseline ? 'seed:' + await sha(JSON.stringify(['legacy-seed-v1', digest, entry.value.word])) : crypto.randomUUID(),
-          entryId: entry.id, kind: baseline ? 'seed' : 'create', payload: { word: entry.value.word, kind: 'word', count: entry.value.count,
-            definition: json(entry.value.history.at(-1)?.definition ?? emptyDefinition(entry.value.word)), notes: '',
-            createdAtMs: entry.value.createdAt, updatedAtMs: entry.value.updatedAt, ...(baseline ? { sourceDigest: digest } : {}) } });
-        const events = entry.value.history.map((record, index) => ({ id: entry.events[index], timestamp: record.timestamp, definition: json(record.definition) }));
-        this.addHistory(state, entry.id, events);
-      }
+      await this.copyEntries(state, local, local.entries.filter(entry => !entry.deleted));
+      await this.database.write(this.owner, state);
+    });
+  }
+  private async copyEntries(state: Partition, local: Partition, sources: Entry[]) {
+    const currentJSON = JSON.stringify(local.entries.filter(entry => !entry.deleted).map(entry => entry.value));
+    const baseline = local.original && JSON.stringify(parser.parseImportedWords(local.original.json)) === currentJSON;
+    const digest = baseline ? local.original!.digest : await sha(currentJSON);
+    for (const source of sources) {
+      const entry = structuredClone(source); delete entry.base; state.entries.push(entry);
+      this.add(state, { operationId: baseline ? 'seed:' + await sha(JSON.stringify(['legacy-seed-v1', digest, entry.value.word])) : crypto.randomUUID(),
+        entryId: entry.id, kind: baseline ? 'seed' : 'create', payload: { word: entry.value.word, kind: 'word', count: entry.value.count,
+          definition: json(entry.value.history.at(-1)?.definition ?? emptyDefinition(entry.value.word)), notes: '',
+          createdAtMs: entry.value.createdAt, updatedAtMs: entry.value.updatedAt, ...(baseline ? { sourceDigest: digest } : {}) } });
+      const events = entry.value.history.map((record, index) => ({ id: entry.events[index], timestamp: record.timestamp, definition: json(record.definition) }));
+      this.addHistory(state, entry.id, events);
+    }
+  }
+  private async migrationPreview(state: Partition, local: Partition): Promise<MigrationPreview> {
+    if (this.owner === 'anonymous' || !state.displayName) throw new Error('Open your account and verify its GitHub username before copying.');
+    if (state.enabled || state.snapshot || state.boundary !== undefined || state.history.length) throw new Error('Wait for the account download to finish, then preview again. Sync must be paused.');
+    if (state.outbox.length) throw new Error('Complete or resolve pending account changes before copying local vocabulary.');
+    const items = local.entries.filter(entry => !entry.deleted).map(entry => ({
+      word: entry.value.word, count: entry.value.count, histories: entry.value.history.length,
+      action: state.entries.some(remote => remote.id === entry.id || (!remote.deleted && normalized(remote.value.word) === normalized(entry.value.word)))
+        ? 'skip' as const : 'copy' as const,
+    }));
+    const token = await sha(JSON.stringify([this.previewSession, this.generation, this.owner, state, local]));
+    const copy = items.filter(item => item.action === 'copy').length;
+    return { token, displayName: state.displayName, total: items.length, copy, skip: items.length - copy, items };
+  }
+  async previewLocalMigration(): Promise<MigrationPreview> {
+    await this.pause();
+    if (this.flight) await this.flight.catch(() => {});
+    await this.openAccount(false, true);
+    // Opening a previously enabled account must not resume sending.
+    await this.pause();
+    return this.serialize(async () => this.migrationPreview(await this.state(), await this.state('anonymous')));
+  }
+  async confirmLocalMigration(token: string): Promise<void> {
+    const connection = await this.client.current();
+    const expected = connection ? 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId : '';
+    await this.serialize(async () => {
+      if (this.owner !== expected) throw new Error('Account changed. Preview the migration again.');
+      const state = await this.state(), local = await this.state('anonymous');
+      const preview = await this.migrationPreview(state, local);
+      if (token !== preview.token) throw new Error('Vocabulary or account changed. Preview the migration again.');
+      if (!preview.copy) throw new Error('No new local words to copy. Existing account words will be skipped.');
+      const sources = local.entries.filter(entry => !entry.deleted && !state.entries.some(remote =>
+        remote.id === entry.id || (!remote.deleted && normalized(remote.value.word) === normalized(entry.value.word))));
+      await this.copyEntries(state, local, sources);
       await this.database.write(this.owner, state);
     });
   }
@@ -325,7 +390,9 @@ export class CloudVocabulary {
         state.enabled = false; state.failure = 'SYNC_EPOCH_CHANGED'; await this.database.write(owner, state);
         throw new Error('The server was restored. Your local data and queue are retained; restore requires review.');
       }
-      state.epoch = account.epoch; state.failure = undefined; await this.database.write(owner, state);
+      state.epoch = account.epoch; state.failure = undefined;
+      if (typeof account.displayName === 'string' && account.displayName.length > 0 && account.displayName.length <= 100) state.displayName = account.displayName;
+      await this.database.write(owner, state);
     });
     try {
       for (let index = 0; index < 20 && this.owner === owner; index++) {

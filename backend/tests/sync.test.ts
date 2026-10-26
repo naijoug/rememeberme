@@ -2,7 +2,7 @@ import { env } from 'cloudflare:workers';
 import { applyD1Migrations, reset } from 'cloudflare:test';
 import { describe, it, expect } from 'vitest';
 import { account, create, record, request, send, emptyDefinition } from './helpers';
-import { sha } from '../src/http';
+import { sha, token } from '../src/http';
 import type { WireOperation } from '../../contracts/api-v1';
 import { identity } from '../src/auth';
 import { applyOperation } from '../src/store';
@@ -170,5 +170,6 @@ describe('D1 operation ownership and atomicity', () => {
     expect(page.entryVersion).toBe(2);
     expect([...page.events].sort((a, b) => a.position - b.position).map(e => e.id)).toEqual(['z-original-first', 'a-original-second']);
     expect(page.events.every(e => !('context' in e))).toBe(true);
+    expect((await request('/api/v1/auth/refresh', undefined, 'POST', { refreshToken: user.refresh, requestId: token() })).status).toBe(200);
   });
 });

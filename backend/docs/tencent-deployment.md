@@ -5,7 +5,19 @@ full synchronous commits and atomic conditional batches. The checked-in D1
 migrations are reused verbatim. Existing migrations are checked by digest; an
 edited applied migration stops startup.
 
-## Current recorded status (2026-10-25)
+## Current recorded status — account sessions (2026-10-26)
+
+The API now runs `/opt/rememberme/releases/20261025-sessions-a5fe92f8a903/runtime`.
+Migration 0007 is applied; verified database/config backups and the prior runtime
+are retained. Original table rows were unchanged across activation. Public auth
+capabilities, 401 protection and the installed extension's CORS passed. The Mac
+client completed real GitHub login after fixing a Swift 6 authentication-callback
+thread crash. The user completed Chrome GitHub sign-in; both clients are verified
+as naijoug. Actual browser↔Mac record/reset/delete synchronization passed with a
+synthetic word, which was cleaned up. Six anonymous browser words remain local
+and were not copied for testing. See [deployment and acceptance evidence](verification/2026-10-25-account-deployment.md).
+
+## Previous recorded status — first lookup (2026-10-25)
 
 First-lookup recovery is deployed at
 `/opt/rememberme/releases/20261025-first-lookup-8cfccea264ce/runtime`.

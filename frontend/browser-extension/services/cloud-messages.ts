@@ -12,7 +12,10 @@ export async function handleCloudMessage(message: unknown): Promise<BackgroundRe
         await cloudVocabulary.connect(input.origin); break;
       case 'CLOUD_DISCONNECT': await cloudVocabulary.disconnect(); break;
       case 'CLOUD_OPEN': await cloudVocabulary.openAccount(false); break;
-      case 'CLOUD_COPY_LOCAL': await cloudVocabulary.openAccount(true); break;
+      case 'CLOUD_PREVIEW_LOCAL': return { success: true, data: await cloudVocabulary.previewLocalMigration() };
+      case 'CLOUD_COPY_LOCAL':
+        if (typeof input.previewToken !== 'string' || !/^[a-f0-9]{64}$/.test(input.previewToken)) throw new Error('Preview the migration before copying.');
+        await cloudVocabulary.confirmLocalMigration(input.previewToken); break;
       case 'CLOUD_USE_LOCAL': await cloudVocabulary.useLocal(); break;
       case 'CLOUD_ENABLE':
         if (typeof input.enabled !== 'boolean') throw new Error('Invalid sync setting.');

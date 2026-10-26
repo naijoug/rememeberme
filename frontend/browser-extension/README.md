@@ -22,7 +22,7 @@ use the new deployment record for current host acceptance.
 
 Select an English word to see a Chinese translation and English definitions, and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. Online English lookup uses server WordNet plus Free Dictionary API fallback; Chinese uses server Hermes with MyMemory fallback. Only the selected word is sent. While domain filing is pending, lookup uses an internal temporary HTTPS endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. Optional **More options → Account & sync** enables GitHub login and explicit account copy/sync; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
+Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. Online English lookup uses server WordNet plus Free Dictionary API fallback; Chinese uses server Hermes with MyMemory fallback. Only the selected word is sent. While domain filing is pending, lookup uses an internal temporary HTTPS endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. **Settings → Account / Synchronization** provides optional GitHub login and explicit account copy/sync; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
 
 ## Setup
 
@@ -109,7 +109,7 @@ Generated `.wxt/` and `.output/` directories are disposable. Static reference de
 
 ## Paper & Sage interface
 
-The popup has a searchable vocabulary list and a dedicated reading view. Import/export live under More options. Use the sun/moon button in the header to switch Light / Dark; open page cards follow the same saved preference. New installations follow the system theme until manually switched. Lookups have bounded waits and retry actions; recording a word does not depend on lookup success.
+The popup has a searchable vocabulary list and a dedicated reading view. The header gear opens one scrollable Settings page containing Appearance, account/synchronization, local migration, Backups and Privacy & support. Appearance supports System / Light / Dark; open page cards follow the same saved preference. New installations follow the system theme until manually switched. Lookups have bounded waits and retry actions; recording a word does not depend on lookup success.
 
 Light mode uses paper-white and sage; dark mode uses the user's selected Codex-inspired charcoal gray palette. See the [dark palette comparison](http://127.0.0.1:3937/preview/paper-sage.html?compare=codex) for the supplied reference beside the actual components.
 
@@ -124,7 +124,7 @@ Phonetic transcriptions appear beneath a word as **🇺🇸 IPA 🔊 / 🇬🇧 
 Build/deploy the API using [Tencent deployment](../../backend/docs/tencent-deployment.md).
 The Chrome release uses a fixed HTTPS lookup gateway backed by a dedicated persistent Cloudflare tunnel to the Tencent API. The service address is internal in `config/backend.ts`; users neither enter nor see it. English WordNet hits stay local; misses and Chinese translation call word-only routes without credentials. The gateway's HTTPS hostname survives connector restarts. `/privacy` hosts the published policy.
 
-The release disables account login/synchronization and its identity/alarms permissions. Existing local vocabulary and retained account/recovery partitions are preserved; release startup selects the anonymous local partition. Hosted OAuth/cross-client sync remains a separate unaccepted feature while canonical-domain filing is pending. The publisher is naijoug, with GitHub Issues support. See [Chrome release materials](docs/release/README.md) and dated verification for actual acceptance results and external store steps.
+Current source enables optional GitHub login/synchronization and identity/alarms permissions after local verification. The account panel displays the GitHub username and previews new/skipped local words before copying; uploads remain explicitly opt-in. Updated backend session capabilities are required. Previously published packages may still disable this feature. Hosted OAuth/cross-client acceptance is separate from this source enablement; see [session and migration verification](docs/verification/2026-10-25-account-sessions.md). The publisher is naijoug, with GitHub Issues support. See [Chrome release materials](docs/release/README.md) and dated verification for actual acceptance results and external store steps.
 
 ## 0.1.1 popup/package recovery
 

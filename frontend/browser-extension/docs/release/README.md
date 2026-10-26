@@ -1,5 +1,17 @@
 # Chrome release preparation
 
+## Account-enabled source (2026-10-25)
+
+Current source enables optional GitHub account controls after local session and
+migration verification. New packages request `identity` and `alarms` in addition
+to `storage` and `contextMenus`. The integrity validator and smoke script now
+expect this manifest and account controls in the unified Settings page. Old 0.1.1 acceptance records
+remain historical and do not validate this candidate's new permissions or OAuth.
+Deploy backend migration 0007 and verify the public callback/CORS before release.
+The retained store listing below is for 0.1.1; update submission disclosures for
+account identity/authentication and opt-in vocabulary sync before uploading a new
+candidate. See [current checks](../verification/2026-10-25-account-sessions.md).
+
 ## First-lookup update (0.1.3, 2026-10-25)
 
 Current packaging includes bounded automatic translation recovery after an
@@ -46,13 +58,13 @@ npm run zip
 
 The `zip` command builds only in `.output/release-staging/chrome-mv3`, then extracts and verifies the archive before reporting success. It leaves the prior `.output/chrome-mv3` and active `.output/chrome-mv3-feedback` untouched.
 
-Chrome output: `.output/remember-me-0.1.1-chrome.zip`. Upload only that production ZIP. Never upload repository configuration, secrets, a feedback build or a developer profile. The WXT upgrade preserves TypeScript strict mode with the prior unchecked-index behavior explicitly configured; it does not claim newly enabled unchecked-index enforcement. The production manifest requests `storage` and `contextMenus`; identity/alarms are absent. WXT's metadata importer receives Vue/CSS stubs only in its inline metadata environment; normal builds use real UI modules.
+Chrome output: `.output/remember-me-0.1.1-chrome.zip`. Upload only that production ZIP. Never upload repository configuration, secrets, a feedback build or a developer profile. The WXT upgrade preserves TypeScript strict mode with the prior unchecked-index behavior explicitly configured; it does not claim newly enabled unchecked-index enforcement. The current production manifest requests `storage`, `contextMenus`, `identity` and `alarms`. WXT's metadata importer receives Vue/CSS stubs only in its inline metadata environment; normal builds use real UI modules.
 
 ## Formal ZIP browser acceptance
 
 `scripts/release-smoke.cjs` extracts the generated Chrome ZIP and loads those exact files in a fresh, disposable Chrome for Testing profile. It never attaches to the user's browser or real vocabulary. Its test-owned DevTools connection reads the actual closed shadow DOM without modifying production encapsulation.
 
-The script exercises live word-only lookup, packaged English, absent API/login controls, intentional records, count reset/history retention, deletion confirmation, export/import, invalid JSON rejection and real process-restart persistence. It records actual screenshots and results; a failure does not become release evidence. The historical 0.1.0 native toolbar/right-click run is recorded in `assets/native-acceptance.json`. The 0.1.1 upgrade test additionally opens the real browser action popup offline using Chrome’s action API; its result records that separately from a manual menu click. The driver uses only its disposable profile and asserts exactly one word/count/history after completion.
+The script exercises live word-only lookup, packaged English, hidden API addresses and optional account controls, intentional records, count reset/history retention, deletion confirmation, export/import, invalid JSON rejection and real process-restart persistence. It records actual screenshots and results; a failure does not become release evidence. The historical 0.1.0 native toolbar/right-click run is recorded in `assets/native-acceptance.json`. The 0.1.1 upgrade test additionally opens the real browser action popup offline using Chrome’s action API; its result records that separately from a manual menu click. The driver uses only its disposable profile and asserts exactly one word/count/history after completion.
 
 With an already installed Playwright/Chromium runtime:
 

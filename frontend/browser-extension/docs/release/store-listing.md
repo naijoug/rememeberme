@@ -1,5 +1,11 @@
 # Chrome Web Store materials — 0.1.1
 
+> Historical 0.1.1 listing. Do not submit unchanged for the account-enabled
+> source (2026-10-25): it adds GitHub identity, device credentials, optional
+> vocabulary sync and identity/alarms permissions. Replace the no-login/no-cloud
+> statements and update data-use disclosures before submission. Local validation
+> is recorded in [account session checks](../verification/2026-10-25-account-sessions.md).
+
 ## Magpie update (2026-10-24)
 
 Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`

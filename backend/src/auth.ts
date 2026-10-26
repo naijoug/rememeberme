@@ -1,6 +1,6 @@
 import { ApiError, object, text, keys } from '../../contracts/api-v1';
 import { challenge, sha, token, cookie, providerJSON } from './http';
-import { timingSafeEqual } from 'node:crypto';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import type { Bindings, Database } from './runtime';
 
 export interface Identity { userId: string; deviceId: string; timezone: string; syncContext: boolean; syncURLs: boolean; epoch: string; sourceRevision: number; sessionHash: string }
@@ -102,27 +102,73 @@ export async function exchangeNative(input: unknown, db: Database) {
   return { ...pair, userId: flow.user_id, deviceId };
 }
 export async function refreshSession(input: unknown, db: Database) {
-  if (!object(input)) throw new ApiError('INVALID_REQUEST'); keys(input, ['refreshToken'], ['refreshToken']);
+  if (!object(input)) throw new ApiError('INVALID_REQUEST'); keys(input, ['refreshToken', 'requestId'], ['refreshToken']);
   if (!text(input.refreshToken, 100) || !/^[A-Za-z0-9_-]{43}$/.test(input.refreshToken)) throw new ApiError('INVALID_REQUEST');
+  if (input.requestId !== undefined && (typeof input.requestId !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(input.requestId))) throw new ApiError('INVALID_REQUEST');
   const now = Date.now(), hash = await sha(input.refreshToken);
+  // The client persists a random request ID before I/O. Domain-separated HMACs
+  // reproduce the same pair without storing recoverable bearer tokens in SQLite.
+  const requestId = input.requestId as string | undefined;
+  const rotationHash = requestId ? await sha(requestId) : null;
+  const derive = (kind: string) => createHmac('sha256', input.refreshToken as string)
+    .update(`rememberme:refresh-retry-v1:${kind}:${requestId}`).digest('base64url');
+  const replay = async () => {
+    if (!rotationHash) return null;
+    const row = await db.prepare(`SELECT s.user_id,s.device_id,s.access_expires_at,s.refresh_expires_at
+      FROM sessions old JOIN sessions s ON s.token_hash=old.rotated_to AND s.user_id=old.user_id AND s.device_id=old.device_id
+      JOIN users u ON u.id=s.user_id JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id
+      WHERE old.refresh_hash=? AND old.rotation_hash=? AND old.rotation_expires_at>?
+      AND old.refresh_expires_at>? AND s.refresh_expires_at>? AND s.revoked_at IS NULL
+      AND u.deleted_at IS NULL AND d.revoked_at IS NULL`).bind(hash, rotationHash, now, now, now)
+      .first<{ user_id: string; device_id: string; access_expires_at: number; refresh_expires_at: number }>();
+    return row ? { accessToken: derive('access'), refreshToken: derive('refresh'),
+      accessExpiresAtMs: row.access_expires_at, refreshExpiresAtMs: row.refresh_expires_at,
+      userId: row.user_id, deviceId: row.device_id } : null;
+  };
+  const previous = await replay(); if (previous) return previous;
   const session = await db.prepare(`SELECT s.user_id,s.device_id,u.timezone,u.sync_context,u.sync_urls,u.sync_epoch FROM sessions s
     JOIN users u ON u.id=s.user_id JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id
     WHERE s.refresh_hash=? AND s.refresh_expires_at>? AND s.revoked_at IS NULL AND d.revoked_at IS NULL AND u.deleted_at IS NULL`)
     .bind(hash, now).first<SessionRow>();
-  if (!session) throw new ApiError('REFRESH_REJECTED', 401);
+  if (!session) { const committed = await replay(); if (committed) return committed; throw new ApiError('REFRESH_REJECTED', 401); }
   const pair = credentials(now), guard = token();
+  if (requestId) { pair.accessToken = derive('access'); pair.refreshToken = derive('refresh'); }
+  const successor = await sha(pair.accessToken);
   await db.batch([
     db.prepare(`INSERT INTO write_guards(nonce,allowed) SELECT ?,CASE WHEN EXISTS(SELECT 1 FROM sessions s
       JOIN devices d ON d.user_id=s.user_id AND d.id=s.device_id JOIN users u ON u.id=s.user_id
       WHERE s.refresh_hash=? AND s.revoked_at IS NULL AND s.refresh_expires_at>? AND d.revoked_at IS NULL AND u.deleted_at IS NULL) THEN 1 ELSE 0 END`)
       .bind(guard, hash, Date.now()),
-    db.prepare('UPDATE sessions SET revoked_at=? WHERE refresh_hash=?').bind(now, hash),
+    db.prepare('UPDATE sessions SET revoked_at=?,rotation_hash=?,rotated_to=?,rotation_expires_at=? WHERE refresh_hash=?')
+      .bind(now, rotationHash, requestId ? successor : null, requestId ? now + 86_400_000 : null, hash),
     db.prepare('INSERT INTO sessions(token_hash,user_id,device_id,refresh_hash,access_expires_at,refresh_expires_at) VALUES(?,?,?,?,?,?)')
       .bind(await sha(pair.accessToken), session.user_id, session.device_id, await sha(pair.refreshToken), pair.accessExpiresAtMs, pair.refreshExpiresAtMs),
     db.prepare('DELETE FROM write_guards WHERE nonce=?').bind(guard)
-  ]).catch(error => {
-    if (error instanceof Error && error.message.includes('CHECK constraint failed')) throw new ApiError('REFRESH_REJECTED', 401);
+  ]).catch(async error => {
+    if (error instanceof Error && error.message.includes('CHECK constraint failed')) {
+      // Concurrent copies of the same frozen request converge on one session.
+      const committed = await replay(); if (committed) return;
+      throw new ApiError('REFRESH_REJECTED', 401);
+    }
     throw new ApiError('AUTH_STORAGE_UNAVAILABLE', 503, true);
   });
+  if (requestId) { const committed = await replay(); if (committed) return committed; }
   return { ...pair, userId: session.user_id, deviceId: session.device_id };
+}
+
+export async function logoutWithRefresh(input: unknown, db: Database) {
+  if (!object(input)) throw new ApiError('INVALID_REQUEST'); keys(input, ['refreshToken'], ['refreshToken']);
+  if (typeof input.refreshToken !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(input.refreshToken)) throw new ApiError('INVALID_REQUEST');
+  const hash = await sha(input.refreshToken), now = Date.now();
+  // Revoke the device, including a rotation whose reply was lost. The old token
+  // may authorize revocation only inside its bounded rotation-recovery window.
+  await db.batch([
+    db.prepare(`UPDATE devices SET revoked_at=? WHERE (user_id,id) IN
+      (SELECT user_id,device_id FROM sessions WHERE refresh_hash=? AND refresh_expires_at>?
+       AND (revoked_at IS NULL OR (rotated_to IS NOT NULL AND rotation_expires_at>?)))`).bind(now, hash, now, now),
+    db.prepare(`UPDATE sessions SET revoked_at=COALESCE(revoked_at,?) WHERE (user_id,device_id) IN
+      (SELECT d.user_id,d.id FROM devices d JOIN sessions s ON s.user_id=d.user_id AND s.device_id=d.id
+       WHERE d.revoked_at IS NOT NULL AND s.refresh_hash=?)`).bind(now, hash)
+  ]);
+  return { loggedOut: true };
 }

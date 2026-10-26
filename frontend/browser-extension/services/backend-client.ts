@@ -4,7 +4,7 @@ export interface DeviceCredentials {
   userId: string; deviceId: string; accessToken: string; refreshToken: string;
   accessExpiresAtMs: number; refreshExpiresAtMs: number;
 }
-export interface Connection { origin: string; credentials: DeviceCredentials }
+export interface Connection { origin: string; credentials: DeviceCredentials; refreshRequestId?: string }
 export class BackendError extends Error {
   constructor(readonly status: number, readonly code: string, readonly retryable = false) { super(code); }
 }
@@ -47,7 +47,8 @@ export class BackendClient {
     await (this.loaded ??= (async () => {
       const stored = await storage.getItem<Connection>(CONNECTION);
       try {
-        if (stored && credentials(stored.credentials) && apiOrigin(stored.origin) === stored.origin) this.connection = stored;
+        if (stored && credentials(stored.credentials) && apiOrigin(stored.origin) === stored.origin
+          && (stored.refreshRequestId === undefined || /^[A-Za-z0-9_-]{43}$/.test(stored.refreshRequestId))) this.connection = stored;
       } catch { /* Ignore malformed connection settings without touching vocabulary. */ }
     })());
   }
@@ -83,19 +84,30 @@ export class BackendClient {
     if (this.dirty) await persist();
     const refresh = async () => {
       if (!this.refresh) this.refresh = (async () => {
+        if (!connection.refreshRequestId) connection.refreshRequestId = random();
+        // Persist the intent before spending a refresh token. A restart retries
+        // the exact same rotation, including when saving its result failed.
+        await persist();
         const reply = await this.response(connection.origin, '/api/v1/auth/refresh', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken: connection.credentials.refreshToken }),
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken: connection.credentials.refreshToken, requestId: connection.refreshRequestId }),
         });
         active();
         if (!credentials(reply) || reply.userId !== connection.credentials.userId || reply.deviceId !== connection.credentials.deviceId) throw new Error('Invalid account refresh.');
         connection.credentials = reply;
+        delete connection.refreshRequestId;
         this.dirty = true;
         await persist();
         return reply;
       })().finally(() => { this.refresh = undefined; });
       await this.refresh; active();
     };
-    if (connection.credentials.accessExpiresAtMs < Date.now() + 60_000) await refresh();
+    if (connection.refreshRequestId || connection.credentials.accessExpiresAtMs < Date.now() + 60_000) {
+      await refresh();
+      // A recovered response can contain an expired access token; rotate its
+      // still-valid successor before issuing the authenticated request.
+      if (connection.credentials.accessExpiresAtMs < Date.now() + 60_000) await refresh();
+    }
     const send = () => this.response(connection.origin, path, {
       method, headers: { Accept: 'application/json', Authorization: 'Bearer ' + connection.credentials.accessToken,
         'X-Client-Capabilities': 'translation-source-v2,translation-source-v3',
@@ -117,6 +129,11 @@ export class BackendClient {
     const generation = this.generation;
     try {
       const origin = apiOrigin(address), verifier = random(), state = random();
+      const capabilities = await this.response(origin, '/api/v1/capabilities', { method: 'GET' }) as { authCapabilities?: string[] };
+      if (!Array.isArray(capabilities.authCapabilities)
+        || !['refresh-retry-v1', 'refresh-logout-v1'].every(value => capabilities.authCapabilities!.includes(value))) {
+        throw new Error('Account sign-in requires a server update. Local vocabulary remains available.');
+      }
       const callback = browser.identity.getRedirectURL('auth/callback');
       const url = new URL(origin + '/auth/extension/start');
       url.search = new URLSearchParams({ state, challenge: await digest(verifier), callback, deviceName: 'Remember Me Browser' }).toString();
@@ -142,16 +159,21 @@ export class BackendClient {
       });
     } finally { this.signingIn = false; }
   }
-  async disconnect(): Promise<void> {
+  async disconnect(): Promise<boolean> {
     await this.load();
     const connection = this.connection;
     // Local disconnection must still work while the server is unreachable.
     this.connection = undefined; this.generation++; this.dirty = false;
     this.refresh = undefined;
     await this.serialize(() => storage.removeItem(CONNECTION));
-    if (connection) await this.response(connection.origin, '/api/v1/auth/logout', {
-      method: 'POST', headers: { Authorization: 'Bearer ' + connection.credentials.accessToken },
-    }).catch(() => {});
+    if (!connection) return true;
+    try {
+      await this.response(connection.origin, '/api/v1/auth/logout', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken: connection.credentials.refreshToken }),
+      });
+      return true;
+    } catch { return false; }
   }
 }
 export const backendClient = new BackendClient();
