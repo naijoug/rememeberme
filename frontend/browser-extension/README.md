@@ -1,5 +1,12 @@
 # Remember Me browser extension
 
+## Account settings update (0.1.4, 2026-10-26)
+
+Settings uses a back button and `Setting` title in the top bar. GitHub sign-in
+automatically enables account sync and displays account words. Pausing retains
+downloaded words; pre-sign-in device words need a reviewed copy before upload.
+The popup refreshes downloaded words while open. See [verification](docs/verification/2026-10-26-auto-sync-settings.md).
+
 ## First-lookup recovery (0.1.3, 2026-10-25)
 
 A translation with a transient network/502/503/504 failure retries once within
@@ -22,7 +29,7 @@ use the new deployment record for current host acceptance.
 
 Select an English word to see a Chinese translation and English definitions, and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. Online English lookup uses server WordNet plus Free Dictionary API fallback; Chinese uses server Hermes with MyMemory fallback. Only the selected word is sent. While domain filing is pending, lookup uses an internal temporary HTTPS endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. **Settings → Account / Synchronization** provides optional GitHub login and explicit account copy/sync; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
+Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. Online English lookup uses server WordNet plus Free Dictionary API fallback; Chinese uses server Hermes with MyMemory fallback. Only the selected word is sent. While domain filing is pending, lookup uses an internal temporary HTTPS endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. **Settings → Account / Synchronization** provides optional GitHub login that automatically enables account sync and displays account words. Sync can be paused without hiding those words. Device words saved before sign-in require a separate reviewed copy; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
 
 ## Setup
 
@@ -124,7 +131,7 @@ Phonetic transcriptions appear beneath a word as **🇺🇸 IPA 🔊 / 🇬🇧 
 Build/deploy the API using [Tencent deployment](../../backend/docs/tencent-deployment.md).
 The Chrome release uses a fixed HTTPS lookup gateway backed by a dedicated persistent Cloudflare tunnel to the Tencent API. The service address is internal in `config/backend.ts`; users neither enter nor see it. English WordNet hits stay local; misses and Chinese translation call word-only routes without credentials. The gateway's HTTPS hostname survives connector restarts. `/privacy` hosts the published policy.
 
-Current source enables optional GitHub login/synchronization and identity/alarms permissions after local verification. The account panel displays the GitHub username and previews new/skipped local words before copying; uploads remain explicitly opt-in. Updated backend session capabilities are required. Previously published packages may still disable this feature. Hosted OAuth/cross-client acceptance is separate from this source enablement; see [session and migration verification](docs/verification/2026-10-25-account-sessions.md). The publisher is naijoug, with GitHub Issues support. See [Chrome release materials](docs/release/README.md) and dated verification for actual acceptance results and external store steps.
+Current source enables optional GitHub login/synchronization and identity/alarms permissions after local verification. The account panel displays the GitHub username and previews new/skipped device words before copying. Signing in enables account sync automatically; copying pre-sign-in words still requires confirmation. Updated backend session capabilities are required. Previously published packages may still disable this feature. Hosted OAuth/cross-client acceptance is separate from this source enablement; see [session and migration verification](docs/verification/2026-10-25-account-sessions.md). The publisher is naijoug, with GitHub Issues support. See [Chrome release materials](docs/release/README.md) and dated verification for actual acceptance results and external store steps.
 
 ## 0.1.1 popup/package recovery
 

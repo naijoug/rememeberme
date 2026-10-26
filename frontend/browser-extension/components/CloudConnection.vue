@@ -1,24 +1,29 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { NavArrowRight, Refresh } from '@iconoir/vue';
 import type { CloudStatus, MigrationPreview } from '~/services/cloud-vocabulary';
 import { SERVICE_ORIGIN } from '~/config/backend';
-const emit = defineEmits<{ changed: [] }>();
+const emit = defineEmits<{ changed: []; 'view-words': [] }>();
 const busy = ref(false), error = ref('');
+let statusRevision = 0;
 const status = ref<CloudStatus>();
 const preview = ref<MigrationPreview>();
 const previewPanel = ref<HTMLElement>();
 const accountSelected = computed(() => Boolean(status.value?.connected && status.value.owner !== 'anonymous'));
 const needsRecovery = computed(() => Boolean(status.value?.conflicts || status.value?.failure === 'SYNC_EPOCH_CHANGED'));
 const syncState = computed(() => {
-  if (!accountSelected.value) return 'Local only';
+  if (!accountSelected.value) return 'Finishing sign-in';
   if (needsRecovery.value || status.value?.failure) return 'Needs attention';
-  return status.value?.enabled ? 'Enabled' : 'Paused';
+  if (!status.value?.enabled) return 'Paused';
+  if (status.value.downloading) return 'Downloading words…';
+  if (status.value.pending) return 'Uploading changes…';
+  return 'Up to date';
 });
-const syncDisabled = computed(() => busy.value || !accountSelected.value || (!status.value?.enabled && needsRecovery.value));
+const syncDisabled = computed(() => busy.value || (!status.value?.enabled && needsRecovery.value));
 
 async function action(type: string, extra: Record<string, unknown> = {}) {
   if (busy.value) return; busy.value = true; error.value = '';
+  statusRevision++;
   preview.value = undefined;
   try {
     const reply = await browser.runtime.sendMessage({ type, ...extra });
@@ -38,6 +43,7 @@ async function action(type: string, extra: Record<string, unknown> = {}) {
 async function previewLocal() {
   if (busy.value) return;
   busy.value = true; error.value = ''; preview.value = undefined;
+  statusRevision++;
   try {
     const reply = await browser.runtime.sendMessage({ type: 'CLOUD_PREVIEW_LOCAL' });
     if (!reply?.success) throw new Error(reply?.error || 'Could not preview local vocabulary.');
@@ -53,7 +59,7 @@ async function previewLocal() {
 async function copyLocal() {
   const plan = preview.value;
   if (!plan || busy.value) return;
-  if (confirm(`Copy ${plan.copy} new words to GitHub account @${plan.displayName}? Skip ${plan.skip} existing words without changing their counts. Context and source URLs remain local. The original local vocabulary is retained. Sync stays paused until you enable it.`)) {
+  if (confirm(`Copy ${plan.copy} new words to GitHub account @${plan.displayName}? Skip ${plan.skip} existing words without changing their counts. Context and source URLs remain local. The original local vocabulary is retained. ${status.value?.enabled ? 'New words will sync automatically.' : 'Resume sync to upload the new words.'}`)) {
     await action('CLOUD_COPY_LOCAL', { previewToken: plan.token });
   }
 }
@@ -71,7 +77,22 @@ async function exportArchive(key: string) {
   } catch (cause) { error.value = cause instanceof Error ? cause.message : 'Recovery export failed.'; }
   finally { busy.value = false; }
 }
-onMounted(() => { void action('CLOUD_STATUS'); });
+let statusTimer: ReturnType<typeof setInterval> | undefined;
+let polling = false, stopped = false;
+onMounted(() => {
+  void action('CLOUD_STATUS');
+  statusTimer = setInterval(async () => {
+    if (busy.value || polling || document.hidden) return;
+    polling = true;
+    const revision = statusRevision;
+    try {
+      const reply = await browser.runtime.sendMessage({ type: 'CLOUD_STATUS' });
+      if (!stopped && !busy.value && revision === statusRevision && reply?.success) status.value = reply.data;
+    } catch { /* Keep the last confirmed state; explicit actions report errors. */ }
+    finally { polling = false; }
+  }, 5000);
+});
+onUnmounted(() => { stopped = true; clearInterval(statusTimer); });
 </script>
 <template>
   <section class="cloud-connection rm-theme" aria-label="Account and sync settings" :aria-busy="busy">
@@ -83,13 +104,9 @@ onMounted(() => { void action('CLOUD_STATUS'); });
             <dt>GitHub</dt>
             <dd>{{ status.displayName ? `@${status.displayName}` : 'Username unavailable' }}</dd>
           </dl>
-          <dl class="setting-row">
-            <dt>Vocabulary</dt>
-            <dd>{{ accountSelected ? 'GitHub account' : 'On this device' }}</dd>
-          </dl>
-          <button class="setting-row row-action" :disabled="busy" @click="action(accountSelected ? 'CLOUD_USE_LOCAL' : 'CLOUD_OPEN')">
-            <span>{{ accountSelected ? 'Use local vocabulary' : 'Open account vocabulary' }}</span>
-            <NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" />
+          <button v-if="accountSelected" class="setting-row row-action" @click="emit('view-words')">
+            <span>View account words</span>
+            <span class="row-trailing"><span class="row-value">{{ status.accountWords ?? 0 }}</span><NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" /></span>
           </button>
         </template>
         <template v-else>
@@ -100,7 +117,7 @@ onMounted(() => { void action('CLOUD_STATUS'); });
           </button>
         </template>
       </div>
-      <p v-if="!status?.connected" class="section-note">Translation works without signing in. Connect to sync words across your devices.</p>
+      <p v-if="!status?.connected" class="section-note">Sign in to show your account words here and sync new words automatically. Translation works without signing in.</p>
     </section>
 
     <template v-if="status?.connected">
@@ -110,7 +127,7 @@ onMounted(() => { void action('CLOUD_STATUS'); });
           <div class="setting-row">
             <span id="cloud-sync-label">Cloud sync</span>
             <button class="sync-switch" type="button" role="switch" :aria-checked="status.enabled"
-              aria-labelledby="cloud-sync-label" :aria-describedby="!accountSelected ? 'sync-local-hint' : needsRecovery ? 'sync-recovery-hint' : undefined"
+              aria-labelledby="cloud-sync-label" :aria-describedby="needsRecovery ? 'sync-recovery-hint' : 'sync-help'"
               :disabled="syncDisabled" @click="action('CLOUD_ENABLE', { enabled: !status.enabled })">
               <span class="switch-thumb" aria-hidden="true" />
             </button>
@@ -119,26 +136,26 @@ onMounted(() => { void action('CLOUD_STATUS'); });
             <dt>Status</dt>
             <dd>
               <span>{{ syncState }}</span>
-              <small>{{ status.pending }} pending · {{ status.conflicts }} {{ status.conflicts === 1 ? 'conflict' : 'conflicts' }}</small>
+              <small v-if="status.pending || status.conflicts">{{ status.pending }} pending · {{ status.conflicts }} {{ status.conflicts === 1 ? 'conflict' : 'conflicts' }}</small>
             </dd>
           </dl>
-          <button v-if="accountSelected" class="setting-row row-action" :disabled="busy || !status.enabled" @click="action('CLOUD_SYNC')">
-            <span>Sync now</span><Refresh class="row-chevron" width="16" height="16" aria-hidden="true" />
+          <button class="setting-row row-action" :disabled="busy || (accountSelected && !status.enabled)" @click="action(accountSelected ? 'CLOUD_SYNC' : 'CLOUD_OPEN')">
+            <span>{{ accountSelected ? 'Sync now' : 'Retry sync' }}</span><Refresh class="row-chevron" width="16" height="16" aria-hidden="true" />
           </button>
         </div>
-        <p v-if="!accountSelected" id="sync-local-hint" class="section-note">Open account vocabulary to enable sync.</p>
-        <p v-else-if="needsRecovery" id="sync-recovery-hint" class="section-note">Review recovery options before enabling sync.</p>
+        <p id="sync-help" class="section-note">{{ status.enabled ? 'New words sync automatically across your devices.' : 'Paused. Your account words stay visible and saved on this device.' }}</p>
+        <p v-if="needsRecovery" id="sync-recovery-hint" class="section-note">Review recovery options before enabling sync.</p>
       </section>
 
-      <section class="settings-section" aria-labelledby="local-heading">
-        <h3 id="local-heading">On this device</h3>
+      <section v-if="status.localWords" class="settings-section" aria-labelledby="local-heading">
+        <h3 id="local-heading">Before you signed in</h3>
         <div class="settings-group">
           <button class="setting-row row-action" :disabled="busy" @click="previewLocal">
-            <span>Preview local vocabulary</span>
+            <span>Add device words to account</span>
             <span class="row-trailing"><span class="row-value">{{ status.localWords }} {{ status.localWords === 1 ? 'word' : 'words' }}</span><NavArrowRight class="row-chevron" width="16" height="16" aria-hidden="true" /></span>
           </button>
         </div>
-        <p class="section-note">Review before copying. Your local original is kept.</p>
+        <p class="section-note">These words were saved before sign-in. Review and add them to your account; the originals are kept.</p>
       </section>
 
       <section v-if="preview" ref="previewPanel" tabindex="-1" aria-label="Local vocabulary migration preview" class="migration-preview settings-section">
@@ -146,7 +163,7 @@ onMounted(() => { void action('CLOUD_STATUS'); });
         <div class="settings-group">
           <div class="preview-summary">
             <p>{{ preview.total }} local words · {{ preview.copy }} new · {{ preview.skip }} skipped</p>
-            <p class="section-note">Existing words are skipped without adding counts. Sync stays paused.</p>
+            <p class="section-note">Existing words are skipped without adding counts. {{ status.enabled ? 'New words sync automatically after confirmation.' : 'Resume sync after adding words.' }}</p>
           </div>
           <div class="migration-items" tabindex="0" aria-label="Words to copy or skip">
             <table>
@@ -174,7 +191,7 @@ onMounted(() => { void action('CLOUD_STATUS'); });
       </section>
 
       <div class="settings-group disconnect-group">
-        <button class="setting-row row-action disconnect-action" :disabled="busy" @click="action('CLOUD_DISCONNECT')">Disconnect account</button>
+        <button class="setting-row row-action disconnect-action" :disabled="busy" @click="action('CLOUD_DISCONNECT')">Sign out</button>
       </div>
     </template>
     <p v-if="status?.notice" class="feedback" role="status">{{ status.notice }}</p>

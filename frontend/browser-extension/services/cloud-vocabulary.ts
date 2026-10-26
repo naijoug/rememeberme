@@ -24,6 +24,7 @@ interface RemoteEvent { id: string; timestamp: number; definition: Definition; p
 interface Account { userId: string; deviceId: string; displayName?: string; epoch: string; syncCapabilities: string[]; sourceRevision: number; syncContext: boolean; syncURLs: boolean }
 interface VocabularyScope { owner: string; generation: number }
 export interface CloudStatus {
+  accountWords?: number; downloading?: boolean;
   displayName?: string; notice?: string;
   connected: boolean; origin?: string; owner: string; enabled: boolean; pending: number; conflicts: number;
   failure?: string; localWords: number; archives: { key: string; createdAt: number }[];
@@ -222,6 +223,8 @@ export class CloudVocabulary {
       const state = await this.state(), connection = await this.client.current();
       const account = connection ? await this.state('account:' + await sha(connection.origin) + ':' + connection.credentials.userId) : undefined;
       return { connected: Boolean(connection), origin: connection?.origin, owner: this.owner, enabled: state.enabled,
+        accountWords: account?.entries.filter(entry => !entry.deleted).length ?? 0,
+        downloading: Boolean(account && (account.snapshot || account.boundary !== undefined || account.history.length)),
         displayName: account?.displayName, notice: this.notice,
         pending: state.outbox.length, conflicts: state.outbox.filter(item => item.error).length, failure: state.failure,
         localWords: (await this.state('anonymous')).entries.filter(entry => !entry.deleted).length, archives: state.archives ?? [] };
@@ -233,13 +236,28 @@ export class CloudVocabulary {
     const connection = await this.client.current();
     const profile = await this.client.request<Account>('/api/v1/me');
     if (!connection || profile.userId !== connection.credentials.userId || profile.deviceId !== connection.credentials.deviceId
-      || typeof profile.displayName !== 'string' || !profile.displayName || profile.displayName.length > 100) throw new Error('Could not verify the GitHub account. Open account vocabulary to retry.');
+      || typeof profile.displayName !== 'string' || !profile.displayName || profile.displayName.length > 100) throw new Error('Could not verify the GitHub account. Retry sync to finish signing in.');
     await this.serialize(async () => {
       const current = await this.client.current();
       if (current?.credentials.userId !== connection.credentials.userId || current.origin !== connection.origin) throw new Error('Account connection changed.');
       const owner = 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId;
       const state = await this.state(owner); state.displayName = profile.displayName; await this.database.write(owner, state);
     });
+    await this.activateAccount();
+  }
+  async activateAccount(): Promise<void> {
+    // Login selects the account and enables transport; anonymous words remain
+    // untouched until a separate, reviewed import is confirmed.
+    if (this.flight) await this.flight.catch(() => {});
+    await this.openAccount(false, false, true);
+  }
+  async restoreAccountView(): Promise<void> {
+    const connection = await this.client.current();
+    if (!this.allowAccountSelection || !connection) return;
+    const expected = 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId;
+    const owner = await this.serialize(async () => { await this.initialize(); return this.owner; });
+    if (owner !== expected) await this.activateAccount();
+    else await this.synchronize(); // An explicit pause or recovery pause survives reopening.
   }
   async pause(): Promise<void> {
     await this.serialize(async () => { const state = await this.state(); state.enabled = false; await this.database.write(this.owner, state); });
@@ -251,20 +269,27 @@ export class CloudVocabulary {
       : 'Disconnected on this device. Server revocation could not be confirmed; reconnect when online to manage your devices.';
     await this.serialize(async () => { await this.database.write('selected', 'anonymous'); this.owner = 'anonymous'; });
   }
-  async openAccount(copyLocal = false, pauseSync = false): Promise<void> {
+  async openAccount(copyLocal = false, pauseSync = false, enableSync = false): Promise<void> {
     const connection = await this.client.current(); if (!connection) throw new Error('Connect an account first.');
     const owner = 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId;
     await this.serialize(async () => {
       await this.initialize();
+      const current = await this.client.current();
+      if (current?.origin !== connection.origin || current.credentials.userId !== connection.credentials.userId) throw new Error('Account connection changed.');
       if (this.owner !== owner) {
         const previous = await this.state(); previous.enabled = false; await this.database.write(this.owner, previous);
       }
       const account = await this.database.initialize(owner, fresh());
-      if (pauseSync) { account.enabled = false; await this.database.write(owner, account); }
-      await this.database.write('selected', owner);
+      const blocked = enableSync && (account.failure === 'SYNC_EPOCH_CHANGED' || account.outbox.some(item => item.error));
+      if (enableSync) {
+        account.enabled = !blocked;
+      }
+      if (pauseSync) account.enabled = false;
+      await this.database.writeMany([[owner, account], ['selected', owner]]);
       if (this.owner !== owner) { this.owner = owner; this.generation++; }
+      if (blocked) throw new Error('Resolve account conflicts before resuming sync.');
     });
-    await this.synchronize(true);
+    await this.synchronize(!enableSync);
     if (copyLocal) await this.serialize(async () => {
       const state = await this.state(), local = await this.state('anonymous');
       if (state.snapshot || state.boundary !== undefined || state.history.length) throw new Error('The account is still downloading. Open the account again to continue before copying local vocabulary.');
@@ -291,7 +316,7 @@ export class CloudVocabulary {
   }
   private async migrationPreview(state: Partition, local: Partition): Promise<MigrationPreview> {
     if (this.owner === 'anonymous' || !state.displayName) throw new Error('Open your account and verify its GitHub username before copying.');
-    if (state.enabled || state.snapshot || state.boundary !== undefined || state.history.length) throw new Error('Wait for the account download to finish, then preview again. Sync must be paused.');
+    if (state.snapshot || state.boundary !== undefined || state.history.length) throw new Error('Wait for the account download to finish, then preview again.');
     if (state.outbox.length) throw new Error('Complete or resolve pending account changes before copying local vocabulary.');
     const items = local.entries.filter(entry => !entry.deleted).map(entry => ({
       word: entry.value.word, count: entry.value.count, histories: entry.value.history.length,
@@ -303,11 +328,8 @@ export class CloudVocabulary {
     return { token, displayName: state.displayName, total: items.length, copy, skip: items.length - copy, items };
   }
   async previewLocalMigration(): Promise<MigrationPreview> {
-    await this.pause();
     if (this.flight) await this.flight.catch(() => {});
-    await this.openAccount(false, true);
-    // Opening a previously enabled account must not resume sending.
-    await this.pause();
+    await this.openAccount(false);
     return this.serialize(async () => this.migrationPreview(await this.state(), await this.state('anonymous')));
   }
   async confirmLocalMigration(token: string): Promise<void> {
@@ -324,6 +346,7 @@ export class CloudVocabulary {
       await this.copyEntries(state, local, sources);
       await this.database.write(this.owner, state);
     });
+    await this.synchronize();
   }
   async useLocal(): Promise<void> {
     await this.pause();
@@ -381,7 +404,16 @@ export class CloudVocabulary {
     const owner = this.owner, connection = await this.client.current();
     if (!connection || owner === 'anonymous' || owner !== 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId) return;
     if (!readOnly && !(await this.serialize(() => this.state(owner))).enabled) return;
-    const account = await this.client.request<Account>('/api/v1/me');
+    let account: Account;
+    try { account = await this.client.request<Account>('/api/v1/me'); }
+    catch (error) {
+      await this.serialize(async () => {
+        const state = await this.state(owner);
+        if (state.failure !== 'SYNC_EPOCH_CHANGED') state.failure = error instanceof Error ? error.message : 'Synchronization failed.';
+        await this.database.write(owner, state);
+      });
+      throw error;
+    }
     if (account.userId !== connection.credentials.userId || account.deviceId !== connection.credentials.deviceId
       || !Array.isArray(account.syncCapabilities) || !['history-order-v1', 'history-version-v1', 'explicit-lifecycles-v1', 'translation-source-v2'].every(value => account.syncCapabilities.includes(value))) throw new Error('Update the backend to support this client.');
     await this.serialize(async () => {

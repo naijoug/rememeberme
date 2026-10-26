@@ -24,7 +24,7 @@ const settingsOpen = ref(false);
 const confirmWord = ref<string | null>(null);
 const fileInput = ref<HTMLInputElement>();
 const settingsButton = ref<HTMLButtonElement>();
-const settingsHeading = ref<HTMLHeadingElement>();
+const settingsBackButton = ref<HTMLButtonElement>();
 const backButton = ref<HTMLButtonElement>();
 const importError = ref('');
 const selectedEntry = computed(() => props.words.find(entry => (entry.id ?? entry.word) === selected.value));
@@ -35,11 +35,17 @@ async function openWord(word: string) { selected.value = word; await nextTick();
 async function openSettings() {
   if (settingsOpen.value) return;
   settingsOpen.value = true;
-  await nextTick(); settingsHeading.value?.focus();
+  await nextTick(); settingsBackButton.value?.focus();
 }
 async function closeSettings() {
   settingsOpen.value = false;
   await nextTick(); settingsButton.value?.focus();
+}
+async function showVocabulary() {
+  selected.value = null;
+  query.value = '';
+  listScrollTop.value = 0;
+  await closeSettings();
 }
 function keydown(event: KeyboardEvent) {
   if (event.key !== 'Escape' || confirmWord.value) return;
@@ -65,14 +71,21 @@ async function importFile(event: Event) {
   <IconoirProvider :icon-props="{ color: 'currentColor', 'stroke-width': 1.5 }">
   <div class="vocabulary-counter rm-theme" :data-theme="theme" @keydown="keydown">
     <header class="rm-header">
-      <img class="brand-mark" :src="logoUrl" width="30" height="30" alt="" />
-      <h1 class="rm-brand">Remember Me</h1>
-      <div class="rm-header-actions">
-        <button ref="settingsButton" class="rm-icon-btn" aria-label="Settings" title="Settings"
-          aria-controls="vocabulary-settings" :aria-expanded="settingsOpen" @click="openSettings">
-          <Settings width="21" height="21" aria-hidden="true" />
+      <template v-if="settingsOpen">
+        <button ref="settingsBackButton" class="rm-icon-btn settings-back" aria-label="Back to vocabulary" @click="closeSettings">
+          <NavArrowLeft width="23" height="23" aria-hidden="true" />
         </button>
-      </div>
+        <h1 id="settings-title" class="rm-brand">Setting</h1>
+      </template>
+      <template v-else>
+        <img class="brand-mark" :src="logoUrl" width="30" height="30" alt="" />
+        <h1 class="rm-brand">Remember Me</h1>
+        <div class="rm-header-actions">
+          <button ref="settingsButton" class="rm-icon-btn" aria-label="Settings" title="Settings" @click="openSettings">
+            <Settings width="21" height="21" aria-hidden="true" />
+          </button>
+        </div>
+      </template>
       <input ref="fileInput" type="file" accept=".json,application/json" hidden @change="importFile" />
     </header>
 
@@ -80,8 +93,6 @@ async function importFile(event: Event) {
     <div v-if="error || importError" class="rm-banner error" role="alert">{{ error || importError }} <button v-if="!words.length && !importError" class="rm-text-action" @click="emit('retry')">Try again</button></div>
 
     <section v-if="settingsOpen" id="vocabulary-settings" class="settings-page" aria-labelledby="settings-title">
-      <button class="back-link" @click="closeSettings"><NavArrowLeft width="17" height="17" aria-hidden="true" />Vocabulary</button>
-      <h2 id="settings-title" ref="settingsHeading" class="settings-title" tabindex="-1">Settings</h2>
 
       <section class="settings-section" aria-labelledby="appearance-heading">
         <h3 id="appearance-heading">Appearance</h3>
@@ -95,7 +106,7 @@ async function importFile(event: Event) {
         </div>
       </section>
 
-      <slot name="account" />
+      <slot name="account" :show-vocabulary="showVocabulary" />
 
       <section class="settings-section" aria-labelledby="backups-heading">
         <h3 id="backups-heading">Backups</h3>

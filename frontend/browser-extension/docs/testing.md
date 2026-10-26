@@ -208,3 +208,11 @@ checks direct gear navigation, one Settings heading with all sections, Escape/ba
 focus restoration, preserved reading context, System/Light/Dark persistence and
 import/export while remaining on the page. The browser preview shares the real
 popup shell and uses synthetic data only.
+
+
+Automatic account sync and settings navigation: [2026-10-26 verification](verification/2026-10-26-auto-sync-settings.md)
+supersedes the earlier settings copy/pause behavior. It covers login activation,
+account restoration, preserved pause/recovery state, downloaded-word refresh,
+viewing all account words despite an earlier search, and confirmed device-word
+copy with the existing sync preference. Automated HTTP checks use disposable
+accounts/SQLite; UI previews use in-memory fixtures, not the installed account.

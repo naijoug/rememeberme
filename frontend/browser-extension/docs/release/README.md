@@ -1,5 +1,13 @@
 # Chrome release preparation
 
+## Settings and automatic sync (0.1.4, 2026-10-26)
+
+Current Chrome candidate: `.output/remember-me-0.1.4-chrome.zip`. Sign-in enables
+account sync automatically; reviewed copying remains required for pre-sign-in
+device words. The top bar now reads `Setting`, with a back button. Older release
+instructions and acceptance below retain their original version scope.
+See [current verification](../verification/2026-10-26-auto-sync-settings.md).
+
 ## Account-enabled source (2026-10-25)
 
 Current source enables optional GitHub account controls after local session and

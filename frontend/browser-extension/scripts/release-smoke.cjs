@@ -22,7 +22,7 @@ const article = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Rem
   assert.ok(!JSON.stringify(expectedManifest).includes('localhost') && !JSON.stringify(expectedManifest).includes('3937'));
   const server = createServer((_req, res) => { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); res.end(article); });
   let context, shadowSession;
-  const results = { version, checks: [], limitations: ['Native toolbar anchoring and browser-native right-click menu are separate manual checks.', 'Cloud account sync is disabled in this release.', 'This exercises a disposable Chrome for Testing profile, not the user profile or Chrome Web Store review.'] };
+  const results = { version, checks: [], limitations: ['Native toolbar anchoring and browser-native right-click menu are separate manual checks.', 'Cloud account controls are enabled; this smoke run does not verify authenticated synchronization.', 'This exercises a disposable Chrome for Testing profile, not the user profile or Chrome Web Store review.'] };
   try {
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const url = `http://127.0.0.1:${server.address().port}/reading-example`;
@@ -108,7 +108,7 @@ const article = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Rem
     await popup.getByRole('heading', { name: 'Remember Me', exact: true }).waitFor();
     assert.equal(await popup.locator('.cloud-connection').count(), 0); assert.equal(await popup.locator('[aria-label="HTTPS API address"]').count(), 0);
     await popup.getByRole('button', { name: 'Settings', exact: true }).click();
-    assert.equal(await popup.getByRole('heading', { name: 'Settings', exact: true }).count(), 1);
+    assert.equal(await popup.getByRole('heading', { name: 'Setting', exact: true }).count(), 1);
     assert.equal(await popup.getByRole('button', { name: 'Sign in with GitHub' }).count(), 1); await popup.keyboard.press('Escape');
     await popup.locator('.word-header').click(); await popup.getByRole('button', { name: 'Reset count', exact: true }).click();
     await poll(async () => (await getWords())[0]?.count === 0);

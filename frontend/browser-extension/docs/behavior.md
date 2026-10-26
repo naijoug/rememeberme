@@ -45,7 +45,7 @@ Chinese translation text in the page card and vocabulary reading view displays b
 
 ## Appearance
 
-Both the toolbar and page card use the selected Paper & Sage layout: paper-white/sage in light mode, with a Codex-inspired neutral charcoal palette in dark mode at the user's request. Dark surfaces use `#1e1e1e` / `#29292a`, gray-white text and `#303030` selections; buttons, highlights and overlays share the neutral palette. Errors retain a distinct red tone. Settings → Appearance selects System / Light / Dark and persists the choice separately from vocabulary, syncing to open extension surfaces. The header has a single Settings gear; there is no separate theme shortcut or footer selector. New installations and an existing saved System preference follow the OS/browser media preference until manually switched; the webpage's own theme is not inferred. Word headings use a local serif font; UI controls use the system sans-serif stack. Imported text and examples remain literal text, including highlighted matches.
+Both the toolbar and page card use the selected Paper & Sage layout: paper-white/sage in light mode, with a Codex-inspired neutral charcoal palette in dark mode at the user's request. Dark surfaces use `#1e1e1e` / `#29292a`, gray-white text and `#303030` selections; buttons, highlights and overlays share the neutral palette. Errors retain a distinct red tone. Settings → Appearance selects System / Light / Dark and persists the choice separately from vocabulary, syncing to open extension surfaces. The vocabulary header has a single Settings gear; inside settings it becomes a back button and Setting title. There is no separate theme shortcut or footer selector. New installations and an existing saved System preference follow the OS/browser media preference until manually switched; the webpage's own theme is not inferred. Word headings use a local serif font; UI controls use the system sans-serif stack. Imported text and examples remain literal text, including highlighted matches.
 
 ## Original specification differences requiring a product decision
 
@@ -77,7 +77,9 @@ expecting the update to change an already-submitted request.
 
 The current source enables `ACCOUNT_SYNC_ENABLED=true` after local session and migration tests. The gear opens Settings with embedded GitHub sign-in and synchronization controls; the initial vocabulary view still has no connection banner or API address input. GitHub sign-in checks backend support for recoverable refresh and refresh-authenticated logout. Existing published packages may still have account controls disabled.
 
-The account panel displays the verified GitHub username. Preview local vocabulary pauses sync and downloads the account state, then lists each local word, count and history size as Copy or Skip existing. Existing normalized words or lifecycle IDs are skipped without adding counts. Confirm copy names the target GitHub account, retains the anonymous original and leaves sync paused. Account/vocabulary changes or a background restart invalidate the preview; retrying a confirmed preview cannot duplicate its copy. Very large downloads may require Preview again until paging completes. Browser exports remain legacy arrays with local context/URLs.
+Signing in verifies the GitHub username, selects the account vocabulary, enables synchronization and downloads account words into the main list. Reopening the popup refreshes the connected account; an explicit pause or recovery pause is preserved. Pausing sync keeps downloaded account words visible. Sign-out returns to the separate device vocabulary.
+
+Add device words to account downloads the account state and previews each device word, count and history size as Copy or Skip existing, preserving the current sync setting. Existing normalized words or lifecycle IDs are skipped without adding counts. Confirm copy names the target GitHub account and retains the anonymous original. Confirmed new words sync automatically when sync is enabled; an existing pause remains paused. Account/vocabulary changes or a background restart invalidate the preview; retrying a confirmed preview cannot duplicate its copy. Very large downloads may require Preview again until paging completes. Browser exports remain legacy arrays with local context/URLs.
 
 Refresh intents survive response loss, failed credential persistence and restart. The server permits the exact retry for up to 24 hours while the successor remains active; after that, sign in again. Disconnect clears local credentials and uses the refresh credential to revoke the device even if access expired. Offline disconnection reports that server revocation was not confirmed.
 
@@ -85,15 +87,26 @@ Lookup uses an internal fixed HTTPS gateway and persistent private connector. Co
 
 ### Account settings presentation
 
-The single Settings page uses grouped lists for appearance, account identity,
-synchronization, local vocabulary, backups and privacy/support. The header gear
-opens this page directly; there is no intermediate menu or separate account page. GitHub username, vocabulary location and pending/conflict
-counts are read-only rows. Cloud sync is an accessible switch reflecting the
-confirmed setting; it is disabled while a request is pending, when local
-vocabulary is selected, or when recovery is required before enabling. A failed
-request restores the confirmed status rather than leaving an optimistic switch.
+The gear opens one settings page directly. Its fixed header replaces the brand
+and gear with a back button and “Setting”; Escape/back restores the previous
+list or reading view and keyboard focus. Appearance, account, synchronization,
+device-word import, backups and privacy/support remain on the same scrollable page.
 
-Only the applicable vocabulary-switch action is shown. Sync now is unavailable
-while sync is paused. Migration, recovery and disconnect remain explicit list
-row actions. Opening a migration preview focuses it inside the scrollable popup;
-copy/recovery confirmation and anonymous-data retention remain unchanged.
+The account section shows the verified GitHub username and a “View account words”
+row with the available word count. This opens the complete vocabulary list,
+clearing any old search or reading selection. The count includes saved account
+words whose uploads may still be pending; it is not an upload completion count.
+The list refreshes after account actions and every five seconds while the popup
+is visible, without resetting scroll when data is unchanged.
+
+Cloud sync is an accessible switch reflecting the confirmed setting. It is
+disabled during a request and when recovery is required before enabling. Failed
+requests restore the confirmed status. Sync now is unavailable while paused;
+uncompleted sign-in offers Retry sync. Status distinguishes downloading, pending
+uploads, paused, up to date and attention required.
+
+There is no “Use local vocabulary” switch. Device words saved before sign-in
+are offered through “Add device words to account” with a preview and confirmation.
+Opening that preview focuses it inside the scrollable popup. Recovery and sign-out
+remain explicit actions; copy/recovery confirmation and original-data retention
+are preserved.

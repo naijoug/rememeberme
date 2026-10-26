@@ -16,23 +16,47 @@ const success = ref('');
 const theme = ref<ThemeState>({ preference: 'system', resolved: 'light' });
 let stopTheme: (() => void) | undefined;
 let successTimer: ReturnType<typeof setTimeout> | undefined;
+let refreshTimer: ReturnType<typeof setInterval> | undefined;
+let refreshPending = false, disposed = false, readVersion = 0;
 
 onMounted(() => {
   stopTheme = watchTheme(value => { theme.value = value; });
   void loadWords();
+  if (ACCOUNT_SYNC_ENABLED) {
+    void restoreAndRefresh();
+    refreshTimer = setInterval(async () => {
+      if (refreshPending || busy.value || document.hidden) return;
+      refreshPending = true;
+      try { await loadWords(false); } finally { refreshPending = false; }
+    }, 5000);
+  }
 });
-onUnmounted(() => { stopTheme?.(); clearTimeout(successTimer); });
+onUnmounted(() => { disposed = true; stopTheme?.(); clearTimeout(successTimer); clearInterval(refreshTimer); });
 
-async function loadWords() {
+async function restoreAndRefresh() {
   error.value = '';
-  loading.value = true;
-  try { words.value = await storageClient.getAllWords(); }
-  catch (cause) { error.value = cause instanceof Error ? cause.message : 'Could not open your vocabulary.'; }
-  finally { loading.value = false; }
+  try {
+    const reply = await browser.runtime.sendMessage({ type: 'CLOUD_RESTORE' });
+    if (reply && !reply.success) throw new Error(reply.error || 'Could not refresh account words.');
+  } catch (cause) {
+    if (!disposed) error.value = cause instanceof Error ? cause.message : 'Could not refresh account words.';
+  } finally { if (!disposed) await loadWords(false); }
+}
+
+async function loadWords(showLoading = true) {
+  const version = ++readVersion;
+  if (showLoading) { error.value = ''; loading.value = true; }
+  try {
+    const latest = await storageClient.getAllWords();
+    if (!disposed && version === readVersion && JSON.stringify(latest) !== JSON.stringify(words.value)) words.value = latest;
+  } catch (cause) {
+    if (showLoading && version === readVersion) error.value = cause instanceof Error ? cause.message : 'Could not open your vocabulary.';
+  } finally { if (version === readVersion) loading.value = false; }
 }
 async function mutate(operation: () => Promise<void>, message = '') {
   if (busy.value) return;
   busy.value = true;
+  readVersion++;
   error.value = '';
   success.value = '';
   try {
@@ -73,11 +97,11 @@ async function exportData() {
   <VocabularyPanel
     :words="words" :loading="loading" :busy="busy" :error="error" :success="success"
     :theme="theme.resolved" :theme-preference="theme.preference"
-    @retry="loadWords" @theme-change="changeTheme" @export="exportData"
+    @retry="ACCOUNT_SYNC_ENABLED ? restoreAndRefresh() : loadWords()" @theme-change="changeTheme" @export="exportData"
     @delete="mutate(() => storageClient.deleteWord($event))"
     @reset="mutate(() => storageClient.resetCount($event))"
     @import="mutate(() => storageClient.importData($event), 'Data imported successfully!')"
   >
-    <template v-if="ACCOUNT_SYNC_ENABLED" #account><CloudConnection :data-theme="theme.resolved" @changed="loadWords" /></template>
+    <template v-if="ACCOUNT_SYNC_ENABLED" #account="{ showVocabulary }"><CloudConnection :data-theme="theme.resolved" @changed="loadWords" @view-words="showVocabulary" /></template>
   </VocabularyPanel>
 </template>

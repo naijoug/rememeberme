@@ -5,7 +5,7 @@ import { SERVICE_ORIGIN } from '~/config/backend';
 import type { CloudStatus } from '~/services/cloud-vocabulary';
 let app: App, container: HTMLDivElement;
 const initial = (): CloudStatus => ({ connected: true, origin: 'https://api.example.test', owner: 'account:fixture',
-  displayName: 'synthetic-github', enabled: false, pending: 2, conflicts: 0, localWords: 1, archives: [] });
+  displayName: 'synthetic-github', enabled: false, pending: 2, conflicts: 0, localWords: 1, accountWords: 4, downloading: false, archives: [] });
 const tick = async () => { await Promise.resolve(); await Promise.resolve(); await nextTick(); };
 function button(text: string) {
   return [...container.querySelectorAll('button')].find(button => button.textContent?.includes(text))!;
@@ -26,7 +26,7 @@ it('shows the GitHub username and a preview before confirming only new words', a
   await mount(send);
   expect(send).toHaveBeenCalledExactlyOnceWith({ type: 'CLOUD_STATUS' });
   expect(container.textContent).toContain('@synthetic-github');
-  button('Preview local').click(); await tick(); await tick();
+  button('Add device words to account').click(); await tick(); await tick();
   expect(container.textContent).toContain('2 local words · 1 new · 1 skipped');
   expect(document.activeElement).toBe(container.querySelector('.migration-preview'));
   expect(container.querySelector('script')).toBeNull();
@@ -44,7 +44,7 @@ it('shows the GitHub username and a preview before confirming only new words', a
 it('allows cancelling a preview without copying or enabling sync', async () => {
   const send = vi.fn().mockImplementation(async request => ({ success: true, data: request.type === 'CLOUD_PREVIEW_LOCAL'
     ? { token: 'a'.repeat(64), displayName: 'synthetic', total: 0, copy: 0, skip: 0, items: [] } : initial() }));
-  await mount(send); button('Preview local').click(); await tick(); await tick();
+  await mount(send); button('Add device words to account').click(); await tick(); await tick();
   expect(button('Confirm copy').disabled).toBe(true);
   button('Cancel preview').click(); await tick();
   expect(container.querySelector('.migration-preview')).toBeNull();
@@ -94,7 +94,7 @@ it('renders account and sync metadata as read-only list rows and toggles sync ex
   expect(control.getAttribute('aria-labelledby')).toBe('cloud-sync-label');
   expect(control.getAttribute('aria-checked')).toBe('false');
   expect([...container.querySelectorAll('dl')].map(row => row.textContent)).toEqual(expect.arrayContaining([
-    expect.stringContaining('@synthetic-github'), expect.stringContaining('GitHub account'), expect.stringContaining('2 pending · 0 conflicts'),
+    expect.stringContaining('@synthetic-github'), expect.stringContaining('2 pending · 0 conflicts'),
   ]));
   expect(container.querySelector('dl button')).toBeNull();
   expect(button('Sync now').disabled).toBe(true);
@@ -107,20 +107,24 @@ it('renders account and sync metadata as read-only list rows and toggles sync ex
   expect(control.getAttribute('aria-checked')).toBe('false');
 });
 
-it('keeps sync disabled for local vocabulary without silently switching or copying it', async () => {
+it('offers a retry for an unfinished sign-in without exposing library switching', async () => {
   const send = vi.fn().mockResolvedValue({ success: true, data: { ...initial(), owner: 'anonymous' } });
   await mount(send);
-  const control = container.querySelector<HTMLButtonElement>('[role="switch"]')!;
-  expect(control.disabled).toBe(true);
-  expect(container.textContent).toContain('Open account vocabulary to enable sync.');
-  expect(container.textContent).toContain('Local only');
+  expect(container.textContent).toContain('Finishing sign-in');
   expect(button('Use local vocabulary')).toBeUndefined();
-  expect(button('Sync now')).toBeUndefined();
-  control.click(); await tick();
-  expect(send).toHaveBeenCalledExactlyOnceWith({ type: 'CLOUD_STATUS' });
-  button('Open account vocabulary').click(); await tick();
+  expect(button('Open account vocabulary')).toBeUndefined();
+  button('Retry sync').click(); await tick();
   expect(send).toHaveBeenLastCalledWith({ type: 'CLOUD_OPEN' });
-  expect(send.mock.calls.some(([request]) => ['CLOUD_ENABLE', 'CLOUD_COPY_LOCAL'].includes(request.type))).toBe(false);
+  expect(send.mock.calls.some(([request]) => request.type === 'CLOUD_COPY_LOCAL')).toBe(false);
+});
+
+it('explains that paused sync retains account words and displays downloaded word count', async () => {
+  const send = vi.fn().mockResolvedValue({ success: true, data: initial() });
+  await mount(send);
+  expect(container.textContent).toContain('Your account words stay visible');
+  expect(button('View account words').textContent).toContain('4');
+  expect(container.textContent).toContain('These words were saved before sign-in');
+  expect(button('Use local vocabulary')).toBeUndefined();
 });
 
 it('prevents duplicate toggle requests and restores the confirmed state after failure', async () => {

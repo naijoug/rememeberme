@@ -7,19 +7,21 @@ export async function handleCloudMessage(message: unknown): Promise<BackgroundRe
   try {
     switch (input.type) {
       case 'CLOUD_STATUS': return { success: true, data: await cloudVocabulary.status() };
+      case 'CLOUD_RESTORE': await cloudVocabulary.restoreAccountView(); break;
       case 'CLOUD_CONNECT':
         if (typeof input.origin !== 'string') throw new Error('Enter an API address.');
         await cloudVocabulary.connect(input.origin); break;
       case 'CLOUD_DISCONNECT': await cloudVocabulary.disconnect(); break;
-      case 'CLOUD_OPEN': await cloudVocabulary.openAccount(false); break;
+      case 'CLOUD_OPEN': await cloudVocabulary.activateAccount(); break;
       case 'CLOUD_PREVIEW_LOCAL': return { success: true, data: await cloudVocabulary.previewLocalMigration() };
       case 'CLOUD_COPY_LOCAL':
         if (typeof input.previewToken !== 'string' || !/^[a-f0-9]{64}$/.test(input.previewToken)) throw new Error('Preview the migration before copying.');
         await cloudVocabulary.confirmLocalMigration(input.previewToken); break;
-      case 'CLOUD_USE_LOCAL': await cloudVocabulary.useLocal(); break;
       case 'CLOUD_ENABLE':
         if (typeof input.enabled !== 'boolean') throw new Error('Invalid sync setting.');
-        await cloudVocabulary.setEnabled(input.enabled); break;
+        if (input.enabled && (await cloudVocabulary.status()).owner === 'anonymous') await cloudVocabulary.activateAccount();
+        else await cloudVocabulary.setEnabled(input.enabled);
+        break;
       case 'CLOUD_SYNC': await cloudVocabulary.synchronize(); break;
       case 'CLOUD_RECOVER': await cloudVocabulary.archiveAndReloadCloud(); break;
       case 'CLOUD_EXPORT_ARCHIVE':

@@ -412,3 +412,77 @@ it('rejects stale migration previews after vocabulary edits, account switches or
   await expect(repository.confirmLocalMigration(latest.token)).rejects.toThrow('Account changed');
   expect(api.calls).toHaveLength(0);
 });
+
+it('signs in, selects account words and enables sync without copying anonymous words', async () => {
+  local.values.set('local:words', legacy);
+  const api = fixture();
+  const remote: WireEntry = { id: 'remote-word', word: 'remote', normalizedKey: 'remote', kind: 'word', count: 2,
+    definition, notes: '', createdAtMs: 1, updatedAtMs: 2, version: 1, deleted: false, review: null, reviewVersion: 0, historyOrdering: 'retained' };
+  api.states.set(remote.id, remote); api.expose();
+  api.client.signIn = vi.fn().mockResolvedValue(undefined);
+  const name = 'sign-in-' + crypto.randomUUID();
+  const repository = new CloudVocabulary(new VocabularyDB(name), api.client);
+  await repository.connect(api.connection.origin);
+  expect(api.client.signIn).toHaveBeenCalledWith(api.connection.origin);
+  expect((await repository.getAllWords()).map(word => word.word)).toEqual(['remote']);
+  expect(await repository.status()).toMatchObject({ enabled: true, accountWords: 1, localWords: 1, downloading: false });
+  expect(api.calls).toHaveLength(0);
+  await repository.pause();
+  expect((await repository.getAllWords()).map(word => word.word)).toEqual(['remote']);
+  const restarted = new CloudVocabulary(new VocabularyDB(name), api.client);
+  await restarted.restoreAccountView();
+  expect((await restarted.status()).enabled).toBe(false);
+  expect((await restarted.getAllWords()).map(word => word.word)).toEqual(['remote']);
+  await restarted.useLocal(); expect(JSON.parse(await restarted.exportData())).toEqual(legacy);
+});
+
+it('finishes a previously connected local-only account while preserving the anonymous original', async () => {
+  local.values.set('local:words', legacy);
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('restore-' + crypto.randomUUID()), api.client);
+  await repository.restoreAccountView();
+  expect(await repository.status()).toMatchObject({ enabled: true, localWords: 1, accountWords: 0 });
+  expect(await repository.getAllWords()).toEqual([]);
+  expect(api.calls).toHaveLength(0);
+});
+
+it('keeps automatic sync on during migration preview and uploads only after confirmation', async () => {
+  local.values.set('local:words', legacy);
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('merge-' + crypto.randomUUID()), api.client);
+  await repository.activateAccount();
+  const preview = await repository.previewLocalMigration();
+  expect((await repository.status()).enabled).toBe(true);
+  expect(api.calls).toHaveLength(0);
+  await repository.confirmLocalMigration(preview.token);
+  expect((await repository.status()).enabled).toBe(true);
+  expect((await repository.status()).pending).toBe(0);
+  expect(api.states.size).toBe(1);
+  await expect(repository.confirmLocalMigration(preview.token)).rejects.toThrow('changed');
+  await repository.useLocal(); expect(JSON.parse(await repository.exportData())).toEqual(legacy);
+});
+
+it('retains the selected account and retry intent when initial download fails', async () => {
+  const api = fixture(), original = api.client.request.bind(api.client);
+  let offline = true;
+  api.client.request = async (...args: Parameters<BackendClient['request']>) => {
+    if (offline) throw new TypeError('Synthetic offline');
+    return original(...args);
+  };
+  const repository = new CloudVocabulary(new VocabularyDB('offline-' + crypto.randomUUID()), api.client);
+  await expect(repository.activateAccount()).rejects.toThrow('offline');
+  expect((await repository.status()).owner).not.toBe('anonymous');
+  expect((await repository.status()).enabled).toBe(true);
+  offline = false; await repository.restoreAccountView();
+  expect((await repository.status()).downloading).toBe(false);
+});
+
+it('opens an account needing recovery without enabling or replaying its old queue', async () => {
+  const api = fixture(), repository = new CloudVocabulary(new VocabularyDB('recovery-login-' + crypto.randomUUID()), api.client);
+  await repository.activateAccount();
+  api.restore();
+  await expect(repository.synchronize()).rejects.toThrow('server was restored');
+  await repository.useLocal();
+  await expect(repository.restoreAccountView()).rejects.toThrow('Resolve account conflicts');
+  expect(await repository.status()).toMatchObject({ enabled: false, failure: 'SYNC_EPOCH_CHANGED' });
+  expect((await repository.status()).owner).not.toBe('anonymous');
+  expect(api.calls).toHaveLength(0);
+});

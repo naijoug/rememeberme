@@ -126,10 +126,10 @@ try {
   await a.repository.synchronize();
   assert.equal(bodies[1], first, 'Reopened extension retries exactly the committed request');
   assert.equal((await a.repository.getWord('synthetic')).count, 0.5);
-  await b.repository.openAccount();
+  await b.repository.activateAccount();
+  assert.equal((await b.repository.status()).enabled, true, 'Account activation enables sync without a second choice');
   assert.equal((await b.repository.getWord('synthetic')).history.length, 26);
   assert.deepEqual((await b.repository.getWord('synthetic')).history.map(row => row.timestamp), legacy[0].history.map(row => row.timestamp));
-  await b.repository.setEnabled(true);
   await b.repository.saveWord('synthetic', definition, 'Another synthetic private source', 'https://example.test/private/new', 30);
   await b.repository.synchronize(); await a.repository.synchronize();
   assert.equal((await a.repository.getWord('synthetic')).count, 1.5);
@@ -199,6 +199,19 @@ try {
     assert.equal((await repository.status()).enabled, true);
   }
   assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
+  const automaticWords = [{ ...legacy[0], word: 'automatic-copy-fixture', history: [legacy[0].history[0]] }];
+  a.module.fixtureDisk.set('local:words', automaticWords);
+  const automatic = new a.module.CloudVocabulary(new a.module.VocabularyDB('synthetic-auto-' + randomBytes(8).toString('hex')), a.client);
+  await automatic.activateAccount();
+  const beforePreview = bodies.length;
+  const automaticPreview = await automatic.previewLocalMigration();
+  assert.equal((await automatic.status()).enabled, true);
+  assert.equal(bodies.length, beforePreview, 'Preview preserves automatic sync without publishing local words');
+  await automatic.confirmLocalMigration(automaticPreview.token);
+  assert.equal((await automatic.status()).pending, 0);
+  assert.equal((await runtime.DB.prepare('SELECT count FROM vocabulary_entries WHERE user_id=? AND word=?')
+    .bind('synthetic-user', 'automatic-copy-fixture').first()).count, automaticWords[0].count);
+  console.log('Automatic account activation downloads cloud words; reviewed local copy syncs without a second enable step.');
   const beforeLogout = await a.client.current();
   await runtime.DB.prepare('UPDATE sessions SET access_expires_at=0 WHERE device_id=?').bind(beforeLogout.credentials.deviceId).run();
   assert.equal(await a.client.disconnect(), true);
