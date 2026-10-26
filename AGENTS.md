@@ -34,3 +34,8 @@
 - This checkout supports automatic local Chrome feedback via `npm run local:start` / `local:status` (see `docs/local-feedback.md` in the extension). When an already-running local service is in use, let it rebuild source edits and check for build errors; do not edit generated output, reinstall the extension, or start a second watcher. Do not claim the browser loaded an update solely because the build succeeded.
 - Finish when the requested scope is implemented, relevant checks pass, and affected current docs are updated. Report what changed, what was tested and any unverified behavior; do not claim a browser check from a mocked test.
 - Follow explicit user scope over repository workflow preferences. Use existing authorization for external actions; prepare a reviewable result before asking for missing authorization. Never substitute real vocabulary for test fixtures.
+
+## Documentation and code discrepancies
+
+- When repository documentation conflicts with the existing code, follow the conventions in the code. Explicit changes requested by the user take precedence.
+- In the final response, report every documentation/code discrepancy found during the task individually, including the documentation location, corresponding code location, specific difference, and how it was handled. Report only verified differences; do not claim unchecked areas are consistent.
