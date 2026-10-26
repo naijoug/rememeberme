@@ -18,8 +18,8 @@ it('sends only word inference to the configured model, without Hermes discovery,
   expect(init).toMatchObject({ method: 'POST', redirect: 'error', credentials: 'omit', referrerPolicy: 'no-referrer' });
   expect(init?.headers).toMatchObject({ Authorization: 'Bearer magpie-fixture', 'User-Agent': 'RememberMe/translation' });
   const body = JSON.parse(String(init?.body));
-  expect(Object.keys(body).sort()).toEqual(['max_tokens', 'messages', 'model', 'stream']);
-  expect(body).toMatchObject({ model: options.model, stream: false, max_tokens: 256 });
+  expect(Object.keys(body).sort()).toEqual(['max_tokens', 'messages', 'model', 'reasoning_effort', 'stream']);
+  expect(body).toMatchObject({ model: options.model, stream: false, max_tokens: 512, reasoning_effort: 'low' });
   expect(body.messages[1]).toEqual({ role: 'user', content: 'synthetic' });
 });
 
@@ -79,4 +79,19 @@ it('selects Magpie despite retained Hermes configuration and fails closed for in
     expect(() => new MagpieTranslator({ ...options, baseURL: 'http://untrusted.example/v1' })).toThrow();
     expect(() => new MagpieTranslator({ ...options, baseURL: 'https://user:secret@example.test/v1' })).toThrow();
   } finally { vi.unstubAllGlobals(); }
+});
+
+it('starts MyMemory after the eight-second primary budget instead of exhausting the client deadline', async () => {
+  vi.useFakeTimers();
+  try {
+    const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(() => new Promise(() => {}));
+    const fallback = { translate: vi.fn().mockImplementation(async () => ({ text: '备用释义', source: 'mymemory', target: 'zh-CN' })) };
+    const service = new ServerTranslator(new MagpieTranslator({ ...options, fetch }), fallback);
+    const request = service.translate('synthetic');
+    await vi.advanceTimersByTimeAsync(7_999); expect(fallback.translate).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+    expect((await request).source).toBe('mymemory');
+    expect(fetch.mock.calls[0][1]?.signal?.aborted).toBe(true);
+    expect(fallback.translate).toHaveBeenCalledOnce();
+  } finally { vi.useRealTimers(); }
 });

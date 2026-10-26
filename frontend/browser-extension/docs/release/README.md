@@ -1,5 +1,12 @@
 # Chrome release preparation
 
+## First-lookup update (0.1.3, 2026-10-25)
+
+Current packaging includes bounded automatic translation recovery after an
+initial network failure. The first attempt has five seconds and both attempts
+share nineteen seconds; vocabulary mutations are never retried. Magpie's low
+reasoning and eight-second budget reserve room for MyMemory fallback.
+
 ## Magpie client update (2026-10-24)
 
 The current build is 0.1.2 and accepts Magpie, Hermes and MyMemory translation

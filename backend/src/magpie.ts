@@ -25,7 +25,7 @@ export class MagpieTranslator {
         reject(new ApiError('TRANSLATION_TIMEOUT', 504, true));
         controller.abort();
         void reader?.cancel().catch(() => {});
-      }, this.options.timeoutMs ?? 12_000);
+      }, this.options.timeoutMs ?? 8_000);
     });
     this.active++;
     try {
@@ -34,7 +34,8 @@ export class MagpieTranslator {
           method: 'POST', signal: controller.signal, redirect: 'error', credentials: 'omit', referrerPolicy: 'no-referrer',
           headers: { Authorization: 'Bearer ' + this.options.key, Accept: 'application/json',
             'Content-Type': 'application/json', 'User-Agent': 'RememberMe/translation' },
-          body: JSON.stringify({ model: this.options.model, stream: false, max_tokens: 256,
+          // Leave room for both reasoning and final JSON without long deliberation.
+          body: JSON.stringify({ model: this.options.model, stream: false, max_tokens: 512, reasoning_effort: 'low',
             messages: [
               { role: 'system', content: 'Translate the single English word into concise Simplified Chinese dictionary meanings. Return only JSON {"text":"..."} with no Markdown. Do not use tools, memory, or personal context.' },
               { role: 'user', content: word },

@@ -5,7 +5,16 @@ full synchronous commits and atomic conditional batches. The checked-in D1
 migrations are reused verbatim. Existing migrations are checked by digest; an
 edited applied migration stops startup.
 
-## Current recorded status (2026-10-24)
+## Current recorded status (2026-10-25)
+
+First-lookup recovery is deployed at
+`/opt/rememberme/releases/20261025-first-lookup-8cfccea264ce/runtime`.
+Magpie now uses low reasoning, a 512-token cap and an eight-second primary
+deadline, retaining MyMemory fallback. Installed extension 0.1.3 has one bounded
+automatic network retry. Three actual installed-Chrome first lookups passed.
+See [investigation, validation and rollback](verification/2026-10-25-first-lookup.md).
+
+## Previous recorded status (2026-10-24)
 
 The API now runs `/opt/rememberme/releases/20261024-magpie-84793192d5c7/runtime`
 with direct same-host Magpie translation, model `zhipu/glm-5.3-flash` and

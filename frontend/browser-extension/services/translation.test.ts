@@ -16,6 +16,18 @@ beforeEach(() => { vi.resetAllMocks(); api.values.clear(); vi.stubGlobal('fetch'
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('Chinese translation (mock provider and disposable cache)', () => {
+  it('shares one automatic network recovery for concurrent first lookups and never writes vocabulary', async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError('Failed to fetch')).mockImplementation(async () => new Response(JSON.stringify({
+      translation: { text: '合成', source: 'magpie', target: 'zh-CN' },
+    }), { headers: { 'Content-Type': 'application/json' } }));
+    const service = new TranslationService();
+    const [first, second] = await Promise.all([service.translate('synthetic'), service.translate('SYNTHETIC')]);
+    expect(first).toEqual(second); expect(first.source).toBe('magpie');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalledTimes(1));
+    expect(api.storage.setItem.mock.calls[0][0]).toBe('local:translationCache');
+    expect(api.values.has('local:words')).toBe(false);
+  });
   it('uses the new cache namespace for Magpie and persists the actual source across restarts', async () => {
     api.values.set('local:translationCache', { 'public:v1:synthetic': { text: '旧服务结果', source: 'hermes', timestamp: Date.now() } });
     const request = vi.fn().mockResolvedValue({ translation: { text: '合成', target: 'zh-CN', source: 'magpie' } });

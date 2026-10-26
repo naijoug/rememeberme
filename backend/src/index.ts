@@ -24,12 +24,13 @@ async function lookup(c: Context<AppEnvironment>, translation: boolean) {
   return c.json({ definition: await c.env.DICTIONARY.getDefinition(word) });
 }
 app.use('*', async (c, next) => {
+  const started = Date.now();
   c.set('requestId', crypto.randomUUID());
   c.header('Cache-Control', 'no-store'); c.header('Referrer-Policy', 'no-referrer');
   c.header('X-Content-Type-Options', 'nosniff');
   await next();
   c.header('X-Request-Id', c.get('requestId'));
-  console.info(JSON.stringify({ requestId: c.get('requestId'), status: c.res.status }));
+  console.info(JSON.stringify({ requestId: c.get('requestId'), status: c.res.status, durationMs: Date.now() - started }));
 });
 app.onError((error, c) => {
   const failure = error instanceof ApiError ? error : new ApiError('INTERNAL_ERROR', 500, true);

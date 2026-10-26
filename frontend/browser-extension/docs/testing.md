@@ -6,6 +6,10 @@ semantics, and real loopback HTTP through the backend Magpie adapter with a
 synthetic provider. Older installed clients require the 0.1.2 update before
 consuming Magpie results. A packaged build is not proof of an installed update.
 
+First-lookup recovery tests cover stalled headers/bodies, TLS/network errors, one bounded
+retry, late-response cancellation, 19-second total budget, no retry for 4xx/quota
+or malformed/oversized responses, and same-word coalescing without vocabulary writes.
+
 Run commands from `frontend/browser-extension/` after the setup in [README](../README.md). Automated tests use happy-dom and disposable browser/storage mocks. They have no production access and do not call the live dictionary API.
 
 ## Choose checks for the change

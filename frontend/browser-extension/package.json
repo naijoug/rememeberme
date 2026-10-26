@@ -2,7 +2,7 @@
   "name": "remember-me",
   "description": "Look up English words as you read and keep a local vocabulary history of the words you forget.",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "engines": {
     "node": "^22.22.3"

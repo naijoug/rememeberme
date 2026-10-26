@@ -1,5 +1,15 @@
 # Remember Me browser extension
 
+## First-lookup recovery (0.1.3, 2026-10-25)
+
+A translation with a transient network/502/503/504 failure retries once within
+one 19-second request budget. A stalled first attempt is cancelled after five
+seconds; the retry gets the remaining time. The service/UI deadlines remain
+20/22 seconds. Quota/4xx, malformed data and vocabulary writes are not retried.
+Magpie uses low reasoning with an eight-second primary budget, leaving time for
+the four-second MyMemory fallback. The current local feedback installation
+updates in place; existing data and extension identity are retained.
+
 ## Magpie update (2026-10-24)
 
 Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`

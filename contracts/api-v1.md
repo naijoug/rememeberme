@@ -73,7 +73,7 @@ v3 for discovery; this does not retrofit source support into old clients.
 `TRANSLATION_PROVIDER=magpie` selects server-only Chat Completions at
 `MAGPIE_BASE_URL`, with `MAGPIE_API_KEY` and `MAGPIE_MODEL`. The initial model is
 `zhipu/glm-5.3-flash`. Requests contain a system instruction and one word, no
-tools/session/context/URL, with a 12-second deadline and bounded JSON output.
+tools/session/context/URL, with low reasoning, a 512-token budget, an eight-second deadline and bounded JSON output.
 MyMemory remains the four-second fallback; its source stays `mymemory`.
 Magpie/Hermes successes cache for seven days, fallback successes for one hour.
 `TRANSLATION_PROVIDER=hermes` retains the old isolated adapter for rollback.

@@ -10,8 +10,8 @@ The web administration key is not an API credential. No provider secret is sent
 to clients. See [Magpie's integration contract](https://github.com/yetone/magpie/blob/main/docs/integrating.md).
 
 `MagpieTranslator` makes word-only inference requests, rejects tools/truncated
-or malformed output, caps output at 64 KiB, limits concurrency to two and aborts
-after twelve seconds. `ServerTranslator` retains coalescing, bounded successful
+or malformed output, caps output at 64 KiB, requests low reasoning with 512 output tokens, limits concurrency to two and aborts
+after eight seconds. `ServerTranslator` retains coalescing, bounded successful
 caches and the four-second MyMemory fallback. `MYMEMORY_ENABLED=false` disables
 fallback. `TRANSLATION_PROVIDER=hermes` retains the isolated legacy provider;
 `none` permits MyMemory-only operation. Unknown provider names fail startup.
