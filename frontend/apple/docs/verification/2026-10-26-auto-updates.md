@@ -54,3 +54,12 @@ Installed bootstrap acceptance before publication:
 - Installed executable SHA-256: `3ec5eafb064ab3dd367349317cef9b03bb968cdb9dbbc2da746de4b30267da15`.
 - Final ZIP SHA-256: `106ade1b49986933238a9c17e81d5d59c2805c6ad783c2c12a98cfb86bdcbb35`.
 - Final signed appcast SHA-256: `f752df86fba03cff2d3f057d1e8a2c162bfbba902423a196d5ec6f259465033f`.
+
+
+Public publication after explicit user approval (2026-10-26, America/Los_Angeles):
+
+- Published `macos-v0.2.0` as a public, non-draft, non-prerelease application release: https://github.com/naijoug/rememeberme/releases/tag/macos-v0.2.0
+- Published `macos-stable/appcast.xml` as the signed production feed. The feed-hosting release is marked prerelease only to keep it out of GitHub's latest-app selection; the feed item itself is stable.
+- Public archive (9,859,928 bytes) and feed SHA-256 matched the final signed local artifacts recorded above. The publisher completed successfully after verifying both downloads.
+- A read-only probe with the official Sparkle CLI against `/Users/guojian/Applications/Remember Me.app`, using the feed embedded in that installed app and no URL override, returned `No new update available!` with exit code 4. This is the expected current-version result for installed 0.2.0 (build 2), and confirms the public signed channel is readable by Sparkle.
+- No real vocabulary was uploaded, account session changed, or app reinstall triggered by this production probe. Real download/install and rejection behavior remain covered by the disposable fixture checks above.
