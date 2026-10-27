@@ -120,28 +120,78 @@ struct NativeSettingsView: View {
     let repository: LocalRepository
     var account: AccountVocabularyModel? = nil
     var showsDone = true
+    var updates: AnyView? = nil
     @ObservedObject private var reminders = ReminderSettings.shared
     @Environment(\.dismiss) private var dismiss
     @AppStorage("rememberme.appearance") private var appearance = "system"
+    @State private var selectedTab = 0
     var body: some View {
-        ScrollView { VStack(alignment: .leading, spacing: 20) {
+        #if os(macOS)
+        TabView(selection: $selectedTab) {
+            settingsScroll { accountSettings }.tabItem { Label("Account", systemImage: "person.crop.circle") }.tag(0)
+            settingsScroll { generalSettings }.tabItem { Label("General", systemImage: "gearshape") }.tag(1)
+            settingsScroll { privacySettings }.tabItem { Label("Privacy", systemImage: "hand.raised") }.tag(2)
+            if let updates { settingsScroll { updates }.tabItem { Label("Updates", systemImage: "arrow.down.circle") }.tag(3) }
+        }
+        .frame(width: 560, height: 590)
+        .preferredColorScheme(appearance == "light" ? .light : appearance == "dark" ? .dark : nil)
+        #else
+        settingsScroll {
             HStack { Text("Settings").font(.title2); Spacer(); if showsDone { Button("Done") { dismiss() } } }
-            Picker("Appearance", selection: $appearance) {
-                Text("System").tag("system"); Text("Light").tag("light"); Text("Dark").tag("dark")
-            }
-            Toggle("Remind me on this device", isOn: Binding(get: { reminders.enabled },
-                set: { value in Task { await reminders.setEnabled(value, repository: repository) } })).disabled(reminders.scheduling)
-            DatePicker("Local reminder time", selection: $reminders.time, displayedComponents: .hourAndMinute)
-                .onChange(of: reminders.time) { Task { await reminders.saveTime(repository) } }
-            Text("Enable reminders on your chosen device to avoid duplicate notifications. Reminders use the currently selected vocabulary.").font(.caption).foregroundStyle(.secondary)
-            if let message = reminders.message { Text(verbatim: message).font(.caption) }
-            Divider()
-            AccountConnectionView(model: .shared)
-            if let account { AccountVocabularyView(model: account); AccountReminderView(model: account) }
-            Divider()
-            Text("Vocabulary is saved on this device and uploaded to your chosen account only when you enable sync. WordNet English hits stay local. Connected Chinese lookup sends the word to your backend, Magpie and its configured model provider; without a connection it uses MyMemory. English misses use Free Dictionary API. Dictionary requests exclude saved context and URLs.").font(.callout)
-            Text("Complete backups include contexts and full URLs and may contain sensitive information. Credentials and pending network requests are excluded.").font(.callout)
-        }.padding(24) }.frame(minWidth: 300, idealWidth: 520)
+            accountSettings
+            generalSettings
+            privacySettings
+        }.frame(minWidth: 300, idealWidth: 520)
+        #endif
+    }
+    private func settingsScroll<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        ScrollView { VStack(alignment: .leading, spacing: 20, content: content).frame(maxWidth: .infinity, alignment: .leading).padding(24) }
+    }
+    private var accountSettings: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            if let account { NativeAccountSettingsView(account: account) }
+            else { AccountConnectionView(model: .shared) }
+        }
+    }
+    private var generalSettings: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            GroupBox {
+                Picker("Theme", selection: $appearance) {
+                    Text("System").tag("system"); Text("Light").tag("light"); Text("Dark").tag("dark")
+                }.padding(8)
+            } label: { Label("Appearance", systemImage: "circle.lefthalf.filled") }
+            GroupBox {
+                VStack(alignment: .leading, spacing: 12) {
+                    Toggle("Remind me on this device", isOn: Binding(get: { reminders.enabled },
+                        set: { value in Task { await reminders.setEnabled(value, repository: repository) } })).disabled(reminders.scheduling)
+                    DatePicker("Local reminder time", selection: $reminders.time, displayedComponents: .hourAndMinute)
+                        .onChange(of: reminders.time) { Task { await reminders.saveTime(repository) } }
+                    Text("Reminders use the vocabulary currently shown in the app.").font(.caption).foregroundStyle(.secondary)
+                    if let message = reminders.message { Text(verbatim: message).font(.caption) }
+                    if let account { AccountReminderView(model: account) }
+                }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
+            } label: { Label("Reminders", systemImage: "bell") }
+        }
+    }
+    private var privacySettings: some View {
+        GroupBox {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Signing in enables word synchronization. Words saved before sign-in need your confirmation before they are added to your account.")
+                Text("Saved sentences and source URLs are excluded from sync by default. Optional sharing controls are under Account → Advanced: source privacy.")
+                Text("WordNet English hits stay local. Online lookup sends the selected word to dictionary or translation providers, without saved sentences or URLs.")
+                Text("Complete backups include saved sentences and full URLs. Credentials and pending requests are excluded.")
+            }.font(.callout).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading).padding(8)
+        } label: { Label("Your data", systemImage: "hand.raised") }
+    }
+}
+
+private struct NativeAccountSettingsView: View {
+    @ObservedObject var account: AccountVocabularyModel
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            AccountConnectionView(model: account.connection, accountName: account.accountName, accountBusy: account.busy)
+            AccountVocabularyView(model: account)
+        }
     }
 }
 
@@ -169,13 +219,14 @@ struct AccountReminderView: View {
 /// Uses the same repository/account pool as all vocabulary windows.
 public struct RememberMeSettingsView: View {
     @StateObject private var model = VocabularyModel()
-    public init() {}
+    private let updates: AnyView?
+    public init(updates: AnyView? = nil) { self.updates = updates }
     public var body: some View {
         Group {
             if let repository = model.repository {
-                NativeSettingsView(repository: repository, account: model.account, showsDone: false)
+                NativeSettingsView(repository: repository, account: model.account, showsDone: false, updates: updates)
             } else if let error = model.error { Text(verbatim: error).padding() }
             else { ProgressView("Opening settings…") }
-        }.frame(minWidth: 440, idealWidth: 520, minHeight: 450)
+        }
     }
 }

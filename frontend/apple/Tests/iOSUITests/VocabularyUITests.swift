@@ -7,12 +7,10 @@ final class VocabularyUITests: XCTestCase {
         app.launch()
         XCTAssertTrue(app.buttons["Options"].waitForExistence(timeout: 15))
         app.buttons["Options"].tap(); app.buttons["Settings"].tap()
-        XCTAssertTrue(app.staticTexts["Cloud account"].waitForExistence(timeout: 5))
-        app.swipeUp()
-        XCTAssertTrue(app.staticTexts["Vocabulary and synchronization"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Anonymous vocabulary"].exists)
+        XCTAssertTrue(app.buttons["Sign in with GitHub"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.textFields["HTTPS API address"].exists)
         XCTAssertFalse(app.buttons["Open account vocabulary"].exists)
-        XCTAssertFalse(app.switches["Enable cloud sync"].exists)
+        XCTAssertFalse(app.switches["Cloud sync"].exists)
         app.terminate()
     }
     @MainActor func testInterruptedImportResumesAfterRelaunchWithoutAddingCountsTwice() {

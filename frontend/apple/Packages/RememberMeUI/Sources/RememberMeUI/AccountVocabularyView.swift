@@ -10,57 +10,81 @@ struct AccountVocabularyView: View {
     @State private var backfillingSources = false
     init(model: AccountVocabularyModel) { self.model = model; connection = model.connection }
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Vocabulary and synchronization").font(.headline)
-            Text(model.isAnonymous ? "Anonymous vocabulary" : "Account vocabulary").font(.subheadline)
-            if !model.isAnonymous { Text(verbatim: model.accountName).font(.caption) }
-            Text(verbatim: model.status).font(.caption).foregroundStyle(.secondary)
-            if connection.identity != nil {
-                Button("Open account vocabulary") { model.openCloudVocabulary() }.disabled(model.busy)
-                Button("Review anonymous vocabulary for this account…") { model.prepareOwnership() }.disabled(model.busy)
-            }
-            if !model.isAnonymous {
-                Button("Use anonymous vocabulary") { model.useAnonymousVocabulary() }.disabled(model.busy)
-                Toggle("Enable cloud sync", isOn: Binding(get: { model.syncEnabled }, set: { model.setSyncEnabled($0) }))
-                    .disabled(model.busy || connection.identity == nil || model.epochConflict)
-                Button("Synchronize now") { model.synchronize() }.disabled(model.busy || !model.syncEnabled)
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Source privacy").font(.headline)
-                    Toggle("Sync encounter contexts", isOn: Binding(get: { model.sourcePrivacy.context }, set: {
-                        model.setSourcePrivacy(SyncPrivacy(context: $0, urls: model.sourcePrivacy.urls))
-                    })).accessibilityIdentifier("sync-source-context")
-                    Toggle("Sync source URLs", isOn: Binding(get: { model.sourcePrivacy.urls }, set: {
-                        model.setSourcePrivacy(SyncPrivacy(context: model.sourcePrivacy.context, urls: $0))
-                    })).accessibilityIdentifier("sync-source-urls")
-                    Text("Sources may contain private webpage text and addresses. Preferences apply to this account; this device also requires your consent. Turning a switch off retains uploaded sources. Changes pause sync.").font(.caption)
-                    Button("Backfill historical sources…") { backfillingSources = true }
-                        .disabled(!model.sourcePrivacy.context && !model.sourcePrivacy.urls || model.sourceRemovalPending)
-                    Button(model.sourceRemovalPending ? "Retry uploaded source removal…" : "Clear uploaded contexts and URLs…", role: .destructive) { clearingSources = true }
-                    if model.sourceRemovalPending { Text("Removal is awaiting confirmation. Sync stays paused; retry completes the same request.").font(.caption) }
-                }.disabled(model.busy || connection.identity == nil || model.epochConflict || !model.sourceControlsAvailable)
-                if model.epochConflict {
-                    Text("Your saved vocabulary and pending changes are retained. Keep sync paused until the restored cloud data has been reconciled.").font(.caption)
-                    Button("Review restored cloud vocabulary…") { model.prepareEpochRecovery() }.disabled(model.busy || connection.identity == nil)
-                }
-                ForEach(model.conflicts) { conflict in
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(verbatim: model.conflictCopies[conflict.id]?.word ?? conflict.entryId).font(.headline)
-                        Text("A saved local change needs review.").font(.caption)
-                        if let local = model.conflictCopies[conflict.id] {
-                            Text("Local count: \(local.count.map { $0.formatted() } ?? "Not recorded")").font(.caption)
+        VStack(alignment: .leading, spacing: 16) {
+            if connection.identity != nil || !model.isAnonymous {
+                GroupBox {
+                    VStack(alignment: .leading, spacing: 12) {
+                        if model.isAnonymous {
+                            Text("Opening your account words…").foregroundStyle(.secondary)
+                            Button("Retry sync") { model.activateAccount() }.disabled(model.busy)
+                        } else {
+                            LabeledContent("Account words", value: model.accountWordCount.formatted())
+                            Toggle("Cloud sync", isOn: Binding(get: { model.syncEnabled }, set: { model.setSyncEnabled($0) }))
+                                .toggleStyle(.switch)
+                                .disabled(model.busy || connection.identity == nil || model.epochConflict || model.sourceRemovalPending || !model.conflicts.isEmpty)
+                            Text(model.syncEnabled ? "New words sync automatically across your devices." : "Paused. Your account words stay available on this device.")
+                                .font(.caption).foregroundStyle(.secondary)
+                            LabeledContent("Status") { Text(verbatim: model.status).multilineTextAlignment(.trailing).foregroundStyle(.secondary) }
+                            if model.pendingCount > 0 { LabeledContent("Pending changes", value: model.pendingCount.formatted()) }
+                            HStack {
+                                Button("Sync now") { model.synchronize() }.disabled(model.busy || !model.syncEnabled)
+                                if (model.error != nil || model.downloadIncomplete) && !model.syncEnabled && !model.epochConflict && !model.sourceRemovalPending {
+                                    Button("Retry connection") { model.activateAccount() }.disabled(model.busy)
+                                }
+                            }
                         }
-                        if let cloud = conflict.remote {
-                            Text(cloud.deleted ? "This cloud word was deleted." : "Cloud count: \(cloud.count.map { $0.formatted() } ?? "Not recorded")").font(.caption)
-                            Button("Use cloud values…") { resolving = conflict; separateCopy = false }.disabled(model.busy)
-                        }
-                        Button("Create a separate word from the local copy…") { resolving = conflict; separateCopy = true }.disabled(model.busy)
-                    }.padding(.vertical, 6)
+                    }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
+                } label: { Label("Synchronization", systemImage: "arrow.triangle.2.circlepath") }
+                if model.deviceWordCount > 0 {
+                    GroupBox {
+                        VStack(alignment: .leading, spacing: 10) {
+                            LabeledContent("Words on this device", value: model.deviceWordCount.formatted())
+                            Button("Add device words to account…") { model.prepareOwnership() }.disabled(model.busy)
+                            Text("Review words saved before sign-in and add them to your account. The originals stay on this device.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
+                    } label: { Label("Before you signed in", systemImage: "internaldrive") }
+                }
+                if !model.isAnonymous {
+                    DisclosureGroup("Advanced: source privacy") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Toggle("Sync encounter contexts", isOn: Binding(get: { model.sourcePrivacy.context }, set: {
+                                model.setSourcePrivacy(SyncPrivacy(context: $0, urls: model.sourcePrivacy.urls))
+                            })).accessibilityIdentifier("sync-source-context")
+                            Toggle("Sync source URLs", isOn: Binding(get: { model.sourcePrivacy.urls }, set: {
+                                model.setSourcePrivacy(SyncPrivacy(context: model.sourcePrivacy.context, urls: $0))
+                            })).accessibilityIdentifier("sync-source-urls")
+                            Text("Sources may contain private webpage text and addresses. Preferences apply to this account; this device also requires your consent. Turning a switch off retains uploaded sources. Changes pause sync.").font(.caption)
+                            Button("Backfill historical sources…") { backfillingSources = true }
+                                .disabled(!model.sourcePrivacy.context && !model.sourcePrivacy.urls || model.sourceRemovalPending)
+                            Button(model.sourceRemovalPending ? "Retry uploaded source removal…" : "Clear uploaded contexts and URLs…", role: .destructive) { clearingSources = true }
+                            if model.sourceRemovalPending { Text("Removal is awaiting confirmation. Sync stays paused; retry completes the same request.").font(.caption) }
+                        }.disabled(model.busy || connection.identity == nil || model.epochConflict || !model.sourceControlsAvailable)
+                    }
+                    if model.epochConflict {
+                        Text("Your saved vocabulary and pending changes are retained. Keep sync paused until the restored cloud data has been reconciled.").font(.caption)
+                        Button("Review restored cloud vocabulary…") { model.prepareEpochRecovery() }.disabled(model.busy || connection.identity == nil)
+                    }
+                    ForEach(model.conflicts) { conflict in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(verbatim: model.conflictCopies[conflict.id]?.word ?? conflict.entryId).font(.headline)
+                            Text("A saved local change needs review.").font(.caption)
+                            if let local = model.conflictCopies[conflict.id] {
+                                Text("Local count: \(local.count.map { $0.formatted() } ?? "Not recorded")").font(.caption)
+                            }
+                            if let cloud = conflict.remote {
+                                Text(cloud.deleted ? "This cloud word was deleted." : "Cloud count: \(cloud.count.map { $0.formatted() } ?? "Not recorded")").font(.caption)
+                                Button("Use cloud values…") { resolving = conflict; separateCopy = false }.disabled(model.busy)
+                            }
+                            Button("Create a separate word from the local copy…") { resolving = conflict; separateCopy = true }.disabled(model.busy)
+                        }.padding(.vertical, 6)
+                    }
                 }
             }
-            if model.busy { HStack { ProgressView(); Button("Cancel cloud action", role: .cancel) { model.cancel() } } }
+            if model.busy { HStack { ProgressView().controlSize(.small); Text("Updating account…").font(.caption); Button("Cancel", role: .cancel) { model.cancel() } } }
             if let error = model.error { Text(verbatim: error).foregroundStyle(.red).font(.caption) }
-            Text("Opening an account does not upload anonymous vocabulary. Contexts and URLs are excluded from cloud requests by default. The anonymous copy remains available after confirmed migration.").font(.caption).foregroundStyle(.secondary)
         }
+        .task { await model.refreshDeviceWordCount() }
         .sheet(isPresented: Binding(get: { model.preview != nil }, set: { if !$0 { model.dismissPreview() } })) {
             OwnershipPreviewView(model: model)
         }
@@ -137,11 +161,10 @@ struct OwnershipPreviewView: View {
     @ObservedObject var model: AccountVocabularyModel
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Confirm vocabulary ownership").font(.title2)
+            Text("Add device words to account").font(.title2)
             Text(verbatim: model.accountName).font(.headline)
-            Text(verbatim: model.connection.serverAddress).font(.caption).foregroundStyle(.secondary)
             if let preview = model.preview {
-                Text("\(preview.plan.entries.count) selected changes · The anonymous copy stays on this device.")
+                Text("\(preview.plan.entries.count) selected changes · The original device words are kept.")
                 List(preview.items) { item in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(verbatim: item.word).font(.headline)
@@ -149,7 +172,7 @@ struct OwnershipPreviewView: View {
                         if let reason = item.reason { Text(verbatim: reason).font(.caption).foregroundStyle(.secondary) }
                         Picker("Ownership choice", selection: Binding(get: { model.choices[item.id]?.action ?? item.selection.action },
                             set: { action in model.choices[item.id] = OwnershipSelection(action, targetId: model.choices[item.id]?.targetId ?? item.candidates.first(where: { !$0.deleted })?.id) })) {
-                            Text("Keep anonymous").tag(OwnershipAction.keepAnonymous)
+                            Text("Keep on this device").tag(OwnershipAction.keepAnonymous)
                             Text(item.sharedBaselineAvailable ? "Migrate original baseline and later changes" : "Copy current local snapshot").tag(OwnershipAction.migrate)
                             if item.candidates.contains(where: { !$0.deleted }) {
                                 Text("Associate history; keep cloud count and fields").tag(OwnershipAction.associate)
@@ -168,11 +191,11 @@ struct OwnershipPreviewView: View {
                     }.padding(.vertical, 6)
                 }.frame(minHeight: 200)
                 ForEach(preview.plan.conflicts) { Text(verbatim: $0.reason).font(.caption).foregroundStyle(.red) }
-                Button("Apply ownership choices") { model.updateOwnershipPreview() }.disabled(model.busy)
-                Text("Shared migration baselines apply once. Association does not add a count. Field replacement uses current cloud versions. Separate words can intentionally copy existing information.").font(.caption)
+                Button("Update preview") { model.updateOwnershipPreview() }.disabled(model.busy)
+                Text("Sync pauses while you review. Cancel restores your previous sync setting. Shared migration baselines apply once. Association does not add a count. Field replacement uses current cloud versions. Separate words can intentionally copy existing information.").font(.caption)
                 HStack {
                     Button(model.busy ? "Cancel action" : "Cancel", role: .cancel) { if model.busy { model.cancel() } else { model.dismissPreview() } }
-                    Button("Confirm selected changes and enable sync") { model.confirmOwnership() }
+                    Button("Add selected words and sync") { model.confirmOwnership() }
                         .disabled(model.busy || preview.plan.entries.isEmpty || !preview.plan.conflicts.isEmpty || !model.choices.isEmpty && preview.items.contains { model.choices[$0.id] != nil && model.choices[$0.id] != $0.selection })
                 }
                 if model.busy { ProgressView(model.status) }

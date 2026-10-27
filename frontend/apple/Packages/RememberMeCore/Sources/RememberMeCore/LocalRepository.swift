@@ -83,6 +83,16 @@ public actor LocalRepository {
         }
     }
 
+    public func entryCount() throws -> Int {
+        let owner = owner
+        return try context.performAndWait {
+            let generation = Self.generation(try Self.partition(context, owner))
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Entry")
+            request.predicate = NSPredicate(format: "owner == %@ AND generation == %@ AND deleted == NO", owner, generation)
+            return try context.count(for: request)
+        }
+    }
+
     public func entries(search: String = "", sort: EntrySort = .count, limit: Int = 100, offset: Int = 0) throws -> [VocabularyEntry] {
         let owner = owner
         return try context.performAndWait {

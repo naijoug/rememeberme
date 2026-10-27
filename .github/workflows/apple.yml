@@ -18,6 +18,8 @@ jobs:
           node-version-file: frontend/browser-extension/.nvmrc
       - name: Shared TypeScript contracts
         run: node --experimental-strip-types contracts/reference.ts
+      - name: macOS update release policy
+        run: python3 frontend/apple/scripts/test-macos-update.py
       - name: Shared packaged dictionary integrity
         run: python3 frontend/apple/scripts/verify-dictionary-assets.py
       - name: Swift disk and domain tests

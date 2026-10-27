@@ -73,3 +73,12 @@ private actor AccountTransport: APITransport {
     #expect(try vault.load() == nil); #expect(await transport.count() == 0)
     #expect(model.status == "Sign-in cancelled · Local vocabulary unchanged")
 }
+
+@Test @MainActor func freshAccountSettingsUsesTheBuiltInGitHubServiceWithoutAnAddressInput() {
+    let suite = "rememberme-account-default-" + UUID().uuidString
+    let defaults = UserDefaults(suiteName: suite)!; defer { defaults.removePersistentDomain(forName: suite) }
+    let model = AccountConnectionModel(browser: AccountBrowser(), defaults: defaults, permitsTestNetworking: true)
+    #expect(model.serverAddress == "https://rememberme.couplelabs.cn")
+    #expect(model.identity == nil)
+    #expect(defaults.persistentDomain(forName: suite)?.isEmpty != false)
+}

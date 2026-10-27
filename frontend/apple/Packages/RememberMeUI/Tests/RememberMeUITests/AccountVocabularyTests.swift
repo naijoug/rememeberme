@@ -59,6 +59,12 @@ private actor VocabularyAPI: SyncAPI {
         if loseRemovalReply { throw URLError(.networkConnectionLost) }
         return request.sourceRevision + 1
     }
+    func seedCloudWord() {
+        state = .object(["id": .string("cloud-word"), "word": .string("cloudword"), "normalizedKey": .string("cloudword"), "kind": .string("word"),
+            "count": .number(2), "definition": .object(["word": .string("cloudword"), "phonetics": .array([]), "meanings": .array([])]),
+            "notes": .string(""), "createdAtMs": .number(1), "updatedAtMs": .number(1), "version": .number(1),
+            "reviewVersion": .number(0), "review": .null, "deleted": .bool(false), "historyOrdering": .string("retained")])
+    }
     func mutateCloud() {
         guard var fields = state?.fields else { return }
         fields["version"] = .number((fields["version"]?.number ?? 0) + 1); fields["count"] = .number(9); state = .object(fields)
@@ -103,15 +109,15 @@ private actor SilentLookup: LookupTransport {
 @MainActor private enum VocabularyFixtures {
     static var stores: [String: [String: LocalRepository]] = [:]
 }
-@MainActor private func vocabularySetup() async throws -> (URL, UserDefaults, LocalRepository, AccountConnectionModel, AccountVocabularyModel, VocabularyAPI) {
+@MainActor private func vocabularySetup(signedIn: Bool = true) async throws -> (URL, UserDefaults, LocalRepository, AccountConnectionModel, AccountVocabularyModel, VocabularyAPI) {
     let url = FileManager.default.temporaryDirectory.appendingPathComponent("rememberme-account-vocabulary-\(UUID().uuidString)/store.sqlite")
     let defaults = UserDefaults(suiteName: url.deletingLastPathComponent().lastPathComponent)!
     let vault = VocabularyVault(), transport = VocabularyAuthTransport()
     let connection = AccountConnectionModel(browser: VocabularyBrowser(), defaults: defaults, permitsTestNetworking: true) { origin in
         NativeSession(origin: origin, vault: vault, transport: transport)
     }
-    connection.serverAddress = testOrigin; connection.signIn()
-    while connection.busy { await Task.yield() }
+    connection.serverAddress = testOrigin
+    if signedIn { connection.signIn(); while connection.busy { await Task.yield() } }
     let anonymous = try LocalRepository(url: url), api = VocabularyAPI()
     VocabularyFixtures.stores[url.path] = ["anonymous": anonymous]
     let model = AccountVocabularyModel(url: url, anonymous: anonymous, connection: connection, defaults: defaults,
@@ -149,8 +155,7 @@ private actor SilentLookup: LookupTransport {
     #expect(await api.submitted().isEmpty)
     model.confirmOwnership(); while model.busy { await Task.yield() }
     #expect(model.error == nil); #expect(!model.isAnonymous); #expect(model.syncEnabled)
-    #expect(model.pendingCount == 1); #expect(await api.submitted().isEmpty)
-    model.synchronize(); while model.busy { await Task.yield() }
+    #expect(model.pendingCount == 0); #expect(await api.submitted().count == 1)
     #expect(model.error == nil); #expect(model.pendingCount == 0)
     #expect(await api.submitted().count == 1)
     #expect(try await anonymous.entry("local")?.count == 0.5)
@@ -339,5 +344,77 @@ private actor SilentLookup: LookupTransport {
     #expect(model.reminderSelection == .init(deviceId: "other-device", revision: 2))
     await model.refreshReminderSelection()
     #expect(model.reminderSelection?.deviceId == "other-device")
+    try await cleanupVocabulary(url, defaults, model)
+}
+
+
+@Test @MainActor func signingInAutomaticallyShowsAndSyncsAccountWordsWithoutUploadingDeviceWords() async throws {
+    let (url, defaults, anonymous, connection, model, api) = try await vocabularySetup(signedIn: false)
+    try await anonymous.create(VocabularyEntry(id: "device-word", word: "privateword", count: 3, timestamp: 1))
+    await api.seedCloudWord()
+    let list = VocabularyModel(repository: anonymous, lookup: LookupService(dictionaryDirectory: nil, transport: SilentLookup()))
+    list.attach(model)
+    connection.signIn()
+    while connection.busy || model.isAnonymous || model.busy { await Task.yield() }
+    while list.activeOwner != model.activeOwner { await Task.yield() }
+    await list.reload() // The root view reloads on repository change notifications.
+    #expect(list.entries.first?.word == "cloudword")
+    #expect(model.error == nil); #expect(model.syncEnabled); #expect(model.accountWordCount == 1); #expect(model.deviceWordCount == 1)
+    #expect(await api.submitted().isEmpty)
+    #expect(try await anonymous.entry("device-word")?.count == 3)
+    #expect(try await model.repository.entry("device-word") == nil)
+    connection.disconnect()
+    while connection.busy || !model.isAnonymous || model.busy { await Task.yield() }
+    #expect(try await model.repository.entry("device-word")?.count == 3)
+    try await cleanupVocabulary(url, defaults, model)
+}
+
+@Test @MainActor func restoringAnAccountKeepsAnExplicitSyncPauseAndDownloadedWords() async throws {
+    let (url, defaults, anonymous, connection, model, api) = try await vocabularySetup()
+    await api.seedCloudWord()
+    model.activateAccount(); while model.busy { await Task.yield() }
+    model.setSyncEnabled(false); while model.busy { await Task.yield() }
+    let account = model.repository
+    let reopened = AccountVocabularyModel(url: url, anonymous: anonymous, connection: connection, defaults: defaults,
+        opener: { _, _ in account }, apiFactory: { _ in api })
+    await reopened.restoreSelection(); while reopened.busy { await Task.yield() }
+    #expect(!reopened.isAnonymous); #expect(!reopened.syncEnabled); #expect(reopened.accountWordCount == 1)
+    #expect(try await reopened.repository.entry("cloud-word")?.word == "cloudword")
+    #expect(await api.submitted().isEmpty)
+    try await cleanupVocabulary(url, defaults, model)
+}
+
+@Test @MainActor func cancellingDeviceWordPreviewRestoresAutomaticSyncWithoutCopying() async throws {
+    let (url, defaults, anonymous, _, model, api) = try await vocabularySetup()
+    try await anonymous.create(VocabularyEntry(id: "device-word", word: "privateword", count: 3, timestamp: 1))
+    model.activateAccount(); while model.busy { await Task.yield() }
+    model.prepareOwnership(); while model.busy { await Task.yield() }
+    #expect(model.preview != nil); #expect(!model.syncEnabled); #expect(await api.submitted().isEmpty)
+    model.dismissPreview(); while model.busy { await Task.yield() }
+    #expect(model.preview == nil); #expect(model.syncEnabled)
+    #expect(try await model.repository.entryCount() == 0); #expect(try await anonymous.entryCount() == 1)
+    #expect(await api.submitted().isEmpty)
+    try await cleanupVocabulary(url, defaults, model)
+}
+
+@Test @MainActor func failedFirstAccountDownloadKeepsTheAccountSelectedForRetry() async throws {
+    let (url, defaults, _, _, model, api) = try await vocabularySetup()
+    await api.seedCloudWord(); await api.setOffline(true)
+    model.activateAccount(); while model.busy { await Task.yield() }
+    #expect(!model.isAnonymous); #expect(model.error != nil); #expect(!model.syncEnabled)
+    await api.setOffline(false)
+    model.activateAccount(); while model.busy { await Task.yield() }
+    #expect(model.error == nil); #expect(model.syncEnabled); #expect(model.accountWordCount == 1)
+    #expect(await api.submitted().isEmpty)
+    try await cleanupVocabulary(url, defaults, model)
+}
+
+@Test @MainActor func automaticAccountActivationDoesNotResumeAnEpochRecoveryPause() async throws {
+    let (url, defaults, _, _, model, api) = try await vocabularySetup()
+    model.activateAccount(); while model.busy { await Task.yield() }
+    await api.setEpoch("restored-epoch")
+    model.activateAccount(); while model.busy { await Task.yield() }
+    #expect(model.epochConflict); #expect(!model.syncEnabled); #expect(model.error != nil)
+    #expect(await api.submitted().isEmpty)
     try await cleanupVocabulary(url, defaults, model)
 }

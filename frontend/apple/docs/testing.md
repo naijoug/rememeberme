@@ -47,7 +47,7 @@ Learning-model tests additionally cover reveal-before-answer, committed-only ses
 
 The [2026-10-14 word learning checkpoint](verification/2026-10-14-word-learning.md) records the 24 passing presentation tests, both app builds, one passing iPad Simulator learning regression and actual Mac learning/keyboard checks with an isolated synthetic vocabulary.
 
-Account presentation tests inject a synthetic browser/session/SyncAPI and isolated preferences. They check read-only account opening, explicit ownership confirmation before queueing/sending, repeated-copy defaults, switching two window models, old-scope editor rejection, logout cancellation and required-service capability rejection. Injected repository-change callbacks avoid accessing UserNotifications from a SwiftPM process. Ownership disk tests cover frozen original baselines/intents, count-preserving association, explicit separate IDs, tombstones, publication save failure/stale source and interrupted candidate recovery. These cases are listed in [account ownership evidence](verification/2026-10-09-account-ownership.md).
+Account presentation tests inject a synthetic browser/session/SyncAPI and isolated preferences. They check automatic sign-in activation/download, preserved pause on restart, offline retry, recovery fencing, cancelled device-word preview restoring sync, and explicit ownership confirmation before queueing/sending, repeated-copy defaults, switching two window models, old-scope editor rejection, logout cancellation and required-service capability rejection. Injected repository-change callbacks avoid accessing UserNotifications from a SwiftPM process. Ownership disk tests cover frozen original baselines/intents, count-preserving association, explicit separate IDs, tombstones, publication save failure/stale source and interrupted candidate recovery. These cases are listed in [account ownership evidence](verification/2026-10-09-account-ownership.md).
 
 For real native HTTP integration, first build the standalone probe and the backend's Node bundle. From `backend/`, run `npm run test:native -- /absolute/path/to/RememberMeProbe`. It starts only random loopback listeners, applies migrations to disposable SQLite, seeds synthetic fixture credentials directly through the local test binding and runs separate Swift processes with URLSession. The script cleans its files/runtime and blocks provider outbound requests; it has no production fixture endpoint. The explicit test command uses a filesystem fixture vault instead of user Keychain. See [native HTTP evidence](verification/2026-10-09-native-http.md) for refresh/dedup/committed-loss/history/conflict/epoch scope and exact commands. Snapshot-loader tests additionally reject changed boundaries/epochs/positions and verify cancellation. Local HTTP success does not establish hosted OAuth or physical-device acceptance.
 
@@ -129,3 +129,25 @@ The source-choice tests exercise count-preserving history association, distinct 
 `ForegroundSyncSchedulerTests` inject network changes and sleep gates to verify bounded retries, cancellation on background/disable and a fresh flight after network recovery. No machine network settings are changed. Existing core tests verify durable wire bytes/IDs/backoff across restart. Reminder tests verify authenticated-device selection, compare-and-set handoff, stale reclaim/release rejection, independent accounts and revoked-session rejection. Presentation tests reconcile committed-but-lost replies and another device's newer selection. The native HTTP harness now runs claim/handoff/fresh-process read/release through Swift and the real Node/SQLite API.
 
 Use `npm test` in `backend/` for the API/gateway Vitest suite, including the lookup bridge tests that need local loopback permission. `scripts/cloudflare.test.mjs` uses Node's test runner (`npm run test:cloudflare`) and is excluded from Vitest discovery. Keep runner/environment failures distinct from API assertions. See [gap closure evidence](verification/2026-10-16-gap-closure.md) for commands, counts, failures and device limitations.
+
+
+## macOS account settings update (2026-10-26)
+
+See [the settings verification record](verification/2026-10-26-account-settings.md).
+Account settings now starts with GitHub login using the built-in service, and
+successful login activates account vocabulary and sync without a second selection.
+Presentation tests use synthetic sessions/stores; they do not open hosted OAuth.
+The shared iOS settings assertions now expect Sign in with GitHub without an API
+address or anonymous-vocabulary controls. Building iOS is not executing those UI tests.
+
+
+## macOS updater
+
+The Mac target pins Sparkle through Xcode; shared SwiftPM tests stay independent
+of that dependency. The updater is disabled for disposable UI-test stores.
+Run the real signed-update fixture in `scripts/verify-macos-updater.py` as
+documented in [automatic updates](automatic-updates.md). It tests discovery,
+download/install, current-version handling, unavailable feeds and signature
+rejection without touching an installed app or real vocabulary. macOS universal
+release builds and iOS compatibility builds are separate checks. See the
+[executed record](verification/2026-10-26-auto-updates.md).

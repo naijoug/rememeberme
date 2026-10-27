@@ -2,6 +2,9 @@ name: RememberMe
 options:
   minimumXcodeGenVersion: 2.44.0
 packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    exactVersion: 2.10.1
   RememberMeCore:
     path: Packages/RememberMeCore
   RememberMeUI:
@@ -27,9 +30,13 @@ targets:
         buildPhase: resources
     dependencies:
       - package: RememberMeUI
+      - package: Sparkle
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rememberme.app.mac
+        MARKETING_VERSION: 0.2.0
+        CURRENT_PROJECT_VERSION: 2
+        CODE_SIGN_ENTITLEMENTS: Configuration/Mac.entitlements
         PRODUCT_NAME: RememberMe
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Configuration/Mac-Info.plist

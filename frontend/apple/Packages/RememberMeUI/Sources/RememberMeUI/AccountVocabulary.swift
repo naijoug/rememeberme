@@ -19,11 +19,14 @@ import RememberMeCore
     @Published private(set) var repository: LocalRepository
     @Published private(set) var busy = false
     @Published var error: String?
-    @Published var status = "Anonymous vocabulary · Saved on this device"
+    @Published var status = "Device vocabulary · Saved on this device"
     @Published private(set) var preview: OwnershipPreview?
     @Published private(set) var recoveryPreview: EpochRecoveryPreview?
     @Published var recoveryChoices: [String: EpochRecoveryChoice] = [:]
     @Published var choices: [String: OwnershipSelection] = [:]
+    @Published private(set) var downloadIncomplete = false
+    @Published private(set) var accountWordCount = 0
+    @Published private(set) var deviceWordCount = 0
     @Published private(set) var pendingCount = 0
     @Published private(set) var conflicts: [SyncConflict] = []
     @Published private(set) var conflictCopies: [String: VocabularyEntry] = [:]
@@ -68,6 +71,7 @@ import RememberMeCore
         if foregroundScenes.isEmpty { cancel() }
     }
     private var recoverySnapshot: ServerSnapshot?
+    private var resumeSyncAfterPreview = false
     init(url: URL, anonymous: LocalRepository, connection: AccountConnectionModel = .shared, defaults: UserDefaults = .standard,
          opener: @escaping @MainActor (URL, String) async throws -> LocalRepository = { try await RepositoryPool.open($0, owner: $1) },
          apiFactory: @escaping @MainActor (NativeSession) -> any SyncAPI = { NativeSyncAPI(client: AuthenticatedAPIClient(session: $0)) }) {
@@ -86,11 +90,15 @@ import RememberMeCore
         restoring = true; defer { restoring = false }
         await connection.restore()
         lastIdentity = connection.identity
-        guard let owner = defaults.string(forKey: preferenceKey), owner.hasPrefix("account:") else { return }
+        await refreshDeviceWordCount()
+        guard let owner = defaults.string(forKey: preferenceKey), owner.hasPrefix("account:") else {
+            if connection.identity != nil { activateAccount() }
+            return
+        }
         do {
             let saved = try await opener(url, owner)
             guard let configuration = try await saved.syncConfiguration(), SyncConfiguration.owner(for: configuration.identity) == owner else { return }
-            if let identity = connection.identity, SyncConfiguration.owner(for: identity) != owner { return }
+            if let identity = connection.identity, SyncConfiguration.owner(for: identity) != owner { activateAccount(); return }
             repository = saved; target = saved
             await refreshStatus()
             if let identity = connection.identity, SyncConfiguration.owner(for: identity) == owner {
@@ -104,7 +112,7 @@ import RememberMeCore
         retryScheduler.cancel(); retryNeeded = false
         if restoring { lastIdentity = identity; return }
         lastIdentity = identity; workID = UUID(); work?.cancel(); work = nil; busy = false; preview = nil; choices = [:]
-        recoveryPreview = nil; recoverySnapshot = nil; recoveryChoices = [:]
+        recoveryPreview = nil; recoverySnapshot = nil; recoveryChoices = [:]; resumeSyncAfterPreview = false
         if let coordinator { await coordinator.cancel() }
         if let target, let configuration = try? await target.syncConfiguration() {
             try? await target.configureSync(identity: configuration.identity, enabled: false, privacy: configuration.privacy)
@@ -112,7 +120,11 @@ import RememberMeCore
         guard connection.identity == identity else { return }
         coordinator = nil; target = nil; repository = anonymous; syncEnabled = false; conflicts = []; conflictCopies = [:]; pendingCount = 0
         if !disposable { defaults.set("anonymous", forKey: preferenceKey) }
-        status = "Anonymous vocabulary · Account data and unsent changes are retained separately"
+        status = "Device vocabulary · Account words are retained separately"
+        accountWordCount = 0
+        await refreshDeviceWordCount()
+        guard connection.identity == identity else { return }
+        if identity != nil { activateAccount() }
     }
     private func launch(_ action: @escaping @MainActor () async throws -> Void) {
         guard !busy else { return }
@@ -132,21 +144,22 @@ import RememberMeCore
         work?.cancel()
         if let coordinator { Task { await coordinator.cancel() } }
     }
-    private func preparedAccount() async throws -> LocalRepository {
+    private func preparedAccount(selectForDisplay: Bool = false, pauseSync: Bool = false) async throws -> LocalRepository {
         guard let identity = connection.identity else { throw AuthenticationError.notSignedIn }
         let session = try await connection.connectedSession()
         let account = try await opener(url, SyncConfiguration.owner(for: identity))
         try Task.checkCancellation()
         guard connection.identity == identity else { throw AuthenticationError.superseded }
         if let coordinator { await coordinator.cancel() }
-        let privacy = try await account.syncConfiguration()?.privacy ?? SyncPrivacy()
-        try await account.configureSync(identity: identity, enabled: false, privacy: privacy)
+        let saved = try await account.syncConfiguration()
+        try await account.configureSync(identity: identity, enabled: pauseSync ? false : saved?.enabled ?? false, privacy: saved?.privacy ?? SyncPrivacy())
         try Task.checkCancellation()
         guard connection.identity == identity else { throw AuthenticationError.superseded }
         let sync = SyncCoordinator(repository: account, api: apiFactory(session)); coordinator = sync; target = account
+        if selectForDisplay { select(account); await refreshStatus() }
         while true {
             try Task.checkCancellation()
-            status = "Downloading account vocabulary for review…"
+            status = "Downloading account words…"
             let result = try await sync.pullForOwnershipPreview()
             try Task.checkCancellation()
             guard connection.identity == identity else { throw AuthenticationError.superseded }
@@ -160,6 +173,31 @@ import RememberMeCore
         accountName = configuration.displayName ?? "Connected account"
         return account
     }
+    func activateAccount() {
+        launch {
+            defer { if self.retryNeeded && self.syncEnabled { self.retryScheduler.trigger(immediate: false) } }
+            do {
+                let account = try await self.preparedAccount(selectForDisplay: true)
+                guard let configuration = try await account.syncConfiguration(),
+                      configuration.phase != "epochConflict", configuration.pendingSourceRemoval == nil,
+                      try await account.syncConflicts().isEmpty else {
+                    throw ClientError.conflict("Review recovery options before resuming sync")
+                }
+                try Task.checkCancellation()
+                guard self.connection.identity == configuration.identity else { throw AuthenticationError.superseded }
+                try await account.configureSync(identity: configuration.identity, enabled: true, privacy: configuration.privacy)
+                await self.refreshStatus()
+                if let coordinator = self.coordinator { try await self.runSynchronization(coordinator) }
+            } catch {
+                await self.refreshStatus()
+                throw error
+            }
+        }
+    }
+    func refreshDeviceWordCount() async {
+        do { deviceWordCount = try await anonymous.entryCount() }
+        catch { self.error = error.localizedDescription }
+    }
     func openCloudVocabulary() {
         launch {
             let account = try await self.preparedAccount()
@@ -169,27 +207,48 @@ import RememberMeCore
     }
     func prepareOwnership() {
         launch {
-            let account = try await self.preparedAccount()
-            self.choices = [:]; self.preview = try await account.previewAnonymousOwnership()
-            self.status = "Review anonymous vocabulary ownership before uploading"
+            self.resumeSyncAfterPreview = self.syncEnabled
+            do {
+                let account = try await self.preparedAccount(pauseSync: true)
+                await self.refreshStatus()
+                self.choices = [:]; self.preview = try await account.previewAnonymousOwnership()
+                self.status = "Review device words before adding them to your account"
+            } catch {
+                try? await self.resumeAfterPreview()
+                throw error
+            }
         }
     }
     func updateOwnershipPreview() {
         guard let preview, let target else { return }
         launch { self.preview = try await target.previewAnonymousOwnership(choices: self.choices, previewId: preview.id) }
     }
-    func dismissPreview() { guard !busy else { return }; preview = nil; choices = [:] }
+    func dismissPreview() {
+        guard !busy else { return }; preview = nil; choices = [:]
+        launch { try await self.resumeAfterPreview() }
+    }
+    private func resumeAfterPreview() async throws {
+        guard resumeSyncAfterPreview else { return }
+        resumeSyncAfterPreview = false
+        guard let target, let configuration = try await target.syncConfiguration(),
+              connection.identity == configuration.identity, configuration.phase != "epochConflict",
+              configuration.pendingSourceRemoval == nil, try await target.syncConflicts().isEmpty else { return }
+        try await target.configureSync(identity: configuration.identity, enabled: true, privacy: configuration.privacy)
+        await refreshStatus()
+    }
     func confirmOwnership() {
         guard let preview, !preview.plan.entries.isEmpty, preview.plan.conflicts.isEmpty, let target else { return }
         launch {
+            defer { if self.retryNeeded && self.syncEnabled { self.retryScheduler.trigger(immediate: false) } }
             guard let identity = self.connection.identity, preview.plan.owner == SyncConfiguration.owner(for: identity) else { throw AuthenticationError.superseded }
             try Task.checkCancellation(); try await target.begin(preview.plan); try await target.resumeImport(preview.id)
             try Task.checkCancellation()
             guard self.connection.identity == identity else { throw AuthenticationError.superseded }
-            self.preview = nil; self.choices = [:]; self.select(target)
+            self.preview = nil; self.choices = [:]; self.resumeSyncAfterPreview = false; self.select(target)
             let privacy = try await target.syncConfiguration()?.privacy ?? SyncPrivacy()
             try await target.configureSync(identity: identity, enabled: true, privacy: privacy)
-            await self.refreshStatus(); self.status = "Ownership confirmed · Local copy saved · Waiting for cloud synchronization"
+            await self.refreshStatus()
+            if let coordinator = self.coordinator { try await self.runSynchronization(coordinator) }
         }
     }
     func useAnonymousVocabulary() {
@@ -226,23 +285,26 @@ import RememberMeCore
         guard !busy, !isAnonymous, syncEnabled, let coordinator else { return }
         if !automatic { retryScheduler.cancel() }
         launch {
-            self.retryNeeded = false
             defer { if !automatic && self.retryNeeded { self.retryScheduler.trigger(immediate: false) } }
-            do {
-                for _ in 0..<3 {
-                    let result = try await coordinator.run()
-                    await self.refreshStatus()
-                    self.retryNeeded = result.needsContinuation
-                    let configuration = try await self.repository.syncConfiguration()
-                    if !result.needsContinuation || (result.submitted == 0 && result.historyPages == 0 && configuration?.phase != "snapshot" && configuration?.pullBoundary == nil) { break }
-                }
-            } catch {
-                self.retryNeeded = error is URLError
-                if let apiError = error as? APIRequestError, case .server(_, _, let retryable, _) = apiError { self.retryNeeded = retryable }
-                if error is CancellationError { self.retryNeeded = false }
-                await self.refreshStatus()
-                throw error
+            try await self.runSynchronization(coordinator)
+        }
+    }
+    private func runSynchronization(_ coordinator: SyncCoordinator) async throws {
+        retryNeeded = false
+        do {
+            for _ in 0..<3 {
+                let result = try await coordinator.run()
+                await refreshStatus()
+                retryNeeded = result.needsContinuation
+                let configuration = try await repository.syncConfiguration()
+                if !result.needsContinuation || (result.submitted == 0 && result.historyPages == 0 && configuration?.phase != "snapshot" && configuration?.pullBoundary == nil) { break }
             }
+        } catch {
+            retryNeeded = error is URLError
+            if let apiError = error as? APIRequestError, case .server(_, _, let retryable, _) = apiError { retryNeeded = retryable }
+            if error is CancellationError { retryNeeded = false }
+            await refreshStatus()
+            throw error
         }
     }
     @Published private(set) var reminderSelection: ReminderDeviceSelection?
@@ -370,7 +432,10 @@ import RememberMeCore
                 copies[current[index].id] = try await reader.entry(current[index].entryId, includeHistory: false)
             }
             let incompleteHistory = try await reader.pendingSyncHistory() != nil
+            let wordCount = try await reader.entryCount()
             guard repository === reader else { return }
+            accountWordCount = wordCount
+            downloadIncomplete = state.configuration?.phase != "ready" || state.configuration?.pullBoundary != nil || incompleteHistory
             let nextReminder = state.configuration?.reminderDevice
             let changedReminder = reminderSelection != nextReminder
             reminderSelection = nextReminder
@@ -388,7 +453,7 @@ import RememberMeCore
             else if state.configuration?.phase != "ready" || state.configuration?.pullBoundary != nil || incompleteHistory { status = "Account vocabulary saved · Cloud download is incomplete" }
             else if !conflicts.isEmpty { status = "Saved on this device · \(conflicts.count) conflicts need review" }
             else if pendingCount > 0 { status = "Saved on this device · \(pendingCount) changes waiting for sync" }
-            else { status = syncEnabled ? "Account vocabulary · Synchronization completed" : "Account vocabulary · Saved on this device · Sync is paused" }
+            else { status = syncEnabled ? "Up to date" : "Paused" }
         } catch { self.error = error.localizedDescription }
     }
     func useCloudForConflict(_ conflict: SyncConflict) {

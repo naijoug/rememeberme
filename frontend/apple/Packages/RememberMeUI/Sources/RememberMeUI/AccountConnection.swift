@@ -68,7 +68,8 @@ import UIKit
 
 @MainActor final class AccountConnectionModel: ObservableObject {
     static let shared = AccountConnectionModel()
-    @Published var serverAddress = ""
+    static let serviceOrigin = "https://rememberme.couplelabs.cn"
+    @Published var serverAddress = AccountConnectionModel.serviceOrigin
     @Published private(set) var identity: ConnectedIdentity?
     @Published private(set) var busy = false
     @Published var error: String?
@@ -82,7 +83,7 @@ import UIKit
     init(browser: any WebAuthenticator = AppleWebAuthenticator(), defaults: UserDefaults = .standard,
          permitsTestNetworking: Bool = false, factory: @escaping @MainActor (APIOrigin) -> NativeSession = SessionPool.session) {
         self.browser = browser; self.defaults = defaults; self.permitsTestNetworking = permitsTestNetworking; self.factory = factory
-        if !isDisposableSession { serverAddress = defaults.string(forKey: "rememberme.api.origin") ?? "" }
+        if !isDisposableSession { serverAddress = defaults.string(forKey: "rememberme.api.origin") ?? Self.serviceOrigin }
     }
     private var isDisposableSession: Bool {
         ProcessInfo.processInfo.arguments.contains("-rememberme-test-store") && !permitsTestNetworking
@@ -92,7 +93,7 @@ import UIKit
         do {
             let origin = try APIOrigin(serverAddress)
             let session = factory(origin); self.session = session; identity = try await session.restoreIdentity()
-            status = identity == nil ? "Cloud account is not connected" : "Saved account connection · Vocabulary remains local until sync is enabled"
+            status = identity == nil ? "Cloud account is not connected" : "GitHub account connected"
         } catch { self.error = error.localizedDescription }
     }
     func signIn() {
@@ -115,7 +116,7 @@ import UIKit
                 let callback = try await browser.authenticate(login)
                 identity = try await session.completeLogin(login, callback: callback)
                 serverAddress = origin.string; defaults.set(origin.string, forKey: "rememberme.api.origin")
-                status = "Account connected · Vocabulary upload requires a separate merge and sync choice"
+                status = "Signed in · Opening and syncing your account words"
             } catch {
                 if let attempt, let session { await session.cancelLogin(attempt) }
                 if error is CancellationError || (error as NSError).code == ASWebAuthenticationSessionError.canceledLogin.rawValue {
@@ -150,21 +151,27 @@ import UIKit
 
 struct AccountConnectionView: View {
     @ObservedObject var model: AccountConnectionModel
+    var accountName = "Connected account"
+    var accountBusy = false
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Cloud account").font(.headline)
-            TextField("HTTPS API address", text: $model.serverAddress).textContentType(.URL).disabled(model.busy || model.identity != nil)
-            Text(model.status).font(.caption).foregroundStyle(.secondary)
-            if model.identity != nil {
-                Button("Disconnect account") { model.disconnect() }.disabled(model.busy)
-            } else {
-                HStack {
-                    Button("Sign in with GitHub") { model.signIn() }.disabled(model.busy || model.serverAddress.isEmpty)
-                    if model.busy { Button("Cancel sign-in", role: .cancel) { model.cancel() } }
+        GroupBox {
+            VStack(alignment: .leading, spacing: 12) {
+                if model.identity != nil {
+                    LabeledContent("GitHub", value: accountName)
+                    Button("Sign out", role: .destructive) { model.disconnect() }.disabled(model.busy || accountBusy)
+                } else {
+                    Text("Sign in to see your account words and sync words you save across your devices.")
+                        .font(.callout).foregroundStyle(.secondary)
+                    HStack {
+                        Button("Sign in with GitHub") { model.signIn() }.buttonStyle(.borderedProminent).disabled(model.busy)
+                        if model.busy { ProgressView().controlSize(.small); Button("Cancel sign-in", role: .cancel) { model.cancel() } }
+                    }
+                    Text("Words already on this device stay here until you choose to add them to your account.")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
-            }
-            if let error = model.error { Text(verbatim: error).font(.caption).foregroundStyle(.red) }
-            Text("Connecting saves device credentials in Keychain. Vocabulary, history and backups stay on this device until you explicitly enable sync and confirm ownership.").font(.caption).foregroundStyle(.secondary)
-        }.task { await model.restore() }
+                if model.busy || model.identity == nil { Text(verbatim: model.status).font(.caption).foregroundStyle(.secondary) }
+                if let error = model.error { Text(verbatim: error).font(.caption).foregroundStyle(.red) }
+            }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
+        } label: { Label("Account", systemImage: "person.crop.circle") }
     }
 }

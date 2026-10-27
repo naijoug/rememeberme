@@ -1,5 +1,13 @@
 # Apple clients
 
+## macOS automatic updates (0.2.0, 2026-10-26)
+
+The Mac app now provides **Check for Updates…** in its menu and **Settings → Updates**.
+Automatic checks are enabled; automatic download/install is optional. Signed
+GitHub releases are downloaded and installed by Sparkle, preserving data outside
+the application bundle. Existing older apps need one bootstrap installation.
+See [automatic updates and release commands](docs/automatic-updates.md).
+
 ## Magpie update (2026-10-24)
 
 Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
@@ -22,7 +30,7 @@ The iOS Share Extension and main-app draft confirmation path are implemented and
 
 ## Build
 
-Open `RememberMe.xcodeproj`, select `RememberMeMac` or `RememberMeiOS`, and build. Minimum deployment targets are macOS 14 and iOS 17. Shared schemes and the project are checked in; local packages have no external Swift dependencies.
+Open `RememberMe.xcodeproj`, select `RememberMeMac` or `RememberMeiOS`, and build. Minimum deployment targets are macOS 14 and iOS 17. Shared schemes and the project are checked in. Core/UI packages remain local; the macOS Xcode target pins Sparkle 2.10.1. First-time app builds need access to its GitHub package and binary artifact.
 
 The macOS app is named **RememberMe** in the menu bar and window title, and builds as `RememberMe.app`. Its Xcode target and scheme remain `RememberMeMac`.
 
@@ -44,7 +52,7 @@ Unsigned builds verify compilation and simulator development only. Select your o
 
 ## Storage and safety
 
-The default app creates `RememberMe/vocabulary.sqlite` under its own Application Support directory. The app's sandbox container determines the physical location. Each platform starts with an empty anonymous vocabulary. Explicitly select a user-exported JSON to import; development tests use synthetic temporary stores.
+The default app creates `RememberMe/vocabulary.sqlite` under its own Application Support directory. Sandbox-signed builds use their app container. The current personal ad-hoc distribution is unsandboxed and retains its existing user Application Support location; the updater preserves that distribution policy. Each platform starts with an empty anonymous vocabulary. Explicitly select a user-exported JSON to import; development tests use synthetic temporary stores.
 
 The programmatic `StoreModelV1` through `StoreModelV4` are versioned in source. V2 adds indexed review-query fields and admission records; V3 adds durable captures; V4 adds operation sequence columns and generation-scoped sync records. Known old models migrate into a separate store, preserve a coherent `pre-upgrade-recovery.sqlite` copy, then replace the active store. Unknown models fail without discarding the database. Domain code returns value types; one actor/private context owns writes and is shared across app windows. Entry changes, events, quota admission and logical operations commit in the same store save. Import candidates remain invisible until the active pointer and published batch state commit together. Successful imports prune older scratch generations while keeping the current state, latest pre-publication recovery point and any in-flight sources/candidates.
 
@@ -64,7 +72,11 @@ The extension accepts only host-provided text or URL, explicitly saves an immuta
 
 ## Native account connection
 
-Settings includes an explicit HTTPS API origin and system-browser GitHub sign-in. PKCE verifier/state and callback validation run through `NativeSession`; access/refresh credentials live in a per-origin Keychain item with WhenUnlockedThisDeviceOnly accessibility. Non-secret origin and selected vocabulary owner are saved in preferences. Login does not bind or upload anonymous vocabulary. Open account vocabulary performs a read-only pull and keeps sending paused. Review anonymous vocabulary offers migrate, keep anonymous, associate history, replace chosen fields or explicitly create a separate lifecycle. Confirmation publishes the selected account copy atomically and enables its queue; the anonymous copy remains available. Reopening the preview defaults previously copied entries to keep anonymous.
+macOS Settings opens on an Account tab, with General (appearance/reminders), Privacy and macOS Updates tabs. Account shows GitHub identity, available account word count, sync status and a device-word import action. Advanced source sharing is collapsed. GitHub sign-in uses the built-in `https://rememberme.couplelabs.cn` origin; an existing saved origin remains respected. No API-address field or anonymous/account library switch is shown.
+
+PKCE verifier/state and callback validation still run through `NativeSession`; credentials stay in a per-origin Keychain item. Successful sign-in automatically selects the account vocabulary, downloads its words and enables sync after capability/recovery checks. Reopening an already selected account preserves an explicit pause. Cached words stay visible while paused or offline, and incomplete downloads offer retry. Sign-in never copies pre-sign-in device words.
+
+Add device words to account previews copy/keep/associate/replace/separate-word choices. Sync pauses for the core's ownership preview/publication boundary. Cancelling restores the previous sync setting; confirming adds the selected words and immediately starts synchronization. The original device vocabulary remains available after sign-out. Reopening the preview defaults previously copied entries to keep on this device.
 
 The account coordinator runs finite foreground batches on foreground entry, pending local mutations and explicit Synchronize now. Account selection is shared across windows; switching clears open details/drafts/export buffers and rebuilds reminders, while queues remain in their original account partitions. Disconnect pauses the account queue and selects anonymous vocabulary. A saved account vocabulary can be reopened offline on application restart without claiming a new account owns it. Basic conflicts offer confirmed cloud values or a separate lifecycle preserving the local snapshot. The service must advertise history-order/version and explicit-lifecycle capabilities before this development sync path is enabled. See [ownership integration evidence](docs/verification/2026-10-09-account-ownership.md).
 

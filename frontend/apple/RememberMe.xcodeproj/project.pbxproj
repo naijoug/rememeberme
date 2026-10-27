@@ -8,13 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		352545777174061979DEEB4C /* RememberMeShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1238C6AAA3C78503547BA599 /* RememberMeShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		362F6D8AF58F8EF9D83D4DA0 /* ThirdPartyNotices.txt in Resources */ = {isa = PBXBuildFile; fileRef = C2ABC7BA0D55F0F822E9CE75 /* ThirdPartyNotices.txt */; };
 		3A3CE34E520C9866ECBCCC65 /* VocabularyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC906C9C9543A46BC4F0517 /* VocabularyUITests.swift */; };
 		48688A21C7286D91C9D0A65F /* RememberMeiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AABB293501D7C0A70C1B827 /* RememberMeiOSApp.swift */; };
 		4F9D09C71D0281202DA8785E /* RememberMeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 56E34344F4CBF228AF95B437 /* RememberMeUI */; };
 		520A805C1C315AFD57C1C8A7 /* RememberMeCore in Frameworks */ = {isa = PBXBuildFile; productRef = E93185D046EE3959D042E37C /* RememberMeCore */; };
+		59E7F4B0C0BEAA4EA735A577 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1332386C7074E11983558DB9 /* Sparkle */; };
 		5D4C5D27E5D829D46449BC96 /* wordnet in Resources */ = {isa = PBXBuildFile; fileRef = B6B41E05C8C62FA7AB005A04 /* wordnet */; };
 		8FA9B6B7542966F3871F142A /* wordnet in Resources */ = {isa = PBXBuildFile; fileRef = B6B41E05C8C62FA7AB005A04 /* wordnet */; };
 		A1766BEF03CE83BC4937317D /* VocabularyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC906C9C9543A46BC4F0517 /* VocabularyUITests.swift */; };
+		B4DF7DE4D7FDB0E4231F15CF /* MacUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1FEACE11825A7D314152640 /* MacUpdater.swift */; };
 		BA974B7D944F8514B266A73F /* RememberMeMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41F1EA89A1148C538420D8D /* RememberMeMacApp.swift */; };
 		C31F9CB54B2E8C6493CE41D8 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E80E165C48F9E1287AE0525 /* ShareViewController.swift */; };
 		DCAB6127436F9433159A7307 /* RememberMeUI in Frameworks */ = {isa = PBXBuildFile; productRef = CF1CCF0143EA4F0FB5CDF37D /* RememberMeUI */; };
@@ -66,6 +69,8 @@
 		37C6A99DDCC8A09898DE5A65 /* RememberMeiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RememberMeiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AABB293501D7C0A70C1B827 /* RememberMeiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RememberMeiOSApp.swift; sourceTree = "<group>"; };
 		B6B41E05C8C62FA7AB005A04 /* wordnet */ = {isa = PBXFileReference; lastKnownFileType = folder; name = wordnet; path = "../browser-extension/public/dictionary/wordnet"; sourceTree = SOURCE_ROOT; };
+		C1FEACE11825A7D314152640 /* MacUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacUpdater.swift; sourceTree = "<group>"; };
+		C2ABC7BA0D55F0F822E9CE75 /* ThirdPartyNotices.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ThirdPartyNotices.txt; sourceTree = "<group>"; };
 		CAC906C9C9543A46BC4F0517 /* VocabularyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularyUITests.swift; sourceTree = "<group>"; };
 		D3C8E64852EE3E9C64DF0A5E /* RememberMeiOSUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RememberMeiOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E00F71A5ED63E49BD96017B0 /* RememberMeCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RememberMeCore; path = Packages/RememberMeCore; sourceTree = SOURCE_ROOT; };
@@ -87,6 +92,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCAB6127436F9433159A7307 /* RememberMeUI in Frameworks */,
+				59E7F4B0C0BEAA4EA735A577 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,7 +144,9 @@
 		99FBAD72ED4353BF04766A9B /* macOS */ = {
 			isa = PBXGroup;
 			children = (
+				C1FEACE11825A7D314152640 /* MacUpdater.swift */,
 				F41F1EA89A1148C538420D8D /* RememberMeMacApp.swift */,
+				C2ABC7BA0D55F0F822E9CE75 /* ThirdPartyNotices.txt */,
 			);
 			name = macOS;
 			path = Apps/macOS;
@@ -266,6 +274,7 @@
 			name = RememberMeMac;
 			packageProductDependencies = (
 				CF1CCF0143EA4F0FB5CDF37D /* RememberMeUI */,
+				1332386C7074E11983558DB9 /* Sparkle */,
 			);
 			productName = RememberMeMac;
 			productReference = 1BA33F6343599E5796105994 /* RememberMe.app */;
@@ -310,6 +319,7 @@
 			mainGroup = 23BED3C70407CFCC97E28A46;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				8B23E6AA1D83F0AC1D884818 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				16AA1956AF55ED6A4CCDFECA /* XCLocalSwiftPackageReference "Packages/RememberMeCore" */,
 				49BC77483686ABB5847BF02E /* XCLocalSwiftPackageReference "Packages/RememberMeUI" */,
 			);
@@ -331,6 +341,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				362F6D8AF58F8EF9D83D4DA0 /* ThirdPartyNotices.txt in Resources */,
 				8FA9B6B7542966F3871F142A /* wordnet in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -358,6 +369,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4DF7DE4D7FDB0E4231F15CF /* MacUpdater.swift in Sources */,
 				BA974B7D944F8514B266A73F /* RememberMeMacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -601,7 +613,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Mac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_USER_SELECTED_FILES = readwrite;
@@ -613,6 +627,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rememberme.app.mac;
 				PRODUCT_NAME = RememberMe;
 				SDKROOT = macosx;
@@ -689,7 +704,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Mac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_USER_SELECTED_FILES = readwrite;
@@ -701,6 +718,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rememberme.app.mac;
 				PRODUCT_NAME = RememberMe;
 				SDKROOT = macosx;
@@ -800,7 +818,23 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		8B23E6AA1D83F0AC1D884818 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.10.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		1332386C7074E11983558DB9 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B23E6AA1D83F0AC1D884818 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
 		56E34344F4CBF228AF95B437 /* RememberMeUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RememberMeUI;

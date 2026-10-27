@@ -31,5 +31,23 @@
 	</array>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.education</string>
+	<key>SUFeedURL</key>
+	<string>https://github.com/naijoug/rememeberme/releases/download/macos-stable/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>MYEohv37cRSZVI4SRgQDsWnr6isHdd6hU8ezFndO/D0=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUVerifyUpdateBeforeExtraction</key>
+	<true/>
+	<key>SURequireSignedFeed</key>
+	<true/>
+	<key>SUSignedFeedFailureExpirationInterval</key>
+	<integer>0</integer>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
 </dict>
 </plist>
