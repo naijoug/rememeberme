@@ -127,13 +127,28 @@ struct NativeSettingsView: View {
     @State private var selectedTab = 0
     var body: some View {
         #if os(macOS)
-        TabView(selection: $selectedTab) {
-            settingsScroll { accountSettings }.tabItem { Label("Account", systemImage: "person.crop.circle") }.tag(0)
-            settingsScroll { generalSettings }.tabItem { Label("General", systemImage: "gearshape") }.tag(1)
-            settingsScroll { privacySettings }.tabItem { Label("Privacy", systemImage: "hand.raised") }.tag(2)
-            if let updates { settingsScroll { updates }.tabItem { Label("Updates", systemImage: "arrow.down.circle") }.tag(3) }
+        VStack(spacing: 0) {
+            Picker("Settings section", selection: $selectedTab) {
+                Text("Account").tag(0)
+                Text("General").tag(1)
+                Text("Privacy").tag(2)
+                if updates != nil { Text("Updates").tag(3) }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .padding(.horizontal, 24)
+            .padding(.bottom, 16)
+            Divider()
+            settingsScroll {
+                switch selectedTab {
+                case 1: generalSettings
+                case 2: privacySettings
+                case 3: if let updates { updates }
+                default: accountSettings
+                }
+            }
         }
-        .frame(width: 560, height: 590)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .preferredColorScheme(appearance == "light" ? .light : appearance == "dark" ? .dark : nil)
         #else
         settingsScroll {
@@ -212,21 +227,6 @@ struct AccountReminderView: View {
                 Text("A change takes effect on other devices after they reconnect. Offline devices may still deliver previously scheduled reminders.").font(.caption)
                 if !model.reminderControlsAvailable { Text("Update the cloud service to support reminder device selection.").font(.caption) }
             }.task { await model.refreshReminderSelection() }
-        }
-    }
-}
-
-/// Uses the same repository/account pool as all vocabulary windows.
-public struct RememberMeSettingsView: View {
-    @StateObject private var model = VocabularyModel()
-    private let updates: AnyView?
-    public init(updates: AnyView? = nil) { self.updates = updates }
-    public var body: some View {
-        Group {
-            if let repository = model.repository {
-                NativeSettingsView(repository: repository, account: model.account, showsDone: false, updates: updates)
-            } else if let error = model.error { Text(verbatim: error).padding() }
-            else { ProgressView("Opening settings…") }
         }
     }
 }

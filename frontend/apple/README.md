@@ -72,7 +72,7 @@ The extension accepts only host-provided text or URL, explicitly saves an immuta
 
 ## Native account connection
 
-macOS Settings opens on an Account tab, with General (appearance/reminders), Privacy and macOS Updates tabs. Account shows GitHub identity, available account word count, sync status and a device-word import action. Advanced source sharing is collapsed. GitHub sign-in uses the built-in `https://rememberme.couplelabs.cn` origin; an existing saved origin remains respected. No API-address field or anonymous/account library switch is shown.
+macOS Settings opens inside the main window, with Account selected first and General (appearance/reminders), Privacy and Updates sections. The sidebar Settings button, Options → Settings and Command-comma all open the same page in the active window. Back to vocabulary or selecting a word returns to word details. Account shows GitHub identity, available account word count, sync status and a device-word import action. Advanced source sharing is collapsed. GitHub sign-in uses the built-in `https://rememberme.couplelabs.cn` origin; an existing saved origin remains respected. No API-address field or anonymous/account library switch is shown.
 
 PKCE verifier/state and callback validation still run through `NativeSession`; credentials stay in a per-origin Keychain item. Successful sign-in automatically selects the account vocabulary, downloads its words and enables sync after capability/recovery checks. Reopening an already selected account preserves an explicit pause. Cached words stay visible while paused or offline, and incomplete downloads offer retry. Sign-in never copies pre-sign-in device words.
 
@@ -90,6 +90,6 @@ Restore complete backup (merge) now supports account vocabulary. It pauses sendi
 
 ## October 16 feature completion
 
-Anonymous snapshot conflicts now support explicit skip, history association, selected count/definition replacement and separate entries. Anonymous complete-backup restore supports field selection. Both retain the preview/confirmation and durable import recovery boundary. macOS has a native Settings window and accepts a single local JSON drop into an import preview.
+Anonymous snapshot conflicts now support explicit skip, history association, selected count/definition replacement and separate entries. Anonymous complete-backup restore supports field selection. Both retain the preview/confirmation and durable import recovery boundary. macOS keeps Settings inside the vocabulary window and accepts a single local JSON drop into an import preview.
 
 Foreground synchronization retries transient failures with a bounded schedule and restarts on network recovery. Original frozen requests remain unchanged. Account reminder selection is versioned on the backend and requires migration `0006_reminder_device.sql` plus `reminder-device-v1`; this is prepared and locally tested, not deployed by this change. Permission, actual notification delivery, signed sharing and hosted two-device OAuth/sync remain acceptance items. See [October 16 verification](docs/verification/2026-10-16-gap-closure.md).

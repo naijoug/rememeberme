@@ -151,3 +151,9 @@ download/install, current-version handling, unavailable feeds and signature
 rejection without touching an installed app or real vocabulary. macOS universal
 release builds and iOS compatibility builds are separate checks. See the
 [executed record](verification/2026-10-26-auto-updates.md).
+
+## Inline macOS settings
+
+`testMacSettingsStaysInVocabularyWindow` uses the existing disposable interrupted-import fixture and its synthetic `original` word. It checks the sidebar entry, Account/General/Privacy/Updates content, unchanged window count and no settings sheet, return to the selected word, Command-comma routing, and selecting the same word to leave Settings. Run this targeted Mac UI case for navigation changes; build both app targets because the root/settings views are shared.
+
+The [2026-10-27 verification record](verification/2026-10-27-inline-settings.md) records passing Mac navigation UI assertions and both builds, the captured window, and the subsequent warning fix and local installation. The follow-up Mac run has no runtime warnings; the iPad add/relaunch/reset/delete regression also passed.

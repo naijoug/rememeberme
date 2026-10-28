@@ -3,6 +3,19 @@ import SwiftUI
 import UniformTypeIdentifiers
 import RememberMeCore
 
+#if os(macOS)
+private struct RememberMeSettingsKey: FocusedValueKey {
+    typealias Value = Binding<Bool>
+}
+
+public extension FocusedValues {
+    var rememberMeSettings: Binding<Bool>? {
+        get { self[RememberMeSettingsKey.self] }
+        set { self[RememberMeSettingsKey.self] = newValue }
+    }
+}
+#endif
+
 public struct RememberMeRootView: View {
     @StateObject private var model = VocabularyModel()
     @ObservedObject private var connection = AccountConnectionModel.shared
@@ -17,6 +30,7 @@ public struct RememberMeRootView: View {
     @State private var replacing = false
     @State private var reviewing = false
     @State private var settings = false
+    @State private var sidebarSelection: String?
     @State private var showingCaptures = false
     @State private var showingImportRecovery = false
     @State private var addingOwner = "anonymous"
@@ -26,7 +40,10 @@ public struct RememberMeRootView: View {
     @AppStorage("rememberme.appearance") private var appearance = "system"
     @Environment(\.scenePhase) private var scenePhase
 
-    public init() {}
+    private let updates: AnyView?
+
+    public init(updates: AnyView? = nil) { self.updates = updates }
+
     private func foregroundRefresh() async {
         if let repository = model.repository { await ReminderSettings.shared.reschedule(repository) }
         await model.refreshCaptures()
@@ -38,7 +55,9 @@ public struct RememberMeRootView: View {
     }
     private var navigation: some View {
         NavigationSplitView {
-            List(selection: $model.selection) {
+            // NavigationLink can write this binding during a SwiftUI update.
+            // Keep that write in view state; publish model changes in onChange.
+            List(selection: $sidebarSelection) {
                 ForEach(model.entries) { entry in
                     NavigationLink(value: entry.id) {
                         HStack {
@@ -82,11 +101,7 @@ public struct RememberMeRootView: View {
                         Button("Interrupted imports (\(model.interruptedImports.count))") { showingImportRecovery = true }
                         Divider()
                         Button("Today’s review") { reviewing = true }
-                        #if os(macOS)
-                        SettingsLink { Text("Settings") }
-                        #else
                         Button("Settings") { settings = true }
-                        #endif
                         Button("Shared drafts (\(model.captures.count))") { showingCaptures = true }
                         Divider()
                         Button("Export complete backup") { Task { await model.prepareExport(legacy: false) } }
@@ -98,63 +113,102 @@ public struct RememberMeRootView: View {
                     .disabled(model.repository == nil || model.busy)
                 }
             }
-            .safeAreaInset(edge: .bottom) { Text(model.status).font(.caption).foregroundStyle(.secondary).padding(12) }
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 8) {
+                    #if os(macOS)
+                    Divider()
+                    Button { settings = true } label: {
+                        Label("Settings", systemImage: "gearshape")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(8)
+                            .background(settings ? Color.accentColor.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 6))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("open-settings")
+                    .padding(.horizontal, 12)
+                    #endif
+                    Text(model.status).font(.caption).foregroundStyle(.secondary).padding(.bottom, 12)
+                }
+            }
             .navigationSplitViewColumnWidth(min: 280, ideal: 300, max: 360)
         } detail: {
-            if reviewing {
-                ContentUnavailableView("Review in progress", systemImage: "book.closed",
-                    description: Text("Close review to return to the word details."))
-            } else if let entry = model.detail {
-                let owner = model.activeOwner
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text(verbatim: entry.word).font(.system(.largeTitle, design: .serif))
-                        Text("Forgotten: \(entry.count.map { $0.formatted() } ?? "Not recorded")").foregroundStyle(.secondary)
-                        HStack {
-                            Button("Record once forgotten") { Task { await model.record(expectedOwner: owner) } }
-                            Button("Reset count") { Task { await model.reset(expectedOwner: owner) } }
-                        }
-                        Text("Reset keeps all history.").font(.caption).foregroundStyle(.secondary)
-                        DefinitionText(definition: entry.definition)
-                        Button("Edit definition and notes") { editingOwner = owner; editing = true }.disabled(model.lookup == nil)
-                        if !entry.notes.isEmpty { Text(verbatim: entry.notes) }
-                        if let origin = entry.captureOrigin {
-                            Text("Shared source").font(.headline)
-                            if !origin.text.isEmpty { Text(verbatim: origin.text).textSelection(.enabled) }
-                            if let url = origin.navigableURL { Link(destination: url) { Text(verbatim: origin.sourceURL ?? "") } }
-                            else if let source = origin.sourceURL { Text(verbatim: source).font(.caption) }
-                        }
-                        Text("Records (\(model.recordCount))").font(.headline)
-                        ForEach(Array(model.records.enumerated()), id: \.element.id) { index, record in
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Record \(model.recordCount - index)").font(.caption).foregroundStyle(.secondary)
-                                Text(verbatim: record.context.isEmpty ? "No context recorded" : record.context)
-                                Text(formatTimestamp(record.timestamp)).font(.caption).foregroundStyle(.secondary)
-                                if let url = record.navigableURL { Link(destination: url) { Text(verbatim: record.url) }.font(.caption) }
-                                else if !record.url.isEmpty { Text(verbatim: record.url).font(.caption) }
-                            }.textSelection(.enabled)
-                            Divider()
-                        }
-                        if model.records.count < model.recordCount {
-                            Button("Show more records") { Task { await model.moreRecords() } }.disabled(model.loadingRecords)
-                        }
-                        if model.loadingRecords { ProgressView("Loading records") }
-                        Button("Delete word", role: .destructive) { deletingOwner = owner; deleting = true }
-                    }.padding(24).frame(maxWidth: 720, alignment: .leading)
-                }.navigationTitle(entry.word)
-                .alert("Delete this word and its history?", isPresented: $deleting) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("Delete", role: .destructive) { Task { await model.delete(expectedOwner: deletingOwner) } }
-                }
+            #if os(macOS)
+            if settings {
+                VStack(spacing: 0) {
+                    HStack {
+                        Button { settings = false } label: { Label("Back to vocabulary", systemImage: "chevron.left") }
+                            .accessibilityIdentifier("back-to-vocabulary")
+                        Spacer()
+                    }.padding(16)
+                    if let repository = model.repository {
+                        NativeSettingsView(repository: repository, account: model.account, showsDone: false, updates: updates)
+                    } else {
+                        ProgressView("Opening settings…").frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                }.navigationTitle("Settings")
             } else {
-                ContentUnavailableView("Your vocabulary, on this device", systemImage: "book",
-                    description: Text("Add a word or import an exported extension JSON. No login is needed."))
+                vocabularyDetail
             }
+            #else
+            vocabularyDetail
+            #endif
+        }
+    }
+    @ViewBuilder private var vocabularyDetail: some View {
+        if reviewing {
+            ContentUnavailableView("Review in progress", systemImage: "book.closed",
+                description: Text("Close review to return to the word details."))
+        } else if let entry = model.detail {
+            let owner = model.activeOwner
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(verbatim: entry.word).font(.system(.largeTitle, design: .serif))
+                    Text("Forgotten: \(entry.count.map { $0.formatted() } ?? "Not recorded")").foregroundStyle(.secondary)
+                    HStack {
+                        Button("Record once forgotten") { Task { await model.record(expectedOwner: owner) } }
+                        Button("Reset count") { Task { await model.reset(expectedOwner: owner) } }
+                    }
+                    Text("Reset keeps all history.").font(.caption).foregroundStyle(.secondary)
+                    DefinitionText(definition: entry.definition)
+                    Button("Edit definition and notes") { editingOwner = owner; editing = true }.disabled(model.lookup == nil)
+                    if !entry.notes.isEmpty { Text(verbatim: entry.notes) }
+                    if let origin = entry.captureOrigin {
+                        Text("Shared source").font(.headline)
+                        if !origin.text.isEmpty { Text(verbatim: origin.text).textSelection(.enabled) }
+                        if let url = origin.navigableURL { Link(destination: url) { Text(verbatim: origin.sourceURL ?? "") } }
+                        else if let source = origin.sourceURL { Text(verbatim: source).font(.caption) }
+                    }
+                    Text("Records (\(model.recordCount))").font(.headline)
+                    ForEach(Array(model.records.enumerated()), id: \.element.id) { index, record in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Record \(model.recordCount - index)").font(.caption).foregroundStyle(.secondary)
+                            Text(verbatim: record.context.isEmpty ? "No context recorded" : record.context)
+                            Text(formatTimestamp(record.timestamp)).font(.caption).foregroundStyle(.secondary)
+                            if let url = record.navigableURL { Link(destination: url) { Text(verbatim: record.url) }.font(.caption) }
+                            else if !record.url.isEmpty { Text(verbatim: record.url).font(.caption) }
+                        }.textSelection(.enabled)
+                        Divider()
+                    }
+                    if model.records.count < model.recordCount {
+                        Button("Show more records") { Task { await model.moreRecords() } }.disabled(model.loadingRecords)
+                    }
+                    if model.loadingRecords { ProgressView("Loading records") }
+                    Button("Delete word", role: .destructive) { deletingOwner = owner; deleting = true }
+                }.padding(24).frame(maxWidth: 720, alignment: .leading)
+            }.navigationTitle(entry.word)
+            .alert("Delete this word and its history?", isPresented: $deleting) {
+                Button("Cancel", role: .cancel) {}
+                Button("Delete", role: .destructive) { Task { await model.delete(expectedOwner: deletingOwner) } }
+            }
+        } else {
+            ContentUnavailableView("Your vocabulary, on this device", systemImage: "book",
+                description: Text("Add a word or import an exported extension JSON. No login is needed."))
         }
     }
     private var managedNavigation: some View {
         navigation
         #if os(macOS)
+        .focusedSceneValue(\.rememberMeSettings, $settings)
         .dropDestination(for: URL.self) { urls, _ in model.acceptDroppedFiles(urls) }
         #endif
         .tint(Color(red: 0.35, green: 0.47, blue: 0.38))
@@ -163,7 +217,27 @@ public struct RememberMeRootView: View {
             try? await Task.sleep(for: .milliseconds(200))
             if !Task.isCancelled { await model.reload() }
         }
-        .onChange(of: model.selection) { Task { await model.select() } }
+        .onChange(of: sidebarSelection) {
+            #if os(macOS)
+            // Settings clears only the visible highlight, not the return word.
+            if settings && sidebarSelection == nil { return }
+            if sidebarSelection != nil { settings = false }
+            #endif
+            if model.selection != sidebarSelection { model.selection = sidebarSelection }
+        }
+        .onChange(of: model.selection) {
+            #if os(macOS)
+            if !settings { sidebarSelection = model.selection }
+            #else
+            sidebarSelection = model.selection
+            #endif
+            Task { await model.select() }
+        }
+        #if os(macOS)
+        .onChange(of: settings) {
+            sidebarSelection = settings ? nil : model.selection
+        }
+        #endif
         .task(id: "\(connection.identity?.origin ?? "")|\(connection.identity?.userId ?? "")|\(connection.identity?.deviceId ?? "")|\(model.lookup != nil)") {
             guard let service = model.lookup else { return }
             if let provider = try? await connection.translationProvider() {
@@ -224,9 +298,11 @@ public struct RememberMeRootView: View {
         .sheet(isPresented: $reviewing) {
             if let repository = model.repository { ReviewView(repository: repository) }
         }
+        #if !os(macOS)
         .sheet(isPresented: $settings) {
             if let repository = model.repository { NativeSettingsView(repository: repository, account: model.account) }
         }
+        #endif
     }
     public var body: some View {
         presentedNavigation

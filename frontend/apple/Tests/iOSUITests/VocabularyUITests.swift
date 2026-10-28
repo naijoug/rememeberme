@@ -1,6 +1,43 @@
 import XCTest
 
 final class VocabularyUITests: XCTestCase {
+    #if os(macOS)
+    @MainActor func testMacSettingsStaysInVocabularyWindow() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-rememberme-test-store", "ui-" + UUID().uuidString, "-rememberme-test-import-recovery"]
+        app.launch()
+        defer { app.terminate() }
+        let word = app.buttons["original, 3"]
+        XCTAssertTrue(word.waitForExistence(timeout: 15))
+        word.tap()
+        XCTAssertTrue(app.staticTexts["Forgotten: 3"].waitForExistence(timeout: 5))
+        let windowCount = app.windows.count
+
+        app.buttons["open-settings"].tap()
+        XCTAssertTrue(app.buttons["Sign in with GitHub"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.windows.count, windowCount)
+        XCTAssertEqual(app.sheets.count, 0)
+        app.radioButtons["General"].tap()
+        XCTAssertTrue(app.checkBoxes["Remind me on this device"].waitForExistence(timeout: 5))
+        app.radioButtons["Privacy"].tap()
+        XCTAssertTrue(app.staticTexts["Complete backups include saved sentences and full URLs. Credentials and pending requests are excluded."].waitForExistence(timeout: 5))
+        app.radioButtons["Updates"].tap()
+        XCTAssertTrue(app.staticTexts["Installed version"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.windows.count, windowCount)
+        let screenshot = XCTAttachment(screenshot: app.windows.firstMatch.screenshot())
+        screenshot.name = "Settings inside vocabulary window"; screenshot.lifetime = .keepAlways; add(screenshot)
+        app.buttons["back-to-vocabulary"].tap()
+        XCTAssertTrue(app.staticTexts["Forgotten: 3"].waitForExistence(timeout: 5))
+
+        app.typeKey(",", modifierFlags: .command)
+        XCTAssertTrue(app.buttons["Sign in with GitHub"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.windows.count, windowCount)
+        word.tap()
+        XCTAssertTrue(app.staticTexts["Forgotten: 3"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["back-to-vocabulary"].exists)
+    }
+    #endif
+
     @MainActor func testAccountSettingsKeepsDisposableVocabularyAnonymousWithoutSigningIn() {
         let app = XCUIApplication()
         app.launchArguments = ["-rememberme-test-store", "ui-" + UUID().uuidString]

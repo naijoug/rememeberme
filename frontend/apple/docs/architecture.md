@@ -114,3 +114,7 @@ naijoug, synced a synthetic account word, and retained the session after restart
 See [hosted evidence](../../../backend/docs/verification/2026-10-25-account-deployment.md)
 for deployment backups and completed installed Chrome↔Mac record/reset/delete
 synchronization, with the original anonymous browser vocabulary retained.
+
+## Navigation selection boundary
+
+`RememberMeRootView` keeps the sidebar selection in SwiftUI `@State` because `NavigationLink` may write its binding during a view update. `onChange` synchronizes user selection to `VocabularyModel.selection`, while model-driven save/delete/owner changes synchronize back to the sidebar. On macOS, opening inline Settings clears only the visible highlight; the model selection remains the destination for Back to vocabulary. This avoids synchronously publishing an ObservableObject change from the navigation binding.
