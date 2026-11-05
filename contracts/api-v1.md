@@ -80,8 +80,8 @@ can reject new-source responses or snapshots. The server advertises both v2 and
 v3 for discovery; this does not retrofit source support into old clients.
 
 `TRANSLATION_PROVIDER=magpie` selects server-only Chat Completions at
-`MAGPIE_BASE_URL`, with `MAGPIE_API_KEY` and `MAGPIE_MODEL`. The initial model is
-`group/translator`. Requests contain a system instruction and one word, no
+`MAGPIE_BASE_URL`, with `MAGPIE_API_KEY` and `MAGPIE_MODEL`. The default model is the
+`group/translator` routing group; Magpie owns its provider selection. Requests contain a system instruction and one word, no
 tools/session/context/URL, with low reasoning, a 512-token budget, a three-second deadline and bounded JSON output.
 MyMemory remains the four-second fallback; its source stays `mymemory`.
 Word translation opens a per-instance circuit after two consecutive upstream
@@ -131,3 +131,15 @@ SQLite migration `0006_reminder_device.sql` adds a nullable selected device and 
 `PUT /api/v1/reminder-device` accepts exactly `{ enabled: boolean, expectedRevision: integer }`. A true request selects the authenticated device; false releases only that device's own selection. Clients cannot supply another device/user ID. The database update atomically checks revision, live account/session/device and increments revision. Stale or unauthorized release returns nonretryable `REMINDER_SELECTION_CHANGED` (409). Exhausted revisions return `VERSION_EXHAUSTED`; malformed input is rejected. Response is the new `{ deviceId, revision }`.
 
 This preference is separate from timezone, source-upload consent, vocabulary and local notification permission. Repeating a request after an unknown outcome does not bypass revision checks: reread `/me`, display the resulting selection, and require another explicit choice before reclaiming. Other devices cancel scheduled account notifications after refreshing the account. Offline schedules may continue until reconnection. Shared request/response fixtures and schema: `fixtures/reminder-device-v1.json`, `reminder-device-v1.schema.json`.
+
+## Optional context explanation v1 (released, new installations default off)
+
+`GET /api/v1/public/lookup/capabilities` returns exactly `{ schemaVersion: 1, enabled, maxContextLength: 1000, maxBodyBytes: 16384, explanationVersion: "context-v1" }`. It is registered after origin checking and public rate limiting, before account authentication. It contains no account, endpoint, key or model configuration. Missing/unknown capabilities must keep clients disabled.
+
+`POST /api/v1/public/lookup/context-explanation` accepts exactly `{ schemaVersion: 1, word, context, target: "zh-CN" }`. Word is one ASCII English term (internal apostrophes/hyphens), at most 500 UTF-16 code units; context is nonblank and at most 1000 UTF-16 units. Raw JSON body is bounded at 16 KiB. There is no URL/title/provider/model parameter. The ordinary word routes retain their field contracts and 2 KiB ingress limits.
+
+Success is exactly `{ schemaVersion: 1, contextualMeaning, sentenceTranslation, usageNote, provider: "magpie", explanationVersion: "context-v1" }`. Text bounds are 500/2000/500 UTF-16 units; the first two texts are nonblank and usageNote may be empty. Attribution/version are server-owned. This response is not a Definition, has no vocabulary mutation, and must not be inserted into old JSON/history/sync schemas. Validators, schema and synthetic fixtures are in `context-explanation.ts`, `context-explanation-v1.schema.json` and `fixtures/context-explanation-v1.json`. JSON Schema counts code points; runtime tests additionally enforce UTF-16 and encoded-byte limits.
+
+`CONTEXT_EXPLANATION_ENABLED=true` requires configured Magpie; otherwise capabilities are false and POST returns EXPLANATION_DISABLED (503). The endpoint retains the public total rate budget and adds six requests/minute/IP. One shared Node-runtime Magpie gate allows at most two inference jobs, at most one of them an explanation. Ordinary translations retain 512 output tokens, low reasoning and 3-second primary/4-second fallback with the word-only circuit. Explanation uses a separate fixed prompt, JSON-object response mode, a 1536-token cap, 15-second model and 18-second API deadline; it has no automatic retry or fallback, and accepts only complete JSON with finish_reason=stop and no tool/function calls.
+
+Errors use the existing static error envelope: EXPLANATION_INVALID_INPUT (400), EXPLANATION_DISABLED/EXPLANATION_BUSY/EXPLANATION_UNAVAILABLE (503), EXPLANATION_TIMEOUT (504), EXPLANATION_INVALID_RESPONSE (502), plus shared origin/JSON/body/rate errors. No source/output text is logged or persisted by this endpoint. Disconnect cancellation is best effort; it does not promise upstream billing stops. The 2026-10-27 personal deployment passed bounded live-model, retention-configuration, public ingress and published-policy checks and enables this capability. New deployments must repeat those gates; upstream zero retention and universal accuracy are not promised.

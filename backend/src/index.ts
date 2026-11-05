@@ -1,7 +1,8 @@
+import { EXPLANATION_PATH, EXPLANATION_CAPABILITIES_PATH, EXPLANATION_MAX_BODY, explanationCapabilities, isContextExplanationInput, isContextExplanation } from '../../contracts/context-explanation';
 import { selectReminderDevice } from './reminder';
 import { Hono } from 'hono';
 import { ApiError, id, object, keys, parseOperation, version } from '../../contracts/api-v1';
-import { requestJSON, checkOrigin } from './http';
+import { boundedJSON, requestJSON, checkOrigin } from './http';
 import { identity, exchangeNative, refreshSession, logoutWithRefresh, startNative, githubCallback, type Identity } from './auth';
 import { applyOperation, changes, getEntry, entryHistory, rememberConflict, reviewAdmissions } from './store';
 import type { Bindings } from './runtime';
@@ -87,6 +88,28 @@ app.use('/api/v1/public/lookup/*', async (c, next) => {
 });
 app.post('/api/v1/public/lookup/dictionary', c => lookup(c, false));
 app.post('/api/v1/public/lookup/translation', c => lookup(c, true));
+app.get(EXPLANATION_CAPABILITIES_PATH, c => c.json(explanationCapabilities(Boolean(c.env.EXPLAINER && c.env.EXPLANATION_LIMIT))));
+app.post(EXPLANATION_PATH, async c => {
+  if (!c.env.EXPLAINER || !c.env.EXPLANATION_LIMIT) throw new ApiError('EXPLANATION_DISABLED', 503);
+  if (!(await c.env.EXPLANATION_LIMIT.limit({ key: c.env.CLIENT_IP ?? c.req.header('CF-Connecting-IP') ?? 'local' })).success) throw new ApiError('RATE_LIMITED', 429, true);
+  if (c.req.header('Content-Type')?.split(';')[0].trim().toLowerCase() !== 'application/json') throw new ApiError('JSON_REQUIRED', 415);
+  const controller = new AbortController();
+  const cancel = () => controller.abort();
+  c.req.raw.signal.addEventListener('abort', cancel, { once: true });
+  let timer: ReturnType<typeof setTimeout>;
+  const deadline = new Promise<never>((_, reject) => { timer = setTimeout(() => { reject(new ApiError('EXPLANATION_TIMEOUT', 504, true)); controller.abort(); }, 18_000); });
+  try {
+    if (c.req.raw.signal.aborted) throw new ApiError('EXPLANATION_CANCELLED', 499);
+    return await Promise.race([(async () => {
+      const input = await boundedJSON(c.req.raw.body, EXPLANATION_MAX_BODY, controller.signal);
+      if (!isContextExplanationInput(input)) throw new ApiError('EXPLANATION_INVALID_INPUT');
+      const result = await c.env.EXPLAINER!.explain(input, controller.signal);
+      if (!isContextExplanation(result)) throw new ApiError('EXPLANATION_INVALID_RESPONSE', 502);
+      return c.json(result);
+    })(), deadline]);
+  } finally { clearTimeout(timer!); c.req.raw.signal.removeEventListener('abort', cancel); }
+});
+
 app.use('/api/v1/*', async (c, next) => {
   const who = await identity(c.req.raw, c.env.DB); c.set('identity', who);
   const epoch = c.req.header('X-Sync-Epoch');

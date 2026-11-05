@@ -29,3 +29,10 @@ for key in ["request", "response", "released"]:
 for invalid in reminder_fixture["invalidResponses"]:
     assert not reminder.is_valid(invalid)
 print("Reminder device selection fixtures passed.")
+
+explanation = Draft202012Validator(json.loads((root / "context-explanation-v1.schema.json").read_text()))
+explanation_fixture = json.loads((root / "fixtures/context-explanation-v1.json").read_text())
+for key in ["request", "response", "capabilities", "error"]:
+    explanation.validate(explanation_fixture[key])
+assert not explanation.is_valid({**explanation_fixture["request"], "url": "https://private.test"})
+print("Context explanation structural fixtures passed (UTF-16/byte bounds are runtime-tested).")

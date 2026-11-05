@@ -3,6 +3,8 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SQLiteDatabase } from './sqlite';
 import { HermesTranslator } from './hermes';
+import { MagpieCapacity } from './magpie-capacity';
+import { MagpieContextExplainer } from './context-explanation';
 import { MagpieTranslator } from './magpie';
 import { ServerDictionary, ServerTranslator, MyMemoryTranslator } from './lookup';
 import { ServerWordNet } from './wordnet';
@@ -39,13 +41,20 @@ export function createRuntime(options: {
     const homepage = readFileSync(resolve(options.publicDirectory, 'index.html'), 'utf8');
     const provider = config.TRANSLATION_PROVIDER ?? (config.HERMES_BASE_URL ? 'hermes' : 'none');
     if (!['magpie', 'hermes', 'none'].includes(provider)) throw new Error('Invalid TRANSLATION_PROVIDER');
+    const capacity = new MagpieCapacity(2);
+    if (config.CONTEXT_EXPLANATION_ENABLED === 'true' && provider !== 'magpie') throw new Error('Context explanation requires Magpie');
     const primary = provider === 'magpie' ? new MagpieTranslator({
       baseURL: config.MAGPIE_BASE_URL || 'http://127.0.0.1:3425/v1',
-      key: config.MAGPIE_API_KEY || '', model: config.MAGPIE_MODEL || 'group/translator',
+      key: config.MAGPIE_API_KEY || '', model: config.MAGPIE_MODEL || 'group/translator', capacity,
     }) : provider === 'hermes' ? new HermesTranslator({
       baseURL: config.HERMES_BASE_URL || '', key: config.HERMES_API_KEY || '', model: config.HERMES_MODEL || 'hermes-agent',
     }) : undefined;
     return {
+      EXPLANATION_LIMIT: new WindowLimiter(6),
+      EXPLAINER: config.CONTEXT_EXPLANATION_ENABLED === 'true' ? new MagpieContextExplainer({
+        baseURL: config.MAGPIE_BASE_URL || 'http://127.0.0.1:3425/v1', key: config.MAGPIE_API_KEY || '',
+        model: config.MAGPIE_MODEL || 'group/translator', capacity,
+      }) : undefined,
       DB: database, ENVIRONMENT: environment, PUBLIC_ORIGIN: origin.origin,
       NATIVE_CALLBACKS: config.NATIVE_CALLBACKS || 'rememberme://auth/callback',
       CLIENT_ORIGINS: config.CLIENT_ORIGINS || '',

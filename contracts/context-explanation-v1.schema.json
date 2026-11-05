@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Runtime additionally bounds UTF-16 code units and encoded request bytes; JSON Schema maxLength counts Unicode code points.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "word",
+        "context",
+        "target"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "word": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[a-zA-Z](?:[a-zA-Z'-]*[a-zA-Z])?$"
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "pattern": "\\S"
+        },
+        "target": {
+          "const": "zh-CN"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "contextualMeaning",
+        "sentenceTranslation",
+        "usageNote",
+        "provider",
+        "explanationVersion"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "provider": {
+          "const": "magpie"
+        },
+        "explanationVersion": {
+          "const": "context-v1"
+        },
+        "contextualMeaning": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "\\S"
+        },
+        "sentenceTranslation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "pattern": "\\S"
+        },
+        "usageNote": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "enabled",
+        "maxContextLength",
+        "maxBodyBytes",
+        "explanationVersion"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "maxContextLength": {
+          "const": 1000
+        },
+        "maxBodyBytes": {
+          "const": 16384
+        },
+        "explanationVersion": {
+          "const": "context-v1"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "retryable"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "EXPLANATION_DISABLED",
+                "EXPLANATION_INVALID_INPUT",
+                "EXPLANATION_INVALID_RESPONSE",
+                "EXPLANATION_BUSY",
+                "EXPLANATION_TIMEOUT",
+                "EXPLANATION_UNAVAILABLE",
+                "EXPLANATION_CANCELLED",
+                "RATE_LIMITED",
+                "REQUEST_TOO_LARGE",
+                "JSON_REQUIRED",
+                "INVALID_JSON",
+                "BODY_TIMEOUT",
+                "ORIGIN_REJECTED",
+                "PUBLIC_LOOKUP_NOT_CONFIGURED",
+                "INTERNAL_ERROR"
+              ]
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -36,5 +36,7 @@ export interface Bindings {
   CLIENT_ORIGINS?: string;
   CLIENT_IP?: string;
   TRANSLATOR?: { translate(word: string): Promise<Translation> };
+  EXPLANATION_LIMIT?: Limiter;
+  EXPLAINER?: { explain(input: import('../../contracts/context-explanation').ContextExplanationInput, signal?: AbortSignal): Promise<import('../../contracts/context-explanation').ContextExplanation> };
   DICTIONARY?: { getDefinition(word: string): Promise<import('../../contracts/api-v1').Json> };
 }

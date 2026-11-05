@@ -60,3 +60,20 @@ it('uses fixed edge dictionary egress and validates data before recovering throu
   await call('/api/v1/public/lookup/dictionary', { word: 'curated' });
   expect(privateFetch).toHaveBeenCalledTimes(1);
 });
+
+it('routes context explanations and capability GET with separate body/method policies', async () => {
+  const { fetch, env, call } = fixture();
+  const explain = '/api/v1/public/lookup/context-explanation', capability = '/api/v1/public/lookup/capabilities';
+  const body = { schemaVersion: 1, word: 'bank', context: '中'.repeat(1000), target: 'zh-CN' };
+  expect((await call(explain, body)).status).toBe(200);
+  expect((await call(explain, { ...body, url: 'private' })).status).toBe(400);
+  expect((await call(explain, { ...body, context: 'x'.repeat(17000) })).status).toBe(413);
+  expect((await call('/api/v1/public/lookup/translation', body)).status).toBe(413);
+  expect((await gateway.fetch(new Request('https://lookup.example.test' + capability, { headers: { Origin: extension } }), env)).status).toBe(200);
+  expect(fetch.mock.calls.at(-1)?.[1].method).toBe('GET');
+  expect((await call(capability, {})).status).toBe(404);
+  const preflight = new Request('https://lookup.example.test' + capability, { method: 'OPTIONS', headers: { Origin: extension, 'Access-Control-Request-Method': 'GET' } });
+  expect((await gateway.fetch(preflight, env)).status).toBe(204);
+  preflight.headers.set('Access-Control-Request-Headers', 'Authorization');
+  expect((await gateway.fetch(preflight, env)).status).toBe(403);
+});

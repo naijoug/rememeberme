@@ -1,3 +1,4 @@
+import { EXPLANATION_PATH, EXPLANATION_CAPABILITIES_PATH, EXPLANATION_MAX_BODY, isContextExplanationInput } from '../../contracts/context-explanation';
 const dictionary = '/api/v1/public/lookup/dictionary';
 const translation = '/api/v1/public/lookup/translation';
 
@@ -32,14 +33,16 @@ export default {
       output.set('X-Content-Type-Options', 'nosniff'); output.set('Referrer-Policy', 'no-referrer');
       return new Response(asset.body, { status: asset.status, headers: output });
     }
+    const capability = url.pathname === EXPLANATION_CAPABILITIES_PATH;
+    const explanation = url.pathname === EXPLANATION_PATH;
     const health = url.pathname === '/api/v1/health' && request.method === 'GET';
-    if (!health && (![dictionary, translation].includes(url.pathname) || !['POST', 'OPTIONS'].includes(request.method))) return reply(404, 'NOT_FOUND');
+    if (!health && !(capability && ['GET', 'OPTIONS'].includes(request.method)) && (!([dictionary, translation, EXPLANATION_PATH].includes(url.pathname)) || !['POST', 'OPTIONS'].includes(request.method))) return reply(404, 'NOT_FOUND');
     if (!corsOrigin(origin)) return reply(403, 'ORIGIN_REJECTED');
     if (origin) { headers.set('Access-Control-Allow-Origin', origin); headers.set('Vary', 'Origin'); }
     if (request.method === 'OPTIONS') {
-      if (request.headers.get('Access-Control-Request-Method') !== 'POST'
+      if (request.headers.get('Access-Control-Request-Method') !== (capability ? 'GET' : 'POST')
         || (request.headers.get('Access-Control-Request-Headers') ?? '').split(',').some(h => h.trim() && !['content-type', 'accept'].includes(h.trim().toLowerCase()))) return reply(403, 'ORIGIN_REJECTED');
-      headers.set('Access-Control-Allow-Methods', 'POST,OPTIONS'); headers.set('Access-Control-Allow-Headers', 'Content-Type,Accept');
+      headers.set('Access-Control-Allow-Methods', capability ? 'GET,OPTIONS' : 'POST,OPTIONS'); headers.set('Access-Control-Allow-Headers', 'Content-Type,Accept');
       return new Response(null, { status: 204, headers });
     }
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
@@ -47,18 +50,22 @@ export default {
       headers.set('Retry-After', '60'); return reply(429, 'RATE_LIMITED');
     }
     let body: Uint8Array | undefined, lookupWord = '';
-    if (!health) {
+    if (!health && !capability) {
       if (!request.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase().endsWith('/json')) return reply(415, 'JSON_REQUIRED');
       try {
-        body = await readBounded(request.body, 2048);
+        body = await readBounded(request.body, explanation ? EXPLANATION_MAX_BODY : 2048);
         const input: unknown = JSON.parse(new TextDecoder('utf-8', { fatal: true, ignoreBOM: false }).decode(body));
         if (!input || typeof input !== 'object' || Array.isArray(input)) return reply(400, 'INVALID_LOOKUP');
-        const values = Object.entries(input), allowed = url.pathname === translation ? ['word', 'target'] : ['word'];
-        if (values.length !== allowed.length || values.some(([key]) => !allowed.includes(key))) return reply(400, 'INVALID_LOOKUP');
-        const word = Reflect.get(input, 'word');
-        if (typeof word !== 'string' || word.length > 500 || !/^[a-z](?:[a-z'-]*[a-z])?$/.test(word.trim().toLowerCase())
-          || (url.pathname === translation && Reflect.get(input, 'target') !== 'zh-CN')) return reply(400, 'INVALID_LOOKUP');
-        lookupWord = word.trim().toLowerCase();
+        if (explanation) {
+          if (!isContextExplanationInput(input)) return reply(400, 'EXPLANATION_INVALID_INPUT');
+        } else {
+          const values = Object.entries(input), allowed = url.pathname === translation ? ['word', 'target'] : ['word'];
+          if (values.length !== allowed.length || values.some(([key]) => !allowed.includes(key))) return reply(400, 'INVALID_LOOKUP');
+          const word = Reflect.get(input, 'word');
+          if (typeof word !== 'string' || word.length > 500 || !/^[a-z](?:[a-z'-]*[a-z])?$/.test(word.trim().toLowerCase())
+            || (url.pathname === translation && Reflect.get(input, 'target') !== 'zh-CN')) return reply(400, 'INVALID_LOOKUP');
+          lookupWord = word.trim().toLowerCase();
+        }
       } catch (error) { return reply(error instanceof Error && error.message === 'BODY_TOO_LARGE' ? 413 : 400, 'INVALID_LOOKUP'); }
     }
     try {

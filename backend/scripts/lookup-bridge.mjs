@@ -4,7 +4,9 @@ import { createServer } from 'node:http';
 import { isIP } from 'node:net';
 import { pathToFileURL } from 'node:url';
 
-const paths = new Set(['/api/v1/public/lookup/dictionary', '/api/v1/public/lookup/translation']);
+const explanationPath = '/api/v1/public/lookup/context-explanation';
+const capabilityPath = '/api/v1/public/lookup/capabilities';
+const paths = new Set([explanationPath, '/api/v1/public/lookup/dictionary', '/api/v1/public/lookup/translation']);
 export function createLookupBridge({ fetcher = fetch, upstream = 'http://127.0.0.1:8787' } = {}) {
   const base = new URL(upstream);
   if (base.origin !== 'http://127.0.0.1:8787') throw new Error('The lookup bridge targets only the local Remember Me API.');
@@ -14,8 +16,9 @@ export function createLookupBridge({ fetcher = fetch, upstream = 'http://127.0.0
       outgoing.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
       outgoing.end(JSON.stringify({ error: { code } }));
     };
+    const capability = incoming.url === capabilityPath;
     const health = incoming.url === '/api/v1/health' && incoming.method === 'GET';
-    if (!health && (!paths.has(incoming.url) || !['POST', 'OPTIONS'].includes(incoming.method))) { incoming.resume(); reply(404, 'NOT_FOUND'); return; }
+    if (!health && !(capability && ['GET', 'OPTIONS'].includes(incoming.method)) && (!paths.has(incoming.url) || !['POST', 'OPTIONS'].includes(incoming.method))) { incoming.resume(); reply(404, 'NOT_FOUND'); return; }
     if (active >= 8) { incoming.resume(); reply(503, 'LOOKUP_BUSY'); return; }
     active++;
     try {
@@ -24,7 +27,7 @@ export function createLookupBridge({ fetcher = fetch, upstream = 'http://127.0.0
       const chunks = []; let bytes = 0;
       for await (const chunk of incoming) {
         bytes += chunk.length;
-        if (bytes > 2048) { incoming.resume(); reply(413, 'REQUEST_TOO_LARGE'); return; }
+        if (bytes > (incoming.url === explanationPath ? 16 * 1024 : capability ? 0 : 2048)) { incoming.resume(); reply(413, 'REQUEST_TOO_LARGE'); return; }
         chunks.push(chunk);
       }
       const headers = { Accept: 'application/json', ...(origin ? { Origin: origin } : {}) };
@@ -43,8 +46,16 @@ export function createLookupBridge({ fetcher = fetch, upstream = 'http://127.0.0
         'access-control-allow-headers', 'vary', 'retry-after', 'x-request-id']) {
         const value = response.headers.get(name); if (value) outputHeaders[name] = value;
       }
-      const body = Buffer.from(await response.arrayBuffer());
-      if (body.length > 256 * 1024) throw new Error('Oversize lookup response');
+      const reader = response.body?.getReader(); const responseChunks = []; let responseBytes = 0;
+      try {
+        if (reader) while (true) {
+          const next = await reader.read(); if (next.done) break;
+          responseBytes += next.value.byteLength;
+          if (responseBytes > 256 * 1024) throw new Error('Oversize lookup response');
+          responseChunks.push(next.value);
+        }
+      } finally { if (reader) { void reader.cancel().catch(() => {}); reader.releaseLock(); } }
+      const body = Buffer.concat(responseChunks);
       outgoing.writeHead(response.status, outputHeaders); outgoing.end(body);
     } catch { if (!outgoing.headersSent) reply(502, 'LOOKUP_UNAVAILABLE'); else outgoing.destroy(); }
     finally { active--; }

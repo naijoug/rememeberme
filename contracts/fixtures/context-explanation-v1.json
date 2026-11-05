@@ -1,0 +1,29 @@
+{
+  "request": {
+    "schemaVersion": 1,
+    "word": "bank",
+    "context": "The bank raised interest rates.",
+    "target": "zh-CN"
+  },
+  "response": {
+    "schemaVersion": 1,
+    "contextualMeaning": "银行",
+    "sentenceTranslation": "银行提高了利率。",
+    "usageNote": "这里指金融机构。",
+    "provider": "magpie",
+    "explanationVersion": "context-v1"
+  },
+  "capabilities": {
+    "schemaVersion": 1,
+    "enabled": false,
+    "maxContextLength": 1000,
+    "maxBodyBytes": 16384,
+    "explanationVersion": "context-v1"
+  },
+  "error": {
+    "error": {
+      "code": "EXPLANATION_DISABLED",
+      "retryable": false
+    }
+  }
+}

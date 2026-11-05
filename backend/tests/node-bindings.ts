@@ -20,7 +20,7 @@ export async function reset() {
   env.AUTH_LIMIT = new WindowLimiter(30); env.API_LIMIT = new WindowLimiter(300);
   env.NATIVE_CALLBACKS = 'rememberme://auth/callback';
   delete env.TRANSLATOR; delete env.DICTIONARY; delete env.CLIENT_ORIGINS;
-  delete env.LOOKUP_LIMIT;
+  delete env.LOOKUP_LIMIT; delete env.EXPLAINER; delete env.EXPLANATION_LIMIT;
   delete env.CLIENT_IP;
 }
 export async function applyD1Migrations(database: Bindings['DB'], migrations: Migration[]) {
