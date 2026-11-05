@@ -84,6 +84,20 @@ import Combine
                 }
                 repository = try await RepositoryPool.open(url)
                 #if DEBUG
+                if args.contains("-rememberme-test-review-context"), let index = args.firstIndex(of: "-rememberme-test-store"),
+                   args.count > index + 1, args[index + 1].hasPrefix("ui-"),
+                   UUID(uuidString: String(args[index + 1].dropFirst(3))) != nil, let repository,
+                   try await repository.entries().isEmpty {
+                    // Opt-in synthetic UI fixture, guarded by a disposable UUID store.
+                    let current: JSONValue = .object(["word": .string("bank"), "phonetics": .array([]), "meanings": .array([]),
+                        "translation": .object(["text": .string("Current fixture meaning"), "target": .string("zh-CN"), "source": .string("magpie")])])
+                    let snapshot: JSONValue = .object(["word": .string("bank"), "phonetics": .array([]), "meanings": .array([]),
+                        "translation": .object(["text": .string("Saved fixture meaning"), "target": .string("zh-CN"), "source": .string("magpie")])])
+                    var entry = VocabularyEntry(id: "ui-context-bank", word: "bank", count: 3, definition: current)
+                    entry.history = [Encounter(id: "ui-context-source", timestamp: 1, context: "The bank is beside the park.",
+                        url: "https://example.test/reading", definition: snapshot)]
+                    try await repository.create(entry)
+                }
                 if args.contains("-rememberme-test-import-recovery"), let index = args.firstIndex(of: "-rememberme-test-store"),
                    args.count > index + 1, args[index + 1].hasPrefix("ui-"),
                    UUID(uuidString: String(args[index + 1].dropFirst(3))) != nil, let repository,

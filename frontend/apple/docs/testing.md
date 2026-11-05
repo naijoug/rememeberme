@@ -4,7 +4,7 @@ Magpie compatibility adds shared-schema/legacy validation, authenticated source
 decoding and backend-v3 persistent-cache checks. Native HTTP integration uses
 the Magpie adapter with synthetic inference; the original Hermes unit suite is
 retained. Connected translation has a twenty-second client budget so the
-twelve-second primary plus four-second fallback can complete. Updated native
+three-second Magpie primary plus four-second fallback can complete. Updated native
 builds accept all three sources; old installed builds require an update.
 
 Use Xcode 16/Swift 6 or later. Node commands use the extension's `.nvmrc` (currently 22.22.3). Package tests use synthetic fixtures and disposable SQLite stores; no production accounts, real vocabulary or live dictionary requests are involved.
@@ -151,6 +151,12 @@ download/install, current-version handling, unavailable feeds and signature
 rejection without touching an installed app or real vocabulary. macOS universal
 release builds and iOS compatibility builds are separate checks. See the
 [executed record](verification/2026-10-26-auto-updates.md).
+
+## Original-sentence review (2026-10-26)
+
+`ReviewCardContentTests.swift` covers literal whole-term matching, the 20-encounter limit, bounded display, historical/current/absent meaning, unsafe URLs, readable fallback after history failure, changed-source concealment and stale/closed-view reply isolation. Existing ReviewModelTests retain reveal-before-answer, count/history invariance, quota persistence and conflict checks.
+
+The targeted iOS UI case `testOriginalSentenceReviewHidesMeaningUntilRevealAndPreservesCount` uses a DEBUG-only, UUID-guarded disposable store. It verifies the original sentence before reveal, absence of both meanings in the accessibility tree, the saved encounter meaning after reveal, and unchanged forgotten count/history after answering. The fixture is never seeded in a normal store or Release build. See [first-round verification](verification/2026-10-26-original-sentence-review.md) for executed checks and remaining device acceptance.
 
 ## Inline macOS settings
 

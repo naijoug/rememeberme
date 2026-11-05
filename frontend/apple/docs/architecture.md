@@ -2,7 +2,7 @@
 
 ## Magpie update (2026-10-24)
 
-Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+Current source supports backend Magpie translation through the `group/translator` routing group
 and server-side MyMemory fallback. The new `magpie` source is accepted alongside
 legacy `hermes` and `mymemory` snapshots without rewriting saved history.
 Connected native lookup uses a `backend-v3:` cache namespace and a twenty-second
@@ -114,6 +114,10 @@ naijoug, synced a synthetic account word, and retained the session after restart
 See [hosted evidence](../../../backend/docs/verification/2026-10-25-account-deployment.md)
 for deployment backups and completed installed Chrome↔Mac record/reset/delete
 synchronization, with the original anonymous browser vocabulary retained.
+
+## Review presentation sources (2026-10-26)
+
+`ReviewCardContent` is an ephemeral UI model, not a new database or backup field. `ReviewModel.load()` reads the existing bounded review queue, then requests at most 20 encounters only for its first entry. A load generation guards both reads; source identity/content participates in answer concealment. History errors produce a current-definition fallback without claiming the queue is empty. Repository ownership stays fixed per model, and the existing root-view owner-change handler dismisses review. No cloud/API schema or review algorithm changes are needed.
 
 ## Navigation selection boundary
 

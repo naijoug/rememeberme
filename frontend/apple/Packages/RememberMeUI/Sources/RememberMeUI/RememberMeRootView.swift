@@ -345,18 +345,18 @@ struct DefinitionText: View {
     let definition: JSONValue
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let phonetic = definition["phonetic"]?.text { Text(verbatim: phonetic).foregroundStyle(.secondary) }
-            if definition["source"]?.text == "wordnet" { Text("Offline English · WordNet").font(.caption).foregroundStyle(.secondary) }
+            if let phonetic = definition["phonetic"]?.text { Text(verbatim: phonetic).foregroundStyle(Color.primary.opacity(0.8)) }
+            if definition["source"]?.text == "wordnet" { Text("Offline English · WordNet").font(.caption).foregroundStyle(Color.primary.opacity(0.8)) }
             if let text = definition["translation"]?["text"]?.text { Text(verbatim: text) }
-            if definition["translation"]?["source"]?.text == "magpie" { Text("Online translation · Magpie").font(.caption).foregroundStyle(.secondary) }
-            else if definition["translation"]?["source"]?.text == "hermes" { Text("Online translation · Hermes").font(.caption).foregroundStyle(.secondary) }
+            if definition["translation"]?["source"]?.text == "magpie" { Text("Online translation · Magpie").font(.caption).foregroundStyle(Color.primary.opacity(0.8)) }
+            else if definition["translation"]?["source"]?.text == "hermes" { Text("Online translation · Hermes").font(.caption).foregroundStyle(Color.primary.opacity(0.8)) }
             let meanings = definition["meanings"]?.items ?? []
-            if meanings.isEmpty && definition["translation"] == nil { Text("No definition saved yet.").foregroundStyle(.secondary) }
+            if meanings.isEmpty && definition["translation"] == nil { Text("No definition saved yet.").foregroundStyle(Color.primary.opacity(0.8)) }
             ForEach(Array(meanings.enumerated()), id: \.offset) { _, meaning in
-                if let part = meaning["partOfSpeech"]?.text { Text(verbatim: part).font(.caption).foregroundStyle(.secondary) }
+                if let part = meaning["partOfSpeech"]?.text { Text(verbatim: part).font(.caption).foregroundStyle(Color.primary.opacity(0.8)) }
                 ForEach(Array((meaning["definitions"]?.items ?? []).enumerated()), id: \.offset) { _, item in
                     if let text = item["definition"]?.text { Text(verbatim: text).textSelection(.enabled) }
-                    if let example = item["example"]?.text { Text(verbatim: example).font(.callout).foregroundStyle(.secondary).textSelection(.enabled) }
+                    if let example = item["example"]?.text { Text(verbatim: example).font(.callout).foregroundStyle(Color.primary.opacity(0.8)).textSelection(.enabled) }
                 }
             }
         }

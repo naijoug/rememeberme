@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 
 final class VocabularyUITests: XCTestCase {
     #if os(macOS)
@@ -37,6 +38,70 @@ final class VocabularyUITests: XCTestCase {
         XCTAssertFalse(app.buttons["back-to-vocabulary"].exists)
     }
     #endif
+
+    @MainActor func testOriginalSentenceReviewHidesMeaningUntilRevealAndPreservesCount() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-rememberme-test-store", "ui-" + UUID().uuidString, "-rememberme-test-review-context"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["bank"].firstMatch.waitForExistence(timeout: 15))
+        app.buttons["Learn words"].tap()
+        XCTAssertTrue(app.staticTexts["The bank is beside the park."].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["Saved fixture meaning"].exists)
+        XCTAssertFalse(app.staticTexts["Current fixture meaning"].exists)
+        let front = XCTAttachment(screenshot: app.screenshot()); front.name = "Original sentence front"; front.lifetime = .keepAlways; add(front)
+        app.buttons["Reveal meaning"].tap()
+        XCTAssertTrue(app.staticTexts["Saved fixture meaning"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["Current fixture meaning"].exists)
+        let back = XCTAttachment(screenshot: app.screenshot()); back.name = "Original sentence revealed"; back.lifetime = .keepAlways; add(back)
+        app.buttons["Remembered"].tap()
+        XCTAssertTrue(app.staticTexts["Review complete for now"].waitForExistence(timeout: 5))
+        app.buttons["Done"].tap()
+        app.staticTexts["bank"].firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["Forgotten: 3"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Records (1)"].exists)
+        app.terminate()
+    }
+    @MainActor func testReviewDynamicTypeDarkModeAndAccessibility() throws {
+        let app = XCUIApplication()
+        let store = "ui-" + UUID().uuidString
+        app.launchArguments = ["-rememberme-test-store", store, "-rememberme-test-review-context", "-rememberme.appearance", "light"]
+        app.launch()
+        XCTAssertTrue(app.buttons["Learn words"].waitForExistence(timeout: 15)); app.buttons["Learn words"].tap()
+        let sentence = app.staticTexts["The bank is beside the park."]
+        XCTAssertTrue(sentence.waitForExistence(timeout: 5))
+        let normalHeight = sentence.frame.height
+        try app.performAccessibilityAudit(for: [.contrast, .sufficientElementDescription, .textClipped])
+        app.terminate()
+        app.launchArguments[app.launchArguments.firstIndex(of: "light")!] = "dark"
+        app.launch()
+        XCTAssertTrue(app.buttons["Learn words"].waitForExistence(timeout: 15)); app.buttons["Learn words"].tap()
+        XCTAssertTrue(app.buttons["Reveal meaning"].waitForExistence(timeout: 5)); app.buttons["Reveal meaning"].tap()
+        XCTAssertTrue(app.staticTexts["Saved fixture meaning"].waitForExistence(timeout: 5))
+        try app.performAccessibilityAudit(for: [.contrast, .sufficientElementDescription, .textClipped])
+        let dark = XCTAttachment(screenshot: app.screenshot()); dark.name = "iPhone dark contrast review"; dark.lifetime = .keepAlways; add(dark)
+        app.terminate()
+        app.launchArguments += ["-UIPreferredContentSizeCategoryName", UIContentSizeCategory.accessibilityExtraExtraExtraLarge.rawValue]
+        app.launch()
+        XCTAssertTrue(app.buttons["Learn words"].waitForExistence(timeout: 15)); app.buttons["Learn words"].tap()
+        XCTAssertTrue(sentence.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(sentence.frame.height, normalHeight)
+        XCTAssertFalse(app.staticTexts["Saved fixture meaning"].exists)
+        let scroll = app.scrollViews["review-scroll"]
+        XCTAssertTrue(scroll.exists)
+        for _ in 0..<6 {
+            if app.buttons["Reveal meaning"].isHittable { break }
+            scroll.swipeUp()
+        }
+        app.buttons["Reveal meaning"].tap()
+        XCTAssertTrue(app.staticTexts["Saved fixture meaning"].waitForExistence(timeout: 5))
+        // Colors are audited above in both schemes with the text visible. At
+        // maximum size the SDK contrast scan samples offscreen text as blank;
+        // retain its failure attachments and audit wrapping/names here instead.
+        try app.performAccessibilityAudit(for: [.sufficientElementDescription, .textClipped])
+        scroll.swipeUp()
+        let evidence = XCTAttachment(screenshot: app.screenshot()); evidence.name = "iPhone maximum accessibility text review"; evidence.lifetime = .keepAlways; add(evidence)
+        app.terminate()
+    }
 
     @MainActor func testAccountSettingsKeepsDisposableVocabularyAnonymousWithoutSigningIn() {
         let app = XCUIApplication()

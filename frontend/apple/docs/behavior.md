@@ -2,7 +2,7 @@
 
 ## Magpie update (2026-10-24)
 
-Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+Current source supports backend Magpie translation through the `group/translator` routing group
 and server-side MyMemory fallback. The new `magpie` source is accepted alongside
 legacy `hermes` and `mymemory` snapshots without rewriting saved history.
 Connected native lookup uses a `backend-v3:` cache namespace and a twenty-second
@@ -70,3 +70,9 @@ the update feed and archive are signature-verified, with verification before
 extraction. Failure leaves the existing app available. The personal ad-hoc
 release keeps the existing unsandboxed data location. This is application
 updating, independent of account vocabulary sync. See [release behavior](automatic-updates.md).
+
+## Original-sentence review (2026-10-26)
+
+Learn words shows the current word plus the first matching original sentence among its most recent 20 encounters (stored position order). Matching is case-insensitive and literal with word boundaries; no stemming or regex interpolation is used. An absent/nonmatching sentence falls back to the ordinary word card. Long display text is bounded around the match without changing the stored source.
+
+Reveal shows the selected encounter's saved meaning; if empty, it uses the current meaning with an explicit label, or a no-definition message. Only HTTP(S) sources become links, and all text stays literal. History-load failure offers retry but permits ordinary-card review without network lookup. Changes to the word or selected source hide the answer again. Closing/switching owners invalidates pending history results. Answering retains review-v1, daily limits, forgotten counts and encounter records.
