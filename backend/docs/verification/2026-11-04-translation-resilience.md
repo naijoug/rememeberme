@@ -1,5 +1,9 @@
 # Word translation resilience — 2026-11-04
 
+This record describes the pre-deployment implementation and comparison.
+Production activation subsequently completed; see the separate
+[deployment record](2026-11-04-translation-deployment.md).
+
 ## Scope and activation
 
 Implemented in the existing working tree, preserving its prior uncommitted work.

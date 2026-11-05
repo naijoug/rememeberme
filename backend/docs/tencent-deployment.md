@@ -1,5 +1,13 @@
 # Tencent Lighthouse deployment
 
+## Translation resilience activation — 2026-11-04
+
+Active runtime: `/opt/rememberme/releases/20261104-translation-db61a6e-0fc87366/runtime`.
+The API uses the existing `group/translator`, now with a three-second primary
+deadline and a two-failure/30-second word circuit. A verified SQLite backup and
+the prior release are retained. No migration, configuration or gateway change
+was made; only `rememberme-api` restarted. See [acceptance and rollback](verification/2026-11-04-translation-deployment.md).
+
 ## Context explanation activation — 2026-10-27
 
 Runtime `/opt/rememberme/releases/20261027-context-fac9579f94d8/runtime` is active with sentence explanation enabled. The shared model routing group is unchanged. A consistent SQLite backup, previous runtime, environment and lookup-bridge backups are retained; no migration was added. Personal lookup now enters through the dedicated new tunnel/Worker, while existing account ingress remains intact. See [release verification and rollback](verification/2026-10-27-context-release.md).

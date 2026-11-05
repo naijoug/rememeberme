@@ -1,0 +1,18 @@
+{
+  "candidate": "/opt/rememberme/releases/20261104-translation-db61a6e-0fc87366/runtime",
+  "previous": "/opt/rememberme/releases/20261027-context-fac9579f94d8/runtime",
+  "archiveSha256": "0fc8736662665232bb20916eef839e73a2d96b076c83238cfd388d751449d733",
+  "migrationsUnchanged": true,
+  "sourceCommit": "db61a6ee7de835196cd35a3da23d6e1ca858e35b",
+  "activated": true,
+  "backup": "/var/lib/rememberme/backups/pre-translation-20261104-db61a6e.sqlite",
+  "configurationBackup": "/etc/rememberme/translation-backup-20261104-db61a6e/api.env",
+  "configurationSha256": "f80a89ccaa96ddb1c7df293f57f645b68b4fba9c8dc166b418ef050c2fd0a1de",
+  "configurationUnchanged": true,
+  "healthStatus": 200,
+  "protectedStatus": 401,
+  "explanationEnabled": true,
+  "neighborServicesUnchanged": true,
+  "databaseRestored": false,
+  "utcCompleted": "2026-11-05T04:15:22Z"
+}

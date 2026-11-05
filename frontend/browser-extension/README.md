@@ -12,8 +12,10 @@ The first public HTTP attempt now has nine seconds for this complete provider
 chain plus network overhead. One eligible retry fits inside nineteen seconds;
 service/UI deadlines remain 20/22 seconds. Structured `retryable: false` errors,
 HTTP 4xx, malformed JSON and oversized bodies are not retried. These source
-changes require backend deployment; local watcher/build success alone does not
-prove production activation. See [verification](../../backend/docs/verification/2026-11-04-translation-resilience.md).
+changes are active on the backend as of November 4; local watcher/build success
+alone does not prove an installed Chrome client loaded its update. See
+[implementation verification](../../backend/docs/verification/2026-11-04-translation-resilience.md)
+and [production acceptance](../../backend/docs/verification/2026-11-04-translation-deployment.md).
 
 ## Sentence explanation release (0.1.5, 2026-10-27)
 

@@ -1,0 +1,78 @@
+{
+  "sourceCommit": "db61a6ee7de835196cd35a3da23d6e1ca858e35b",
+  "date": "2026-11-04",
+  "timezone": "America/Los_Angeles",
+  "samples": [
+    {
+      "phase": "before",
+      "word": "granite",
+      "ms": 2521,
+      "attempts": 2,
+      "statuses": [
+        200
+      ],
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "phase": "before",
+      "word": "saffron",
+      "ms": 2503,
+      "attempts": 1,
+      "statuses": [
+        200
+      ],
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "phase": "before",
+      "word": "tundra",
+      "ms": 2484,
+      "attempts": 1,
+      "statuses": [
+        200
+      ],
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "phase": "after",
+      "word": "granite",
+      "ms": 3335,
+      "attempts": 1,
+      "statuses": [
+        200
+      ],
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "phase": "after",
+      "word": "saffron",
+      "ms": 2785,
+      "attempts": 1,
+      "statuses": [
+        200
+      ],
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "phase": "after",
+      "word": "tundra",
+      "ms": 1987,
+      "attempts": 1,
+      "statuses": [
+        200
+      ],
+      "ok": true,
+      "source": "magpie"
+    }
+  ],
+  "limitations": [
+    "Small sample; no p95 claim.",
+    "Before requests may hit existing server caches; no production cache was cleared.",
+    "Includes public HTTPS and client retry policy, not an installed-browser UI measurement."
+  ]
+}

@@ -1,5 +1,13 @@
 # Remember Me API
 
+## Translation resilience deployed (2026-11-04)
+
+The API now runs `/opt/rememberme/releases/20261104-translation-db61a6e-0fc87366/runtime`.
+Word translation retains `group/translator` with a three-second primary,
+four-second MyMemory fallback and a two-failure/30-second circuit. Migrations,
+private configuration, account data and neighboring services were preserved.
+Public lookup and rollback evidence are in the [deployment record](docs/verification/2026-11-04-translation-deployment.md).
+
 ## Context explanation production release (2026-10-27)
 
 The verified personal lookup Worker is `https://rememberme-lookup.couplelabs.workers.dev`. The Tencent runtime is `/opt/rememberme/releases/20261027-context-fac9579f94d8/runtime`, with `CONTEXT_EXPLANATION_ENABLED=true` and the existing `group/translator` setting retained. The previous runtime, consistent database backup and configuration/bridge backups remain for rollback. No schema migration, account-ingress change or DNS cutover was made. See [release and rollback evidence](docs/verification/2026-10-27-context-release.md). New installations continue to default off until their gates pass.
