@@ -1,0 +1,9 @@
+{
+  "email": "naijoug@outlook.com",
+  "accountId": "5c11819c6fdb08421e6d58084e37f028",
+  "tunnelId": "1e84a055-cb45-4a10-adbc-e7ab7e3bfcfa",
+  "serviceId": "01a18092-88b0-7d51-899f-7dddc223daf1",
+  "host": "127.0.0.1",
+  "httpPort": 8788,
+  "workerURL": "https://rememberme-lookup.couplelabs.workers.dev"
+}

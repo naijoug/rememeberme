@@ -48,7 +48,7 @@ To distinguish retained records from a new failure: refresh the specific affecte
 
 Keep the service running while using this build: its popup loads development assets from localhost. Source errors must be fixed before a new build can succeed. This workflow does not mean automated tests run or pass on each save. Run the checks in [testing.md](testing.md) before declaring a change complete.
 
-The feedback build adds WXT's development-only `tabs` and `scripting` permissions and localhost access for updates. Release builds omit the local update connection and use the permissions documented in [architecture.md](architecture.md). It does not publish anything or sync vocabulary to a server.
+The feedback build adds WXT's development-only `tabs` and `scripting` permissions and localhost access for updates. Release builds omit the local update connection and use the permissions documented in [architecture.md](architecture.md). The feedback connection does not publish or sync vocabulary. The extension itself retains the current account functionality: signing in enables account sync; anonymous words remain separate until an explicit copy.
 
 WXT references: [browser startup/manual profiles](https://wxt.dev/guide/essentials/config/browser-startup), [content-script lifecycle](https://wxt.dev/guide/essentials/content-scripts).
 

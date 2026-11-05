@@ -119,6 +119,7 @@ The older Cloudflare plan is historical context. The current backend target is T
 | What checks are needed and what has actually been run? | [Testing](../frontend/browser-extension/docs/testing.md) and its linked verification records |
 | What is proposed for the website and backend? | [Cloudflare implementation plan](cloudflare-implementation-plan.md) |
 | How will macOS and iOS clients be built and integrated? | [Apple clients implementation plan](apple-clients-implementation-plan.md) |
+| How will local typing practice be added to the extension? | [Typing practice implementation plan](typing-practice-implementation-plan.md) (proposed; reviewed against 0.1.5 and the 2026-11-04 working tree) |
 
 Archived specifications are historical context. Design references and dated verification records do not establish that today's working tree passes browser checks.
 

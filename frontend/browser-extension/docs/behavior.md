@@ -2,7 +2,7 @@
 
 ## Magpie update (2026-10-24)
 
-Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+Current source supports backend Magpie translation through the `group/translator` routing group
 and server-side MyMemory fallback. The new `magpie` source is accepted alongside
 legacy `hermes` and `mymemory` snapshots without rewriting saved history.
 Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
@@ -11,6 +11,16 @@ The descriptions and dated acceptance links below retain pre-Magpie context;
 use the new deployment record for current host acceptance.
 
 Selection saving updated against the working-tree source on 2026-10-15; pronunciation and lookup layout on 2026-10-10; other behavior was reviewed on 2026-09-29. This describes the current product contract and explicitly tracks differences from the original specification. Historical plans are in [archive/](archive/README.md).
+
+## Website controls and popup geometry (2026-10-26)
+
+Settings → Websites can disable the active HTTP(S) hostname or enable a previously disabled hostname. Matching ignores ports and keeps subdomains separate. Rules are device-local, outside vocabulary exports and account sync. File-page lookups retain their existing browser-permission boundary; site rules are unavailable there.
+
+A disabled site closes the card, cancels delayed selection and UI waits, and blocks new page lookup/save requests in the background. Right-click lookup checks the top-level site before lookup and again before saving. A save already submitted is allowed to finish. Closing a card now releases its query subscriptions; only the last caller aborts shared HTTP work. Current service deadlines and translation recovery stay unchanged.
+
+Unreadable/future settings pause lookups and preserve the raw value until the user confirms Restore website settings. Enabled sites are resolved from trusted browser tab metadata; webpage messages cannot change rules. Active-tab changes invalidate a pending toggle.
+
+Popup positioning uses visualViewport bounds and a fixed-coordinate calibration element to handle translated/scaled page containers. Multi-line selections use the line nearest the release point. Interacted controls remain steady while results arrive. Page/nested scrolling retains the card; geometry events are coalesced into one animation frame. Geometry listeners/observers are removed on close/invalidation. The selection remains a snapshot; continuous live Range tracking is not enabled.
 
 ## Selection and saving
 
@@ -21,7 +31,7 @@ Selection saving updated against the working-tree source on 2026-10-15; pronunci
 - Repeated selections reuse one Vue application inside a closed ShadowRoot, preventing ordinary host-page DOM traversal of saved encounter text and URLs. Only the latest lookup may update its definition or error. Escape, the close button and deliberate outside clicks dismiss the card. Page scrolling, internal scrolling and drags starting inside the card do not dismiss it. A new selection replaces the lookup. Selection text/context/URL/position are captured on mouseup; closing cancels delayed opening.
 - The bookmark counter sits beside the word in a persistent header, with pronunciation beneath the word. Expand the Records row after the definitions, then a numbered entry to view its sentence, timestamp (including seconds) and source URL. These record numbers reflect retained history order, not the resettable count. Up to ten entries are shown at a time, with Show more records for older entries. The card is up to 420px wide and 480px high, constrained by the viewport; its reading body scrolls independently. After pointer entry or keyboard focus, result growth keeps controls in place.
 - The page card and vocabulary reading view label US/UK IPA with United States / United Kingdom SVG flags (including country names for screen readers and accent tooltips), with a small, borderless speaker icon immediately beside each available transcription. Exact selected spellings are read from separate packaged IPA data, independently of definition/translation availability; WordNet itself still has no phonetics. Source variants are preserved, some words have only one accent, and missing transcriptions are not invented. General saved/provider IPA is a fallback only for the matching spelling. Failed IPA loads offer retry and late results cannot replace a newer word's data; no history or backups are rewritten. Each icon uses an exact `en-US` / `en-GB` speech-synthesis voice, preferring a device voice. Missing voices are disabled with system guidance; a different accent is never substituted. Nothing plays automatically. Clicking the active icon stops playback; switching accents, changing words, closing and unmounting stop the prior playback. Speech failure/timeout is retryable (eight-second limit). Playback speaks the selected word without recording an encounter; the system voice may choose a different variant from the IPA list. See [sources and coverage](dictionary.md#pronunciation).
-- English lookup checks packaged WordNet first, then the built-in server dictionary route, without login or user-entered URLs. Chinese lookup uses the same built-in service with Hermes-first/MyMemory fallback. English has an 8.5-second service/ten-second UI budget; Chinese has a twenty-second service/twenty-two-second UI budget. Existing cached translations remain usable. The plugin never contacts third-party dictionary/translation providers directly. Sources retain actual attribution, and total lookup failure still permits recording a word/context. [Coverage and sources](dictionary.md) document external data flow.
+- English lookup checks packaged WordNet first, then the built-in server dictionary route, without login or user-entered URLs. Chinese lookup uses the same built-in service with `group/translator` Magpie-first/MyMemory fallback. The source budgets Magpie at three seconds and MyMemory at four; two consecutive upstream failures bypass Magpie for 30 seconds before a single recovery probe. The first HTTP attempt has nine seconds, with at most one eligible retry within nineteen seconds. Explicit `retryable: false` errors are not retried. English has an 8.5-second service/ten-second UI budget; Chinese has a twenty-second service/twenty-two-second UI budget. Existing cached translations remain usable. The plugin never contacts third-party dictionary/translation providers directly. Sources retain actual attribution, and total lookup failure still permits recording a word/context. [Coverage and sources](dictionary.md) document external data flow.
 - Context extraction uses the surrounding block rather than an inline link/emphasis/span and calculates the actual selected occurrence with DOM ranges. Ordinary sentences up to 1,000 characters are retained whole; longer text is bounded around the occurrence. Preformatted code preserves the complete selected line up to that bound. See [the extractor and tests](../services/context-extractor.ts).
 
 Chinese translation text in the page card and vocabulary reading view displays bracketed numbered pinyin with tone marks (`hong3 pian4` → `hǒng piàn`). The formatter supports neutral tones and explicit `ü` spellings, preserves ordinary numeric text and traditional/simplified variants, and never interprets provider/imported markup. Raw translations, caches, historical snapshots and exports are retained unchanged; existing data receives the formatting when displayed.
@@ -83,7 +93,7 @@ Add device words to account downloads the account state and previews each device
 
 Refresh intents survive response loss, failed credential persistence and restart. The server permits the exact retry for up to 24 hours while the successor remains active; after that, sign in again. Disconnect clears local credentials and uses the refresh credential to revoke the device even if access expired. Offline disconnection reports that server revocation was not confirmed.
 
-Lookup uses an internal fixed HTTPS gateway and persistent private connector. Connector restarts retain the hostname. English packaged hits remain local; Chinese and English misses call the service without login. Source attribution identifies Hermes, MyMemory, WordNet or Free Dictionary. Hosted OAuth and public account routing still require separate deployment and installed-client acceptance; local feature enablement does not establish those results.
+Lookup uses an internal fixed HTTPS gateway and persistent private connector. Connector restarts retain the hostname. English packaged hits remain local; Chinese and English misses call the service without login. Source attribution identifies Magpie, legacy Hermes, MyMemory, WordNet or Free Dictionary. Hosted OAuth and public account routing still require separate deployment and installed-client acceptance; local feature enablement does not establish those results.
 
 ### Account settings presentation
 
@@ -110,3 +120,11 @@ are offered through “Add device words to account” with a preview and confirm
 Opening that preview focuses it inside the scrollable popup. Recovery and sign-out
 remain explicit actions; copy/recovery confirmation and original-data retention
 are preserved.
+
+## Sentence explanation (released 2026-10-27)
+
+Release 0.1.5 displays Explain this sentence only after the personal lookup service reports a compatible enabled capability. User consent remains off until accepted. Before first use, the card asks permission to send this word and its original sentence to the translation service/model provider. Cancel sends no context; later explanations still require an explicit click. URL, title, full page and saved vocabulary are excluded.
+
+Results show contextual meaning, sentence translation and an optional usage note as literal text. They remain separate from definitions, recording and exports. Closing/changing the card, selecting Cancel explanation, disabling the site or disabling sentence explanation in Settings clears the relevant presentation/subscription; another active caller can retain shared work. Errors allow manual retry without changing count/history. Capability errors/off hide the entry; server-side disable also rejects actual requests. No automatic explanation retry or MyMemory fallback is used.
+
+PR 7 additionally passed eight bounded live-model samples, public off/on checks and an exact-ZIP finance/river explanation flow. The published policy describes local metadata and upstream retention limits; no zero-retention claim is made. These samples are not a general accuracy or availability guarantee. See the 2026-10-27 release record for the remaining native-device checks.

@@ -1,0 +1,10 @@
+{
+  "runtime": "/opt/rememberme/releases/20261027-context-fac9579f94d8/runtime",
+  "previousRuntime": "/opt/rememberme/releases/20261025-sessions-a5fe92f8a903/runtime",
+  "databaseBackup": "/var/lib/rememberme/backups/pre-20261027-context-fac9579f94d8.sqlite",
+  "configurationBackup": "/etc/rememberme/api.env.pre-20261027-context-fac9579f94d8",
+  "bridgeBackup": "/opt/rememberme/temporary/lookup-bridge.mjs.pre-20261027-context-fac9579f94d8",
+  "explanationEnabled": true,
+  "databaseRestored": false,
+  "beforeEnableConfigBackup": "/etc/rememberme/api.env.before-context-enable-20261027"
+}

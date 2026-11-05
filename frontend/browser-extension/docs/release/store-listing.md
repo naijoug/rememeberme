@@ -8,7 +8,7 @@
 
 ## Magpie update (2026-10-24)
 
-Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+Current source supports backend Magpie translation through the `group/translator` routing group
 and server-side MyMemory fallback. The new `magpie` source is accepted alongside
 legacy `hermes` and `mymemory` snapshots without rewriting saved history.
 Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
@@ -16,7 +16,7 @@ source. Older installed clients must be updated before consuming Magpie results.
 The descriptions and dated acceptance links below retain pre-Magpie context;
 use the new deployment record for current host acceptance.
 
-Publisher: **naijoug**. Support: [GitHub Issues](https://github.com/naijoug/rememeberme/issues). Public privacy policy: [Remember Me Privacy Policy](https://lookup.couplelabs.cn/privacy). UI language is English; the Chinese listing is an optional localization.
+Publisher: **naijoug**. Support: [GitHub Issues](https://github.com/naijoug/rememeberme/issues). Public privacy policy: [Remember Me Privacy Policy](https://rememberme-lookup.couplelabs.workers.dev/privacy). UI language is English; the Chinese listing is an optional localization.
 
 ## English listing
 
@@ -79,3 +79,7 @@ No service address or login configuration is displayed. “Privacy & support” 
 - [Formal ZIP acceptance result](assets/release-acceptance.json) and the dated verification record distinguish actual checks from remaining manual/external steps.
 
 Official requirements checked 2026-10-15: [privacy fields](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy), [images](https://developer.chrome.com/docs/webstore/images). Prepared materials do not constitute store submission or approval.
+
+## Sentence-explanation release gate (2026-10-27)
+
+Release 0.1.5 includes cancellable lookups and explicit sentence explanation. The deployed service and released build enable availability; first-use consent and an explicit action remain required. Public capabilities/routes, bounded live-model examples and the published policy passed PR 7 checks. New backend installations still default off, and `VITE_CONTEXT_EXPLANATION_ENABLED=false` remains a build rollback option. The store disclosure must distinguish ordinary word-only lookup from explicit word-plus-sentence explanation. Explanations are temporary, not part of word history or exports. No new browser permission is introduced.

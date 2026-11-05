@@ -1,0 +1,21 @@
+{
+  "version": "0.1.5",
+  "mode": "live-enabled",
+  "origin": "https://rememberme-lookup.couplelabs.workers.dev",
+  "checks": [
+    "Exact ZIP: consent controls are separated, cancel sends no source; live finance/river meanings differ; exact source fields only",
+    "Settings revocation clears explanation; no saved words or export changes"
+  ],
+  "productionVocabularyUsed": false,
+  "browser": "151.0.7922.34",
+  "capability": {
+    "status": 200,
+    "data": {
+      "schemaVersion": 1,
+      "enabled": true,
+      "maxContextLength": 1000,
+      "maxBodyBytes": 16384,
+      "explanationVersion": "context-v1"
+    }
+  }
+}

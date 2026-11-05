@@ -15,6 +15,10 @@ HTTP 4xx, malformed JSON and oversized bodies are not retried. These source
 changes require backend deployment; local watcher/build success alone does not
 prove production activation. See [verification](../../backend/docs/verification/2026-11-04-translation-resilience.md).
 
+## Sentence explanation release (0.1.5, 2026-10-27)
+
+Current artifact: `.output/remember-me-0.1.5-chrome.zip`. Personal lookup and privacy policy use `https://rememberme-lookup.couplelabs.workers.dev`. Explain this sentence is available after compatible capability discovery, with first-use consent and a click per request. Explanation results are temporary and separate from saved history. PR 7 verified the exact ZIP, live model samples, public off/on routing and the installed local-feedback entry. Earlier version sections below are historical checkpoints.
+
 
 ## Account settings update (0.1.4, 2026-10-26)
 
@@ -35,7 +39,7 @@ updates in place; existing data and extension identity are retained.
 
 ## Magpie update (2026-10-24)
 
-Current source supports backend Magpie translation with `zhipu/glm-5.3-flash`
+Current source supports backend Magpie translation through the `group/translator` routing group
 and server-side MyMemory fallback. The new `magpie` source is accepted alongside
 legacy `hermes` and `mymemory` snapshots without rewriting saved history.
 Extension 0.1.2 uses `public:v3:` translation caches and displays the actual
@@ -45,7 +49,7 @@ use the new deployment record for current host acceptance.
 
 Select an English word to see a Chinese translation and English definitions, and record when you forget it. The toolbar popup provides vocabulary history, sorting, deletion, count reset and JSON backup/import. The extension uses WXT, Vue 3 and TypeScript.
 
-Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. Online English lookup uses server WordNet plus Free Dictionary API fallback; Chinese uses server Hermes with MyMemory fallback. Only the selected word is sent. While domain filing is pending, lookup uses an internal temporary HTTPS endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. **Settings → Account / Synchronization** provides optional GitHub login that automatically enables account sync and displays account words. Sync can be paused without hiding those words. Device words saved before sign-in require a separate reviewed copy; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
+Vocabulary is stored locally in account-partitioned IndexedDB; old `local:words` snapshots and legacy JSON remain retained. Selecting a word automatically uses the built-in service, with no API-address input or login requirement. Packaged WordNet/IPA stay local. After a local English miss, the public gateway tries Free Dictionary API, then the server WordNet/fallback chain. Chinese uses Magpie `group/translator` with MyMemory fallback. Only the selected word is sent. Lookup uses the persistent personal Worker endpoint; account sync keeps the canonical endpoint. Neither address appears in the UI. **Settings → Account / Synchronization** provides optional GitHub login that automatically enables account sync and displays account words. Sync can be paused without hiding those words. Device words saved before sign-in require a separate reviewed copy; translation never enables vocabulary upload. Exports retain local contexts/source URLs. See [architecture](docs/architecture.md) and [privacy](docs/dictionary.md).
 
 ## Setup
 
@@ -58,7 +62,7 @@ nvm use
 npm ci
 ```
 
-The package uses Node 22 (minimum 22.12.0); `.nvmrc` pins the tested development version, 22.22.3. If you use another Node manager, select that version before `npm ci`. Use npm and the committed `package-lock.json`. Installation runs `wxt prepare` to generate `.wxt/` types. The repository root has no Node package.
+The package uses Node 22 (minimum 22.22.3); `.nvmrc` pins the tested development version, 22.22.3. If you use another Node manager, select that version before `npm ci`. Use npm and the committed `package-lock.json`. Installation runs `wxt prepare` to generate `.wxt/` types. The repository root has no Node package.
 
 ## Develop and verify
 

@@ -1,0 +1,20 @@
+{
+  "version": "0.1.5",
+  "mode": "disabled-gate",
+  "origin": "https://rememberme-lookup.couplelabs.workers.dev",
+  "checks": [
+    "Public off switch rejects source before inference"
+  ],
+  "productionVocabularyUsed": false,
+  "browser": "151.0.7922.34",
+  "capability": {
+    "status": 200,
+    "data": {
+      "schemaVersion": 1,
+      "enabled": false,
+      "maxContextLength": 1000,
+      "maxBodyBytes": 16384,
+      "explanationVersion": "context-v1"
+    }
+  }
+}

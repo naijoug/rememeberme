@@ -226,3 +226,19 @@ account restoration, preserved pause/recovery state, downloaded-word refresh,
 viewing all account words despite an earlier search, and confirmed device-word
 copy with the existing sync preference. Automated HTTP checks use disposable
 accounts/SQLite; UI previews use in-memory fixtures, not the installed account.
+
+## Read Frog first-round checks (2026-10-26)
+
+- `site-settings.test.ts`: schema/default/migration handling, corrupt/future preservation, serialized writes, trusted top-level sites, extension-only mutation, active-tab races and stale access replies.
+- `SiteSettings.test.ts`: active-site toggle, saved-host recovery and confirmation before settings reset.
+- `context-menu-handler.test.ts`: stop before lookup or save when the top-level site becomes disabled.
+- `content.test.ts`: disable during pending/visible selection, late reply isolation and re-enable, with cleanup after invalidation.
+- `popup-position.test.ts` and `SelectionPopup.test.ts`: multi-line release anchors, detached ranges, visual viewport offsets, translated/scaled hosts, stable controls and frame/listener cleanup.
+
+`REMEMBERME_PLAYWRIGHT_PATH=/absolute/path/to/playwright REMEMBERME_ACCEPTANCE_DIR=/temporary/evidence node scripts/verify-reading-controls.cjs` checks an already built `.output/chrome-mv3` in a disposable Chrome profile. It seeds synthetic translation cache only, blocks lookup/account domain resolution, and checks actual zoom, narrow windows, transformed containers, nested scrolling, website controls, process restart and unchanged empty vocabulary. It does not validate a native toolbar popup, a native right-click menu, real provider access or account sync. See the [first-round evidence](verification/2026-10-26-reading-controls.md).
+
+## Second-round query and explanation checks (2026-10-26)
+
+`shared-lookup.test.ts`, `lookup-port-handler.test.ts` and the expanded public-lookup suite cover refcounts, independent cancellation, late flights, pre-start/disconnect cleanup, settings changes and cancellation before/between/after recovery attempts. Existing word-only recovery, cache, storage and count tests remain in the full suite. `context-explanation.test.ts` covers build/consent/capability gates, independent sentence caches, clear/late-result races and malformed replies; `ContextExplanation.test.ts` covers disclosure, explicit triggering, literal rendering and selection/consent invalidation.
+
+For disposable browser acceptance, build normally and run `scripts/verify-reading-controls.cjs` for existing behavior. Build with `VITE_CONTEXT_EXPLANATION_ENABLED=true npm run build` only in an isolated source copy, then run `scripts/verify-context-explanation.cjs` with the external Playwright path. It loads real extension Ports/UI in a clean profile but replaces only its lookup responses with synthetic data, blocks real lookup/account host resolution and leaves vocabulary empty. It is not live AI quality, hosted rollout or signed-client acceptance. See [second-round evidence](verification/2026-10-26-context-explanation.md).

@@ -1,0 +1,1732 @@
+{
+  "version": "0.1.5",
+  "checkedResources": 11,
+  "files": [
+    {
+      "path": "assets/popup-DQuBOaL_.css",
+      "bytes": 19712,
+      "sha256": "107a774cef4b01485ceb1b8b3a752e288b6dd58479c560aac5fc3d9db7cf5009"
+    },
+    {
+      "path": "background.js",
+      "bytes": 78801,
+      "sha256": "abf43feeb06b015c4c2499e578643027875f7c7fa60fdbbe99ebc7320c04a612"
+    },
+    {
+      "path": "chunks/popup-C2sLz6Ex.js",
+      "bytes": 138916,
+      "sha256": "2dfc91f11573bb2ded2cd9b7ef32d1a7fcb7645e987eeea5322717e024ead856"
+    },
+    {
+      "path": "content-scripts/content.css",
+      "bytes": 251,
+      "sha256": "8e0a0df7200f55ae980ee7227aa6a8d14fc5441ffcf6c23fc51d39ba5ba8ea05"
+    },
+    {
+      "path": "content-scripts/content.js",
+      "bytes": 145825,
+      "sha256": "7f19b4b8a00a515d8f2f151a8f9b0eb2dec0017dcdd6098833ac8ab8025d3a99"
+    },
+    {
+      "path": "dictionary/ipa/00.json",
+      "bytes": 94914,
+      "sha256": "1ec1709ab64c70dfefae755b1e937b7ac9c3cbd5ce535fec8d89ee3969ddadae"
+    },
+    {
+      "path": "dictionary/ipa/01.json",
+      "bytes": 90021,
+      "sha256": "c1e49fea863fce97191018eaa4f41d5673054dd002c60c892fee0d307bbb0eb2"
+    },
+    {
+      "path": "dictionary/ipa/02.json",
+      "bytes": 92352,
+      "sha256": "a7487dfdd1499f6231d349d3ece2d82a665dbf6d56e883f743d29fe96afb255d"
+    },
+    {
+      "path": "dictionary/ipa/03.json",
+      "bytes": 93958,
+      "sha256": "9d940943fb8a2454a1f37a8ef7a4792f74f80effe9f9f0eee3f796daf27daee0"
+    },
+    {
+      "path": "dictionary/ipa/04.json",
+      "bytes": 91202,
+      "sha256": "138485f199c9f8fdbfdbaccba2770dbd605d0b822070a658414219b9d023694b"
+    },
+    {
+      "path": "dictionary/ipa/05.json",
+      "bytes": 92560,
+      "sha256": "1e71ffe95bbf834dba8ee21766cfad7d9d430b0a8d0d766706aab15474dde426"
+    },
+    {
+      "path": "dictionary/ipa/06.json",
+      "bytes": 95048,
+      "sha256": "88a9f1e5c1cb0dabdd5558a0df03a69eb44f636f553c560c5e8c10a57f823963"
+    },
+    {
+      "path": "dictionary/ipa/07.json",
+      "bytes": 88427,
+      "sha256": "8e6c24a035ee678f069765337809a0ffcbae06c120fa3bdcb5dcf2af7a83a9d9"
+    },
+    {
+      "path": "dictionary/ipa/08.json",
+      "bytes": 92345,
+      "sha256": "d649e3785af80d03557358595ef16d77bbcd269c5f0239793ca83333948accfd"
+    },
+    {
+      "path": "dictionary/ipa/09.json",
+      "bytes": 95991,
+      "sha256": "83e5c5a20d176c34a0dcc51b1cfe746c53aad856272a0e06819ef9e4cbdd7670"
+    },
+    {
+      "path": "dictionary/ipa/0a.json",
+      "bytes": 90899,
+      "sha256": "dd8062ad9ffd5efcb3eeee6b4ae2c7640abc67bef954e36826329b23874d7f1b"
+    },
+    {
+      "path": "dictionary/ipa/0b.json",
+      "bytes": 94150,
+      "sha256": "77a8bdd37dc0b102e973761e3648da35fb943e62d5f2bbc46a6692b0439b4974"
+    },
+    {
+      "path": "dictionary/ipa/0c.json",
+      "bytes": 96318,
+      "sha256": "da1e6d53dbe458c8a7995e1798627de6671b4e396ef1c29b108f1ec13082da23"
+    },
+    {
+      "path": "dictionary/ipa/0d.json",
+      "bytes": 91247,
+      "sha256": "544b4a4ea4e45f8dad65a02f5f60465de2f52a38fd8d67bb4f101ab333ed1687"
+    },
+    {
+      "path": "dictionary/ipa/0e.json",
+      "bytes": 91135,
+      "sha256": "3c71457a6e6a78ae2737029ed5cd8ab2ad1d919a6dc2cfe2588ccab36da6e683"
+    },
+    {
+      "path": "dictionary/ipa/0f.json",
+      "bytes": 93865,
+      "sha256": "b1a9fce5b12206c7ab966c2a41949e50aa23a1fed3a4ab1e6ee22c1950c90f52"
+    },
+    {
+      "path": "dictionary/ipa/10.json",
+      "bytes": 92576,
+      "sha256": "8bd504b452a0a1f8c2b4dc8502c0dd46aa5b952364d73130b5bcb4b3716bacf9"
+    },
+    {
+      "path": "dictionary/ipa/11.json",
+      "bytes": 95722,
+      "sha256": "8d6ea5dc769e4cfe5494c118ed3b31b03c9d92179531ebd85de4ccfd276420ae"
+    },
+    {
+      "path": "dictionary/ipa/12.json",
+      "bytes": 94280,
+      "sha256": "e48accc53eea375a9e13e2b59060d56c950ab20d9d94bdb1f48cef405524f7f9"
+    },
+    {
+      "path": "dictionary/ipa/13.json",
+      "bytes": 89773,
+      "sha256": "fbde84d2dd74dd046308686ba4e21c9edbaa73d0a0e9bf9984fcccaf70a76a51"
+    },
+    {
+      "path": "dictionary/ipa/14.json",
+      "bytes": 93482,
+      "sha256": "1892ec7d4864f4c065747931a9ec06666e338c22b0625cb963f662e7600b0b3e"
+    },
+    {
+      "path": "dictionary/ipa/15.json",
+      "bytes": 97475,
+      "sha256": "ac92f3902e97da1ffce713aae7943f08366fbe1a6679cc424d503a927b0a5da7"
+    },
+    {
+      "path": "dictionary/ipa/16.json",
+      "bytes": 92732,
+      "sha256": "a1027db4f5681944b85e7cc5aeff96d33240fdeb6be8f42f385a4a67328f89ed"
+    },
+    {
+      "path": "dictionary/ipa/17.json",
+      "bytes": 91424,
+      "sha256": "33eb79bbfe94f7f708685f15724259f38144ca79d76f0e052058219a42a7e395"
+    },
+    {
+      "path": "dictionary/ipa/18.json",
+      "bytes": 91391,
+      "sha256": "d853640284cd0b55fd60771105d0f1d703fbeaf8466a700f5333f4fd1b285706"
+    },
+    {
+      "path": "dictionary/ipa/19.json",
+      "bytes": 94806,
+      "sha256": "be799966668707394911c13893963aeded732f4adda1644173d4d4dbbbececaa"
+    },
+    {
+      "path": "dictionary/ipa/1a.json",
+      "bytes": 95329,
+      "sha256": "0b5a791dbc316c1aea3c2ff6206ee86f5a34f6b81c47069e2fc4fedfdfb9664b"
+    },
+    {
+      "path": "dictionary/ipa/1b.json",
+      "bytes": 94547,
+      "sha256": "b12a644934610defa1413234085c98b170ce8651e09270cd23c778fa8d06e9ec"
+    },
+    {
+      "path": "dictionary/ipa/1c.json",
+      "bytes": 93652,
+      "sha256": "6a5d77ed42fad3fcd9e3c2ee2e23327af201cf6938cf9d2efa039d042ed9ff62"
+    },
+    {
+      "path": "dictionary/ipa/1d.json",
+      "bytes": 90581,
+      "sha256": "f9395f631cd9aa506287bf2b843f1769ba31de341646467fe13192445329f77e"
+    },
+    {
+      "path": "dictionary/ipa/1e.json",
+      "bytes": 92504,
+      "sha256": "19eba9aac966a4ffd52ccec5b23ac751e4edc10fa1003228e673eb57b2ee8bf9"
+    },
+    {
+      "path": "dictionary/ipa/1f.json",
+      "bytes": 92232,
+      "sha256": "ec813c3db77c5a6dba0083ad299da4991960c7c70186232d0689fc933beda977"
+    },
+    {
+      "path": "dictionary/ipa/20.json",
+      "bytes": 91906,
+      "sha256": "d732abb76601f5553d33bf73ffb5eebbcfd056dc321c01c7274ef53e0b6057e2"
+    },
+    {
+      "path": "dictionary/ipa/21.json",
+      "bytes": 92531,
+      "sha256": "b8277770307556131db129f0d84900645d45585c9012a40b9cd2cdb06f40aa95"
+    },
+    {
+      "path": "dictionary/ipa/22.json",
+      "bytes": 92090,
+      "sha256": "243cf297b8dce6d5ee0e66ae477a7533838d023bf74e54c7b79475d4dff53610"
+    },
+    {
+      "path": "dictionary/ipa/23.json",
+      "bytes": 92218,
+      "sha256": "5ca4c2d52456d93a6c7cf6218dba569876f2b5c704d13b8ee825003c1107bd29"
+    },
+    {
+      "path": "dictionary/ipa/24.json",
+      "bytes": 94035,
+      "sha256": "2b93338ea0d972cbd3cc78cce50bc6329bbfd89a3aad8af415d5e00596071237"
+    },
+    {
+      "path": "dictionary/ipa/25.json",
+      "bytes": 93506,
+      "sha256": "ff36e545d07dd4f93f8d8ebe6a7e9cb5836feb353bc1221eeb4dfa371de235f6"
+    },
+    {
+      "path": "dictionary/ipa/26.json",
+      "bytes": 95054,
+      "sha256": "801f8304747c8c7c77bd2f15715e7feabb38ae0533d30e9cfe99d647687fb937"
+    },
+    {
+      "path": "dictionary/ipa/27.json",
+      "bytes": 88185,
+      "sha256": "1283fa2eefdec16508e89715191293f9ce04eec23da85a33327efe7c76aee5f9"
+    },
+    {
+      "path": "dictionary/ipa/28.json",
+      "bytes": 90579,
+      "sha256": "f8f37ff77872cf53982a3bf63f90d0792ab56ba340bd48e598fbe3dba1f7e5be"
+    },
+    {
+      "path": "dictionary/ipa/29.json",
+      "bytes": 93426,
+      "sha256": "c033e6cfd1c8443b4316ea77bead0e4d9c1463f4def3eab35b8b772c0a83bdfe"
+    },
+    {
+      "path": "dictionary/ipa/2a.json",
+      "bytes": 94309,
+      "sha256": "86c43d72bc7dd3124779f5d56501ba7c6606706e2b58b12ba7d499fb626da8d2"
+    },
+    {
+      "path": "dictionary/ipa/2b.json",
+      "bytes": 94485,
+      "sha256": "996ec6f2913f80594fb7131c3a2dda202fdff4c62d4878cebe71264491bd5408"
+    },
+    {
+      "path": "dictionary/ipa/2c.json",
+      "bytes": 91628,
+      "sha256": "56c777cc8b98ee1b4c0da28614fb2341a509cc7396dee860196a485d04fddaab"
+    },
+    {
+      "path": "dictionary/ipa/2d.json",
+      "bytes": 93626,
+      "sha256": "4e7abdf76e27e4b9b0757a3104429ae7f63a98bb707c7a4c6afad51f093abcb9"
+    },
+    {
+      "path": "dictionary/ipa/2e.json",
+      "bytes": 88363,
+      "sha256": "17e6e4607d2875444263bd2f8cb27b89498bdc21a670fae0c78f23e1e3d0ade7"
+    },
+    {
+      "path": "dictionary/ipa/2f.json",
+      "bytes": 94781,
+      "sha256": "a0795cf258598a1739ecbbd0d4800f015b7f38cfbc3e4d6f895e8ea7d6d8fae4"
+    },
+    {
+      "path": "dictionary/ipa/30.json",
+      "bytes": 94093,
+      "sha256": "e4db2e42b08af5dfe45e21947607f27b157be8f3eb316af96eaf35c175430711"
+    },
+    {
+      "path": "dictionary/ipa/31.json",
+      "bytes": 93134,
+      "sha256": "6e8fe1e5af15889eb3354bf66a141faa624313e3fe548430eebfa5d9a945179e"
+    },
+    {
+      "path": "dictionary/ipa/32.json",
+      "bytes": 93399,
+      "sha256": "55ee592d966873cf6730ecd8fd1b928f5732c5f575bc8531c8b923a8c9011409"
+    },
+    {
+      "path": "dictionary/ipa/33.json",
+      "bytes": 92347,
+      "sha256": "f79ecf702e091b59a5a98f6460bc643ea24cc85ef2ad4ad1d204d1cd685c31f2"
+    },
+    {
+      "path": "dictionary/ipa/34.json",
+      "bytes": 92227,
+      "sha256": "39c3dca1eb600aeea4d8bc93b455b550340bb430ed1402149bbde72958a4d224"
+    },
+    {
+      "path": "dictionary/ipa/35.json",
+      "bytes": 90887,
+      "sha256": "3f15d901bfd93172878789f2ede6c7de1c944f02fc997726955e21b61c6c74b8"
+    },
+    {
+      "path": "dictionary/ipa/36.json",
+      "bytes": 90903,
+      "sha256": "8701b7bba506a4237fc773f8308911bfc01abf2f63973df7468d914b20617b48"
+    },
+    {
+      "path": "dictionary/ipa/37.json",
+      "bytes": 93779,
+      "sha256": "a46f2a2643e76a8f4838afc9a72668f573ca19f367c0ebf76bc5941b43c32ebf"
+    },
+    {
+      "path": "dictionary/ipa/38.json",
+      "bytes": 90564,
+      "sha256": "1f3e84a4f4d026b1d25a349333ed5c9788d89fcafade64abeb842a6f5221d91b"
+    },
+    {
+      "path": "dictionary/ipa/39.json",
+      "bytes": 92829,
+      "sha256": "dd8dbfc121505f4ea123be15b4403054f252273f9e0f8018c764fe6dbfca06e4"
+    },
+    {
+      "path": "dictionary/ipa/3a.json",
+      "bytes": 89298,
+      "sha256": "f6c1c347452b9c6e524a8297e2f57fca51ebe4f3e1698bdea592bf32d80985a4"
+    },
+    {
+      "path": "dictionary/ipa/3b.json",
+      "bytes": 93920,
+      "sha256": "edb7a664defae33be6f12ead0c7e658a1001cea531091541a2f422ac4d177c4f"
+    },
+    {
+      "path": "dictionary/ipa/3c.json",
+      "bytes": 92260,
+      "sha256": "528733c7322ee9229c64fa6ddbb44d94beee502269acf1ee72ca11bac018b7eb"
+    },
+    {
+      "path": "dictionary/ipa/3d.json",
+      "bytes": 91194,
+      "sha256": "a4f6fafa16bf42248357cd18c76437ee37f8a02697191789423e1c09dd6cf7d4"
+    },
+    {
+      "path": "dictionary/ipa/3e.json",
+      "bytes": 90576,
+      "sha256": "0ad110d26b98f103f5dd54b0ab600b42cbb4521408df4e78f65852e740ed62f6"
+    },
+    {
+      "path": "dictionary/ipa/3f.json",
+      "bytes": 95444,
+      "sha256": "1bdef2e16b4da4e3a21139becc4aaed4c69daaa07f7c5c70d74157fe958e3456"
+    },
+    {
+      "path": "dictionary/ipa/cmudict-LICENSE.txt",
+      "bytes": 1754,
+      "sha256": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a"
+    },
+    {
+      "path": "dictionary/ipa/en_UK.txt.gz",
+      "bytes": 426159,
+      "sha256": "a5477c3956afb9cca4e001149f92415f61bc6792ff827cc66effb39e1f495fb0"
+    },
+    {
+      "path": "dictionary/ipa/en_US.txt.gz",
+      "bytes": 872334,
+      "sha256": "b60748aaaa0ac74b4a8c9c2640a8e31498cc82f8f6f77fb251a82a530ac8eb06"
+    },
+    {
+      "path": "dictionary/ipa/en-UK-LICENSE.txt",
+      "bytes": 35147,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    {
+      "path": "dictionary/ipa/en-US-LICENSE.txt",
+      "bytes": 1082,
+      "sha256": "a504bede5a50d1ac19c38984d9bb33371927f72e714946a963bf40bb2de21188"
+    },
+    {
+      "path": "dictionary/ipa/ipa-dict-LICENSE.txt",
+      "bytes": 1073,
+      "sha256": "2c6a7e4c71f834a8fc0114fa4f65ca85e80bc4b4dc7ed08746963a09a7b0d177"
+    },
+    {
+      "path": "dictionary/ipa/metadata.json",
+      "bytes": 1296,
+      "sha256": "6b13580181a6db5d0d58791ea595d00980e193c9c3ac087018dd4d6f4ac7fe6e"
+    },
+    {
+      "path": "dictionary/ipa/NOTICE.txt",
+      "bytes": 1290,
+      "sha256": "a712d9d5f8a5a4d6a36c288e553bc01cd3599b2871a43c70b981c64144f77c0c"
+    },
+    {
+      "path": "dictionary/ipa/syllabify-LICENSE.txt",
+      "bytes": 1080,
+      "sha256": "20318769d8694a14abb3b5c0f98ddd49105a22c9a38e75a2889da9f1bd08f737"
+    },
+    {
+      "path": "dictionary/wordnet/00.json",
+      "bytes": 50954,
+      "sha256": "1ce8837e3e610ac33df8a4574a8e4b45d3ece724fcac08d788b8e817eacfcd51"
+    },
+    {
+      "path": "dictionary/wordnet/01.json",
+      "bytes": 52419,
+      "sha256": "b91302de5297a5f042eec29f05a4ce8c7bb918096ad2952700c119ad395c22ba"
+    },
+    {
+      "path": "dictionary/wordnet/02.json",
+      "bytes": 48214,
+      "sha256": "f76507096a9592a9a5ff5919952c019ff92269d6137a5e75c14febf08c28963a"
+    },
+    {
+      "path": "dictionary/wordnet/03.json",
+      "bytes": 51752,
+      "sha256": "179b516c4b333650696a6d13f4cadcea01c756de0786d8acf7aea109b67afbc4"
+    },
+    {
+      "path": "dictionary/wordnet/04.json",
+      "bytes": 52156,
+      "sha256": "c9a4196d69074baeece64a2429eb126681f72b77da9fc8faea7fa812bb57cfa9"
+    },
+    {
+      "path": "dictionary/wordnet/05.json",
+      "bytes": 47427,
+      "sha256": "f5ff57b9e54cb789b77ac3abd99db4b3e173498f59aac8b49515349b3ebc2767"
+    },
+    {
+      "path": "dictionary/wordnet/06.json",
+      "bytes": 58291,
+      "sha256": "82307d9dab7a58c6b2b355d5932199fec1d5edb82a2ac11f58b1486f48d54502"
+    },
+    {
+      "path": "dictionary/wordnet/07.json",
+      "bytes": 51000,
+      "sha256": "b7193990cd7ed994c159662a66393b6c1a8fe4c72cd2a10ab17d3fa0b1d8a7af"
+    },
+    {
+      "path": "dictionary/wordnet/08.json",
+      "bytes": 54583,
+      "sha256": "5beece9ac3a17dcc46e66b181c9954b548858e56baaa3c3a73ad8d4845bf58ca"
+    },
+    {
+      "path": "dictionary/wordnet/09.json",
+      "bytes": 56219,
+      "sha256": "f5bac8bd729440169a573f9a6c58a1ab92e9128f00c41997df7f834607e35303"
+    },
+    {
+      "path": "dictionary/wordnet/0a.json",
+      "bytes": 53730,
+      "sha256": "9e02ff67eedaa2935128c0523199e8c78bd65bb2ed954f1e1f988bb3b70e580d"
+    },
+    {
+      "path": "dictionary/wordnet/0b.json",
+      "bytes": 46914,
+      "sha256": "ebf081230868d52a590c87be54f8aa39bd669f30fca1f5001ae72f64031a4e49"
+    },
+    {
+      "path": "dictionary/wordnet/0c.json",
+      "bytes": 52165,
+      "sha256": "f14ba38e841e5b183f0f6ae077c1ad302423b288060020b8f0e14eb01ffa1a10"
+    },
+    {
+      "path": "dictionary/wordnet/0d.json",
+      "bytes": 55815,
+      "sha256": "2433ee80d148091034713ac247a4314768cff23e4f553df2ead55605f3fccfe8"
+    },
+    {
+      "path": "dictionary/wordnet/0e.json",
+      "bytes": 54324,
+      "sha256": "24cce428e80a4688aaf262aa6c69ac00fa281090db161797494eee36a0e8358b"
+    },
+    {
+      "path": "dictionary/wordnet/0f.json",
+      "bytes": 56355,
+      "sha256": "9893b691bbb83b057fdd3bb03239d5e3145db0c320fab703274781ec0414f9d6"
+    },
+    {
+      "path": "dictionary/wordnet/10.json",
+      "bytes": 58561,
+      "sha256": "c901e099f8e7ae50a3225812786d6d0bf62846892d5f13573e22e1459cbc2a24"
+    },
+    {
+      "path": "dictionary/wordnet/11.json",
+      "bytes": 56335,
+      "sha256": "d71d2edece45f2ea7c2d15b998c80af799ac53d3e02b536092b830ee7edab3e7"
+    },
+    {
+      "path": "dictionary/wordnet/12.json",
+      "bytes": 57547,
+      "sha256": "94f9851e5dbcf56f7e6a18d56d1b3f34a8025b125c5b1817b4167bd5e76d1865"
+    },
+    {
+      "path": "dictionary/wordnet/13.json",
+      "bytes": 55603,
+      "sha256": "506dd44afda7293e9338a67a1b03de5de184aed758d5d920a8e3031139af63bf"
+    },
+    {
+      "path": "dictionary/wordnet/14.json",
+      "bytes": 62036,
+      "sha256": "1fd016932c2fe54c79035e3e535e1bf6561430ec07725d53f015006289c2343d"
+    },
+    {
+      "path": "dictionary/wordnet/15.json",
+      "bytes": 58308,
+      "sha256": "eabfe72a7249fbaee75e078d18c4caed408a6b2bc0026b69fec33cf77a2b05d0"
+    },
+    {
+      "path": "dictionary/wordnet/16.json",
+      "bytes": 47532,
+      "sha256": "5f1a6c10b4107621514a4bd6af86b964fdeeb75391641e46af05707ab76d25d3"
+    },
+    {
+      "path": "dictionary/wordnet/17.json",
+      "bytes": 57572,
+      "sha256": "fb9df854b4d62de476bcdec3eee72142fa1cc5297a283cc91e297957487066a8"
+    },
+    {
+      "path": "dictionary/wordnet/18.json",
+      "bytes": 60258,
+      "sha256": "a4f8637fd0102cbc501274e5b1e6ea486296fca8ec40d11616cdc48eaeca17eb"
+    },
+    {
+      "path": "dictionary/wordnet/19.json",
+      "bytes": 49554,
+      "sha256": "8bfc22031ce98bf9e5918a44922fa8067b35c0b29ff5a8ca0b0ceeb4880763b9"
+    },
+    {
+      "path": "dictionary/wordnet/1a.json",
+      "bytes": 56041,
+      "sha256": "999b0ba3766fe64f774b6fad9644ff7d5c142921a40aff647d08f83645823d33"
+    },
+    {
+      "path": "dictionary/wordnet/1b.json",
+      "bytes": 49797,
+      "sha256": "4a06798ea97c8edc73a857d8a69cb21ed9af7af97891e6a700ef42da7dc8d0d8"
+    },
+    {
+      "path": "dictionary/wordnet/1c.json",
+      "bytes": 54374,
+      "sha256": "e4b24d053751998e76a09b215f1dbc584979c0b106802d4eda484b2ecbbaa398"
+    },
+    {
+      "path": "dictionary/wordnet/1d.json",
+      "bytes": 48575,
+      "sha256": "9f7adfea9a3391cc89df539e6033ec56310b8ed187d9e847b83f9624eef1ee1b"
+    },
+    {
+      "path": "dictionary/wordnet/1e.json",
+      "bytes": 46532,
+      "sha256": "e1e0102b8a81cc25ad53ff2f37584f068096b29d9f6ee66b6bab827d2e9ac66d"
+    },
+    {
+      "path": "dictionary/wordnet/1f.json",
+      "bytes": 44204,
+      "sha256": "8eb262000f724a2f7409be64d915ccf6459a96be419ed10a66581ab139544b78"
+    },
+    {
+      "path": "dictionary/wordnet/20.json",
+      "bytes": 51097,
+      "sha256": "9bce4789a0d85d41108012cd874cb0098fec2de2a51b18b4ea14d65822358b9a"
+    },
+    {
+      "path": "dictionary/wordnet/21.json",
+      "bytes": 60635,
+      "sha256": "9c468a099ac4b2e7b415ba47f73efed26b5067251ed81b5470e04d29003a9ed1"
+    },
+    {
+      "path": "dictionary/wordnet/22.json",
+      "bytes": 56537,
+      "sha256": "0b7c9f0a99bd0e9c235549e725104390dc84f04e3a75514224a6454f16109b91"
+    },
+    {
+      "path": "dictionary/wordnet/23.json",
+      "bytes": 54608,
+      "sha256": "1807cb4d6a36ce1d588cd8fa891ae9b2eb1537cf49ced9ce77b91a5ea4a4e5d7"
+    },
+    {
+      "path": "dictionary/wordnet/24.json",
+      "bytes": 56059,
+      "sha256": "329d14eabb906a64fc1ea141c1b2816203a68c7603181602eddc19826a5d1c5d"
+    },
+    {
+      "path": "dictionary/wordnet/25.json",
+      "bytes": 45594,
+      "sha256": "51e4188b2e6c9aa3c7bcafe2e41210f8f1c4e3cae1c8d227e40f60d8a1f46a2c"
+    },
+    {
+      "path": "dictionary/wordnet/26.json",
+      "bytes": 50846,
+      "sha256": "4de5a3bd5b1d1cdf054a87023ffb747f425f0b476779c9550ec809647fac2f33"
+    },
+    {
+      "path": "dictionary/wordnet/27.json",
+      "bytes": 62107,
+      "sha256": "129aac81a76ff4cbdb9960ceb49b2fec19404abb21a5c5920f825da1a24142d6"
+    },
+    {
+      "path": "dictionary/wordnet/28.json",
+      "bytes": 51479,
+      "sha256": "632c40ee0c77b81e2b34a18bd02b3096a748f43f7c311448d1c414b037ad9424"
+    },
+    {
+      "path": "dictionary/wordnet/29.json",
+      "bytes": 55599,
+      "sha256": "781d4524ebd0464ebdb061e8b1b42ad6dca632e7dce247fbdd98f2d5b84903ec"
+    },
+    {
+      "path": "dictionary/wordnet/2a.json",
+      "bytes": 56816,
+      "sha256": "4e2f5f9675ae95271a95a83c71acd288395e045fbb83db8caa31fe16a8b290eb"
+    },
+    {
+      "path": "dictionary/wordnet/2b.json",
+      "bytes": 52227,
+      "sha256": "983274bbe7034b20e9509a95d963d6972487965149e1692bb1abbe66892d68bc"
+    },
+    {
+      "path": "dictionary/wordnet/2c.json",
+      "bytes": 53885,
+      "sha256": "3a5e795e7854e998b25789f110e27f4b10ca27b87e7931cf80076da26c68bc54"
+    },
+    {
+      "path": "dictionary/wordnet/2d.json",
+      "bytes": 48843,
+      "sha256": "af6203935e12fecb8e376edc89db99e7d6e2a1d44827257ea1bdd9f99c0f113e"
+    },
+    {
+      "path": "dictionary/wordnet/2e.json",
+      "bytes": 50330,
+      "sha256": "642183ec4884616ec896c3e8d493c1edabb3dadd91c4d961bfd9ebae4905f60b"
+    },
+    {
+      "path": "dictionary/wordnet/2f.json",
+      "bytes": 64530,
+      "sha256": "448bd50d4bdca53aea352d1fdc58816c88a74640bf65e88cf97894ce6a2d1ac8"
+    },
+    {
+      "path": "dictionary/wordnet/30.json",
+      "bytes": 60514,
+      "sha256": "578c94c208695e886ce7b722a27819b1e797723ca830efcbf8dda649493e4dd9"
+    },
+    {
+      "path": "dictionary/wordnet/31.json",
+      "bytes": 52232,
+      "sha256": "dded688106ddf58af6f19576a9def7a2eab23a73cc7d268f52ee16038d39e369"
+    },
+    {
+      "path": "dictionary/wordnet/32.json",
+      "bytes": 56089,
+      "sha256": "843a9e577ddc875b516e36aca99fa6d010d43a34a413c79ca4509d5be3b00363"
+    },
+    {
+      "path": "dictionary/wordnet/33.json",
+      "bytes": 54241,
+      "sha256": "ad77f5af8eb4ef64d4e302d3d6eee0935d0dfd9b7399483fe07ec055367f5abc"
+    },
+    {
+      "path": "dictionary/wordnet/34.json",
+      "bytes": 47660,
+      "sha256": "70002dbe37a0ae04555008690434d75359ae2cf1a85f3eaa88aee5f0eca93a4f"
+    },
+    {
+      "path": "dictionary/wordnet/35.json",
+      "bytes": 52087,
+      "sha256": "6f5af346140c47c1196af1d233ba470e55f481c2663ca3168deec8563de0cf76"
+    },
+    {
+      "path": "dictionary/wordnet/36.json",
+      "bytes": 54702,
+      "sha256": "f08decc53279e67c39e740ddedcba9be616454deab3370d7e170215fdcfef1b5"
+    },
+    {
+      "path": "dictionary/wordnet/37.json",
+      "bytes": 47369,
+      "sha256": "3ca31ceca3718b04c5d643da20b140a4a0416413fafbe99d82db276bf4cb7ed1"
+    },
+    {
+      "path": "dictionary/wordnet/38.json",
+      "bytes": 54723,
+      "sha256": "5e4d00672ffdbb88523ad78ea1700c9aec62ab9d068f6a19afbef626bf68cc40"
+    },
+    {
+      "path": "dictionary/wordnet/39.json",
+      "bytes": 48025,
+      "sha256": "9ac46157b1fcfc1a310aacf45ceb39329c6a4c445b444bb692b696592b36e563"
+    },
+    {
+      "path": "dictionary/wordnet/3a.json",
+      "bytes": 46171,
+      "sha256": "e9e0066b93edd6016c2e68f8b6a27b54429bb51586093d4259f26755bcaa169d"
+    },
+    {
+      "path": "dictionary/wordnet/3b.json",
+      "bytes": 56049,
+      "sha256": "7245b72cdfd04af2c5af8760929718cbfdbbef1b0347b69c40e00a400193e930"
+    },
+    {
+      "path": "dictionary/wordnet/3c.json",
+      "bytes": 53737,
+      "sha256": "abbe53798ddf9b40156e1aa0334513c8696b3426b24116aa1c743b2d6ec08211"
+    },
+    {
+      "path": "dictionary/wordnet/3d.json",
+      "bytes": 49612,
+      "sha256": "d8fdd64ab7e4559c46c269f7042404a213091fe47393673310908c0565060d1d"
+    },
+    {
+      "path": "dictionary/wordnet/3e.json",
+      "bytes": 54856,
+      "sha256": "b483d6bcb7a696794f303beffec7cc5285f04ab0deb8cb09d89c7788eada8e6d"
+    },
+    {
+      "path": "dictionary/wordnet/3f.json",
+      "bytes": 58325,
+      "sha256": "1648f57654383d06869792fddd43cf207fec9032724d4e60f8855f80c29e64f3"
+    },
+    {
+      "path": "dictionary/wordnet/40.json",
+      "bytes": 56224,
+      "sha256": "283685e2018e4a74dec2da31acf542672a8d960541f34009cedcfdc1f8ad0cde"
+    },
+    {
+      "path": "dictionary/wordnet/41.json",
+      "bytes": 50753,
+      "sha256": "52f10c1651e92e1ae18d1f556c0c549fe615dc7dd769b6ce567a3f5c497b7391"
+    },
+    {
+      "path": "dictionary/wordnet/42.json",
+      "bytes": 48024,
+      "sha256": "b06b3db5ecee59a2624b7944c74f49304448b98f5e5910ff968b7d7d25c4974f"
+    },
+    {
+      "path": "dictionary/wordnet/43.json",
+      "bytes": 61735,
+      "sha256": "a1941642c8d30696a7255e1f2e42ec9a16eab7e0ab1fd06005a9e7c981bdbe75"
+    },
+    {
+      "path": "dictionary/wordnet/44.json",
+      "bytes": 53071,
+      "sha256": "7431aa2bdfdbc522a8fa270992d1f132d99a765d865ef39e1ef80264ac6edee7"
+    },
+    {
+      "path": "dictionary/wordnet/45.json",
+      "bytes": 59039,
+      "sha256": "7171af015c232a6c23800b39b130b8a09b688f593db7aa41645b658a63915fc6"
+    },
+    {
+      "path": "dictionary/wordnet/46.json",
+      "bytes": 56113,
+      "sha256": "fbfcb3f6b97a8b4d98fced8b1fe0ffc6d2158382a30e98a28e8c6419b1add953"
+    },
+    {
+      "path": "dictionary/wordnet/47.json",
+      "bytes": 64616,
+      "sha256": "1950f0432b882eaa95d5bc26c21c70ade1fc0975b5f3532969584784c8a6f2e6"
+    },
+    {
+      "path": "dictionary/wordnet/48.json",
+      "bytes": 52464,
+      "sha256": "50cfe5b11ba1d050003297e174e4ffed382c27f525681d60cd96f3b2680651e6"
+    },
+    {
+      "path": "dictionary/wordnet/49.json",
+      "bytes": 54662,
+      "sha256": "8169354b9bf12c340fb6f4bfdc9dceef21d5f8fb981d1a88162afee39e6be210"
+    },
+    {
+      "path": "dictionary/wordnet/4a.json",
+      "bytes": 56350,
+      "sha256": "63fc3055cd9526c8498d7b89ce1435ac0d164546c07d22c7c88d9ce7914879d0"
+    },
+    {
+      "path": "dictionary/wordnet/4b.json",
+      "bytes": 57341,
+      "sha256": "2b1438c23e29e2a6959780d0cee995c9f4d9ed375937402901c4438c1c2b6d36"
+    },
+    {
+      "path": "dictionary/wordnet/4c.json",
+      "bytes": 57163,
+      "sha256": "3bae8b01c6e2a380515394ff6a282b328cd76039270484ac8e36f1f41831b39c"
+    },
+    {
+      "path": "dictionary/wordnet/4d.json",
+      "bytes": 51240,
+      "sha256": "43e1ac9115810fd8eca62794274dea05b0c940b94155c1cb3a180a36c8c0c7ed"
+    },
+    {
+      "path": "dictionary/wordnet/4e.json",
+      "bytes": 55887,
+      "sha256": "be6ec65278022d1693cb7cc657d4208514832c392c8f0ecf65a0ddb33277886a"
+    },
+    {
+      "path": "dictionary/wordnet/4f.json",
+      "bytes": 54166,
+      "sha256": "5eadd38a8f5e2ebbfe071e9c38336f51219bc8734a2d24b1b973bdcfd74a2160"
+    },
+    {
+      "path": "dictionary/wordnet/50.json",
+      "bytes": 41992,
+      "sha256": "1c1a96cbcd19dbe7f654d0e9d9bbe1b7a87e4b51a4acd0dccab0fbab4cdf7be9"
+    },
+    {
+      "path": "dictionary/wordnet/51.json",
+      "bytes": 54710,
+      "sha256": "c9a3b18473fb3fba355c799a47c7dcd005fc6fe8f4f7a46c390ff386ecd49373"
+    },
+    {
+      "path": "dictionary/wordnet/52.json",
+      "bytes": 55227,
+      "sha256": "da2a32cb9cc92212aeb813256404ad0705e9927bcfbb63ffc38d4e60e1b48ede"
+    },
+    {
+      "path": "dictionary/wordnet/53.json",
+      "bytes": 58610,
+      "sha256": "cd79df864e33aea60f42580ad80e45157443aafc6b615638d96ac169ea331746"
+    },
+    {
+      "path": "dictionary/wordnet/54.json",
+      "bytes": 54364,
+      "sha256": "7143afbc208c0152773d5fa20a48950edac1e2f4a284afcb8f9006ce0c75c8b8"
+    },
+    {
+      "path": "dictionary/wordnet/55.json",
+      "bytes": 53470,
+      "sha256": "d37575814cc2e52d9697b64ada43352ff28f5e20923ea7b392df3c048eab580b"
+    },
+    {
+      "path": "dictionary/wordnet/56.json",
+      "bytes": 59338,
+      "sha256": "81c570a3446b277e562c36161c9ac4b59e1294ac66222bf5293e11d74dded673"
+    },
+    {
+      "path": "dictionary/wordnet/57.json",
+      "bytes": 48247,
+      "sha256": "8dc8901a33caccc3befcdddbb24f813ec4b4aa422f89ef87f9aeaf14a3a0dd0a"
+    },
+    {
+      "path": "dictionary/wordnet/58.json",
+      "bytes": 51910,
+      "sha256": "b388855e94ae024612f939912071bdbadcfd99eec033bfda0b1aff50f9130f26"
+    },
+    {
+      "path": "dictionary/wordnet/59.json",
+      "bytes": 51221,
+      "sha256": "b096f307c46caeb8375495f9cf9bb5c3e22b75ac400bc8253d36568128a309c0"
+    },
+    {
+      "path": "dictionary/wordnet/5a.json",
+      "bytes": 57964,
+      "sha256": "4374c6825c423703854156aa52fa0b8bff32d92112fa69293556a2bd0c5270fd"
+    },
+    {
+      "path": "dictionary/wordnet/5b.json",
+      "bytes": 59908,
+      "sha256": "7ea19392c0983502466b0d1b6785483379dc88e0ee89be469a3a21989c2f557f"
+    },
+    {
+      "path": "dictionary/wordnet/5c.json",
+      "bytes": 52993,
+      "sha256": "1423ed41ade78202d47c70d37e9f35aa985452bdd919ffc427d27255b6078c03"
+    },
+    {
+      "path": "dictionary/wordnet/5d.json",
+      "bytes": 52916,
+      "sha256": "39833365ebda8e8590ba4e794f57451b0e8e4714d67a83f2097def9263c5f75d"
+    },
+    {
+      "path": "dictionary/wordnet/5e.json",
+      "bytes": 55665,
+      "sha256": "24172059461ec92044647217d74a1a1e05ce5cd7b9303c6f930f3ed85862b9f6"
+    },
+    {
+      "path": "dictionary/wordnet/5f.json",
+      "bytes": 52887,
+      "sha256": "1db3661a68f6270c6f7adf6daa6c5a787bb25e662c44ab9924dbbc30f7677ae2"
+    },
+    {
+      "path": "dictionary/wordnet/60.json",
+      "bytes": 63560,
+      "sha256": "29087f23765cf76566e54217ec4c57e394cd74aeb9b686adc99755334d20050c"
+    },
+    {
+      "path": "dictionary/wordnet/61.json",
+      "bytes": 53565,
+      "sha256": "3984f4355caf9b08fd77ce99580823be03c3ce2b1615acc1a837edd5c70ee977"
+    },
+    {
+      "path": "dictionary/wordnet/62.json",
+      "bytes": 53435,
+      "sha256": "db55fc8cfb25f0c856b218e20573d5980625f94a55354f0d6fb27d35af0370b3"
+    },
+    {
+      "path": "dictionary/wordnet/63.json",
+      "bytes": 58223,
+      "sha256": "1c070e243cdc4a00d8ca0a7e4692dd771daf8c21bde008971b86dfe966960a1d"
+    },
+    {
+      "path": "dictionary/wordnet/64.json",
+      "bytes": 53626,
+      "sha256": "a68c7f4eefb08a66be2d013c7a390f7ec7ba0c7429bf0a23ec36de7586a5d9b4"
+    },
+    {
+      "path": "dictionary/wordnet/65.json",
+      "bytes": 50353,
+      "sha256": "f81c5e8a84fe152f70235cb8af0ef7a5a4b43cb5e8e6ac227bd89077f35665f0"
+    },
+    {
+      "path": "dictionary/wordnet/66.json",
+      "bytes": 51081,
+      "sha256": "c415dbafb89530c74949f441d6d38702f53fd3cedf92bc500b472d4b5e5853e9"
+    },
+    {
+      "path": "dictionary/wordnet/67.json",
+      "bytes": 52920,
+      "sha256": "58c5e29f0be8778dbf91cc30c814b7cff304d57259991c31a5bb067bc5038596"
+    },
+    {
+      "path": "dictionary/wordnet/68.json",
+      "bytes": 57102,
+      "sha256": "a745515b3625149a4860af9d015e9b7a9a70cf55cd9ef46002f7357797ad96f3"
+    },
+    {
+      "path": "dictionary/wordnet/69.json",
+      "bytes": 59892,
+      "sha256": "f5a39689a34af9f9d9861dff54028c746ef7e034e479d608eccc2e0aac8bc9a0"
+    },
+    {
+      "path": "dictionary/wordnet/6a.json",
+      "bytes": 55700,
+      "sha256": "6ddc6ea793c03f7fdff9fd241add0f507834a2f7b76b3baf83b90cf4ab1b29e8"
+    },
+    {
+      "path": "dictionary/wordnet/6b.json",
+      "bytes": 54092,
+      "sha256": "96602c1b2f5d5e0ad4abbf573632872ccde45d2f21a910812c8c188813ab28b7"
+    },
+    {
+      "path": "dictionary/wordnet/6c.json",
+      "bytes": 54009,
+      "sha256": "3fed1f3b0973269151e04718cbbf9658f5d29da77f2bac31282066fc29cfd50e"
+    },
+    {
+      "path": "dictionary/wordnet/6d.json",
+      "bytes": 53156,
+      "sha256": "2adfe9e3aa6b7a717860342efcc08731e48d12d4f70af43a09f6e45dbaa2e7f8"
+    },
+    {
+      "path": "dictionary/wordnet/6e.json",
+      "bytes": 48123,
+      "sha256": "2e6699733a11d3e49148177a44f1bf02b3fa3d1c4e195c1228ee90bd45b43612"
+    },
+    {
+      "path": "dictionary/wordnet/6f.json",
+      "bytes": 57959,
+      "sha256": "7ccc56e3132559060acd28b0d18d51f15c3523bfc0c55e93bcb803de77031b67"
+    },
+    {
+      "path": "dictionary/wordnet/70.json",
+      "bytes": 68610,
+      "sha256": "60bb043161c5ab0535ae10d21989c4d48beaaf75766a37760ec84b3e19c56c6a"
+    },
+    {
+      "path": "dictionary/wordnet/71.json",
+      "bytes": 53936,
+      "sha256": "c94c375992e72d24d1aa4900409e45aaba4166178a7c30faacd5867b9f0241b6"
+    },
+    {
+      "path": "dictionary/wordnet/72.json",
+      "bytes": 50501,
+      "sha256": "173e725ab614f5280f5f7efa821e44c2f833751dda9623a97f805636a786e6b4"
+    },
+    {
+      "path": "dictionary/wordnet/73.json",
+      "bytes": 52965,
+      "sha256": "820da1c1197d10e01b6cf457246217d4557d8ffaafb13254a6b5f247ebe4ee01"
+    },
+    {
+      "path": "dictionary/wordnet/74.json",
+      "bytes": 48392,
+      "sha256": "45586c5e701f0ee29c6d572d809b3c2445cd0d7d655cd1bc0dc2e8ae3cf3b4b6"
+    },
+    {
+      "path": "dictionary/wordnet/75.json",
+      "bytes": 45475,
+      "sha256": "6eab5f8c54e005408be5ed7c8efd364a3a42a64a5cb78dde9dab028c4c379d5d"
+    },
+    {
+      "path": "dictionary/wordnet/76.json",
+      "bytes": 47988,
+      "sha256": "d7a66035224765be19cb657aa33690a215151c1c6f76c967637d6fd8b18bbb91"
+    },
+    {
+      "path": "dictionary/wordnet/77.json",
+      "bytes": 63662,
+      "sha256": "fb320f8b357aaecee765baaf094bddc63cd0da28c360ea416c5db7f4005d0e77"
+    },
+    {
+      "path": "dictionary/wordnet/78.json",
+      "bytes": 68289,
+      "sha256": "56e1d7be109cd767de9f4137eaf5e4912f7c5abf23b7c1ad5a49978463c2255a"
+    },
+    {
+      "path": "dictionary/wordnet/79.json",
+      "bytes": 44013,
+      "sha256": "31800e808609885affa0d1106b2464e2ce7819f9533989d31f8ad9f81b429eed"
+    },
+    {
+      "path": "dictionary/wordnet/7a.json",
+      "bytes": 57726,
+      "sha256": "c779fb6cb9508824912af7f19f060de895adf258d8235161d68d3cb2e5d0a374"
+    },
+    {
+      "path": "dictionary/wordnet/7b.json",
+      "bytes": 51544,
+      "sha256": "71b6e237a98200ee28f6d440c98434581f351ac7e648eef9c5ed10c7db3e719b"
+    },
+    {
+      "path": "dictionary/wordnet/7c.json",
+      "bytes": 50486,
+      "sha256": "dd6c180e6d1bf10325e3a004b0edcd3aaa5a7455d83c75a3d7a841f828f6c7c1"
+    },
+    {
+      "path": "dictionary/wordnet/7d.json",
+      "bytes": 42185,
+      "sha256": "1a14916a7c4fc2e9b11ef7b27bb29a3c0df80a86ba6285056d0549a6d5e2531d"
+    },
+    {
+      "path": "dictionary/wordnet/7e.json",
+      "bytes": 60805,
+      "sha256": "0eb82bab6aad82e8b6e5fbff6181bba87af7315fa25a8897667109abce00d6bf"
+    },
+    {
+      "path": "dictionary/wordnet/7f.json",
+      "bytes": 57057,
+      "sha256": "7090712349cde5b2e0290ce8d376a91bc43b9f04342a8361a86604e97dd7be02"
+    },
+    {
+      "path": "dictionary/wordnet/80.json",
+      "bytes": 62202,
+      "sha256": "3794cbab91d16e80ec959370e3d2b6c3bb653f47e0f03fe17a9de2e2014320f7"
+    },
+    {
+      "path": "dictionary/wordnet/81.json",
+      "bytes": 51212,
+      "sha256": "ea69daffed7569733391005e8e06545e79dd686727cdcb237114f72ef88167f8"
+    },
+    {
+      "path": "dictionary/wordnet/82.json",
+      "bytes": 43984,
+      "sha256": "3aa7ddc327d6efc735441d64e2338afd20fda787ba86d1893c3144dadb0ff412"
+    },
+    {
+      "path": "dictionary/wordnet/83.json",
+      "bytes": 47726,
+      "sha256": "b5623402b2b56cac2e371a97838bf4037256313c4c59e6604007038490f4350e"
+    },
+    {
+      "path": "dictionary/wordnet/84.json",
+      "bytes": 66628,
+      "sha256": "56bbbac71738feb5c0718402d8c07bb54f5e7d556a8b6479a103d682c7f097d0"
+    },
+    {
+      "path": "dictionary/wordnet/85.json",
+      "bytes": 53715,
+      "sha256": "110dcdfdb3b5bf9341cd305a6ece0ebad0d4da392db0068206f9882f7b5becb4"
+    },
+    {
+      "path": "dictionary/wordnet/86.json",
+      "bytes": 57405,
+      "sha256": "d196ff2543dfa3f5d99ecb7813f9cf44f03bb36b37a332af6d798171976fc29a"
+    },
+    {
+      "path": "dictionary/wordnet/87.json",
+      "bytes": 53027,
+      "sha256": "121ec8ec51eada79b3f34acb18d025ae3f35b563f72167eeed943cc22901467b"
+    },
+    {
+      "path": "dictionary/wordnet/88.json",
+      "bytes": 54521,
+      "sha256": "31d210aa8e5e408b7e78e28f85aa077ca86b9f69cfb189b7a4c356f30b1938a7"
+    },
+    {
+      "path": "dictionary/wordnet/89.json",
+      "bytes": 55712,
+      "sha256": "16d6ddefdc6545042401ea3ea4d616b80b6b45e78c15d08096f5410d0f8e8367"
+    },
+    {
+      "path": "dictionary/wordnet/8a.json",
+      "bytes": 54138,
+      "sha256": "221ad31db8ff9d6bebda8a975e3964299c9f11575df191e97c64aef433597fff"
+    },
+    {
+      "path": "dictionary/wordnet/8b.json",
+      "bytes": 51322,
+      "sha256": "0e9611d85e683e7fc3ce4d32487c2cfd4271fbd94e01b8c2ac355005e0b473f2"
+    },
+    {
+      "path": "dictionary/wordnet/8c.json",
+      "bytes": 61414,
+      "sha256": "88820cc3d30c1668d47076a96c281cbe0c4b431b8c004e6164a0604e2a819389"
+    },
+    {
+      "path": "dictionary/wordnet/8d.json",
+      "bytes": 53792,
+      "sha256": "e5146ebcb8324911ad26bc95cf85e06de77258f8e8cb9892e6de502cf12c2341"
+    },
+    {
+      "path": "dictionary/wordnet/8e.json",
+      "bytes": 49669,
+      "sha256": "c28d147834399a46e20f2c9e5f736d83b563745f492cafb72562f6a899541a49"
+    },
+    {
+      "path": "dictionary/wordnet/8f.json",
+      "bytes": 54268,
+      "sha256": "f28d85491691e0ec2051234fc7f58676e732a4ec8d8d97a0ab092edd0a1ed82f"
+    },
+    {
+      "path": "dictionary/wordnet/90.json",
+      "bytes": 55995,
+      "sha256": "f0f06f865557e1ce7c4f367c2d163d6bd797b4a0cc08bd205d1aca7d72e345e1"
+    },
+    {
+      "path": "dictionary/wordnet/91.json",
+      "bytes": 56566,
+      "sha256": "ccfcdc7678f500f352b618c7d1e85af743ac0c2f4c377cb69eaf7b667f9c2765"
+    },
+    {
+      "path": "dictionary/wordnet/92.json",
+      "bytes": 57260,
+      "sha256": "a05196d8308df5e7ca02755072650e5fc35c348ea24f0fff1effe1d79bcc197c"
+    },
+    {
+      "path": "dictionary/wordnet/93.json",
+      "bytes": 50851,
+      "sha256": "2f36c5bb6d86878334a84316c660b0ab654782b1ded49ec6c06af72cf0e52574"
+    },
+    {
+      "path": "dictionary/wordnet/94.json",
+      "bytes": 48827,
+      "sha256": "61ed9e746933b6c6e866c896ac291d2b80e3534e3db5c580b81914d62073692d"
+    },
+    {
+      "path": "dictionary/wordnet/95.json",
+      "bytes": 59461,
+      "sha256": "ca6aba35c876808a42caddcd66d511d6456ce77263158bd8733dc99e7c5e9dce"
+    },
+    {
+      "path": "dictionary/wordnet/96.json",
+      "bytes": 51991,
+      "sha256": "84d8c9ca2505c3d0698f3945649f324c35e77f5e50e7a37e4c8aa0f35459988c"
+    },
+    {
+      "path": "dictionary/wordnet/97.json",
+      "bytes": 53664,
+      "sha256": "588f08eb2ebf55719aa9b72f9ec44996167b8441ea4a2f4480a03f4969443972"
+    },
+    {
+      "path": "dictionary/wordnet/98.json",
+      "bytes": 56595,
+      "sha256": "9190eebe3c2a830c726b0b5ba05c7dc293e5ba3308016f8474f504853371fb5c"
+    },
+    {
+      "path": "dictionary/wordnet/99.json",
+      "bytes": 49637,
+      "sha256": "18ae2c29d2fc19c82a14f4649244b0413ca7e26b88afce2df5b7818205259230"
+    },
+    {
+      "path": "dictionary/wordnet/9a.json",
+      "bytes": 67476,
+      "sha256": "51385c7b3a515f5d7bcabab4e1ce4e1f5b5bd1d70a43ee2178022327261c48d5"
+    },
+    {
+      "path": "dictionary/wordnet/9b.json",
+      "bytes": 49938,
+      "sha256": "83e23fff0ab6be824d9a2bc09f38a2c8e65d02100a4e7498d2657af400fc3a32"
+    },
+    {
+      "path": "dictionary/wordnet/9c.json",
+      "bytes": 57199,
+      "sha256": "937a656149050fe284a6ee444828808a67a0f5fd869718b2676fe1e536d82439"
+    },
+    {
+      "path": "dictionary/wordnet/9d.json",
+      "bytes": 56786,
+      "sha256": "40447e565ff7b35603f07cca0fd1b9ef2bb38d4e799b85e2fc7187aa36ec7feb"
+    },
+    {
+      "path": "dictionary/wordnet/9e.json",
+      "bytes": 51747,
+      "sha256": "e1b8774bfcaf515290e843817fbfdcaa43b05d9194b66cd71e78b15a0fe1f65d"
+    },
+    {
+      "path": "dictionary/wordnet/9f.json",
+      "bytes": 53408,
+      "sha256": "f726162def520e942aa6b32a5c5da7a4f29854ac679d82bc4f81b369412d9c25"
+    },
+    {
+      "path": "dictionary/wordnet/a0.json",
+      "bytes": 55395,
+      "sha256": "96a19db9d6d1a09676fa2aee5d67945517bdc514671e19c978d12053e0dd2fa0"
+    },
+    {
+      "path": "dictionary/wordnet/a1.json",
+      "bytes": 52282,
+      "sha256": "5d538b05a4e7608ee5d5b6d61dee5143c74152d0c9750ebfe48a4b1b57c01b01"
+    },
+    {
+      "path": "dictionary/wordnet/a2.json",
+      "bytes": 58691,
+      "sha256": "8f1f952d5f66c4d40ce3acc52e63aead803327bbd312d8018ba266099793bc13"
+    },
+    {
+      "path": "dictionary/wordnet/a3.json",
+      "bytes": 50748,
+      "sha256": "13689131d31fbde6c5533e7bf3cc1cd6481369cc9b0a793c86710637686738a3"
+    },
+    {
+      "path": "dictionary/wordnet/a4.json",
+      "bytes": 58359,
+      "sha256": "c341765cbbbdb703be542e553ab234beff11d3d58dcccd88de5899fa91304e62"
+    },
+    {
+      "path": "dictionary/wordnet/a5.json",
+      "bytes": 47077,
+      "sha256": "59085e3976cb4e00395de984a6f34d7ad1e1c2986452a51a0a6b5e7ba00120d2"
+    },
+    {
+      "path": "dictionary/wordnet/a6.json",
+      "bytes": 54698,
+      "sha256": "c21af6d23ae0d99f9ae9b3ea4db04098faebd33c01c9cd5a144989c8292f3c0c"
+    },
+    {
+      "path": "dictionary/wordnet/a7.json",
+      "bytes": 47493,
+      "sha256": "06e7b8bba15fb29973b1117f6bff5c89228ebd7022167a9958b063e1743e5788"
+    },
+    {
+      "path": "dictionary/wordnet/a8.json",
+      "bytes": 48432,
+      "sha256": "171900567abf21e3140fd5e56548d74b23d7801dea63112f1316cd5bcf9a1108"
+    },
+    {
+      "path": "dictionary/wordnet/a9.json",
+      "bytes": 55666,
+      "sha256": "2a7238637addeccfa923913099fbfdf2bd3dee96d9c4273f17a68ae37d95515e"
+    },
+    {
+      "path": "dictionary/wordnet/aa.json",
+      "bytes": 60626,
+      "sha256": "aef6f85ba3cbc4cd5013daa74ca385b6a6861e3181cedee30c4e5dea267d5fa6"
+    },
+    {
+      "path": "dictionary/wordnet/ab.json",
+      "bytes": 54284,
+      "sha256": "16dd22cf4c313733f9fd4802d9ec36885ddf87f16d088f0c8fe075bde1aa3f3d"
+    },
+    {
+      "path": "dictionary/wordnet/ac.json",
+      "bytes": 52068,
+      "sha256": "bd3308429d603aa20da87f83a3f64851fce4291641f9038aedf98a2ce19134b3"
+    },
+    {
+      "path": "dictionary/wordnet/ad.json",
+      "bytes": 42296,
+      "sha256": "3299df9248a423fc1a6b95a871a9768a24ee2ecc8bf8020e6063d6bf3a03fc50"
+    },
+    {
+      "path": "dictionary/wordnet/ae.json",
+      "bytes": 61221,
+      "sha256": "519e0dafead09a48ec63f9a75b10cc2c2356071b0931e39d796e56581fd6aebb"
+    },
+    {
+      "path": "dictionary/wordnet/af.json",
+      "bytes": 63496,
+      "sha256": "ec165415c9e29c02ec7d8a81907a9b8381e22b2615676bc1809618c3755d96a2"
+    },
+    {
+      "path": "dictionary/wordnet/b0.json",
+      "bytes": 55145,
+      "sha256": "7cfbca273b21f02637c025b7fa3046bb4e835c7d3df19f777951c92c80d45a4c"
+    },
+    {
+      "path": "dictionary/wordnet/b1.json",
+      "bytes": 56986,
+      "sha256": "1a333467dcf388eae2af7cc38de08faffe334099f1c1da3683284014ebaab7ad"
+    },
+    {
+      "path": "dictionary/wordnet/b2.json",
+      "bytes": 51178,
+      "sha256": "ebd7317325683852b22509e11a9e0895adde45dfe2dd42b2669636e595628303"
+    },
+    {
+      "path": "dictionary/wordnet/b3.json",
+      "bytes": 54277,
+      "sha256": "e66105da650961fad08c147086e233bf30e102c791af2f7cfc59544a4c15f72d"
+    },
+    {
+      "path": "dictionary/wordnet/b4.json",
+      "bytes": 56692,
+      "sha256": "d5b4391896ddaf3aba0b0cbcf759ed93594ce95959ff572ff81796cc6c8aa2e9"
+    },
+    {
+      "path": "dictionary/wordnet/b5.json",
+      "bytes": 54533,
+      "sha256": "cfb03a2f304b48bf7cb2f08a3e157fb2dba65ad2b7d5c2e1c82e5f3b71459aff"
+    },
+    {
+      "path": "dictionary/wordnet/b6.json",
+      "bytes": 50227,
+      "sha256": "273fea921d3a6bcf2d51decf3c97a9cad324a116ac80e55cd79868c3ee8a25f4"
+    },
+    {
+      "path": "dictionary/wordnet/b7.json",
+      "bytes": 52133,
+      "sha256": "f35012723844a6fcc9f2cca8d1c82640b303052a43591dea8d30d6d00904dc1d"
+    },
+    {
+      "path": "dictionary/wordnet/b8.json",
+      "bytes": 57535,
+      "sha256": "0f7d38b4f513913137193a75ba541459938db3656d308578591344b76fb5676d"
+    },
+    {
+      "path": "dictionary/wordnet/b9.json",
+      "bytes": 51864,
+      "sha256": "d7b442725b51ec2db58ac47c0114baca1f7b624ea228d11aa1f3d736f900a561"
+    },
+    {
+      "path": "dictionary/wordnet/ba.json",
+      "bytes": 47807,
+      "sha256": "d54307fdd512056bc6e2af0049b8abe4097b9f630c355edd1993a1626bca5593"
+    },
+    {
+      "path": "dictionary/wordnet/bb.json",
+      "bytes": 46853,
+      "sha256": "3b741069f319f9615b9e55cd356555cae9e1707bb68ba08eae34dc876f360cb8"
+    },
+    {
+      "path": "dictionary/wordnet/bc.json",
+      "bytes": 49567,
+      "sha256": "9c2d3d27ec46360fc656e041c3098192fb6e90fbfe45357469636894b3b260ec"
+    },
+    {
+      "path": "dictionary/wordnet/bd.json",
+      "bytes": 54418,
+      "sha256": "8118a821e128be9049610f60c3776962628d77fb08ac71a358016a5787849814"
+    },
+    {
+      "path": "dictionary/wordnet/be.json",
+      "bytes": 62526,
+      "sha256": "89f2d2164a31ab22fe9ba062eaddb3872e77881f5a10e145562c19cf97e5c81b"
+    },
+    {
+      "path": "dictionary/wordnet/bf.json",
+      "bytes": 52525,
+      "sha256": "6854c24635efd753dd42e857fb85c9a9503e93a2bf44451ab21d1b6bcb46f167"
+    },
+    {
+      "path": "dictionary/wordnet/c0.json",
+      "bytes": 59721,
+      "sha256": "21bd0b62edc7473f389a2be38585a738ff384195ea070d2784641b79cad32d1b"
+    },
+    {
+      "path": "dictionary/wordnet/c1.json",
+      "bytes": 52231,
+      "sha256": "d09ccaecdea8004e97dbbbcc22795b3c689f89dc384b9ea411e24f72fffa9647"
+    },
+    {
+      "path": "dictionary/wordnet/c2.json",
+      "bytes": 52151,
+      "sha256": "7f8b42dfd03642eac1df6cf98e512ae3fb3ff01895ba1af1a3a29a52f31132d6"
+    },
+    {
+      "path": "dictionary/wordnet/c3.json",
+      "bytes": 60206,
+      "sha256": "a0349175c9afb213dc508e55e42a3ba927caea08b846dfd50db73ac41fb1b494"
+    },
+    {
+      "path": "dictionary/wordnet/c4.json",
+      "bytes": 43313,
+      "sha256": "14f7cda7868eabefc8ae26f9f77d4672891f0fdbdcc98deb835a79d500651040"
+    },
+    {
+      "path": "dictionary/wordnet/c5.json",
+      "bytes": 59553,
+      "sha256": "e957964bb9af3c3b79fa0c66ec992a66c7bf6903b9fc8efc1cd9fd6fbdcdf786"
+    },
+    {
+      "path": "dictionary/wordnet/c6.json",
+      "bytes": 54385,
+      "sha256": "fb22c8c7e77d4f1f904043ef1208a683db777a80f0e4cc38b1b84ef550be947b"
+    },
+    {
+      "path": "dictionary/wordnet/c7.json",
+      "bytes": 50919,
+      "sha256": "4fd04105d80df9fc28f5d4e738fedd748c41e73d0e23d5effa9a5fff8c834e5d"
+    },
+    {
+      "path": "dictionary/wordnet/c8.json",
+      "bytes": 50269,
+      "sha256": "f2676a187ddd8658c9221f65fd24a5409a21b9b28d27840829f90816bd7cfda7"
+    },
+    {
+      "path": "dictionary/wordnet/c9.json",
+      "bytes": 60596,
+      "sha256": "9acc75cb61787b596e69b660232df2ea8b0e28c38efa4e698e6d456b49d1f382"
+    },
+    {
+      "path": "dictionary/wordnet/ca.json",
+      "bytes": 53079,
+      "sha256": "d7266f133ce5846a9cb4832fbfc545415d26961f09dfa504760c9d5985fabd7e"
+    },
+    {
+      "path": "dictionary/wordnet/cb.json",
+      "bytes": 50761,
+      "sha256": "3165f827653a2e47ad405395234d0a2e3dbcf0b0029763ad93cb70d45251ee28"
+    },
+    {
+      "path": "dictionary/wordnet/cc.json",
+      "bytes": 54872,
+      "sha256": "3c2726224cfef383f5fd63fe0dba63d60a61ff5062177941b690c9c73a6ddf61"
+    },
+    {
+      "path": "dictionary/wordnet/cd.json",
+      "bytes": 45397,
+      "sha256": "7e605ec11e3dcad4597e99f65a2594267a8a48b222e5cbf4febd9dc48bb7060e"
+    },
+    {
+      "path": "dictionary/wordnet/ce.json",
+      "bytes": 48472,
+      "sha256": "7b339e9d1a0c8657f26439d741fa814f8af2ea52baab96381469ff8bab6bd1e4"
+    },
+    {
+      "path": "dictionary/wordnet/cf.json",
+      "bytes": 57736,
+      "sha256": "ce60112b65225312c73669c6ef92108f72557d6daa809b24efb9928e8d150231"
+    },
+    {
+      "path": "dictionary/wordnet/d0.json",
+      "bytes": 51462,
+      "sha256": "3d3c58f2cc4d945c01e2aee2ea960a74eb668a5aeda9d0065a90e23a8d3cb2a8"
+    },
+    {
+      "path": "dictionary/wordnet/d1.json",
+      "bytes": 66705,
+      "sha256": "a7bd6007027b7462eb617e4836f2725bd33485e0bc32a0a77a857b4bf239939c"
+    },
+    {
+      "path": "dictionary/wordnet/d2.json",
+      "bytes": 48383,
+      "sha256": "8373611d6b58d28006ca59442630e2e23b17fd383d56c277aee554573cc853af"
+    },
+    {
+      "path": "dictionary/wordnet/d3.json",
+      "bytes": 49586,
+      "sha256": "e1d0acbe9cb200c70310d3666f54fbfb217357cc8c1e46246176d54cbdaaaf17"
+    },
+    {
+      "path": "dictionary/wordnet/d4.json",
+      "bytes": 53375,
+      "sha256": "6fbec7c3aeb9a9dd4f60bdf08e581604f6d8e5eb50c7eb30687c7aaaf3502bb8"
+    },
+    {
+      "path": "dictionary/wordnet/d5.json",
+      "bytes": 49003,
+      "sha256": "aa432eae7772cce7b2397afed4e3ebbd4536fb995875d8e0585bcbca71dd57c0"
+    },
+    {
+      "path": "dictionary/wordnet/d6.json",
+      "bytes": 51191,
+      "sha256": "7a559d2eaa1b47fb7bc3234561704bc46529bb9d8ecae02aab884bf09cb982ba"
+    },
+    {
+      "path": "dictionary/wordnet/d7.json",
+      "bytes": 52905,
+      "sha256": "c370167afb6e3b375f7c3cb06ffb8a8b974e6bd1c4fd4a8e3fe0f91e9b0e2b94"
+    },
+    {
+      "path": "dictionary/wordnet/d8.json",
+      "bytes": 64806,
+      "sha256": "0876847526a9e061fca83f914ccf560de709b3d5ed79b4dc8b192e1aa4806596"
+    },
+    {
+      "path": "dictionary/wordnet/d9.json",
+      "bytes": 55652,
+      "sha256": "636478179f87ad909bc7f21e42221a3c05141974a035f919d40f06fd8ced1ed6"
+    },
+    {
+      "path": "dictionary/wordnet/da.json",
+      "bytes": 56199,
+      "sha256": "a5841e665ddf249b63bd81fa3f6dbe60a5613518d65cfff0c7d62d2c3de5e140"
+    },
+    {
+      "path": "dictionary/wordnet/DATA-LICENSE.txt",
+      "bytes": 1546,
+      "sha256": "5d6a235d57cc076574f81156ff7211c5dff22914219994ffa29f6fd1c30feeb7"
+    },
+    {
+      "path": "dictionary/wordnet/db.json",
+      "bytes": 55855,
+      "sha256": "f3a5bcbae114e16894f31611c56d38d878b41050657caf5bfa01b069d84c0289"
+    },
+    {
+      "path": "dictionary/wordnet/dc.json",
+      "bytes": 59957,
+      "sha256": "95c85ccb2b2428a746906730a77d764d2ab9b613acdbb67065b689afaec5e1db"
+    },
+    {
+      "path": "dictionary/wordnet/dd.json",
+      "bytes": 52255,
+      "sha256": "4a3d5bde25006ccd12f688e69445f3b5ce4d2ab94b97be8867e600311fcc10d6"
+    },
+    {
+      "path": "dictionary/wordnet/de.json",
+      "bytes": 46251,
+      "sha256": "4063c66ff89520bb8841049b1071f15f729d70eb19d7d9c53f7dcc2e8027e533"
+    },
+    {
+      "path": "dictionary/wordnet/df.json",
+      "bytes": 59331,
+      "sha256": "cedd11b22c6606263ec41f194e30c6b59edef49a0a66e739f29085c8f58f27de"
+    },
+    {
+      "path": "dictionary/wordnet/e0.json",
+      "bytes": 54165,
+      "sha256": "c02ad96e09f516818c7d65180da7e85dde85877ae9c6b070c7f6f3dc6841dbb0"
+    },
+    {
+      "path": "dictionary/wordnet/e1.json",
+      "bytes": 51101,
+      "sha256": "81c0bd382d75d44f72fccb939b00250069e8bfbac40c1e3264825b9ed0b50a82"
+    },
+    {
+      "path": "dictionary/wordnet/e2.json",
+      "bytes": 50417,
+      "sha256": "dca25ac4f7eef2d614037611604562543c62077848e19ca22061029e85e7a436"
+    },
+    {
+      "path": "dictionary/wordnet/e3.json",
+      "bytes": 57095,
+      "sha256": "8e269ecbc730eb353bc2d0a2944dc309c7f0e3892121c2f4ea895a9b967081c3"
+    },
+    {
+      "path": "dictionary/wordnet/e4.json",
+      "bytes": 49653,
+      "sha256": "b029a29b9db76c9f87999056c584b8cff3c0beb594fc624bf4edc714969b7dba"
+    },
+    {
+      "path": "dictionary/wordnet/e5.json",
+      "bytes": 62743,
+      "sha256": "9ede25a21331f49ac3809f037ab8caef32cd7b3b8033ba4c08c24fd7a81a05ea"
+    },
+    {
+      "path": "dictionary/wordnet/e6.json",
+      "bytes": 61129,
+      "sha256": "94253c2077ccb2fb1dc4ce5fee0f1f3667e5de4521d8ba3c3a36921ebf30f9bd"
+    },
+    {
+      "path": "dictionary/wordnet/e7.json",
+      "bytes": 55610,
+      "sha256": "77f48422b056962707cf07f49210482ec4521a4177b7323d35d9dcd34f2938ac"
+    },
+    {
+      "path": "dictionary/wordnet/e8.json",
+      "bytes": 53557,
+      "sha256": "bb4995982baa175f7d3ca17d709e4543f6701261b267d65e815529f71a520edc"
+    },
+    {
+      "path": "dictionary/wordnet/e9.json",
+      "bytes": 57362,
+      "sha256": "89573c48eaa734039f4d342fe26de3879207472908e48cea1d079e9b565d8434"
+    },
+    {
+      "path": "dictionary/wordnet/ea.json",
+      "bytes": 62424,
+      "sha256": "e201618ee1de88cc2098252dabf2f47c30dc0ebca3e916360840bc6c28c61511"
+    },
+    {
+      "path": "dictionary/wordnet/eb.json",
+      "bytes": 53282,
+      "sha256": "0430cda866ec73214eb1c2a4d9454ab67c5f388fe168ff01ee955be08bc9a495"
+    },
+    {
+      "path": "dictionary/wordnet/ec.json",
+      "bytes": 51752,
+      "sha256": "1dbfb4756fcc1e51020f1ab643eb086f2adee46a8d3e04804007cd7b4f075707"
+    },
+    {
+      "path": "dictionary/wordnet/ed.json",
+      "bytes": 54810,
+      "sha256": "144fc4c02f01b0a2cc160f6a080a433e0a2ca95fa4faaefc4e327f3d531ac6ba"
+    },
+    {
+      "path": "dictionary/wordnet/ee.json",
+      "bytes": 53469,
+      "sha256": "ba9cbc423598201821c952e124c6ab35b91182488d8bfa04d91e6e703db8bfa0"
+    },
+    {
+      "path": "dictionary/wordnet/ef.json",
+      "bytes": 48027,
+      "sha256": "a38f372dc57c22480d1d8c633ee75ac367c6d7d2b59f5860f975d8e627d10345"
+    },
+    {
+      "path": "dictionary/wordnet/f0.json",
+      "bytes": 46519,
+      "sha256": "c5208ed5c0668020e8644b9069c10157cbd1422f5eae541d684d147fdca08b6e"
+    },
+    {
+      "path": "dictionary/wordnet/f1.json",
+      "bytes": 52314,
+      "sha256": "29f5a6d4bf1fe7777bc46d0640a5762b767ecf6b5b83098204f6d3469eb72f88"
+    },
+    {
+      "path": "dictionary/wordnet/f2.json",
+      "bytes": 48404,
+      "sha256": "7103b8c81226ca366ae3eade9e4995d59c51819ef6990e6fc65bd1266791c67c"
+    },
+    {
+      "path": "dictionary/wordnet/f3.json",
+      "bytes": 54762,
+      "sha256": "f926cdbd58a072ead578d0eb43a80c70e8e9616784ef2f9b0298ddbeb3779f5a"
+    },
+    {
+      "path": "dictionary/wordnet/f4.json",
+      "bytes": 55807,
+      "sha256": "3b1a16271cead3f79218f4014ce8b42fe5c4067481f2badd543d462d3c42c1a0"
+    },
+    {
+      "path": "dictionary/wordnet/f5.json",
+      "bytes": 52314,
+      "sha256": "dd716b0ac97279442c25cc7bf0fbcb6cb141712c1d122ac4f7af0b8955642075"
+    },
+    {
+      "path": "dictionary/wordnet/f6.json",
+      "bytes": 52255,
+      "sha256": "e37da976e9c05aac6bc8589de85a983b89198194f93b820ce546a8bd36fd2a85"
+    },
+    {
+      "path": "dictionary/wordnet/f7.json",
+      "bytes": 61298,
+      "sha256": "fe19584dbfc3eb110cdb4b475b1b69cd5c8e83834e906bcdf846ed0d5f586693"
+    },
+    {
+      "path": "dictionary/wordnet/f8.json",
+      "bytes": 53258,
+      "sha256": "c5140740948f52c36a1e19b625e462086fd31d8105fc5a8476dfcc915821100b"
+    },
+    {
+      "path": "dictionary/wordnet/f9.json",
+      "bytes": 56653,
+      "sha256": "3cdcbcc9991540dea828d3065f734923281ef82d4388b0d7044f8b8434d04131"
+    },
+    {
+      "path": "dictionary/wordnet/fa.json",
+      "bytes": 60885,
+      "sha256": "18e8d4b88e61c0fc8d1db9b8e189e4d261d8aabdb93a7d49aa031588765555de"
+    },
+    {
+      "path": "dictionary/wordnet/fb.json",
+      "bytes": 52965,
+      "sha256": "53db2149539d3bf05b1bb7f7fcabb0bfe049692e59e21ec98bde0b70ae33d899"
+    },
+    {
+      "path": "dictionary/wordnet/fc.json",
+      "bytes": 57514,
+      "sha256": "566c77095d8fec3eea77b6ce0e81b07e7f61bc8d814c74914934a94ec850c726"
+    },
+    {
+      "path": "dictionary/wordnet/fd.json",
+      "bytes": 56617,
+      "sha256": "8a169e57716d8e271664f07f20e87ca748ee29061058b72510ef1f619e74717c"
+    },
+    {
+      "path": "dictionary/wordnet/fe.json",
+      "bytes": 43275,
+      "sha256": "53465a0658830892739bc490eb8668c44856cbbd7a7323f419dcff338ea74c5f"
+    },
+    {
+      "path": "dictionary/wordnet/ff.json",
+      "bytes": 47947,
+      "sha256": "07f70151b2e1584fe029827feb7397181e29afe2754afd16d01e0df738f40f4d"
+    },
+    {
+      "path": "dictionary/wordnet/LICENSE.txt",
+      "bytes": 1567,
+      "sha256": "e95e845ba95cedf3fb62c96f656ab2d71e4404f3aa84741f1ec2862741965c98"
+    },
+    {
+      "path": "dictionary/wordnet/metadata.json",
+      "bytes": 635,
+      "sha256": "d68854f666b52f7c4282d7e3862919af1500ac5e56222ff41d918c3110a5f529"
+    },
+    {
+      "path": "dictionary/wordnet/NOTICE.txt",
+      "bytes": 495,
+      "sha256": "c2550c02001cc47a97e35f6718003a6832f53c40442a87582aa962d93fb5af21"
+    },
+    {
+      "path": "icon/128.png",
+      "bytes": 1773,
+      "sha256": "f84dcd86b2737c3196dca0c00d5876adbf0ecc36267a4cb3cfe18e4b46c515a8"
+    },
+    {
+      "path": "icon/16.png",
+      "bytes": 305,
+      "sha256": "07b90aa393e7d8e65f1c1a42611c44ca440c62ce9d370f958b5d69627b93311d"
+    },
+    {
+      "path": "icon/32.png",
+      "bytes": 553,
+      "sha256": "006fbbb97584105e7e87b1f186d6e0b1b045793575161d4abf19862d4ed9e273"
+    },
+    {
+      "path": "icon/48.png",
+      "bytes": 756,
+      "sha256": "dc0de326517efab391e79e7667b678237c02850c3431d5568c71be63ad58a19d"
+    },
+    {
+      "path": "icon/96.png",
+      "bytes": 1412,
+      "sha256": "bbbbc84f80c91d958b934cb7f583961d27b012719e819fd735247fd5465160a2"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 613,
+      "sha256": "033234e1ce8b9551efacb60bc99a5892727a84fef2db2373381dfe5c718ad251"
+    },
+    {
+      "path": "popup.html",
+      "bytes": 448,
+      "sha256": "194a9589cc92cf3c368b9d6477eabe14bbb4be79b21f7810da0235ff5e4dfb77"
+    }
+  ],
+  "archiveSha256": "c5fe63f32bfeee8061b8f27b4cf7906f7e09157196959b98be2c83739c350c9d"
+}

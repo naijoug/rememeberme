@@ -1,5 +1,10 @@
 # Remember Me API
 
+## Context explanation production release (2026-10-27)
+
+The verified personal lookup Worker is `https://rememberme-lookup.couplelabs.workers.dev`. The Tencent runtime is `/opt/rememberme/releases/20261027-context-fac9579f94d8/runtime`, with `CONTEXT_EXPLANATION_ENABLED=true` and the existing `group/translator` setting retained. The previous runtime, consistent database backup and configuration/bridge backups remain for rollback. No schema migration, account-ingress change or DNS cutover was made. See [release and rollback evidence](docs/verification/2026-10-27-context-release.md). New installations continue to default off until their gates pass.
+
+
 ## Session recovery and account controls (2026-10-25)
 
 Migration `0007_session_rotation.sql` adds hashed, bounded refresh retry metadata.
@@ -16,11 +21,15 @@ Chrome/Mac GitHub login and record/reset/delete sync were verified on 2026-10-26
 see [hosted evidence](docs/verification/2026-10-25-account-deployment.md). [Local verification](../frontend/browser-extension/docs/verification/2026-10-25-account-sessions.md)
 uses only synthetic accounts and vocabulary.
 
-## Magpie translation (2026-10-24)
+## Magpie translation (routing updated 2026-10-27)
 
-The deployed runtime uses `TRANSLATION_PROVIDER=magpie`, calling the same-host
+The source configuration uses `TRANSLATION_PROVIDER=magpie`, calling the same-host
 `http://127.0.0.1:3425/v1/chat/completions` gateway and
-`MAGPIE_MODEL=group/translator`. Set `MAGPIE_API_KEY=magpie-rememberme` for
+`MAGPIE_MODEL=group/translator`. Magpie selects the upstream model through this
+routing group. The live service also uses this group after a configuration-only
+change and `rememberme-api` restart. See [routing-group verification](docs/verification/2026-10-27-translator-group.md).
+Explicit `MAGPIE_MODEL` overrides remain supported; the optional
+sentence explainer uses the same setting. Set `MAGPIE_API_KEY=magpie-rememberme` for
 the verified loopback app label, or a private gateway key for a remote gateway.
 The web administration key is not an API credential. No provider secret is sent
 to clients. See [Magpie's integration contract](https://github.com/yetone/magpie/blob/main/docs/integrating.md).
@@ -48,26 +57,26 @@ client cache namespaces avoid reusing old backend results after upgrading.
 The historical deployment descriptions below predate this migration; the
 [dated Magpie deployment record](docs/verification/2026-10-24-magpie.md) records actual cutover and verification.
 
-The default runtime is Node/Hono with SQLite, deployed privately on Tencent
-Lighthouse with an isolated live Hermes translator. Server-local HTTPS passes,
-but Tencent's domain-filing block prevents canonical public access. A temporary Cloudflare HTTPS tunnel now serves word-only lookup and passed actual Chrome selection acceptance. GitHub credentials are
-configured and native login-start checks pass; the exact installed-extension callback/CORS checks pass, while completed public client authentication remains blocked by filing. See
-[deployment and host inspection](docs/tencent-deployment.md).
+The runtime is Node/Hono with SQLite on Tencent Lighthouse. The configured
+translation provider is Magpie; Hermes remains a rollback option. Public lookup
+uses the personal Worker and a private VPC connection to the loopback bridge.
+For dated account-ingress and login acceptance, see the release records above
+and [deployment and host inspection](docs/tencent-deployment.md).
 
 Implemented: GitHub OAuth with browser/client PKCE, hashed device credentials,
 refresh rotation/revocation, account ownership, atomic operation receipts,
 count/history-independent mutations, tombstones, fixed-boundary snapshots/deltas,
 version-bound history, review admission, source consent/removal, and authenticated
-Hermes Chinese translation. macOS and the browser extension use the same API.
+Magpie/Hermes Chinese translation. macOS and the browser extension use the same API.
 The homepage is a small connection page; a full website vocabulary UI is deferred.
 
 ## Cloudflare account correction
 
-Cloudflare ingress migration to `naijoug@outlook.com` is prepared with a verified shared workspace token; service cutover is still pending. The October 14–15 deployments used the wrong company account.
+The personal lookup ingress is recorded in `deploy/personal-lookup-resources.json`. The October 14–15 deployments used the wrong company account.
 Old deployment records are source inventory only. Deploy through `npm run
 cf:deploy -- <target>` after `npm run cf:check`; never use global Wrangler login.
-The personal account ID is verified and pinned. Zero VPC IDs prevent Worker
-deployment until replacement services are provisioned. See [account migration and credential setup](docs/cloudflare-account-migration.md).
+The personal account ID and nonzero VPC service ID are pinned in the gateway
+configuration. Account verification still precedes every deployment. See [account migration and credential setup](docs/cloudflare-account-migration.md).
 
 ## Local commands
 
@@ -146,13 +155,15 @@ release; it is not a distributed quota. Globally atomic review admission remains
 in SQLite guards.
 
 `POST /api/v1/lookup/translation` accepts only an authenticated single English
-word and `zh-CN`. The backend owns Hermes's private URL, bearer key and model.
-Use a dedicated loopback translation profile with tools/MCP/memory disabled.
+word and `zh-CN`, using the same translator/cache as the public route.
+For legacy `TRANSLATION_PROVIDER=hermes` only, the backend owns Hermes's private
+URL, bearer key and model. Use a dedicated loopback translation profile with
+tools/MCP/memory disabled.
 The adapter checks `/v1/toolsets`, limits inference concurrency to two, shares
 identical requests, bounds JSON bodies and has a twelve-second provider deadline.
 The Node runtime routes Hermes provider failures to server-side MyMemory within an additional four seconds. Isolation failures remain explicit; `MYMEMORY_ENABLED=false` disables fallback. Responses preserve the actual `hermes` or `mymemory` source. Fallback successes cache for one hour; Hermes successes for seven days. Shared router concurrency is capped at eight.
 
-Authenticated `POST /api/v1/lookup/dictionary` accepts only `{ word }`, calls Free Dictionary API with a six-second deadline, validates/size-bounds the result and returns the existing Definition shape. Server caches are bounded at 1,000 successful entries per service. Equivalent `/api/v1/public/lookup/dictionary` and `/api/v1/public/lookup/translation` routes support normal plugin lookup without login, with exact CORS, 30 requests/minute/IP and no vocabulary/auth data. The original authenticated routes remain for native clients. The server reads licensed WordNet shards before the Free Dictionary fallback. These routes/assets/fallback are activated in the October 14 automatic-lookup release; server-local HTTPS passed, while public access remains blocked by filing.
+Authenticated `POST /api/v1/lookup/dictionary` accepts only `{ word }`, calls Free Dictionary API with a six-second deadline, validates/size-bounds the result and returns the existing Definition shape. Server caches are bounded at 1,000 successful entries per service. Equivalent `/api/v1/public/lookup/dictionary` and `/api/v1/public/lookup/translation` routes support normal plugin lookup without login, with exact CORS, 30 requests/minute/IP and no vocabulary/auth data. The original authenticated routes remain for native clients. The server reads licensed WordNet shards before the Free Dictionary fallback. The October 14 release record predates the current personal public Worker; see the deployment records above for later ingress acceptance.
 See [API contract](../contracts/api-v1.md) and
 [Hermes official API documentation](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server/).
 
@@ -187,3 +198,9 @@ The bridge/connector are installed separately under `/opt/rememberme/temporary`;
 ## Account reminder selection
 
 Migration `0006_reminder_device.sql` and `reminder-device-v1` add one selected reminder device per account. `PUT /api/v1/reminder-device` uses an authenticated-device, expected-revision update; it never changes vocabulary or source consent. Apply migration 0006 through the normal backend release procedure before advertising the capability. This change is verified with disposable SQLite and native loopback HTTP; it has not been deployed by the October 16 implementation task. Offline native clients can still deliver previously scheduled notifications until they refresh the selection.
+
+## Staged context explanation (2026-10-26)
+
+`CONTEXT_EXPLANATION_ENABLED` defaults false. An explicit true value requires `TRANSLATION_PROVIDER=magpie` and reuses only the existing private connection settings, with a distinct explanation prompt and shared runtime capacity (two total jobs, one explanation maximum). No migration is added. Public capability GET and explanation POST are implemented through the lookup gateway/bridge with exact route/byte policies; ordinary word lookup and MyMemory fallback are unchanged.
+
+Use the [context explanation contract](../contracts/api-v1.md#optional-context-explanation-v1-released-new-installations-default-off) and [verification record](docs/verification/2026-10-26-context-explanation.md). `npm test` includes synthetic model validation, timeouts, capacity, live-disable and real loopback bridge/API tests. Do not turn on this environment option solely because local tests pass: public ingress, published privacy policy, inference quality/limits and upstream retention remain release gates. No new provider key or client-selected URL is accepted from the browser.
