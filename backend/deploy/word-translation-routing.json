@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "wordGroup": {
+    "id": "translator",
+    "name": "translator",
+    "members": ["deepseek/deepseek-flash", "zhipu/glm-5.3-flash"],
+    "routing": "order"
+  },
+  "explanationGroup": {
+    "id": "rememberme-context-20261105",
+    "name": "rememberme-context-20261105",
+    "members": ["group/auto-glm-5-3-flash", "group/auto-glm-5-3", "group/auto-free", "deepseek/deepseek-flash"],
+    "routing": "order"
+  },
+  "wordSetting": "group/translator",
+  "explanationSetting": "group/rememberme-context-20261105",
+  "evidence": "backend/docs/verification/2026-11-05-magpie-word-routing.md",
+  "note": "Desired policy; deployment must preserve the explanation snapshot and verify provider settings before changing the live word group. This file is not read by the API at runtime."
+}

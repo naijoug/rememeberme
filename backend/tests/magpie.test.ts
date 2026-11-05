@@ -185,3 +185,24 @@ it('counts invalid upstream output as a circuit failure while keeping fallback-d
   await expect(service.translate('third')).rejects.toMatchObject({ code: 'TRANSLATION_CIRCUIT_OPEN' });
   expect(fetch).toHaveBeenCalledTimes(2);
 });
+
+it.each([undefined, 'group/rememberme-context-preserved'])('keeps explanation routing independently configurable (%s)', async contextModel => {
+  const calls: Array<Record<string, any>> = [];
+  vi.stubGlobal('fetch', vi.fn<typeof globalThis.fetch>().mockImplementation(async (_url, init) => {
+    const body = JSON.parse(String(init?.body)); calls.push(body);
+    return json(completion(body.response_format ? JSON.stringify({ contextualMeaning: '银行', sentenceTranslation: '银行开门了。', usageNote: '这里指金融机构。' }) : '{"text":"银行"}'));
+  }));
+  const logs = vi.spyOn(console, 'info').mockImplementation(() => {});
+  const runtime = createRuntime({ databasePath: ':memory:', migrations: 'migrations', publicDirectory: 'public',
+    configuration: { TRANSLATION_PROVIDER: 'magpie', MAGPIE_API_KEY: options.key, MAGPIE_MODEL: 'group/translator',
+      MAGPIE_CONTEXT_MODEL: contextModel, CONTEXT_EXPLANATION_ENABLED: 'true', MYMEMORY_ENABLED: 'false' } });
+  try {
+    await runtime.TRANSLATOR!.translate('bank');
+    await runtime.EXPLAINER!.explain({ schemaVersion: 1, word: 'bank', context: 'The bank opened.', target: 'zh-CN' });
+    expect(calls).toHaveLength(2);
+    expect(calls[0]).toMatchObject({ model: 'group/translator', max_tokens: 512, reasoning_effort: 'low' });
+    expect(calls[1]).toMatchObject({ model: contextModel ?? 'group/translator', max_tokens: 1536, response_format: { type: 'json_object' } });
+    expect(calls[0].messages).toHaveLength(2);
+    expect(JSON.stringify(logs.mock.calls)).not.toContain('The bank opened.');
+  } finally { runtime.DB.close(); logs.mockRestore(); vi.unstubAllGlobals(); }
+});

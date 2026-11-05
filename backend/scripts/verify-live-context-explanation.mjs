@@ -22,9 +22,9 @@ const cases=[
  ['long-context','bank',('The bank provides savings accounts and helps local families plan for their future. ').repeat(12),'银行|金融'],
 ];
 let runtime;
-const report={modelGroup:configuration.MAGPIE_MODEL,productionDatabaseUsed:false,cases:[],checks:[]};
+const report={modelGroup:configuration.MAGPIE_CONTEXT_MODEL||configuration.MAGPIE_MODEL,productionDatabaseUsed:false,cases:[],checks:[]};
 try{
- const configured=Object.fromEntries(['TRANSLATION_PROVIDER','MAGPIE_BASE_URL','MAGPIE_API_KEY','MAGPIE_MODEL','MYMEMORY_ENABLED'].map(key=>[key,configuration[key]]));
+ const configured=Object.fromEntries(['TRANSLATION_PROVIDER','MAGPIE_BASE_URL','MAGPIE_API_KEY','MAGPIE_MODEL','MAGPIE_CONTEXT_MODEL','MYMEMORY_ENABLED'].map(key=>[key,configuration[key]]));
  runtime=createRuntime({databasePath:join(temporary,'fixture.sqlite'),migrations:join(directory,'migrations'),publicDirectory:join(directory,'public'),configuration:{...configured,CONTEXT_EXPLANATION_ENABLED:'true',ENVIRONMENT:'local',PUBLIC_ORIGIN:'http://127.0.0.1'}});
  for(const [id,word,context,expected] of cases){
   assert.ok(context.length<=1000);const start=Date.now();

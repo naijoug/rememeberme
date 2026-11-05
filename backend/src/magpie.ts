@@ -3,8 +3,10 @@ import { TranslationCircuit } from './translation-circuit';
 import { WORD_PRIMARY_TIMEOUT_MS } from '../../contracts/translation-policy';
 import { ApiError, object } from '../../contracts/api-v1';
 import type { Translation } from './runtime';
+import { modelId, observeWord, responseRoute, type MagpieWordObservation } from './magpie-observation';
 
-/** Word-only inference. No agent tools, sessions, saved context or client-selected models. */
+export const WORD_TRANSLATION_PROMPT = 'Translate the single English word into concise Simplified Chinese dictionary meanings. Return only JSON {"text":"..."} with no Markdown. Do not use tools, memory, or personal context.';
+/** Word-only inference. Opaque per-call tracing IDs never carry a conversation or word. */
 export class MagpieTranslator {
   private readonly base: URL;
   private capacity: MagpieCapacity;
@@ -12,6 +14,7 @@ export class MagpieTranslator {
   constructor(private readonly options: {
     baseURL: string; key: string; model: string; timeoutMs?: number; maxConcurrent?: number;
     fetch?: typeof fetch; capacity?: MagpieCapacity;
+    observe?: (value: MagpieWordObservation) => void;
   }) {
     this.capacity = options.capacity ?? new MagpieCapacity(options.maxConcurrent ?? 2);
     this.base = new URL(options.baseURL.replace(/\/?$/, '/'));
@@ -25,6 +28,10 @@ export class MagpieTranslator {
     if (!release) throw new ApiError('TRANSLATION_BUSY', 503, true);
     const complete = this.circuit.enter();
     if (!complete) { release(); throw new ApiError('TRANSLATION_CIRCUIT_OPEN', 503, true); }
+    const started = performance.now();
+    const observation: MagpieWordObservation = { event: 'word_translation', callId: 'rm-word-' + crypto.randomUUID(),
+      requestedModel: modelId(this.options.model) ?? 'unrecognized', routeSource: 'unknown', durationMs: 0, outcome: 'failure' };
+    const fetcher = this.options.fetch ?? fetch;
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
@@ -37,18 +44,21 @@ export class MagpieTranslator {
     });
     try {
       const translation = await Promise.race([(async (): Promise<Translation> => {
-        const response = await (this.options.fetch ?? fetch)(new URL('chat/completions', this.base), {
+        const response = await fetcher(new URL('chat/completions', this.base), {
           method: 'POST', signal: controller.signal, redirect: 'error', credentials: 'omit', referrerPolicy: 'no-referrer',
           headers: { Authorization: 'Bearer ' + this.options.key, Accept: 'application/json',
-            'Content-Type': 'application/json', 'User-Agent': 'RememberMe/translation' },
+            'Content-Type': 'application/json', 'User-Agent': 'RememberMe/translation', 'X-Magpie-Session': observation.callId },
           // Leave room for both reasoning and final JSON without long deliberation.
           body: JSON.stringify({ model: this.options.model, stream: false, max_tokens: 512, reasoning_effort: 'low',
             messages: [
-              { role: 'system', content: 'Translate the single English word into concise Simplified Chinese dictionary meanings. Return only JSON {"text":"..."} with no Markdown. Do not use tools, memory, or personal context.' },
+              { role: 'system', content: WORD_TRANSLATION_PROMPT },
               { role: 'user', content: word },
             ] }),
         });
         if (controller.signal.aborted) { void response.body?.cancel().catch(() => {}); throw new ApiError('TRANSLATION_TIMEOUT', 504, true); }
+        observation.headersMs = Math.round(performance.now() - started); observation.upstreamStatus = response.status;
+        const route = responseRoute(response.headers);
+        if (route) Object.assign(observation, route, { routeSource: 'response-header' });
         if (!response.ok) {
           void response.body?.cancel().catch(() => {});
           throw new ApiError(response.status === 429 ? 'TRANSLATION_BUSY' : 'TRANSLATION_UNAVAILABLE', 503, true);
@@ -81,12 +91,18 @@ export class MagpieTranslator {
         } finally { void reader.cancel().catch(() => {}); reader.releaseLock(); }
       })(), deadline]);
       complete(true);
+      observation.outcome = 'success';
       return translation;
     } catch (error) {
       complete(false);
+      observation.errorCode = error instanceof ApiError ? error.code
+        : error instanceof SyntaxError || error instanceof TypeError && reader ? 'TRANSLATION_INVALID_RESPONSE' : 'TRANSLATION_UNAVAILABLE';
       if (error instanceof ApiError) throw error;
       if (error instanceof SyntaxError || error instanceof TypeError && reader) throw new ApiError('TRANSLATION_INVALID_RESPONSE', 502);
       throw new ApiError('TRANSLATION_UNAVAILABLE', 503, true);
-    } finally { clearTimeout(timer); release(); }
+    } finally {
+      clearTimeout(timer); release(); observation.durationMs = Math.round(performance.now() - started);
+      observeWord(this.base, this.options.key, fetcher, { ...observation }, this.options.observe);
+    }
   }
 }

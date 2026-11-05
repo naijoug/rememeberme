@@ -82,7 +82,13 @@ v3 for discovery; this does not retrofit source support into old clients.
 `TRANSLATION_PROVIDER=magpie` selects server-only Chat Completions at
 `MAGPIE_BASE_URL`, with `MAGPIE_API_KEY` and `MAGPIE_MODEL`. The default model is the
 `group/translator` routing group; Magpie owns its provider selection. Requests contain a system instruction and one word, no
-tools/session/context/URL, with low reasoning, a 512-token budget, a three-second deadline and bounded JSON output.
+tools/conversation/context/URL, with low reasoning, a 512-token budget, a three-second deadline and bounded JSON output.
+An opaque per-inference `X-Magpie-Session` identifier correlates gateway route
+metadata; it carries no word, account or conversation identity. Actual selected
+models are recorded server-side from gateway headers, never inferred from the
+response body's group alias and never added to client vocabulary/export schemas.
+`MAGPIE_CONTEXT_MODEL` independently selects the sentence-explanation policy;
+when absent it retains the legacy `MAGPIE_MODEL` fallback.
 MyMemory remains the four-second fallback; its source stays `mymemory`.
 Word translation opens a per-instance circuit after two consecutive upstream
 failures, bypassing Magpie for 30 seconds before admitting one recovery probe.

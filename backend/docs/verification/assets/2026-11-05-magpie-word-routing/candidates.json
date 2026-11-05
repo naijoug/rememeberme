@@ -1,0 +1,580 @@
+{
+  "date": "2026-11-05",
+  "timezone": "America/Los_Angeles",
+  "results": [
+    {
+      "kind": "scope",
+      "mode": "candidates",
+      "samplesPerVariant": 8,
+      "timeoutMs": 3000,
+      "promptSha256": "dd6b46f6e323bcc4b96e666ce1033c47faaf79ab364a8be56a4a78d0eef60754",
+      "cache": "Each call uses a fresh adapter; no server/client result cache. Vendor prompt caching remains outside this test.",
+      "productionDatabaseUsed": false,
+      "order": "Rotate candidate order for each word; calls are sequential."
+    },
+    {
+      "kind": "sample",
+      "word": "bank",
+      "model": "group/translator",
+      "ms": 1538,
+      "ok": true,
+      "source": "magpie",
+      "text": "银行；河岸；堤；堆；斜坡；(bank on)依赖，指望",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-36078f3b-48ba-4221-8fac-8802e5bf582c",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1538,
+        "outcome": "success",
+        "headersMs": 1535,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "bank",
+      "model": "deepseek/deepseek-flash",
+      "ms": 1232,
+      "ok": true,
+      "source": "magpie",
+      "text": "银行；岸；库；存款；倾斜",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-3972d0b2-d3fb-43e8-b264-ebe826f1a3be",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 1231,
+        "outcome": "success",
+        "headersMs": 1231,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "bank",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 1611,
+      "ok": true,
+      "source": "magpie",
+      "text": "银行；堤岸；堆；存入银行",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-18ff7aea-8c3a-4b37-8499-99438c562ddf",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 1611,
+        "outcome": "success",
+        "headersMs": 1611,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "charge",
+      "model": "deepseek/deepseek-flash",
+      "ms": 1821,
+      "ok": true,
+      "source": "magpie",
+      "text": "收费；费用；指控；控告；充电；电荷；冲锋；掌管；负责；装载",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-9deffd54-cf46-4594-98d0-c0a9d9582c28",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 1821,
+        "outcome": "success",
+        "headersMs": 1821,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "charge",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 1859,
+      "ok": true,
+      "source": "magpie",
+      "text": "收费；充电； charge (n.)：费用；电荷；指控；负责；冲锋",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-16c2119e-f07c-47a5-9325-26618bca5e1b",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 1859,
+        "outcome": "success",
+        "headersMs": 1858,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "charge",
+      "model": "group/translator",
+      "ms": 1395,
+      "ok": true,
+      "source": "magpie",
+      "text": "收费；充电；指控；负责；冲；负荷；费用",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-a3581b16-aea7-4b38-b7e0-4dcee686d7ce",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1395,
+        "outcome": "success",
+        "headersMs": 1394,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "issue",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 1237,
+      "ok": true,
+      "source": "magpie",
+      "text": "问题；议题；发行；期刊；发出；出版",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-272bd585-0219-49e7-96af-a27a993b2034",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 1237,
+        "outcome": "success",
+        "headersMs": 1237,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "issue",
+      "model": "group/translator",
+      "ms": 1740,
+      "ok": true,
+      "source": "magpie",
+      "text": "问题；发行；期刊；流出；颁布；发布",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-d51cd498-4dd6-426e-a528-67230c5dea86",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1740,
+        "outcome": "success",
+        "headersMs": 1740,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "issue",
+      "model": "deepseek/deepseek-flash",
+      "ms": 1489,
+      "ok": true,
+      "source": "magpie",
+      "text": "问题；议题；发行；发布；期号；发出",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-4b6b349e-66ba-43cb-bd29-c32f906367b5",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 1489,
+        "outcome": "success",
+        "headersMs": 1488,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "stalactite",
+      "model": "group/translator",
+      "ms": 2726,
+      "ok": true,
+      "source": "magpie",
+      "text": "钟乳石",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-09c73bc9-ec18-4655-8bdd-df69270128ec",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 2726,
+        "outcome": "success",
+        "headersMs": 2726,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "stalactite",
+      "model": "deepseek/deepseek-flash",
+      "ms": 931,
+      "ok": true,
+      "source": "magpie",
+      "text": "钟乳石",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-a2cde743-9f96-4587-a687-e5c48c622ffb",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 931,
+        "outcome": "success",
+        "headersMs": 931,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "stalactite",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 1503,
+      "ok": true,
+      "source": "magpie",
+      "text": "钟乳石；钟乳状物",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-a4b83534-832b-4032-a885-8da3fec13721",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 1503,
+        "outcome": "success",
+        "headersMs": 1502,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "meticulous",
+      "model": "deepseek/deepseek-flash",
+      "ms": 1284,
+      "ok": true,
+      "source": "magpie",
+      "text": "一丝不苟的；极其细心的；注重细节的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-cb559243-0829-429a-8aca-79cea919b73c",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 1284,
+        "outcome": "success",
+        "headersMs": 1283,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "meticulous",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 1164,
+      "ok": true,
+      "source": "magpie",
+      "text": "细致的；一丝不苟的；小心翼翼的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-d8ef0b4a-196a-41f1-a8d4-ff92772c6e0a",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 1164,
+        "outcome": "success",
+        "headersMs": 1163,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "meticulous",
+      "model": "group/translator",
+      "ms": 2242,
+      "ok": true,
+      "source": "magpie",
+      "text": "细致的；一丝不苟的；严谨的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-e1986db4-a3e1-45eb-9139-beffcfbc11d8",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 2242,
+        "outcome": "success",
+        "headersMs": 2242,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "tamarind",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 2095,
+      "ok": true,
+      "source": "magpie",
+      "text": "罗望子；酸角",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-044da950-af8c-4171-a8fd-08506678a244",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 2095,
+        "outcome": "success",
+        "headersMs": 2095,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "tamarind",
+      "model": "group/translator",
+      "ms": 2110,
+      "ok": true,
+      "source": "magpie",
+      "text": "酸豆；罗望子；酸角（一种热带豆科植物的果实，果肉酸甜，用于调味）",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-91b26bfd-c115-4a48-bdd7-517017a8b166",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 2110,
+        "outcome": "success",
+        "headersMs": 2109,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "tamarind",
+      "model": "deepseek/deepseek-flash",
+      "ms": 1023,
+      "ok": true,
+      "source": "magpie",
+      "text": "罗望子；酸豆",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-e7843922-aeea-4b7a-8528-f1d5fc8eaf20",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 1023,
+        "outcome": "success",
+        "headersMs": 1023,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "resilient",
+      "model": "group/translator",
+      "ms": 1156,
+      "ok": true,
+      "source": "magpie",
+      "text": "有韧性的；有弹性的；能快速恢复的；适应力强的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-76f9ce0d-ee28-4290-9893-66d0a0ec4453",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1156,
+        "outcome": "success",
+        "headersMs": 1156,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "resilient",
+      "model": "deepseek/deepseek-flash",
+      "ms": 1459,
+      "ok": true,
+      "source": "magpie",
+      "text": "有弹性的；能迅速恢复的；适应力强的；坚韧的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-ffe56180-1df9-435b-9cb5-31de5e5f0c32",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 1459,
+        "outcome": "success",
+        "headersMs": 1458,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "resilient",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 2489,
+      "ok": true,
+      "source": "magpie",
+      "text": "有韧性的；能快速恢复的；有弹性的；适应力强的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-dfd2a52c-7d61-4f99-86ab-d686ec2a40fb",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 2489,
+        "outcome": "success",
+        "headersMs": 2489,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "benchmark",
+      "model": "deepseek/deepseek-flash",
+      "ms": 1297,
+      "ok": true,
+      "source": "magpie",
+      "text": "基准；标准；基准测试；参照点",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-4487917a-7283-4c7f-a2bc-e204bb2bf1d6",
+        "requestedModel": "deepseek/deepseek-flash",
+        "routeSource": "response-header",
+        "durationMs": 1297,
+        "outcome": "success",
+        "headersMs": 1297,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "benchmark",
+      "model": "zhipu/glm-5.3-flash",
+      "ms": 1597,
+      "ok": true,
+      "source": "magpie",
+      "text": "基准；标准；基准测试；参照点",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-24318431-9cb2-4ce8-877a-e7c760343ad0",
+        "requestedModel": "zhipu/glm-5.3-flash",
+        "routeSource": "response-header",
+        "durationMs": 1597,
+        "outcome": "success",
+        "headersMs": 1597,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "benchmark",
+      "model": "group/translator",
+      "ms": 1380,
+      "ok": true,
+      "source": "magpie",
+      "text": "基准；标准；基准测试；标杆；参照点",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-d1c716d2-fdea-44b6-a755-24e0f021a9bb",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1380,
+        "outcome": "success",
+        "headersMs": 1380,
+        "upstreamStatus": 200,
+        "selectedModel": "zhipu/glm-5.3-flash",
+        "selectedProvider": "zhipu"
+      }
+    },
+    {
+      "kind": "summary",
+      "model": "group/translator",
+      "samples": 8,
+      "valid": 8,
+      "meaningChecks": 8,
+      "medianMs": 1639,
+      "maximumMs": 2726,
+      "selectedModels": [
+        "zhipu/glm-5.3-flash"
+      ]
+    },
+    {
+      "kind": "summary",
+      "model": "deepseek/deepseek-flash",
+      "samples": 8,
+      "valid": 8,
+      "meaningChecks": 8,
+      "medianMs": 1290.5,
+      "maximumMs": 1821,
+      "selectedModels": [
+        "deepseek/deepseek-flash"
+      ]
+    },
+    {
+      "kind": "summary",
+      "model": "zhipu/glm-5.3-flash",
+      "samples": 8,
+      "valid": 8,
+      "meaningChecks": 8,
+      "medianMs": 1604,
+      "maximumMs": 2489,
+      "selectedModels": [
+        "zhipu/glm-5.3-flash"
+      ]
+    }
+  ]
+}

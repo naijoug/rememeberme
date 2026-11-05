@@ -46,6 +46,7 @@ export function createRuntime(options: {
     const primary = provider === 'magpie' ? new MagpieTranslator({
       baseURL: config.MAGPIE_BASE_URL || 'http://127.0.0.1:3425/v1',
       key: config.MAGPIE_API_KEY || '', model: config.MAGPIE_MODEL || 'group/translator', capacity,
+      observe: value => console.info(JSON.stringify(value)),
     }) : provider === 'hermes' ? new HermesTranslator({
       baseURL: config.HERMES_BASE_URL || '', key: config.HERMES_API_KEY || '', model: config.HERMES_MODEL || 'hermes-agent',
     }) : undefined;
@@ -53,7 +54,7 @@ export function createRuntime(options: {
       EXPLANATION_LIMIT: new WindowLimiter(6),
       EXPLAINER: config.CONTEXT_EXPLANATION_ENABLED === 'true' ? new MagpieContextExplainer({
         baseURL: config.MAGPIE_BASE_URL || 'http://127.0.0.1:3425/v1', key: config.MAGPIE_API_KEY || '',
-        model: config.MAGPIE_MODEL || 'group/translator', capacity,
+        model: config.MAGPIE_CONTEXT_MODEL || config.MAGPIE_MODEL || 'group/translator', capacity,
       }) : undefined,
       DB: database, ENVIRONMENT: environment, PUBLIC_ORIGIN: origin.origin,
       NATIVE_CALLBACKS: config.NATIVE_CALLBACKS || 'rememberme://auth/callback',

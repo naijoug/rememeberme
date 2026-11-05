@@ -36,8 +36,10 @@ The source configuration uses `TRANSLATION_PROVIDER=magpie`, calling the same-ho
 `MAGPIE_MODEL=group/translator`. Magpie selects the upstream model through this
 routing group. The live service also uses this group after a configuration-only
 change and `rememberme-api` restart. See [routing-group verification](docs/verification/2026-10-27-translator-group.md).
-Explicit `MAGPIE_MODEL` overrides remain supported; the optional
-sentence explainer uses the same setting. Set `MAGPIE_API_KEY=magpie-rememberme` for
+Explicit `MAGPIE_MODEL` overrides remain supported for word translation. The optional
+sentence explainer uses `MAGPIE_CONTEXT_MODEL`, falling back to `MAGPIE_MODEL`
+only when the separate setting is empty. Preserve the old explanation policy in
+a separate Magpie group before tuning `group/translator`. Set `MAGPIE_API_KEY=magpie-rememberme` for
 the verified loopback app label, or a private gateway key for a remote gateway.
 The web administration key is not an API credential. No provider secret is sent
 to clients. See [Magpie's integration contract](https://github.com/yetone/magpie/blob/main/docs/integrating.md).
@@ -57,6 +59,15 @@ See [the source update and live comparison](docs/verification/2026-11-04-transla
 for verification and deployment status.
 `TRANSLATION_PROVIDER=hermes` retains the isolated legacy provider;
 `none` permits MyMemory-only operation. Unknown provider names fail startup.
+
+Word inference emits a structured `word_translation` event with an opaque
+per-call ID, requested group, actual `X-Magpie-Model`/provider, duration and outcome.
+No word, sentence, account label, key or response text is logged. Successful
+requests need no additional diagnostic fetch. Failures without model headers use
+a separate, best-effort route read bounded at 250 ms/16 KiB; lookup responses never
+wait for it. Missing or invalid route metadata stays explicitly unknown. Cache
+hits and locally rejected inference calls do not create a new model-selection event.
+See [the routing A/B record](docs/verification/2026-11-05-magpie-word-routing.md).
 
 Responses carry the actual source (`magpie`, `hermes` or `mymemory`). Install
 extension 0.1.2 or the updated Apple build to consume Magpie snapshots; older
