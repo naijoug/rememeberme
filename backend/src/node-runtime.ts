@@ -41,7 +41,7 @@ export function createRuntime(options: {
     if (!['magpie', 'hermes', 'none'].includes(provider)) throw new Error('Invalid TRANSLATION_PROVIDER');
     const primary = provider === 'magpie' ? new MagpieTranslator({
       baseURL: config.MAGPIE_BASE_URL || 'http://127.0.0.1:3425/v1',
-      key: config.MAGPIE_API_KEY || '', model: config.MAGPIE_MODEL || 'zhipu/glm-5.3-flash',
+      key: config.MAGPIE_API_KEY || '', model: config.MAGPIE_MODEL || 'group/translator',
     }) : provider === 'hermes' ? new HermesTranslator({
       baseURL: config.HERMES_BASE_URL || '', key: config.HERMES_API_KEY || '', model: config.HERMES_MODEL || 'hermes-agent',
     }) : undefined;

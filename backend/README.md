@@ -20,16 +20,25 @@ uses only synthetic accounts and vocabulary.
 
 The deployed runtime uses `TRANSLATION_PROVIDER=magpie`, calling the same-host
 `http://127.0.0.1:3425/v1/chat/completions` gateway and
-`MAGPIE_MODEL=zhipu/glm-5.3-flash`. Set `MAGPIE_API_KEY=magpie-rememberme` for
+`MAGPIE_MODEL=group/translator`. Set `MAGPIE_API_KEY=magpie-rememberme` for
 the verified loopback app label, or a private gateway key for a remote gateway.
 The web administration key is not an API credential. No provider secret is sent
 to clients. See [Magpie's integration contract](https://github.com/yetone/magpie/blob/main/docs/integrating.md).
 
 `MagpieTranslator` makes word-only inference requests, rejects tools/truncated
 or malformed output, caps output at 64 KiB, requests low reasoning with 512 output tokens, limits concurrency to two and aborts
-after eight seconds. `ServerTranslator` retains coalescing, bounded successful
+after three seconds. The per-instance word circuit opens for 30 seconds after
+two consecutive upstream failures; one half-open probe checks recovery. Local
+capacity rejections do not count as provider failures, and stale in-flight
+completions cannot reset an open circuit. Sentence explanation keeps its own
+deadline and does not share this circuit. `ServerTranslator` retains coalescing, bounded successful
 caches and the four-second MyMemory fallback. `MYMEMORY_ENABLED=false` disables
-fallback. `TRANSLATION_PROVIDER=hermes` retains the isolated legacy provider;
+fallback; an open circuit then remains an explicit error. Shared source budgets
+live in `contracts/translation-policy.ts`: 3s primary + 4s fallback, 9s first
+HTTP attempt, 19s total HTTP, 20s service and 22s UI.
+See [the source update and live comparison](docs/verification/2026-11-04-translation-resilience.md)
+for verification and deployment status.
+`TRANSLATION_PROVIDER=hermes` retains the isolated legacy provider;
 `none` permits MyMemory-only operation. Unknown provider names fail startup.
 
 Responses carry the actual source (`magpie`, `hermes` or `mymemory`). Install

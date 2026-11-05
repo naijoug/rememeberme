@@ -81,9 +81,17 @@ v3 for discovery; this does not retrofit source support into old clients.
 
 `TRANSLATION_PROVIDER=magpie` selects server-only Chat Completions at
 `MAGPIE_BASE_URL`, with `MAGPIE_API_KEY` and `MAGPIE_MODEL`. The initial model is
-`zhipu/glm-5.3-flash`. Requests contain a system instruction and one word, no
-tools/session/context/URL, with low reasoning, a 512-token budget, an eight-second deadline and bounded JSON output.
+`group/translator`. Requests contain a system instruction and one word, no
+tools/session/context/URL, with low reasoning, a 512-token budget, a three-second deadline and bounded JSON output.
 MyMemory remains the four-second fallback; its source stays `mymemory`.
+Word translation opens a per-instance circuit after two consecutive upstream
+failures, bypassing Magpie for 30 seconds before admitting one recovery probe.
+Local capacity rejection does not count; successful caches remain available.
+The browser's first HTTP attempt is nine seconds, with one eligible retry inside
+nineteen seconds and 20/22-second service/UI deadlines. An explicit structured
+`error.retryable: false` prevents retry even for HTTP 502/503/504. HTTP 4xx,
+malformed JSON and oversized responses are also not retried. These budgets are
+shared source constants in `contracts/translation-policy.ts`.
 Magpie/Hermes successes cache for seven days, fallback successes for one hour.
 `TRANSLATION_PROVIDER=hermes` retains the old isolated adapter for rollback.
 

@@ -1,3 +1,4 @@
+import { TRANSLATION_SERVICE_TIMEOUT_MS } from '../../../contracts/translation-policy';
 import { storage } from 'wxt/utils/storage';
 import type { Translation } from '~/types';
 import { isEnglishWord } from './word-utils';
@@ -7,7 +8,7 @@ import { isTranslation } from './definition-utils';
 const CACHE_KEY = 'local:translationCache';
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
 const MAX_CACHE_ENTRIES = 500;
-export const TRANSLATION_TIMEOUT_MS = 20_000;
+export const TRANSLATION_TIMEOUT_MS = TRANSLATION_SERVICE_TIMEOUT_MS;
 type CacheEntry = { text: string; timestamp: number; source?: Translation['source'] };
 const lifetime = (key: string, entry: CacheEntry) => key.startsWith('public:') && entry.source === 'mymemory' ? 3_600_000 : CACHE_TTL;
 

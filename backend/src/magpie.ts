@@ -1,3 +1,5 @@
+import { TranslationCircuit } from './translation-circuit';
+import { WORD_PRIMARY_TIMEOUT_MS } from '../../contracts/translation-policy';
 import { ApiError, object } from '../../contracts/api-v1';
 import type { Translation } from './runtime';
 
@@ -5,6 +7,7 @@ import type { Translation } from './runtime';
 export class MagpieTranslator {
   private readonly base: URL;
   private active = 0;
+  private circuit = new TranslationCircuit();
   constructor(private readonly options: {
     baseURL: string; key: string; model: string; timeoutMs?: number; maxConcurrent?: number;
     fetch?: typeof fetch;
@@ -17,6 +20,8 @@ export class MagpieTranslator {
   async translate(word: string): Promise<Translation> {
     if (word.length > 500 || !/^[a-z](?:[a-z'-]*[a-z])?$/.test(word)) throw new ApiError('INVALID_LOOKUP_WORD');
     if (this.active >= (this.options.maxConcurrent ?? 2)) throw new ApiError('TRANSLATION_BUSY', 503, true);
+    const complete = this.circuit.enter();
+    if (!complete) throw new ApiError('TRANSLATION_CIRCUIT_OPEN', 503, true);
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
@@ -25,11 +30,11 @@ export class MagpieTranslator {
         reject(new ApiError('TRANSLATION_TIMEOUT', 504, true));
         controller.abort();
         void reader?.cancel().catch(() => {});
-      }, this.options.timeoutMs ?? 8_000);
+      }, this.options.timeoutMs ?? WORD_PRIMARY_TIMEOUT_MS);
     });
     this.active++;
     try {
-      return await Promise.race([(async (): Promise<Translation> => {
+      const translation = await Promise.race([(async (): Promise<Translation> => {
         const response = await (this.options.fetch ?? fetch)(new URL('chat/completions', this.base), {
           method: 'POST', signal: controller.signal, redirect: 'error', credentials: 'omit', referrerPolicy: 'no-referrer',
           headers: { Authorization: 'Bearer ' + this.options.key, Accept: 'application/json',
@@ -73,7 +78,10 @@ export class MagpieTranslator {
           return { text: result.text.trim(), target: 'zh-CN', source: 'magpie' };
         } finally { void reader.cancel().catch(() => {}); reader.releaseLock(); }
       })(), deadline]);
+      complete(true);
+      return translation;
     } catch (error) {
+      complete(false);
       if (error instanceof ApiError) throw error;
       if (error instanceof SyntaxError || error instanceof TypeError && reader) throw new ApiError('TRANSLATION_INVALID_RESPONSE', 502);
       throw new ApiError('TRANSLATION_UNAVAILABLE', 503, true);

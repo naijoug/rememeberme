@@ -7,8 +7,18 @@ synthetic provider. Older installed clients require the 0.1.2 update before
 consuming Magpie results. A packaged build is not proof of an installed update.
 
 First-lookup recovery tests cover stalled headers/bodies, TLS/network errors, one bounded
-retry, late-response cancellation, 19-second total budget, no retry for 4xx/quota
-or malformed/oversized responses, and same-word coalescing without vocabulary writes.
+retry, late-response cancellation, a nine-second first attempt/19-second total
+budget, no retry for HTTP 4xx or structured `retryable: false` errors, bounded
+error JSON, malformed/oversized responses, and same-word coalescing without
+vocabulary writes. Backend quota errors returned as retryable HTTP 503 remain
+eligible; HTTP 429 is never retried.
+
+Word-provider regressions cover the three-second Magpie deadline, two-failure
+30-second circuit, direct fallback while open, one coalesced half-open probe,
+failed-probe reopening, successful recovery, stale completions, local capacity
+rejection and unchanged success-cache lifetimes. Sentence explanation keeps its
+separate deadline. Live before/after diagnostics are separate from mocks; see
+[the comparison](../../../backend/docs/verification/2026-11-04-translation-resilience.md).
 
 Run commands from `frontend/browser-extension/` after the setup in [README](../README.md). Automated tests use happy-dom and disposable browser/storage mocks. They have no production access and do not call the live dictionary API.
 

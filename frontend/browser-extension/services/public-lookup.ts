@@ -1,9 +1,9 @@
 import { LOOKUP_SERVICE_ORIGIN } from '~/config/backend';
+import { TRANSLATION_FIRST_ATTEMPT_MS, TRANSLATION_REQUEST_BUDGET_MS } from '../../../contracts/translation-policy';
+export { TRANSLATION_FIRST_ATTEMPT_MS, TRANSLATION_REQUEST_BUDGET_MS } from '../../../contracts/translation-policy';
 
 // Recovery stays inside the service's 20s and UI's 22s deadlines. Only the
 // word-only translation POST is retried; vocabulary writes never use this client.
-export const TRANSLATION_REQUEST_BUDGET_MS = 19_000;
-export const TRANSLATION_FIRST_ATTEMPT_MS = 5_000;
 class LookupFailure extends Error {
   constructor(message: string, readonly retryable = false) { super(message); }
 }
@@ -32,6 +32,20 @@ export class PublicLookupClient {
     const controller = new AbortController();
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    const readJSON = async (response: Response, limit: number): Promise<unknown> => {
+      reader = response.body!.getReader();
+      const chunks: Uint8Array[] = []; let count = 0;
+      while (true) {
+        const next = await reader.read(); if (next.done) break;
+        count += next.value.length;
+        if (count > limit) throw new LookupFailure('Lookup response is too large.');
+        chunks.push(next.value);
+      }
+      const bytes = new Uint8Array(count); let offset = 0;
+      for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+      try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)) as unknown; }
+      catch { throw new LookupFailure('Lookup service returned an invalid response.'); }
+    };
     const deadline = new Promise<never>((_, reject) => {
       timer = setTimeout(() => { reject(timedOut(path)); controller.abort(); }, timeoutMs);
     });
@@ -42,27 +56,23 @@ export class PublicLookupClient {
           credentials: 'omit', referrerPolicy: 'no-referrer', redirect: 'error', signal: controller.signal });
         if (controller.signal.aborted) { void response.body?.cancel().catch(() => {}); throw timedOut(path); }
         if (!response.ok) {
-          void response.body?.cancel().catch(() => {});
+          let retryable = [502, 503, 504].includes(response.status);
+          if (retryable && response.headers.get('content-type')?.includes('application/json') && response.body) {
+            // Only trust the boolean policy, never display an upstream message.
+            // Error bodies share the attempt deadline and have a smaller size cap.
+            const data = await readJSON(response, 8 * 1024);
+            if (data && typeof data === 'object' && 'error' in data && data.error
+              && typeof data.error === 'object' && 'retryable' in data.error && data.error.retryable === false) retryable = false;
+          } else { void response.body?.cancel().catch(() => {}); }
           throw new LookupFailure(response.status === 429 ? 'Too many lookups. Please try again shortly.'
             : response.status === 404 ? 'Definition not found.' : 'Lookup service is unavailable. Please try again.',
-          [502, 503, 504].includes(response.status));
+          retryable);
         }
         if (!response.headers.get('content-type')?.includes('application/json') || !response.body) {
           void response.body?.cancel().catch(() => {});
           throw new LookupFailure('Lookup service returned an invalid response.');
         }
-        reader = response.body.getReader();
-        const chunks: Uint8Array[] = []; let count = 0;
-        while (true) {
-          const next = await reader.read(); if (next.done) break;
-          count += next.value.length;
-          if (count > 256 * 1024) throw new LookupFailure('Lookup response is too large.');
-          chunks.push(next.value);
-        }
-        const bytes = new Uint8Array(count); let offset = 0;
-        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
-        try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)) as T; }
-        catch { throw new LookupFailure('Lookup service returned an invalid response.'); }
+        return await readJSON(response, 256 * 1024) as T;
       })(), deadline]);
     } catch (error) {
       if (error instanceof LookupFailure) throw error;

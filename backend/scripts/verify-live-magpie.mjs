@@ -13,7 +13,7 @@ const { app, createRuntime, MagpieTranslator, MyMemoryTranslator, ServerTranslat
 const configured = parseEnv(await readFile(environmentFile, 'utf8'));
 assert.equal(configured.TRANSLATION_PROVIDER, 'magpie');
 assert.equal(configured.MAGPIE_BASE_URL, 'http://127.0.0.1:3425/v1');
-assert.equal(configured.MAGPIE_MODEL, 'zhipu/glm-5.3-flash');
+assert.equal(configured.MAGPIE_MODEL, 'group/translator');
 assert.equal(configured.MYMEMORY_ENABLED, 'true');
 const temporary = await mkdtemp(join(tmpdir(), 'rememberme-magpie-live-'));
 let runtime;

@@ -1,5 +1,21 @@
 # Remember Me browser extension
 
+## Word translation resilience (source update, 2026-11-04)
+
+Word translation keeps Magpie `group/translator`, with a three-second primary
+budget and a four-second MyMemory fallback. Two consecutive upstream failures
+open a per-process word-translation circuit for 30 seconds; one recovery probe
+then either closes it or starts another cooldown. Local capacity rejection does
+not trip the circuit. Successful caches retain their existing lifetimes.
+
+The first public HTTP attempt now has nine seconds for this complete provider
+chain plus network overhead. One eligible retry fits inside nineteen seconds;
+service/UI deadlines remain 20/22 seconds. Structured `retryable: false` errors,
+HTTP 4xx, malformed JSON and oversized bodies are not retried. These source
+changes require backend deployment; local watcher/build success alone does not
+prove production activation. See [verification](../../backend/docs/verification/2026-11-04-translation-resilience.md).
+
+
 ## Account settings update (0.1.4, 2026-10-26)
 
 Settings uses a back button and `Setting` title in the top bar. GitHub sign-in
@@ -7,7 +23,7 @@ automatically enables account sync and displays account words. Pausing retains
 downloaded words; pre-sign-in device words need a reviewed copy before upload.
 The popup refreshes downloaded words while open. See [verification](docs/verification/2026-10-26-auto-sync-settings.md).
 
-## First-lookup recovery (0.1.3, 2026-10-25)
+## Historical first-lookup recovery (0.1.3, 2026-10-25)
 
 A translation with a transient network/502/503/504 failure retries once within
 one 19-second request budget. A stalled first attempt is cancelled after five

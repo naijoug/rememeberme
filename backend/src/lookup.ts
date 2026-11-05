@@ -1,6 +1,7 @@
 import { ApiError, definition, object, type Json } from '../../contracts/api-v1';
 import { boundedJSON } from './http';
 import type { Translation } from './runtime';
+import { WORD_FALLBACK_TIMEOUT_MS } from '../../contracts/translation-policy';
 
 // Only fixed provider URLs are used. No client URL, credential or page context is forwarded.
 async function provider(url: URL, timeoutMs: number, code: string, fetcher: typeof fetch): Promise<unknown> {
@@ -68,7 +69,7 @@ export class ServerDictionary {
 }
 
 export class MyMemoryTranslator {
-  constructor(private fetcher: typeof fetch = fetch, private timeoutMs = 4000) {}
+  constructor(private fetcher: typeof fetch = fetch, private timeoutMs = WORD_FALLBACK_TIMEOUT_MS) {}
   async translate(word: string): Promise<Translation> {
     const url = new URL('https://api.mymemory.translated.net/get');
     url.searchParams.set('q', word); url.searchParams.set('langpair', 'en|zh-CN');
@@ -91,7 +92,7 @@ export class ServerTranslator {
       if (this.primary) {
         try { return await this.primary.translate(word); } catch (error) {
           // Profile isolation/configuration failures remain explicit. Only provider failures fall back.
-          if (!this.fallback || !(error instanceof ApiError) || !['TRANSLATION_BUSY', 'TRANSLATION_TIMEOUT',
+          if (!this.fallback || !(error instanceof ApiError) || !['TRANSLATION_BUSY', 'TRANSLATION_CIRCUIT_OPEN', 'TRANSLATION_TIMEOUT',
             'TRANSLATION_UNAVAILABLE', 'TRANSLATION_INVALID_RESPONSE'].includes(error.code)) throw error;
         }
       }

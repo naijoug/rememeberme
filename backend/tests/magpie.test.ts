@@ -2,10 +2,12 @@ import { expect, it, vi } from 'vitest';
 import { MagpieTranslator } from '../src/magpie';
 import { MyMemoryTranslator, ServerTranslator } from '../src/lookup';
 import { createRuntime } from '../src/node-runtime';
+import { WORD_PRIMARY_TIMEOUT_MS, TRANSLATION_CIRCUIT_COOLDOWN_MS } from '../../contracts/translation-policy';
+import { TranslationCircuit } from '../src/translation-circuit';
 
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json' } });
 const completion = (content = '{"text":"合成释义"}') => ({ choices: [{ finish_reason: 'stop', message: { content } }] });
-const options = { baseURL: 'http://127.0.0.1:3425/v1', key: 'magpie-fixture', model: 'zhipu/glm-5.3-flash' };
+const options = { baseURL: 'http://127.0.0.1:3425/v1', key: 'magpie-fixture', model: 'group/translator' };
 
 it('sends only word inference to the configured model, without Hermes discovery, and coalesces/caches in the router', async () => {
   const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async () => json(completion()));
@@ -73,7 +75,10 @@ it('selects Magpie despite retained Hermes configuration and fails closed for in
   try {
     const runtime = createRuntime({ ...base, configuration: { TRANSLATION_PROVIDER: 'magpie', MAGPIE_API_KEY: options.key,
       HERMES_BASE_URL: 'invalid-retained-url', MYMEMORY_ENABLED: 'false' } });
-    try { expect((await runtime.TRANSLATOR!.translate('synthetic')).source).toBe('magpie'); } finally { runtime.DB.close(); }
+    try {
+      expect((await runtime.TRANSLATOR!.translate('synthetic')).source).toBe('magpie');
+      expect(JSON.parse(String(fetch.mock.calls[0][1]?.body)).model).toBe('group/translator');
+    } finally { runtime.DB.close(); }
     expect(() => createRuntime({ ...base, configuration: { TRANSLATION_PROVIDER: 'typo' } })).toThrow('TRANSLATION_PROVIDER');
     expect(() => createRuntime({ ...base, configuration: { TRANSLATION_PROVIDER: 'magpie' } })).toThrow('Magpie configuration');
     expect(() => new MagpieTranslator({ ...options, baseURL: 'http://untrusted.example/v1' })).toThrow();
@@ -81,17 +86,102 @@ it('selects Magpie despite retained Hermes configuration and fails closed for in
   } finally { vi.unstubAllGlobals(); }
 });
 
-it('starts MyMemory after the eight-second primary budget instead of exhausting the client deadline', async () => {
+it('starts MyMemory after the three-second primary budget instead of exhausting the client deadline', async () => {
   vi.useFakeTimers();
   try {
     const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(() => new Promise(() => {}));
     const fallback = { translate: vi.fn().mockImplementation(async () => ({ text: '备用释义', source: 'mymemory', target: 'zh-CN' })) };
     const service = new ServerTranslator(new MagpieTranslator({ ...options, fetch }), fallback);
     const request = service.translate('synthetic');
-    await vi.advanceTimersByTimeAsync(7_999); expect(fallback.translate).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(WORD_PRIMARY_TIMEOUT_MS - 1); expect(fallback.translate).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);
     expect((await request).source).toBe('mymemory');
     expect(fetch.mock.calls[0][1]?.signal?.aborted).toBe(true);
     expect(fallback.translate).toHaveBeenCalledOnce();
   } finally { vi.useRealTimers(); }
+});
+
+it('bypasses a stalled group after two failures, permits one recovery probe, and closes after success', async () => {
+  vi.useFakeTimers();
+  try {
+    let recover!: (response: Response) => void;
+    const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(() => new Promise(() => {}));
+    const fallback = { translate: vi.fn().mockResolvedValue({ text: '备用', source: 'mymemory', target: 'zh-CN' }) };
+    const service = new ServerTranslator(new MagpieTranslator({ ...options, fetch }), fallback);
+    for (const word of ['first', 'second']) {
+      const request = service.translate(word);
+      await vi.advanceTimersByTimeAsync(WORD_PRIMARY_TIMEOUT_MS);
+      expect((await request).source).toBe('mymemory');
+    }
+    expect((await service.translate('third')).source).toBe('mymemory');
+    expect(fetch).toHaveBeenCalledTimes(2);
+    await vi.advanceTimersByTimeAsync(TRANSLATION_CIRCUIT_COOLDOWN_MS - 1);
+    expect((await service.translate('fourth')).source).toBe('mymemory');
+    expect(fetch).toHaveBeenCalledTimes(2);
+    await vi.advanceTimersByTimeAsync(1);
+    fetch.mockImplementationOnce(() => new Promise(resolve => { recover = resolve; })).mockImplementation(async () => json(completion()));
+    const probe = service.translate('fifth');
+    const sameWord = service.translate('fifth');
+    expect((await service.translate('sixth')).source).toBe('mymemory');
+    expect(fetch).toHaveBeenCalledTimes(3);
+    recover(json(completion()));
+    expect((await probe).source).toBe('magpie'); expect(await sameWord).toEqual(await probe);
+    expect((await service.translate('seventh')).source).toBe('magpie');
+    expect(fetch).toHaveBeenCalledTimes(4);
+    // Circuit recovery never rewrites a successful fallback already in the cache.
+    expect((await service.translate('third')).source).toBe('mymemory');
+  } finally { vi.useRealTimers(); }
+});
+
+it('reopens for a full cooldown after a failed probe and never counts local capacity rejection', async () => {
+  vi.useFakeTimers();
+  try {
+    let resolve!: (response: Response) => void;
+    const fetch = vi.fn<typeof globalThis.fetch>().mockImplementationOnce(() => new Promise(r => { resolve = r; }))
+      .mockImplementation(async () => json({}, 503));
+    const service = new MagpieTranslator({ ...options, fetch, maxConcurrent: 1 });
+    const active = service.translate('first');
+    for (const word of ['second', 'third']) await expect(service.translate(word)).rejects.toMatchObject({ code: 'TRANSLATION_BUSY' });
+    resolve(json(completion())); await active;
+    await expect(service.translate('fourth')).rejects.toMatchObject({ code: 'TRANSLATION_UNAVAILABLE' });
+    await expect(service.translate('fifth')).rejects.toMatchObject({ code: 'TRANSLATION_UNAVAILABLE' });
+    expect(fetch).toHaveBeenCalledTimes(3);
+    await expect(service.translate('sixth')).rejects.toMatchObject({ code: 'TRANSLATION_CIRCUIT_OPEN' });
+    await vi.advanceTimersByTimeAsync(TRANSLATION_CIRCUIT_COOLDOWN_MS);
+    await expect(service.translate('seventh')).rejects.toMatchObject({ code: 'TRANSLATION_UNAVAILABLE' });
+    await expect(service.translate('eighth')).rejects.toMatchObject({ code: 'TRANSLATION_CIRCUIT_OPEN' });
+    expect(fetch).toHaveBeenCalledTimes(4);
+    await vi.advanceTimersByTimeAsync(TRANSLATION_CIRCUIT_COOLDOWN_MS);
+    fetch.mockImplementation(async () => json(completion()));
+    expect((await service.translate('ninth')).source).toBe('magpie');
+  } finally { vi.useRealTimers(); }
+});
+
+it('only opens on consecutive failures and ignores stale completions from before an open circuit', () => {
+  vi.useFakeTimers();
+  try {
+    const circuit = new TranslationCircuit();
+    circuit.enter()!(false);
+    circuit.enter()!(true);
+    const staleSuccess = circuit.enter()!;
+    const staleFailure = circuit.enter()!;
+    circuit.enter()!(false);
+    expect(circuit.enter()).toBeTypeOf('function');
+    circuit.enter()!(false);
+    staleSuccess(true); staleFailure(false);
+    expect(circuit.enter()).toBeUndefined();
+    vi.advanceTimersByTime(TRANSLATION_CIRCUIT_COOLDOWN_MS);
+    const probe = circuit.enter()!;
+    expect(circuit.enter()).toBeUndefined();
+    probe(true); probe(false);
+    expect(circuit.enter()).toBeTypeOf('function');
+  } finally { vi.useRealTimers(); }
+});
+
+it('counts invalid upstream output as a circuit failure while keeping fallback-disabled errors explicit', async () => {
+  const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async () => json(completion('not JSON')));
+  const service = new ServerTranslator(new MagpieTranslator({ ...options, fetch }));
+  for (const word of ['first', 'second']) await expect(service.translate(word)).rejects.toMatchObject({ code: 'TRANSLATION_INVALID_RESPONSE' });
+  await expect(service.translate('third')).rejects.toMatchObject({ code: 'TRANSLATION_CIRCUIT_OPEN' });
+  expect(fetch).toHaveBeenCalledTimes(2);
 });

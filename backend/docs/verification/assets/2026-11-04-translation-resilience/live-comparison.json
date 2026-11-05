@@ -1,0 +1,216 @@
+{
+  "date": "2026-11-04",
+  "timezone": "America/Los_Angeles",
+  "productionDeployed": false,
+  "samples": [
+    {
+      "kind": "scope",
+      "model": "group/translator",
+      "natural": "real Magpie and MyMemory, alternating order",
+      "fault": "injected stalled Magpie, real MyMemory",
+      "productionDatabaseUsed": false,
+      "cache": "fresh independent server caches per phase; each word queried once per variant",
+      "publicNetworkIncluded": false
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "before",
+      "word": "test",
+      "ms": 2005,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "after",
+      "word": "test",
+      "ms": 1913,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "after",
+      "word": "latency",
+      "ms": 1669,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "before",
+      "word": "latency",
+      "ms": 1163,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "before",
+      "word": "benchmark",
+      "ms": 1652,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "after",
+      "word": "benchmark",
+      "ms": 2077,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "after",
+      "word": "quartz",
+      "ms": 1433,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "before",
+      "word": "quartz",
+      "ms": 1282,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "before",
+      "word": "sapphire",
+      "ms": 2431,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "natural",
+      "variant": "after",
+      "word": "sapphire",
+      "ms": 1733,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "magpie"
+    },
+    {
+      "kind": "sample",
+      "phase": "injected-primary-stall",
+      "variant": "before",
+      "word": "latency",
+      "ms": 8889,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "mymemory"
+    },
+    {
+      "kind": "sample",
+      "phase": "injected-primary-stall",
+      "variant": "after",
+      "word": "latency",
+      "ms": 3274,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "mymemory"
+    },
+    {
+      "kind": "sample",
+      "phase": "injected-primary-stall",
+      "variant": "after",
+      "word": "quartz",
+      "ms": 3344,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "mymemory"
+    },
+    {
+      "kind": "sample",
+      "phase": "injected-primary-stall",
+      "variant": "before",
+      "word": "quartz",
+      "ms": 8603,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "mymemory"
+    },
+    {
+      "kind": "sample",
+      "phase": "injected-primary-stall",
+      "variant": "before",
+      "word": "benchmark",
+      "ms": 8906,
+      "primaryCalls": 1,
+      "ok": true,
+      "source": "mymemory"
+    },
+    {
+      "kind": "sample",
+      "phase": "injected-primary-stall",
+      "variant": "after",
+      "word": "benchmark",
+      "ms": 615,
+      "primaryCalls": 0,
+      "ok": true,
+      "source": "mymemory"
+    },
+    {
+      "kind": "summary",
+      "phase": "natural",
+      "variant": "before",
+      "samples": 5,
+      "successes": 5,
+      "medianMs": 1652,
+      "maximumMs": 2431,
+      "primaryCalls": 5
+    },
+    {
+      "kind": "summary",
+      "phase": "natural",
+      "variant": "after",
+      "samples": 5,
+      "successes": 5,
+      "medianMs": 1733,
+      "maximumMs": 2077,
+      "primaryCalls": 5
+    },
+    {
+      "kind": "summary",
+      "phase": "injected-primary-stall",
+      "variant": "before",
+      "samples": 3,
+      "successes": 3,
+      "medianMs": 8889,
+      "maximumMs": 8906,
+      "primaryCalls": 3
+    },
+    {
+      "kind": "summary",
+      "phase": "injected-primary-stall",
+      "variant": "after",
+      "samples": 3,
+      "successes": 3,
+      "medianMs": 3274,
+      "maximumMs": 3344,
+      "primaryCalls": 2
+    }
+  ]
+}

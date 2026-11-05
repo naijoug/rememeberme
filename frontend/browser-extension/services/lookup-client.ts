@@ -1,3 +1,4 @@
+import { TRANSLATION_UI_TIMEOUT_MS } from '../../../contracts/translation-policy';
 import type { BackgroundMessage, BackgroundResponse, Definition, PhoneticTranscriptions, Translation } from '~/types';
 import { isPhoneticTranscriptions } from './phonetics';
 
@@ -9,7 +10,7 @@ export function requestDefinition(word: string, signal?: AbortSignal): Promise<D
 }
 
 export function requestTranslation(word: string, signal?: AbortSignal): Promise<Translation> {
-  return request<Translation>('GET_TRANSLATION', word, 22_000, signal);
+  return request<Translation>('GET_TRANSLATION', word, TRANSLATION_UI_TIMEOUT_MS, signal);
 }
 
 export async function requestPhonetics(word: string, signal?: AbortSignal): Promise<PhoneticTranscriptions> {

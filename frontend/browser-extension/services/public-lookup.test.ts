@@ -95,3 +95,46 @@ it('cancels a stalled dictionary request within its own service budget without t
   await vi.advanceTimersByTimeAsync(8_000); await check;
   expect(fetcher).toHaveBeenCalledOnce(); expect(fetcher.mock.calls[0][1]?.signal?.aborted).toBe(true);
 });
+
+it.each([502, 503, 504])('honors retryable:false in HTTP %s without displaying upstream text', async status => {
+  const fetcher = vi.fn<typeof fetch>().mockImplementation(async () => new Response(JSON.stringify({
+    error: { code: 'TRANSLATION_INVALID_RESPONSE', retryable: false, message: '<script>untrusted</script>' },
+  }), { status, headers: { 'Content-Type': 'application/json' } }));
+  await expect(new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input))
+    .rejects.toThrow('Lookup service is unavailable. Please try again.');
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+it.each([true, undefined])('retains one retry for eligible errors with retryable=%s', async retryable => {
+  const fetcher = vi.fn<typeof fetch>().mockImplementationOnce(async () => new Response(JSON.stringify({ error: { retryable } }),
+    { status: 503, headers: { 'Content-Type': 'application/json' } })).mockImplementation(async () => success());
+  await expect(new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input)).resolves.toHaveProperty('translation');
+  expect(fetcher).toHaveBeenCalledTimes(2);
+});
+
+it('never lets retryable:true override HTTP 429 and does not retry malformed or oversized error JSON', async () => {
+  for (const [status, body] of [[429, JSON.stringify({ error: { retryable: true } })], [502, '{invalid'],
+    [503, JSON.stringify({ error: { retryable: true }, padding: 'x'.repeat(8 * 1024) })]] as const) {
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(async () => new Response(body, { status, headers: { 'Content-Type': 'application/json' } }));
+    await expect(new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input)).rejects.toThrow();
+    expect(fetcher).toHaveBeenCalledOnce();
+  }
+});
+
+it('bounds a stalled structured error body and cancels its stream before recovery', async () => {
+  vi.useFakeTimers();
+  const cancel = vi.fn();
+  const fetcher = vi.fn<typeof fetch>().mockImplementationOnce(async () => new Response(new ReadableStream({ cancel }),
+    { status: 502, headers: { 'Content-Type': 'application/json' } })).mockImplementation(async () => success());
+  const request = new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input);
+  await vi.advanceTimersByTimeAsync(TRANSLATION_FIRST_ATTEMPT_MS);
+  expect(await request).toHaveProperty('translation'); expect(cancel).toHaveBeenCalledOnce();
+});
+
+it('allows the full seven-second provider chain without a speculative retry', async () => {
+  vi.useFakeTimers();
+  const fetcher = vi.fn<typeof fetch>().mockImplementation(() => new Promise(resolve => setTimeout(() => resolve(success()), 7_000)));
+  const request = new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input);
+  await vi.advanceTimersByTimeAsync(7_000);
+  expect(await request).toHaveProperty('translation'); expect(fetcher).toHaveBeenCalledOnce();
+});

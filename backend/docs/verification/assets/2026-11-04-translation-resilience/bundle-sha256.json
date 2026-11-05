@@ -1,0 +1,6 @@
+{
+  "before.mjs": "97c4df381e634a3d6b853c4f7b708ac3c6fa356836fa93030dbfc08b9afbb147",
+  "after.mjs": "57d749ab321cff9453e52b0727b2488076b7afe450ec0e07346aa8b9f6ad59a8",
+  "client-before.mjs": "c31db21f9c7af1c5b3a5f16b0204cb2d7e8ae483462a496e31a69d52fa59f1b3",
+  "client-after.mjs": "4f307363e1fb963a00246251bf33634067d7f58a6c5b8c8211bb9f28874ba3f5"
+}
