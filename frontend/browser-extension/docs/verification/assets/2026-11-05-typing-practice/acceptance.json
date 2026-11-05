@@ -1,0 +1,21 @@
+{
+  "version": "0.1.6",
+  "archiveSha256": "cf242664273e50210bab7155e14305e49094249b328576c043b856047d445642",
+  "browser": "151.0.7922.34",
+  "checks": [
+    "Same-identity 0.1.5 to 0.1.6 unpacked update via Chromium installer preserves synthetic vocabulary",
+    "Offline spelling, hidden answers, wrong-word retries, persisted hints and refresh recovery preserve vocabulary",
+    "Dark theme and 360px layout without horizontal overflow",
+    "Copy mode, pause, interruption and second-tab session coordination",
+    "Chrome process restart retains the practice session and marks the unfinished attempt interrupted",
+    "Local deletion invalidates an open question and cleans its practice references",
+    "Settings clear confirmation preserves vocabulary; cancellation preserves the session"
+  ],
+  "requests": [],
+  "errors": [],
+  "limitations": [
+    "Disposable Chrome for Testing profile; no real user vocabulary.",
+    "Account/remote-sync cases use automated injected tests, not live hosted accounts.",
+    "Physical IME and assistive-technology behavior were not manually verified."
+  ]
+}

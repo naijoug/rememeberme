@@ -1,5 +1,45 @@
 # Extension architecture and data boundaries
 
+## Local typing practice (0.1.6)
+
+`entrypoints/practice/main.ts` mounts `components/practice/PracticeApp.vue` as
+`practice.html`. `practice-source.ts` projects identity and saved meanings without
+encounter text/URLs. `practice-engine.ts` owns finite turns/scoring. Top-level popup
+and practice pages alone may use `PRACTICE_GET` and `PRACTICE_COMMAND`; durable
+practice commands are separate from cancellable lookup Ports and website policies.
+
+`CloudVocabulary.practice` uses the existing serialized owner boundary.
+`VocabularyDB.update` performs synchronous validation and writes in one strict
+IndexedDB transaction. `practice:v1:<owner>` keys in the existing partitions store
+hold a versioned session and bounded request-digest receipts. Database version,
+vocabulary aggregate schema and old JSON exports remain unchanged.
+
+Existing vocabulary writes use `persist/persistMany` to reconcile practice in the
+same commit, including pulls, history merges, operation replies and recovery.
+Deletion/conflicts/source changes remove copied questions and attempts. Scope changes
+and commits emit `PRACTICE_CHANGED` without vocabulary payloads. Reads/reconnects
+revalidate; page read generations reject late notification replies.
+
+Each resumed turn rotates an activation ID (optional on early stored records, whose
+turn ID is the fallback). The page compares turn identity/activation/content before
+resetting input, so an unrelated source invalidation updates the revision without
+interrupting the current answer. Stale-tab revision checks remain mandatory.
+
+Practice records validate nested field types, bounds and references. A corrupt read
+returns a blocked repair view; only confirmed clearing may replace it through the
+practice API. Vocabulary commits discard invalid optional practice state and advance
+any readable revision instead of aborting unrelated vocabulary writes.
+
+The tab retains one unknown-outcome request in sessionStorage until acknowledgment
+or explicit recovery. Recovery keeps owner/ID/revision/body and rebinds the backend
+boot scope. It never replays into another owner. Receipts contain no submitted
+spelling. Commands clone action payloads before retaining/sending them, so caller
+mutations cannot alter the frozen recovery body. A damaged repair view cancels an
+unreplayable pending request before the user confirms repair. Completed rounds release
+meaning snapshots; records are excluded from sync
+and vocabulary export. `practice.html` is an explicit release-integrity root from
+0.1.6 onward, including transitive assets.
+
 ## Magpie update (2026-10-24)
 
 Current source supports backend Magpie translation through the `group/translator` routing group

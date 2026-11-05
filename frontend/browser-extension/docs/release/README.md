@@ -1,5 +1,17 @@
 # Chrome release preparation
 
+## Typing practice candidate (0.1.6)
+
+The package adds a local `practice.html` entry with Copy and Spelling modes. The
+integrity checker requires its transitive JS/CSS alongside existing entrypoints.
+Permissions remain storage/contextMenus/identity/alarms. Old 0.1.3 fixtures use the
+two-permission historical manifest; 0.1.4/0.1.5 retain four permissions.
+
+Use `scripts/verify-typing-practice.cjs` with synthetic words and an isolated Chrome
+profile for the new flows. Do not reinstall the user's extension to test upgrades.
+See [verification](../verification/2026-11-05-typing-practice.md). Packaging and local
+acceptance do not constitute Web Store submission or public-policy publication.
+
 ## Sentence explanation release (0.1.5, 2026-10-27)
 
 Current artifact: `.output/remember-me-0.1.5-chrome.zip`. Personal lookup and privacy policy use `https://rememberme-lookup.couplelabs.workers.dev`. Explain this sentence is available after compatible capability discovery, with first-use consent and a click per request. Explanation results are temporary and separate from saved history. PR 7 verified the exact ZIP, live model samples, public off/on routing and the installed local-feedback entry. Earlier version sections below are historical checkpoints.

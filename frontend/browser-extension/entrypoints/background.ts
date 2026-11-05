@@ -19,6 +19,7 @@ import {
 } from '~/services/context-menu-handler';
 import { cloudVocabulary as storageService } from '~/services/cloud-vocabulary';
 import { handleCloudMessage } from '~/services/cloud-messages';
+import { handlePracticeMessage } from '~/services/practice-handler';
 import { handleBackgroundRequest } from '~/services/background-handler';
 import { reconnectLocalPage, startLocalFeedback } from '~/services/local-feedback';
 import { contextMenuStatus } from '~/services/context-menu-status';
@@ -28,6 +29,7 @@ import { siteSettings, SITE_SETTINGS_KEY } from '~/services/site-settings';
 import { checkPageSitePolicy, handleSiteMessage, senderPageURL } from '~/services/site-messages';
 
 export default defineBackground(() => {
+  storageService.onPracticeChange(() => { void browser.runtime.sendMessage({ type: 'PRACTICE_CHANGED' }).catch(() => {}); });
   storage.watch(EXPLANATION_CONSENT_KEY, value => { if (!explanationConsent(value)) contextExplanationService.clear(); });
   browser.runtime.onConnect.addListener(port => {
     handleLookupPort(port, {
@@ -99,6 +101,8 @@ export default defineBackground(() => {
     sendResponse: (response: BackgroundResponse<unknown>) => void
   ) => {
     (async () => {
+      const practiceReply = await handlePracticeMessage(message, _sender, browser.runtime.getURL(''), storageService);
+      if (practiceReply) return practiceReply;
       if (message && typeof message === 'object' && 'type' in message && message.type === 'EXPLANATION_CONSENT') {
         if (!CONTEXT_EXPLANATION_ENABLED || !('enabled' in message) || typeof message.enabled !== 'boolean') throw new Error('Sentence explanation is unavailable.');
         if (!_sender.tab && !_sender.url?.startsWith(browser.runtime.getURL(''))) throw new Error('Invalid settings source.');

@@ -1,0 +1,24 @@
+{
+  "version": "0.1.6",
+  "archiveSha256": "55b936221f86fe307d727eae8ca0912865f5130ec212077abaab8d564e8a349c",
+  "browser": "151.0.7922.34",
+  "checks": [
+    "Same-identity 0.1.5 to 0.1.6 unpacked update via Chromium installer preserves synthetic vocabulary",
+    "Synthetic IME composition in Chrome preserves Enter default behavior and disables answer submission",
+    "Offline spelling, hidden answers, wrong-word retries, persisted hints and refresh recovery preserve vocabulary",
+    "Dark theme and 360px layout without horizontal overflow",
+    "Copy mode, pause, interruption and second-tab session coordination",
+    "Chrome process restart retains the practice session and marks the unfinished attempt interrupted",
+    "Deleting a different question preserves the current input and uninterrupted attempt",
+    "Local deletion invalidates an open question and cleans its practice references",
+    "Settings clear confirmation preserves vocabulary; cancellation preserves the session",
+    "Damaged nested practice data offers confirmed repair without deleting vocabulary"
+  ],
+  "requests": [],
+  "errors": [],
+  "limitations": [
+    "Disposable Chrome for Testing profile; no real user vocabulary.",
+    "Account/remote-sync cases use automated injected tests, not live hosted accounts.",
+    "Physical IME and assistive-technology behavior were not manually verified."
+  ]
+}

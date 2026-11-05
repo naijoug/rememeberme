@@ -3,6 +3,9 @@ import { BackendError, backendClient, type BackendClient } from './backend-clien
 import { VocabularyDB } from './vocabulary-db';
 import { StorageService } from './storage';
 import { isDefinition } from './definition-utils';
+import { applyPractice, discardCorruptPractice, practiceKey, practiceView, readPractice, reconcileRecord } from './practice-store';
+import { parsePracticeMessage } from './practice-handler';
+import type { PracticeMessage, PracticeView } from '~/types/practice';
 import { ACCOUNT_SYNC_ENABLED } from '~/config/backend';
 import type { Definition, WordEntry } from '~/types';
 import { MAX_BODY_BYTES, MAX_EVENTS, parseEntry, type WireEntry, type WireOperation, type WireEncounter, type OperationResult, type Json } from '../../../contracts/api-v1';
@@ -53,10 +56,75 @@ export class CloudVocabulary {
   private flight?: Promise<void>;
   private notice?: string;
   private previewSession = crypto.randomUUID();
+  private practiceBoot = crypto.randomUUID();
+  private practiceListeners = new Set<() => void>();
+  onPracticeChange(listener: () => void) { this.practiceListeners.add(listener); return () => { this.practiceListeners.delete(listener); }; }
+  private notifyPractice() { for (const listener of this.practiceListeners) { try { listener(); } catch { /* Observers cannot undo a commit. */ } } }
   constructor(private database = new VocabularyDB(), private client: BackendClient = backendClient, private allowAccountSelection = true) {}
   private serialize<T>(action: () => Promise<T>): Promise<T> {
-    const result = this.queue.then(action);
+    const result = this.queue.then(async () => {
+      const before = `${this.owner}:${this.generation}`;
+      try { return await action(); }
+      finally { if (before !== `${this.owner}:${this.generation}`) this.notifyPractice(); }
+    });
     this.queue = result.catch(() => {}); return result;
+  }
+  private persist(key: string, value: unknown) { return this.persistMany([[key, value]]); }
+  /** All vocabulary commit paths (including remote merges) clean practice copies atomically. */
+  private async persistMany(values: [string, unknown][]): Promise<void> {
+    const partitions = values.filter(([key, value]) => (key === 'anonymous' || key.startsWith('account:'))
+      && value && typeof value === 'object' && 'schema' in value && value.schema === 2) as [string, Partition][];
+    const changed = await this.database.update(partitions.map(([key]) => practiceKey(key)), stored => {
+      const writes = [...values]; let changed = false;
+      for (const [owner, state] of partitions) {
+        const key = practiceKey(owner), raw = stored.get(key);
+        if (raw == null) continue;
+        // A damaged optional practice record must not prevent vocabulary deletion/sync.
+        let r;
+        try { r = readPractice(raw); } catch { writes.push([key, discardCorruptPractice(raw)]); changed = true; continue; }
+        if (reconcileRecord(r, owner, state)) { writes.push([key, r]); changed = true; }
+      }
+      return { writes, result: changed };
+    });
+    if (changed || partitions.length) this.notifyPractice();
+  }
+  async practice(input: PracticeMessage): Promise<PracticeView> {
+    const message = parsePracticeMessage(input);
+    const digest = message.type === 'PRACTICE_COMMAND'
+      ? await sha(JSON.stringify([message.owner, message.revision, message.action])) : '';
+    return this.serialize(async () => {
+      await this.initialize();
+      const owner = this.owner, scope = `${this.practiceBoot}:${this.generation}`;
+      if (message.type === 'PRACTICE_COMMAND' && (message.owner !== owner || message.scope !== scope)) throw new Error('The vocabulary or background changed. Reconnect before continuing practice.');
+      const key = practiceKey(owner);
+      const result = await this.database.update([owner, key], stored => {
+        const state = stored.get(owner) as Partition;
+        if (!state || state.schema !== 2) throw new Error('Vocabulary is unavailable.');
+        const raw = stored.get(key);
+        let record, corrupt = false;
+        try { record = readPractice(raw); }
+        catch { record = discardCorruptPractice(raw); corrupt = true; }
+        if (corrupt && (message.type === 'PRACTICE_GET' || message.action.kind !== 'clear')) {
+          return { writes: [], result: {
+            view: { ...practiceView(record, owner, scope, state), corrupt: true,
+              blocked: 'Practice progress is damaged. Clear practice records to start again; your vocabulary is unchanged.' },
+            changed: false, error: message.type === 'PRACTICE_COMMAND' ? 'Clear the damaged practice records before starting again.' : undefined,
+          } };
+        }
+        const before = record.revision;
+        reconcileRecord(record, owner, state);
+        let error: string | undefined;
+        if (message.type === 'PRACTICE_COMMAND') {
+          try { applyPractice(record, owner, state, message, digest); }
+          catch (cause) { error = cause instanceof Error ? cause.message : 'Practice could not be saved.'; }
+        }
+        return { writes: record.revision !== before ? [[key, record] as [string, unknown]] : [],
+          result: { view: practiceView(record, owner, scope, state), changed: before !== record.revision, error } };
+      });
+      if (result.changed) this.notifyPractice();
+      if (result.error) throw new Error(result.error);
+      return result.view;
+    });
   }
   private async initialize() {
     await (this.ready ??= (async () => {
@@ -161,7 +229,7 @@ export class CloudVocabulary {
       entry.value.history.push({ timestamp: recordedAt, definition, context, url }); entry.events.push(event);
       this.add(state, { operationId: crypto.randomUUID(), entryId: entry.id, kind: 'record',
         payload: { event: { id: event, timestamp: recordedAt, definition: json(definition) } } });
-      await this.database.write(this.owner, state);
+      await this.persist(this.owner, state);
       return structuredClone(entry.value);
     });
   }
@@ -177,7 +245,7 @@ export class CloudVocabulary {
       if (kind === 'delete') entry.deleted = true; else entry.value.count = 0;
       entry.value.updatedAt = Date.now();
       this.add(state, { operationId: crypto.randomUUID(), entryId: entry.id, kind, payload: {} });
-      await this.database.write(this.owner, state);
+      await this.persist(this.owner, state);
     });
   }
   async exportData(): Promise<string> {
@@ -215,7 +283,7 @@ export class CloudVocabulary {
           entry.value.history = retained.map(value => value.record); entry.events = retained.map(value => value.event);
         }
       }
-      await this.database.write(this.owner, state);
+      await this.persist(this.owner, state);
     });
   }
   async status(): Promise<CloudStatus> {
@@ -241,7 +309,7 @@ export class CloudVocabulary {
       const current = await this.client.current();
       if (current?.credentials.userId !== connection.credentials.userId || current.origin !== connection.origin) throw new Error('Account connection changed.');
       const owner = 'account:' + await sha(connection.origin) + ':' + connection.credentials.userId;
-      const state = await this.state(owner); state.displayName = profile.displayName; await this.database.write(owner, state);
+      const state = await this.state(owner); state.displayName = profile.displayName; await this.persist(owner, state);
     });
     await this.activateAccount();
   }
@@ -260,14 +328,14 @@ export class CloudVocabulary {
     else await this.synchronize(); // An explicit pause or recovery pause survives reopening.
   }
   async pause(): Promise<void> {
-    await this.serialize(async () => { const state = await this.state(); state.enabled = false; await this.database.write(this.owner, state); });
+    await this.serialize(async () => { const state = await this.state(); state.enabled = false; await this.persist(this.owner, state); });
   }
   async disconnect(): Promise<void> {
     await this.pause(); await this.serialize(async () => { this.generation++; });
     const revoked = await this.client.disconnect();
     this.notice = revoked ? 'Signed out. Local vocabulary is retained.'
       : 'Disconnected on this device. Server revocation could not be confirmed; reconnect when online to manage your devices.';
-    await this.serialize(async () => { await this.database.write('selected', 'anonymous'); this.owner = 'anonymous'; });
+    await this.serialize(async () => { await this.persist('selected', 'anonymous'); this.owner = 'anonymous'; });
   }
   async openAccount(copyLocal = false, pauseSync = false, enableSync = false): Promise<void> {
     const connection = await this.client.current(); if (!connection) throw new Error('Connect an account first.');
@@ -277,7 +345,7 @@ export class CloudVocabulary {
       const current = await this.client.current();
       if (current?.origin !== connection.origin || current.credentials.userId !== connection.credentials.userId) throw new Error('Account connection changed.');
       if (this.owner !== owner) {
-        const previous = await this.state(); previous.enabled = false; await this.database.write(this.owner, previous);
+        const previous = await this.state(); previous.enabled = false; await this.persist(this.owner, previous);
       }
       const account = await this.database.initialize(owner, fresh());
       const blocked = enableSync && (account.failure === 'SYNC_EPOCH_CHANGED' || account.outbox.some(item => item.error));
@@ -285,7 +353,7 @@ export class CloudVocabulary {
         account.enabled = !blocked;
       }
       if (pauseSync) account.enabled = false;
-      await this.database.writeMany([[owner, account], ['selected', owner]]);
+      await this.persistMany([[owner, account], ['selected', owner]]);
       if (this.owner !== owner) { this.owner = owner; this.generation++; }
       if (blocked) throw new Error('Resolve account conflicts before resuming sync.');
     });
@@ -297,7 +365,7 @@ export class CloudVocabulary {
       const collisions = local.entries.filter(entry => !entry.deleted && state.entries.some(remote => remote.id === entry.id || (!remote.deleted && normalized(remote.value.word) === normalized(entry.value.word))));
       if (collisions.length) throw new Error(`${collisions.length} local words already exist in this account. Export the local vocabulary and use an explicit import to add its counts.`);
       await this.copyEntries(state, local, local.entries.filter(entry => !entry.deleted));
-      await this.database.write(this.owner, state);
+      await this.persist(this.owner, state);
     });
   }
   private async copyEntries(state: Partition, local: Partition, sources: Entry[]) {
@@ -344,14 +412,14 @@ export class CloudVocabulary {
       const sources = local.entries.filter(entry => !entry.deleted && !state.entries.some(remote =>
         remote.id === entry.id || (!remote.deleted && normalized(remote.value.word) === normalized(entry.value.word))));
       await this.copyEntries(state, local, sources);
-      await this.database.write(this.owner, state);
+      await this.persist(this.owner, state);
     });
     await this.synchronize();
   }
   async useLocal(): Promise<void> {
     await this.pause();
     await this.serialize(async () => {
-      await this.database.write('selected', 'anonymous');
+      await this.persist('selected', 'anonymous');
       if (this.owner !== 'anonymous') { this.owner = 'anonymous'; this.generation++; }
     });
   }
@@ -370,7 +438,7 @@ export class CloudVocabulary {
       const archive = { key: 'recovery:' + owner + ':' + crypto.randomUUID(), createdAt: Date.now() };
       next.epoch = account.epoch; next.archives = [...previous.archives ?? [], archive];
       // Preserve vocabulary and frozen requests in the same commit as the new checkpoint.
-      await this.database.writeMany([[archive.key, previous], [owner, next]]);
+      await this.persistMany([[archive.key, previous], [owner, next]]);
       this.generation++;
     });
     await this.synchronize(true);
@@ -390,7 +458,7 @@ export class CloudVocabulary {
     await this.serialize(async () => {
       const state = await this.state();
       if (enabled && (this.owner !== expected || state.failure === 'SYNC_EPOCH_CHANGED' || state.outbox.some(item => item.error))) throw new Error('Open your account and resolve conflicts before enabling sync.');
-      state.enabled = enabled; await this.database.write(this.owner, state);
+      state.enabled = enabled; await this.persist(this.owner, state);
     });
     if (enabled) await this.synchronize();
   }
@@ -410,7 +478,7 @@ export class CloudVocabulary {
       await this.serialize(async () => {
         const state = await this.state(owner);
         if (state.failure !== 'SYNC_EPOCH_CHANGED') state.failure = error instanceof Error ? error.message : 'Synchronization failed.';
-        await this.database.write(owner, state);
+        await this.persist(owner, state);
       });
       throw error;
     }
@@ -419,12 +487,12 @@ export class CloudVocabulary {
     await this.serialize(async () => {
       const state = await this.state(owner);
       if (state.epoch && state.epoch !== account.epoch) {
-        state.enabled = false; state.failure = 'SYNC_EPOCH_CHANGED'; await this.database.write(owner, state);
+        state.enabled = false; state.failure = 'SYNC_EPOCH_CHANGED'; await this.persist(owner, state);
         throw new Error('The server was restored. Your local data and queue are retained; restore requires review.');
       }
       state.epoch = account.epoch; state.failure = undefined;
       if (typeof account.displayName === 'string' && account.displayName.length > 0 && account.displayName.length <= 100) state.displayName = account.displayName;
-      await this.database.write(owner, state);
+      await this.persist(owner, state);
     });
     try {
       for (let index = 0; index < 20 && this.owner === owner; index++) {
@@ -458,7 +526,7 @@ export class CloudVocabulary {
           }
           latest.cursor = page.nextCursor; latest.boundary = page.hasMore ? page.boundary : undefined;
           if (!page.hasMore) latest.snapshot = false;
-          await this.database.write(owner, latest);
+          await this.persist(owner, latest);
         });
         if (!page.hasMore) break;
       }
@@ -483,7 +551,7 @@ export class CloudVocabulary {
           await this.serialize(async () => {
             const current = await this.state(owner);
             current.historyScan = { ...scan, after: page.nextCursor, events };
-            await this.database.write(owner, current);
+            await this.persist(owner, current);
           });
           continue;
         }
@@ -500,7 +568,7 @@ export class CloudVocabulary {
           for (const [id, record] of byID) if (!remoteIDs.has(id)) { events.push({ id, ...record, position: 0 }); records.push(record); }
           current.events = events.map(event => event.id); current.value.history = records; state.history = state.history.filter(value => value !== id);
           delete state.historyScan;
-          await this.database.write(owner, state);
+          await this.persist(owner, state);
         });
       }
       if (readOnly) return;
@@ -515,7 +583,7 @@ export class CloudVocabulary {
               if (item.dependsOn || operation.baseVersion === undefined) throw new Error('The predecessor has not established this change’s version.');
             }
             item.body = JSON.stringify(operation); item.epoch = account.epoch;
-            await this.database.write(owner, state);
+            await this.persist(owner, state);
           }
           return structuredClone(item);
         });
@@ -530,7 +598,7 @@ export class CloudVocabulary {
               else current.retryAt = Date.now() + 30_000;
             }
             state.failure = error instanceof Error ? error.message : 'Synchronization failed.';
-            await this.database.write(owner, state);
+            await this.persist(owner, state);
           });
           throw error;
         }
@@ -552,14 +620,14 @@ export class CloudVocabulary {
           if (!state.outbox.some(value => value.operation.entryId === remote.id)) {
             entry.value.count = remote.count ?? 0; entry.value.word = remote.word; entry.value.updatedAt = remote.updatedAtMs; entry.deleted = remote.deleted;
           }
-          await this.database.write(owner, state);
+          await this.persist(owner, state);
         });
       }
     } catch (error) {
       await this.serialize(async () => {
         const state = await this.state(owner); state.failure = error instanceof Error ? error.message : 'Synchronization failed.';
         if (error instanceof BackendError && error.code === 'SYNC_EPOCH_CHANGED') { state.enabled = false; state.failure = error.code; }
-        await this.database.write(owner, state);
+        await this.persist(owner, state);
       });
       throw error;
     }

@@ -5,6 +5,7 @@ import type { WordEntry } from '~/types';
 import type { ResolvedTheme, ThemePreference } from '~/types/theme';
 import WordList from './WordList.vue';
 import WordDetail from './WordDetail.vue';
+import PracticeRecords from './practice/PracticeRecords.vue';
 import ConfirmDelete from './ConfirmDelete.vue';
 import { PRIVACY_POLICY_URL } from '~/config/backend';
 
@@ -13,6 +14,7 @@ const props = withDefaults(defineProps<{
   theme?: ResolvedTheme; themePreference?: ThemePreference; initialWord?: string; logoUrl?: string;
 }>(), { theme: 'light', themePreference: 'system', logoUrl: '/icon/48.png' });
 const emit = defineEmits<{
+  practice: [];
   delete: [word: string]; reset: [word: string]; import: [text: string]; export: [];
   'theme-change': [theme: ThemePreference]; retry: [];
 }>();
@@ -108,6 +110,7 @@ async function importFile(event: Event) {
 
       <slot name="account" :show-vocabulary="showVocabulary" />
       <slot name="websites" />
+      <PracticeRecords />
 
       <section class="settings-section" aria-labelledby="backups-heading">
         <h3 id="backups-heading">Backups</h3>
@@ -142,6 +145,7 @@ async function importFile(event: Event) {
         </div>
       </div>
       <template v-else-if="words.length">
+        <button class="rm-button" :disabled="busy || loading" @click="emit('practice')">Typing practice</button>
         <div class="list-tools">
           <label class="search-field"><Search width="17" height="17" aria-hidden="true" /><input v-model="query" type="search" aria-label="Search vocabulary" placeholder="Find a word" /></label>
           <div class="list-heading"><div><strong>Vocabulary</strong><span class="word-total">{{ words.length }} {{ words.length === 1 ? 'word' : 'words' }}</span></div>

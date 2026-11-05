@@ -1,5 +1,21 @@
 # Remember Me Privacy Policy
 
+## Local typing practice (0.1.6 source addition)
+
+Typing practice uses saved vocabulary/meanings locally. Starting, answering or
+resuming it sends no dictionary, translation or explanation request. Existing account
+vocabulary sync retains its separate controls; practice results are not uploaded and
+do not change forgotten counts or reading history.
+
+The browser retains one session/result per vocabulary owner, with aggregate outcomes,
+hints, assistance/interruption flags and active time. An unknown save retains its
+submitted request in that tab for recovery. There is no per-keystroke log. Completed
+rounds release meaning snapshots; new rounds replace previous results. Clear practice
+records from Settings or the practice page. Vocabulary JSON backups omit practice.
+
+This addition is a local source update; publication at the public policy URL is a
+separate release step. The dated policy below describes the existing 0.1.5 publication.
+
 Version 0.1.5 · Effective 2026-10-27 · Developer: naijoug
 
 This revision covers optional sentence explanation. It remains off for each user until they accept the word-card disclosure; each explanation still requires an explicit click.

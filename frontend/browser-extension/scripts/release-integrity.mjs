@@ -48,11 +48,16 @@ export async function verifyReleaseDirectory(directory, expectedVersion) {
     }
   }
   const manifest = JSON.parse(await readFile(join(root, 'manifest.json'), 'utf8'));
+  assert.match(expectedVersion, /^\d+\.\d+\.\d+$/);
+  const [major, minor, patch] = expectedVersion.split('.').map(Number);
+  const accounts = major > 0 || minor > 1 || (minor === 1 && patch >= 4);
+  const practice = major > 0 || minor > 1 || (minor === 1 && patch >= 6);
   assert.equal(manifest.manifest_version, 3);
   assert.equal(manifest.version, expectedVersion);
-  assert.deepEqual(manifest.permissions, ['storage', 'contextMenus', 'identity', 'alarms']);
+  assert.deepEqual(manifest.permissions, ['storage', 'contextMenus', ...(accounts ? ['identity', 'alarms'] : [])]);
   assert.ok(!/localhost|127\.0\.0\.1|3937|unsafe-eval/.test(JSON.stringify(manifest)), 'Development manifest');
   await resource(manifest.action?.default_popup);
+  if (practice) await resource('practice.html');
   await resource(manifest.background?.service_worker);
   for (const script of manifest.content_scripts ?? []) for (const reference of [...script.js ?? [], ...script.css ?? []]) await resource(reference);
   for (const reference of Object.values(manifest.icons ?? {})) await resource(reference);

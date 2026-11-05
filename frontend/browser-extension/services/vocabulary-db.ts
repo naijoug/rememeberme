@@ -34,6 +34,28 @@ export class VocabularyDB {
       transaction.onerror = transaction.onabort = () => reject(transaction.error ?? new Error('Vocabulary transaction aborted.'));
     });
   }
+  /** Synchronous read/validate/write inside one transaction. Never await in update. */
+  async update<T>(keys: string[], update: (values: Map<string, unknown>) => { writes: [string, unknown][]; result: T }): Promise<T> {
+    const database = await this.open();
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction('partitions', 'readwrite', { durability: 'strict' });
+      const objectStore = transaction.objectStore('partitions'), values = new Map<string, unknown>();
+      const unique = [...new Set(keys)]; let remaining = unique.length, result: T, failure: unknown;
+      const apply = () => {
+        try {
+          const updated = update(values); result = updated.result;
+          for (const [key, value] of updated.writes) objectStore.put(value, key);
+        } catch (error) { failure = error; transaction.abort(); }
+      };
+      for (const key of unique) {
+        const request = objectStore.get(key);
+        request.onsuccess = () => { values.set(key, request.result); if (--remaining === 0) apply(); };
+      }
+      if (!remaining) apply();
+      transaction.oncomplete = () => resolve(result);
+      transaction.onerror = transaction.onabort = () => reject(failure ?? transaction.error ?? new Error('Vocabulary transaction aborted.'));
+    });
+  }
   async initialize<T>(key: string, value: T): Promise<T> {
     const database = await this.open();
     return new Promise((resolve, reject) => {

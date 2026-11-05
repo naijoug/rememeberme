@@ -1,5 +1,22 @@
 # Remember Me browser extension
 
+## Typing practice (0.1.6, 2026-11-05)
+
+Open the toolbar vocabulary and choose **Typing practice**. The full extension tab
+supports **Copy the word** and **Spelling from meaning**, with up to ten saved words,
+Enter to check, and at most two spaced retries per word. Missing meanings remain
+available in Copy mode; practice never fetches new meanings or explanations.
+
+Practice works with device vocabulary and downloaded account words. It pauses on
+focus loss and restores committed progress after reload/restart. Hints, pasted input
+and interrupted attempts do not count as first-attempt unassisted success. It does
+not change forgotten counts, reading history, review dates or cloud outbox items.
+
+Progress stays in this browser, outside vocabulary backups. **Settings → Practice →
+Clear practice records** clears it for the vocabulary named in the confirmation.
+No new permissions, backend endpoint or runtime dependency were added. See
+[verification](docs/verification/2026-11-05-typing-practice.md) for the exact scope.
+
 ## Faster local translation lookup (source update, 2026-11-05)
 
 Selection starts after 120 ms. A separate IndexedDB translation cache stores up
@@ -10,7 +27,6 @@ card refreshes them. Closing/disabling the lookup cancels refresh; failed refres
 keeps the cached result and backs off for one minute. Successful refreshes do not
 rewrite saved vocabulary or encounter snapshots. The old cache is read-only
 migration/rollback data. See [verification](docs/verification/2026-11-05-local-translation-cache.md).
-
 
 ## Word translation resilience (source update, 2026-11-04)
 

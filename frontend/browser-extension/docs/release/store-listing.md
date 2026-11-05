@@ -1,4 +1,15 @@
-# Chrome Web Store materials — 0.1.1
+# Chrome Web Store materials — 0.1.6 candidate
+
+Add to the current account-enabled listing: Practice your saved words in a full tab
+with Copy and Spelling modes, hints, limited retries and restart recovery. Practice
+records stay in this browser and do not change forgotten counts or review dates.
+They are not included in vocabulary backups; Settings provides confirmed clearing.
+
+These are candidate copy additions, not a submitted store listing. Keep the existing
+account/lookup/explanation disclosures and publish the updated privacy text before a
+store release. Historical listing material follows.
+
+## Historical Chrome Web Store materials — 0.1.1
 
 > Historical 0.1.1 listing. Do not submit unchanged for the account-enabled
 > source (2026-10-25): it adds GitHub identity, device credentials, optional

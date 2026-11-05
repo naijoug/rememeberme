@@ -1,5 +1,30 @@
 # Verification and browser checklist
 
+## Typing practice verification
+
+Practice source/engine, store/account integration, client, input, page and confirmation
+tests use only fixtures. They cover source attribution/masking, finite retries,
+transaction aborts, unknown saves, boot scopes, hints across restart, remote tombstones
+with pending writes, same-ID owner isolation, stale reads/tabs and unchanged exports.
+Component checks cover IME Enter, paste, focus pause, literal markup and pinned clear
+confirmations. Release tests require practice.html and its transitive assets for
+0.1.6 while preserving historical permission sets.
+
+Review regressions also cover native IME Enter default behavior and button guards,
+unrelated-question updates without input loss, repeated tab activation, frozen caller
+payloads, ASCII-only comparison, malformed nested records, confirmed repair and
+legacy optional source metadata. See [the review record](verification/2026-11-05-typing-practice-review.md).
+
+`scripts/verify-typing-practice.cjs` uses a packaged extension and disposable Chrome
+for Testing profile. Set `REMEMBERME_PLAYWRIGHT_PATH`, `REMEMBERME_TYPING_ZIP`, optional
+`REMEMBERME_PREVIOUS_ZIP`, and `REMEMBERME_ACCEPTANCE_DIR`. Lookup/account hosts are
+blocked. Synthetic vocabulary alone is imported; no user profile/account is used.
+See [the acceptance record](verification/2026-11-05-typing-practice.md).
+
+Physical IME, screen-reader speech and the everyday installed toolbar remain separate
+checks. Injected account tests are not hosted-sync acceptance. Watcher health alone
+cannot prove an installed browser loaded the practice entry.
+
 Magpie regressions cover persisted v3 caches, literal source rendering, all
 three translation sources through import/export, unchanged reset/history
 semantics, and real loopback HTTP through the backend Magpie adapter with a

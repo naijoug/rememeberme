@@ -78,6 +78,10 @@ async function changeTheme(preference: ThemePreference) {
     theme.value = { preference, resolved: preference === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : preference };
   } catch { error.value = 'Could not save your appearance preference. Please try again.'; }
 }
+async function openPractice() {
+  try { await browser.tabs.create({ url: browser.runtime.getURL('/practice.html') }); }
+  catch { error.value = 'Could not open typing practice. Please try again.'; }
+}
 async function exportData() {
   if (busy.value) return;
   error.value = '';
@@ -103,6 +107,7 @@ async function exportData() {
     @delete="mutate(() => storageClient.deleteWord($event))"
     @reset="mutate(() => storageClient.resetCount($event))"
     @import="mutate(() => storageClient.importData($event), 'Data imported successfully!')"
+    @practice="openPractice"
   >
     <template v-if="ACCOUNT_SYNC_ENABLED" #account="{ showVocabulary }"><CloudConnection :data-theme="theme.resolved" @changed="loadWords" @view-words="showVocabulary" /></template>
     <template #websites><SiteSettings /><ExplanationSettings v-if="CONTEXT_EXPLANATION_ENABLED" /></template>

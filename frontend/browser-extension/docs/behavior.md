@@ -1,5 +1,46 @@
 # Browser extension behavior
 
+## Typing practice (0.1.6)
+
+- The main vocabulary opens a full practice tab using the currently selected owner.
+  Initial account downloads block practice; completed caches work offline. Account
+  recovery blocks that account. Opening practice never signs in or toggles sync.
+- Copy mode shows spelling and per-character feedback. Spelling mode hides it until
+  a hint or submitted answer. Enter or Check spelling submits the whole word; ASCII case
+  and outer whitespace are ignored, internal apostrophes/hyphens must match.
+  Backspace is available; IME confirmation keeps its native Enter behavior and does
+  not submit. Answer, hint and skip buttons are disabled during composition;
+  repeated Enter does not submit. Unicode compatibility characters are not ASCII letters.
+- Saved current definition takes precedence over the last history snapshot. Empty
+  meanings allow Copy only. Literal target/base-form matches are masked in prompts.
+  No cache or provider fills missing meanings; examples, notes and URLs are omitted.
+- Each round randomly selects up to ten eligible words. Wrong, skipped or hinted
+  turns retry after up to two intervening questions, at most twice per word.
+  First-attempt unassisted and retry results are separate; no WPM is displayed.
+- Blur/hidden documents pause time. Reconnecting to an unfinished started question
+  marks it interrupted. Unsubmitted input is not restored. Hints commit before the
+  answer appears; detectable paste/drop is assisted. Unknown saves retain one
+  frozen tab request and offer explicit recovery, never automatic write retries.
+- Sessions/results are local to an owner and epoch. Source changes, conflicts and
+  local/remote deletions remove affected questions/attempts. Count-only updates do
+  not invalidate questions. Stale tabs use revision checks; epoch recovery clears
+  the old session. Clear confirmations pin their original scope and revision.
+  Updates to another question preserve the current input, assistance flags and timer.
+  Another tab resuming the same turn still pauses the old page, even if the turn was
+  already marked interrupted.
+- Nested practice data is validated before use. Damaged progress offers confirmed
+  clearing without changing vocabulary. Vocabulary writes discard a damaged optional
+  practice copy rather than failing the vocabulary operation; a readable revision is
+  advanced so old requests cannot replay as new work. Unknown optional source labels
+  in legacy definitions display as saved meanings; original export data is preserved.
+- Practice never changes vocabulary counts/history/timestamps/review/outbox, nor
+  calls dictionary, translation or explanation APIs. Starting a round replaces the
+  prior result; replacing an unfinished round and clearing records require confirmation.
+  Completed rounds discard meaning snapshots. No per-keystroke log is retained.
+
+See [review and acceptance scope](verification/2026-11-05-typing-practice-review.md); automated
+checks do not establish hosted account or physical-device accessibility acceptance.
+
 ## Magpie update (2026-10-24)
 
 Current source supports backend Magpie translation through the `group/translator` routing group
