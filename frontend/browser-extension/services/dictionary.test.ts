@@ -23,11 +23,11 @@ describe('dictionary requests (mock network)', () => {
   it('routes misses through the public service without account credentials or direct provider requests', async () => {
     const connection = { origin: 'https://api.example.test', credentials: { userId: 'fixture-a' } };
     const request = vi.fn().mockResolvedValue({ definition: { ...result[0], source: 'dictionary-api' } });
-    const backend = { current: async () => connection, request } as unknown as import('./backend-client').BackendClient;
+    const backend = { current: async () => connection, request } as unknown as import('./public-lookup').PublicLookupClient;
     dictionary = new DictionaryService(async () => null, backend);
     expect((await dictionary.getDefinition(' Apple ')).source).toBe('dictionary-api');
     await dictionary.getDefinition('apple');
-    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/public/lookup/dictionary', 'POST', { word: 'apple' });
+    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/public/lookup/dictionary', 'POST', { word: 'apple' }, expect.any(AbortSignal));
     expect(request).toHaveBeenCalledTimes(1); expect(fetchMock).not.toHaveBeenCalled();
     request.mockRejectedValue(new Error('DICTIONARY_NOT_FOUND'));
     await expect(dictionary.getDefinition('unknown')).rejects.toThrow('DICTIONARY_NOT_FOUND');
@@ -36,7 +36,7 @@ describe('dictionary requests (mock network)', () => {
 
   it('retains packaged definitions when connected and bounds a stalled backend without caching late results', async () => {
     const request = vi.fn().mockImplementation(() => new Promise(() => {}));
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./backend-client').BackendClient;
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
     const local = { ...result[0], source: 'wordnet' as const };
     dictionary = new DictionaryService(async () => local, backend);
     expect(await dictionary.getDefinition('apple')).toEqual(local); expect(request).not.toHaveBeenCalled();
@@ -59,7 +59,7 @@ describe('dictionary requests (mock network)', () => {
   it('recovers a broken local shard via the server and rejects malformed responses without caching', async () => {
     const request = vi.fn().mockResolvedValueOnce({ definition: { word: 'apple' } })
       .mockResolvedValue({ definition: { ...result[0], source: 'dictionary-api' } });
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./backend-client').BackendClient;
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
     dictionary = new DictionaryService(async () => { throw new Error('Missing shard'); }, backend);
     await expect(dictionary.getDefinition('apple')).rejects.toThrow(/invalid definition/);
     const [a, b] = await Promise.all([dictionary.getDefinition('apple'), dictionary.getDefinition('APPLE')]);

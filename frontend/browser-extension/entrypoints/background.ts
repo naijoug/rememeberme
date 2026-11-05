@@ -1,3 +1,4 @@
+import { handleLookupPort } from '~/services/lookup-port-handler';
 /**
  * Background Service Worker
  * Handles message communication and API requests
@@ -20,6 +21,23 @@ import type { BackgroundResponse } from '~/types';
 import { ACCOUNT_SYNC_ENABLED } from '~/config/backend';
 
 export default defineBackground(() => {
+  browser.runtime.onConnect.addListener(port => {
+    handleLookupPort(port, {
+      authorize: async operation => {
+        const sender = port.sender;
+        if (!sender || !(sender.tab || sender.url?.startsWith(browser.runtime.getURL('')))) throw new Error('Invalid lookup source.');
+      },
+      run: async (operation, payload, signal) => {
+        switch (operation) {
+          case 'GET_DEFINITION': return dictionaryService.getDefinition(String(payload.word), signal);
+          case 'GET_TRANSLATION': return translationService.translate(String(payload.word), signal);
+          case 'GET_PHONETICS': return phoneticsService.getPhonetics(String(payload.word));
+          default: throw new Error('Unsupported lookup operation.');
+        }
+      },
+      subscribePolicy: () => () => {},
+    });
+  });
   const synchronize = () => { if (ACCOUNT_SYNC_ENABLED) void storageService.synchronize().catch(() => {}); };
   if (ACCOUNT_SYNC_ENABLED) {
     browser.alarms.onAlarm.addListener(alarm => { if (alarm.name === 'rememberme-sync') synchronize(); });

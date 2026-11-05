@@ -1,4 +1,6 @@
 import { LOOKUP_SERVICE_ORIGIN } from '~/config/backend';
+import { lookupCancelled } from './shared-lookup';
+import { EXPLANATION_PATH, EXPLANATION_CAPABILITIES_PATH } from '../../../contracts/context-explanation';
 import { TRANSLATION_FIRST_ATTEMPT_MS, TRANSLATION_REQUEST_BUDGET_MS } from '../../../contracts/translation-policy';
 export { TRANSLATION_FIRST_ATTEMPT_MS, TRANSLATION_REQUEST_BUDGET_MS } from '../../../contracts/translation-policy';
 
@@ -9,29 +11,33 @@ class LookupFailure extends Error {
 }
 const unavailable = () => new LookupFailure('Lookup service is unavailable. Please try again.', true);
 const timedOut = (path: string) => new LookupFailure(path.endsWith('/translation')
-  ? 'Chinese translation timed out. Please try again.' : 'Dictionary lookup timed out. Please try again.', true);
+  ? 'Chinese translation timed out. Please try again.' : path === EXPLANATION_PATH ? 'Sentence explanation timed out. Please try again.' : 'Dictionary lookup timed out. Please try again.', true);
 
 export class PublicLookupClient {
   constructor(private origin = LOOKUP_SERVICE_ORIGIN, private fetcher: typeof fetch = fetch) {}
-  async request<T>(path: string, method: string, body: unknown): Promise<T> {
-    if (!['/api/v1/public/lookup/dictionary', '/api/v1/public/lookup/translation'].includes(path) || method !== 'POST') throw new Error('Invalid lookup request.');
+  async request<T>(path: string, method: string, body: unknown, signal?: AbortSignal): Promise<T> {
+    if (signal?.aborted) throw lookupCancelled();
+    if (!((['/api/v1/public/lookup/dictionary', '/api/v1/public/lookup/translation', EXPLANATION_PATH].includes(path) && method === 'POST') || (path === EXPLANATION_CAPABILITIES_PATH && method === 'GET' && body === undefined))) throw new Error('Invalid lookup request.');
     const translation = path.endsWith('/translation');
-    const encoded = JSON.stringify(body);
-    const deadline = Date.now() + (translation ? TRANSLATION_REQUEST_BUDGET_MS : 8_000);
+    const encoded = method === 'GET' ? undefined : JSON.stringify(body);
+    const deadline = Date.now() + (translation ? TRANSLATION_REQUEST_BUDGET_MS : path === EXPLANATION_PATH ? 20_000 : 8_000);
     for (let attempt = 0; ; attempt++) {
+      if (signal?.aborted) throw lookupCancelled();
       const remaining = deadline - Date.now();
       if (remaining <= 0) throw timedOut(path);
       const budget = translation && attempt === 0 ? Math.min(remaining, TRANSLATION_FIRST_ATTEMPT_MS) : remaining;
-      try { return await this.attempt<T>(path, encoded, budget); }
+      try { return await this.attempt<T>(path, method, encoded, budget, signal); }
       catch (error) {
+        if (signal?.aborted) throw lookupCancelled();
         if (!translation || attempt !== 0 || !(error instanceof LookupFailure) || !error.retryable) throw error;
       }
     }
   }
-  private async attempt<T>(path: string, body: string, timeoutMs: number): Promise<T> {
+  private async attempt<T>(path: string, method: string, body: string | undefined, timeoutMs: number, signal?: AbortSignal): Promise<T> {
     const controller = new AbortController();
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let onCancel: () => void;
     const readJSON = async (response: Response, limit: number): Promise<unknown> => {
       reader = response.body!.getReader();
       const chunks: Uint8Array[] = []; let count = 0;
@@ -46,12 +52,17 @@ export class PublicLookupClient {
       try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)) as unknown; }
       catch { throw new LookupFailure('Lookup service returned an invalid response.'); }
     };
+    const cancelled = new Promise<never>((_, reject) => {
+      onCancel = () => { reject(lookupCancelled()); controller.abort(); };
+      if (signal?.aborted) onCancel(); else signal?.addEventListener('abort', onCancel, { once: true });
+    });
     const deadline = new Promise<never>((_, reject) => {
       timer = setTimeout(() => { reject(timedOut(path)); controller.abort(); }, timeoutMs);
     });
     try {
       return await Promise.race([(async () => {
-        const response = await this.fetcher(this.origin + path, { method: 'POST', body,
+        if (signal?.aborted) throw lookupCancelled();
+        const response = await this.fetcher(this.origin + path, { method, body,
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           credentials: 'omit', referrerPolicy: 'no-referrer', redirect: 'error', signal: controller.signal });
         if (controller.signal.aborted) { void response.body?.cancel().catch(() => {}); throw timedOut(path); }
@@ -73,14 +84,15 @@ export class PublicLookupClient {
           throw new LookupFailure('Lookup service returned an invalid response.');
         }
         return await readJSON(response, 256 * 1024) as T;
-      })(), deadline]);
+      })(), deadline, cancelled]);
     } catch (error) {
+      if (signal?.aborted) throw lookupCancelled();
       if (error instanceof LookupFailure) throw error;
       if (controller.signal.aborted || error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name)) throw timedOut(path);
       if (error instanceof TypeError) throw unavailable();
       throw error;
     } finally {
-      clearTimeout(timer);
+      clearTimeout(timer); signal?.removeEventListener('abort', onCancel!);
       if (reader) { void reader.cancel().catch(() => {}); reader.releaseLock(); }
     }
   }

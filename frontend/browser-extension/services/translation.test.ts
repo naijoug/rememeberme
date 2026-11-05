@@ -39,7 +39,7 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
   it('accepts server-side MyMemory fallback and retries the server after its shorter cache expires', async () => {
     const request = vi.fn().mockResolvedValueOnce({ translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } })
       .mockResolvedValue({ translation: { text: '人工释义', target: 'zh-CN', source: 'hermes' } });
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as BackendClient;
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
     const service = new TranslationService(backend);
     expect((await service.translate('curated')).source).toBe('mymemory');
     await service.translate('curated'); expect(request).toHaveBeenCalledTimes(1);
@@ -53,10 +53,10 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
       accessExpiresAtMs: 0, refreshExpiresAtMs: 0,
     } };
     const request = vi.fn().mockResolvedValue({ translation: { text: '精选', target: 'zh-CN', source: 'hermes' } });
-    const backend = { current: async () => connection, request } as unknown as BackendClient;
+    const backend = { current: async () => connection, request } as unknown as import('./public-lookup').PublicLookupClient;
     const first = new TranslationService(backend);
     expect((await first.translate(' Curated ')).source).toBe('hermes');
-    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/public/lookup/translation', 'POST', { word: 'curated', target: 'zh-CN' });
+    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/public/lookup/translation', 'POST', { word: 'curated', target: 'zh-CN' }, expect.any(AbortSignal));
     await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalled());
     expect((await new TranslationService(backend).translate('curated')).source).toBe('hermes');
     expect(request).toHaveBeenCalledTimes(1);
@@ -64,7 +64,7 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
   });
   it('keeps connected backend failures explicit without caching or switching to MyMemory', async () => {
     const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'synthetic-user' } }),
-      request: vi.fn().mockRejectedValue(new Error('TRANSLATION_NOT_CONFIGURED')) } as unknown as BackendClient;
+      request: vi.fn().mockRejectedValue(new Error('TRANSLATION_NOT_CONFIGURED')) } as unknown as import('./public-lookup').PublicLookupClient;
     await expect(new TranslationService(backend).translate('curated')).rejects.toThrow('TRANSLATION_NOT_CONFIGURED');
     expect(fetchMock).not.toHaveBeenCalled(); expect(api.storage.setItem).not.toHaveBeenCalled();
   });
@@ -85,7 +85,7 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
   it('bounds stalled backend requests and permits later retries', async () => {
     vi.useFakeTimers();
     const request = vi.fn().mockImplementation(() => new Promise(() => {}));
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as BackendClient;
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
     const service = new TranslationService(backend);
     const assertion = expect(service.translate('curated')).rejects.toThrow(/timed out/);
     await vi.advanceTimersByTimeAsync(TRANSLATION_TIMEOUT_MS); await assertion;
@@ -99,7 +99,7 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
     api.storage.setItem.mockRejectedValue(new Error('Storage unavailable'));
     const request = vi.fn().mockResolvedValueOnce({ translation: { text: '', source: 'hermes', target: 'zh-CN' } })
       .mockResolvedValue({ translation: { text: '合成释义', source: 'hermes', target: 'zh-CN' } });
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as BackendClient;
+    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
     const service = new TranslationService(backend);
     await expect(service.translate('curated')).rejects.toThrow(/invalid translation/);
     expect((await service.translate('curated')).text).toBe('合成释义');

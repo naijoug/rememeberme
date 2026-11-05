@@ -1,3 +1,4 @@
+import { fixtureConnect } from './port-fixture';
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type { BackgroundResponse, Translation, WordEntry } from '~/types';
@@ -82,6 +83,7 @@ beforeEach(async () => {
       return new Promise<BackgroundResponse>(respond => lookups.push({ word: message.word, respond }));
     }),
   } });
+  vi.stubGlobal('browser', { runtime: { ...browser.runtime, connect: fixtureConnect(browser.runtime.sendMessage) } });
   vi.spyOn(console, 'log').mockImplementation(() => {});
   vi.spyOn(console, 'debug').mockImplementation(() => {});
   // Deliver WXT's replacement notification deterministically in happy-dom.

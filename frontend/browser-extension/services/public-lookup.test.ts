@@ -96,6 +96,20 @@ it('cancels a stalled dictionary request within its own service budget without t
   expect(fetcher).toHaveBeenCalledOnce(); expect(fetcher.mock.calls[0][1]?.signal?.aborted).toBe(true);
 });
 
+it('does not retry user cancellation before the first timeout or during a retry attempt', async () => {
+  vi.useFakeTimers();
+  for (const cancelAt of [TRANSLATION_FIRST_ATTEMPT_MS - 1, TRANSLATION_FIRST_ATTEMPT_MS + 1]) {
+    const controller = new AbortController();
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(() => new Promise(() => {}));
+    const promise = new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input, controller.signal);
+    const check = expect(promise).rejects.toMatchObject({ name: 'AbortError' });
+    await vi.advanceTimersByTimeAsync(cancelAt); controller.abort(); await check;
+    const count = fetcher.mock.calls.length; await vi.advanceTimersByTimeAsync(30_000);
+    expect(fetcher).toHaveBeenCalledTimes(count); expect(count).toBe(cancelAt < TRANSLATION_FIRST_ATTEMPT_MS ? 1 : 2);
+    expect(fetcher.mock.calls.every(([, options]) => options?.signal?.aborted)).toBe(true);
+  }
+});
+
 it.each([502, 503, 504])('honors retryable:false in HTTP %s without displaying upstream text', async status => {
   const fetcher = vi.fn<typeof fetch>().mockImplementation(async () => new Response(JSON.stringify({
     error: { code: 'TRANSLATION_INVALID_RESPONSE', retryable: false, message: '<script>untrusted</script>' },
@@ -137,4 +151,19 @@ it('allows the full seven-second provider chain without a speculative retry', as
   const request = new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input);
   await vi.advanceTimersByTimeAsync(7_000);
   expect(await request).toHaveProperty('translation'); expect(fetcher).toHaveBeenCalledOnce();
+});
+it('checks cancellation again between a retryable failure and the next attempt', async () => {
+  const controller = new AbortController();
+  const fetcher = vi.fn<typeof fetch>().mockImplementation(async () => { controller.abort(); throw new TypeError('network'); });
+  await expect(new PublicLookupClient('https://api.example.test', fetcher).request(translationPath, 'POST', input, controller.signal)).rejects.toMatchObject({ name: 'AbortError' });
+  expect(fetcher).toHaveBeenCalledOnce();
+});
+
+it('does not automatically retry an explanation or capability request', async () => {
+  const fetcher=vi.fn<typeof fetch>().mockRejectedValue(new TypeError('network'));
+  const client=new PublicLookupClient('https://api.example.test',fetcher);
+  await expect(client.request('/api/v1/public/lookup/context-explanation','POST',{schemaVersion:1,word:'bank',context:'A bank.',target:'zh-CN'})).rejects.toThrow();
+  expect(fetcher).toHaveBeenCalledOnce();
+  await expect(client.request('/api/v1/public/lookup/capabilities','GET',undefined)).rejects.toThrow();
+  expect(fetcher).toHaveBeenCalledTimes(2);
 });
