@@ -107,6 +107,7 @@ async function importFile(event: Event) {
       </section>
 
       <slot name="account" :show-vocabulary="showVocabulary" />
+      <slot name="websites" />
 
       <section class="settings-section" aria-labelledby="backups-heading">
         <h3 id="backups-heading">Backups</h3>

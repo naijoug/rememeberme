@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } fr
 import { ContentScriptContext } from 'wxt/utils/content-script-context';
 import type { BackgroundResponse, Translation, WordEntry } from '~/types';
 
+vi.mock('~/config/backend', async original => ({ ...(await original<typeof import('~/config/backend')>()), CONTEXT_EXPLANATION_ENABLED: false }));
 vi.mock('wxt/browser', () => ({ browser: { runtime: { id: 'disposable-extension' } } }));
 const { saveWord, getWord, stopTheme, themeCallbacks } = vi.hoisted(() => ({
   saveWord: vi.fn(), getWord: vi.fn(), stopTheme: vi.fn(), themeCallbacks: [] as Array<(theme: { preference: 'system' | 'dark'; resolved: 'light' | 'dark' }) => void>,
@@ -11,6 +12,10 @@ vi.mock('~/services/theme', () => ({ watchTheme: (callback: (theme: { preference
   themeCallbacks.push(callback);
   callback({ preference: 'system', resolved: 'light' });
   return stopTheme;
+} }));
+const sitePolicy = vi.hoisted(() => ({ callbacks: [] as Array<(value: { enabled: boolean; hostname: string | null }) => void>, stop: vi.fn() }));
+vi.mock('~/services/site-settings', () => ({ watchSiteAccess: (callback: (value: { enabled: boolean; hostname: string | null }) => void) => {
+  sitePolicy.callbacks.push(callback); callback({ enabled: true, hostname: 'example.test' }); return sitePolicy.stop;
 } }));
 vi.mock('~/services/storage-client', () => ({ storageClient: { saveWord, getWord } }));
 
@@ -60,6 +65,7 @@ beforeEach(async () => {
   getWord.mockReset().mockResolvedValue(null);
   stopTheme.mockReset();
   themeCallbacks.length = 0;
+  sitePolicy.callbacks.length = 0; sitePolicy.stop.mockReset();
   lookups = [];
   translations = [];
   deferTranslation = false;
@@ -489,4 +495,26 @@ describe('content selection flow (mock browser runtime)', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBeNull();
   });
 
+});
+
+
+it('stops selection, pending lookups and new saves when the site is disabled, then resumes when enabled', async () => {
+  await select('apple');
+  const old = lookups[0];
+  sitePolicy.callbacks[0]({ enabled: false, hostname: 'example.test' });
+  await vi.advanceTimersByTimeAsync(20);
+  expect(ui('.vocab-counter-popup')).toBeNull();
+  await resolve(old);
+  await select('banana');
+  expect(lookups).toHaveLength(1); expect(saveWord).not.toHaveBeenCalled();
+  sitePolicy.callbacks[0]({ enabled: true, hostname: 'example.test' });
+  await select('banana'); expect(lookups).toHaveLength(2);
+  ctx.notifyInvalidated(); expect(sitePolicy.stop).toHaveBeenCalledOnce();
+});
+
+it('clears the delayed opening when settings disable the site', async () => {
+  startSelection('apple');
+  sitePolicy.callbacks[0]({ enabled: false, hostname: 'example.test' });
+  await vi.advanceTimersByTimeAsync(400);
+  expect(lookups).toHaveLength(0); expect(ui('.vocab-counter-popup')).toBeNull();
 });

@@ -50,6 +50,17 @@ describe('context-menu-handler', () => {
     consoleErrorSpy.mockRestore();
   });
 
+  it('blocks disabled sites before lookup and refuses a save if disabled during lookup', async () => {
+    const ensureSiteAllowed = vi.fn().mockRejectedValue(new Error('Website disabled'));
+    await handleContextMenuClick({ ...deps, ensureSiteAllowed }, { menuItemId: CONTEXT_MENU_ID, selectionText: 'serendipity', pageUrl: 'https://example.test' }, { id: 7 });
+    expect(getDefinition).not.toHaveBeenCalled(); expect(saveWord).not.toHaveBeenCalled();
+    expect(status.show).toHaveBeenCalledWith(7, 'Website disabled', 'error');
+    ensureSiteAllowed.mockReset().mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error('Website disabled'));
+    getDefinition.mockResolvedValue(definition);
+    await handleContextMenuClick({ ...deps, ensureSiteAllowed }, { menuItemId: CONTEXT_MENU_ID, selectionText: 'serendipity', pageUrl: 'https://example.test' }, { id: 7 });
+    expect(getDefinition).toHaveBeenCalledOnce(); expect(saveWord).not.toHaveBeenCalled();
+  });
+
   it('creates the expected browser context menu', () => {
     const create = vi.fn();
 

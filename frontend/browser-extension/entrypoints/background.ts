@@ -1,3 +1,4 @@
+import { storage } from 'wxt/utils/storage';
 import { handleLookupPort } from '~/services/lookup-port-handler';
 /**
  * Background Service Worker
@@ -19,6 +20,8 @@ import { reconnectLocalPage, startLocalFeedback } from '~/services/local-feedbac
 import { contextMenuStatus } from '~/services/context-menu-status';
 import type { BackgroundResponse } from '~/types';
 import { ACCOUNT_SYNC_ENABLED } from '~/config/backend';
+import { siteSettings, SITE_SETTINGS_KEY } from '~/services/site-settings';
+import { checkPageSitePolicy, handleSiteMessage, senderPageURL } from '~/services/site-messages';
 
 export default defineBackground(() => {
   browser.runtime.onConnect.addListener(port => {
@@ -26,6 +29,7 @@ export default defineBackground(() => {
       authorize: async operation => {
         const sender = port.sender;
         if (!sender || !(sender.tab || sender.url?.startsWith(browser.runtime.getURL('')))) throw new Error('Invalid lookup source.');
+        await checkPageSitePolicy({ type: operation }, sender, siteSettings, browser.tabs, browser.runtime.getURL(''));
       },
       run: async (operation, payload, signal) => {
         switch (operation) {
@@ -35,7 +39,10 @@ export default defineBackground(() => {
           default: throw new Error('Unsupported lookup operation.');
         }
       },
-      subscribePolicy: () => () => {},
+      subscribePolicy: recheck => {
+        const stopSite = storage.watch(SITE_SETTINGS_KEY, recheck);
+        return stopSite;
+      },
     });
   });
   const synchronize = () => { if (ACCOUNT_SYNC_ENABLED) void storageService.synchronize().catch(() => {}); };
@@ -63,6 +70,10 @@ export default defineBackground(() => {
         storageService,
         tabs: browser.tabs,
         status: contextMenuStatus,
+        ensureSiteAllowed: async tabId => {
+          const access = await siteSettings.access(await senderPageURL({ tab: { id: tabId } }, browser.tabs));
+          if (!access.enabled) throw new Error(access.error ?? 'Remember Me is disabled on this website. Enable it in Settings to continue.');
+        },
         reconnectPage: import.meta.env.MODE === 'feedback' && import.meta.env.COMMAND === 'serve'
           ? reconnectLocalPage : undefined,
       },
@@ -78,6 +89,8 @@ export default defineBackground(() => {
     sendResponse: (response: BackgroundResponse<unknown>) => void
   ) => {
     (async () => {
+      const siteReply = await handleSiteMessage(message, _sender, siteSettings, browser.tabs, browser.runtime.getURL(''));
+      if (siteReply) return siteReply;
       const cloudMessage = typeof message === 'object' && message !== null && 'type' in message
         && typeof message.type === 'string' && message.type.startsWith('CLOUD_');
       // Account controls are available only to extension pages, never webpage scripts.
@@ -86,6 +99,7 @@ export default defineBackground(() => {
         if (!_sender.url?.startsWith(browser.runtime.getURL(''))) return { success: false, error: 'Account controls require an extension page.' } as const;
         return (await handleCloudMessage(message))!;
       }
+      await checkPageSitePolicy(message, _sender, siteSettings, browser.tabs, browser.runtime.getURL(''));
       const result = await handleBackgroundRequest(message, dictionaryService, storageService, translationService, phoneticsService);
       if (result.success && typeof message === 'object' && message !== null && 'type' in message
         && ['SAVE_WORD', 'DELETE_WORD', 'RESET_COUNT', 'IMPORT_DATA'].includes(String(message.type))) synchronize();

@@ -5,6 +5,7 @@ import { storageClient } from '~/services/storage-client';
 import { requestDefinition, requestTranslation } from '~/services/lookup-client';
 import { isTranslation } from '~/services/definition-utils';
 import { watchTheme } from '~/services/theme';
+import { watchSiteAccess } from '~/services/site-settings';
 import { isEnglishWord } from '~/services/word-utils';
 import type { Definition, Position, WordEntry } from '~/types';
 import type { ResolvedTheme } from '~/types/theme';
@@ -26,6 +27,7 @@ let popupVersion = 0;
 let notificationId = 0;
 let saveSequence = 0;
 let appliedSaveSequence = 0;
+let siteEnabled = false;
 const notices = reactive<{ id: number; message: string; type: 'success' | 'error' }[]>([]);
 const state = reactive({
   word: '', position: { x: 12, y: 12 } as Position, visible: false,
@@ -55,9 +57,14 @@ export default defineContentScript({
     ctx.addEventListener(document, 'pointercancel', () => { pointerStartedInside = false; }, { capture: true });
     ctx.addEventListener(document, 'keydown', event => { if (event.key === 'Escape' && (state.visible || pendingSelection)) hidePopup(); });
     const stopTheme = watchTheme(theme => { state.theme = theme.resolved; });
+    const stopSite = watchSiteAccess(access => {
+      siteEnabled = access.enabled;
+      if (!siteEnabled) hidePopup();
+    });
     const onMessage = (message: any, _sender: unknown, sendResponse: (response: unknown) => void) => {
       if (ctx.isInvalid) return false;
       if (message?.type === 'EXTRACT_CONTEXT') {
+        if (!siteEnabled) { sendResponse({ success: false, error: 'Remember Me is disabled on this website.' }); return true; }
         const selection = window.getSelection();
         sendResponse({ success: true, context: selection?.rangeCount ? contextExtractor.extractSentence(selection).context : '' });
       } else if (message?.type === 'SHOW_NOTIFICATION') {
@@ -75,6 +82,8 @@ export default defineContentScript({
       selectedRange = undefined;
       pointerStartedInside = false;
       stopTheme();
+      stopSite();
+      siteEnabled = false;
       popupApp?.unmount();
       popupApp = null;
       host?.remove();
@@ -120,7 +129,7 @@ function ensureUi() {
 }
 
 function selectText(event: MouseEvent) {
-  if (!context.isValid || event.button !== 0) return;
+  if (!context.isValid || !siteEnabled || event.button !== 0) return;
   if (isInsidePopup(event) || pointerStartedInside) { cancelPendingSelection(); return; }
   cancelPendingSelection();
   const selection = window.getSelection();
@@ -164,7 +173,7 @@ function cancelPendingSelection() {
 }
 
 async function lookupWord() {
-  if (!context.isValid) return;
+  if (!context.isValid || !siteEnabled) return;
   activeLookup?.abort();
   const controller = new AbortController();
   activeLookup = controller;
@@ -232,7 +241,7 @@ function hidePopup() {
 }
 
 async function recordWord() {
-  if (!context.isValid || !state.visible || !state.word || state.saving || state.recorded) return;
+  if (!context.isValid || !siteEnabled || !state.visible || !state.word || state.saving || state.recorded) return;
   const version = popupVersion;
   const sequence = ++saveSequence;
   const snapshot = { word: state.word, definition: state.definition ?? { word: state.word, phonetics: [], meanings: [] }, context: state.context, url: state.url, timestamp: Date.now() };

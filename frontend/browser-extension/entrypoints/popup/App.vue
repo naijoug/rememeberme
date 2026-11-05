@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import VocabularyPanel from '~/components/VocabularyPanel.vue';
 import CloudConnection from '~/components/CloudConnection.vue';
+import SiteSettings from '~/components/SiteSettings.vue';
 import { storageClient } from '~/services/storage-client';
 import { saveTheme, watchTheme } from '~/services/theme';
 import type { WordEntry } from '~/types';
@@ -103,5 +104,6 @@ async function exportData() {
     @import="mutate(() => storageClient.importData($event), 'Data imported successfully!')"
   >
     <template v-if="ACCOUNT_SYNC_ENABLED" #account="{ showVocabulary }"><CloudConnection :data-theme="theme.resolved" @changed="loadWords" @view-words="showVocabulary" /></template>
+    <template #websites><SiteSettings /></template>
   </VocabularyPanel>
 </template>

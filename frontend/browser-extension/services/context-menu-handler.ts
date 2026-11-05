@@ -50,6 +50,7 @@ export interface ContextMenuDeps {
   tabs: TabMessageApi;
   status: ContextMenuStatusApi;
   reconnectPage?: (tabId: number, frameId: number) => Promise<void>;
+  ensureSiteAllowed?: (tabId: number) => Promise<void>;
 }
 
 export function createContextMenu(contextMenus: ContextMenuCreateApi): void {
@@ -81,6 +82,7 @@ export async function handleContextMenuClick(
 
   let pageConnected = false;
   try {
+    await deps.ensureSiteAllowed?.(tab.id);
     // Capture the target before any page/provider I/O. The repository checks
     // the captured generation in the same queue as the eventual write.
     const writer = await (deps.storageService.captureWriter?.() ?? deps.storageService);
@@ -92,8 +94,10 @@ export async function handleContextMenuClick(
     // outlive the selection, and avoid lookup/save work on unreachable pages.
     const context = await getPageContext(deps, tab.id, frameId);
     pageConnected = true;
+    await deps.ensureSiteAllowed?.(tab.id);
     const definition = await deps.dictionaryService.getDefinition(selectedText);
 
+    await deps.ensureSiteAllowed?.(tab.id);
     const updatedWord = await writer.saveWord(
       selectedText,
       definition,
