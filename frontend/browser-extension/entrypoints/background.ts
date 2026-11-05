@@ -1,5 +1,9 @@
 import { storage } from 'wxt/utils/storage';
 import { handleLookupPort } from '~/services/lookup-port-handler';
+import { contextExplanationService } from '~/services/context-explanation';
+import { EXPLANATION_CONSENT_KEY, explanationConsent, hasExplanationConsent, saveExplanationConsent } from '~/services/explanation-settings';
+import { CONTEXT_EXPLANATION_ENABLED } from '~/config/backend';
+import { isContextExplanationInput } from '../../../contracts/context-explanation';
 /**
  * Background Service Worker
  * Handles message communication and API requests
@@ -24,24 +28,30 @@ import { siteSettings, SITE_SETTINGS_KEY } from '~/services/site-settings';
 import { checkPageSitePolicy, handleSiteMessage, senderPageURL } from '~/services/site-messages';
 
 export default defineBackground(() => {
+  storage.watch(EXPLANATION_CONSENT_KEY, value => { if (!explanationConsent(value)) contextExplanationService.clear(); });
   browser.runtime.onConnect.addListener(port => {
     handleLookupPort(port, {
       authorize: async operation => {
         const sender = port.sender;
         if (!sender || !(sender.tab || sender.url?.startsWith(browser.runtime.getURL('')))) throw new Error('Invalid lookup source.');
         await checkPageSitePolicy({ type: operation }, sender, siteSettings, browser.tabs, browser.runtime.getURL(''));
+        if (operation === 'EXPLAIN_CONTEXT' && (!CONTEXT_EXPLANATION_ENABLED || !await hasExplanationConsent())) throw new Error('Sentence explanation is disabled.');
       },
       run: async (operation, payload, signal) => {
         switch (operation) {
           case 'GET_DEFINITION': return dictionaryService.getDefinition(String(payload.word), signal);
           case 'GET_TRANSLATION': return translationService.translate(String(payload.word), signal);
           case 'GET_PHONETICS': return phoneticsService.getPhonetics(String(payload.word));
-          default: throw new Error('Unsupported lookup operation.');
+          case 'EXPLANATION_CAPABILITIES': return contextExplanationService.capabilities(signal);
+          case 'EXPLAIN_CONTEXT':
+            if (!isContextExplanationInput(payload)) throw new Error('Invalid sentence explanation request.');
+            return contextExplanationService.explain(payload, signal);
         }
       },
       subscribePolicy: recheck => {
         const stopSite = storage.watch(SITE_SETTINGS_KEY, recheck);
-        return stopSite;
+        const stopExplanation = storage.watch(EXPLANATION_CONSENT_KEY, recheck);
+        return () => { stopSite(); stopExplanation(); };
       },
     });
   });
@@ -89,6 +99,14 @@ export default defineBackground(() => {
     sendResponse: (response: BackgroundResponse<unknown>) => void
   ) => {
     (async () => {
+      if (message && typeof message === 'object' && 'type' in message && message.type === 'EXPLANATION_CONSENT') {
+        if (!CONTEXT_EXPLANATION_ENABLED || !('enabled' in message) || typeof message.enabled !== 'boolean') throw new Error('Sentence explanation is unavailable.');
+        if (!_sender.tab && !_sender.url?.startsWith(browser.runtime.getURL(''))) throw new Error('Invalid settings source.');
+        await checkPageSitePolicy({ type: 'EXPLAIN_CONTEXT' }, _sender, siteSettings, browser.tabs, browser.runtime.getURL(''));
+        await saveExplanationConsent(message.enabled);
+        if (!message.enabled) contextExplanationService.clear();
+        return { success: true, data: null } as const;
+      }
       const siteReply = await handleSiteMessage(message, _sender, siteSettings, browser.tabs, browser.runtime.getURL(''));
       if (siteReply) return siteReply;
       const cloudMessage = typeof message === 'object' && message !== null && 'type' in message

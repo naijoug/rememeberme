@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "Consent is required; cancel sends no context; exact word/sentence payload; literal model output",
+    "Two real ports share one request; cancelling A preserves B; last-port disconnect aborts",
+    "Consent revocation aborts/clears explanation; capability off hides entry; vocabulary/export remain empty"
+  ],
+  "limitations": [
+    "Disposable Chrome and synthetic model output; no real provider quality or billing verification.",
+    "Opt-in test build only; production build and backend defaults stay disabled."
+  ],
+  "browser": "151.0.7922.34"
+}

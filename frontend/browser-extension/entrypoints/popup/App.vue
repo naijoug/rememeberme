@@ -3,11 +3,12 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import VocabularyPanel from '~/components/VocabularyPanel.vue';
 import CloudConnection from '~/components/CloudConnection.vue';
 import SiteSettings from '~/components/SiteSettings.vue';
+import ExplanationSettings from '~/components/ExplanationSettings.vue';
 import { storageClient } from '~/services/storage-client';
 import { saveTheme, watchTheme } from '~/services/theme';
 import type { WordEntry } from '~/types';
 import type { ThemePreference, ThemeState } from '~/types/theme';
-import { ACCOUNT_SYNC_ENABLED } from '~/config/backend';
+import { ACCOUNT_SYNC_ENABLED, CONTEXT_EXPLANATION_ENABLED } from '~/config/backend';
 
 const words = ref<WordEntry[]>([]);
 const loading = ref(true);
@@ -104,6 +105,6 @@ async function exportData() {
     @import="mutate(() => storageClient.importData($event), 'Data imported successfully!')"
   >
     <template v-if="ACCOUNT_SYNC_ENABLED" #account="{ showVocabulary }"><CloudConnection :data-theme="theme.resolved" @changed="loadWords" @view-words="showVocabulary" /></template>
-    <template #websites><SiteSettings /></template>
+    <template #websites><SiteSettings /><ExplanationSettings v-if="CONTEXT_EXPLANATION_ENABLED" /></template>
   </VocabularyPanel>
 </template>

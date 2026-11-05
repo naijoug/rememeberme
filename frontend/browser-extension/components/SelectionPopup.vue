@@ -7,10 +7,12 @@ import DefinitionSource from './DefinitionSource.vue';
 import TranslationText from './TranslationText.vue';
 import WordHistory from './WordHistory.vue';
 import WordPronunciation from './WordPronunciation.vue';
+import ContextExplanation from './ContextExplanation.vue';
+import { CONTEXT_EXPLANATION_ENABLED } from '~/config/backend';
 import { coordinateSpace, positionPopup, visibleViewport } from '~/services/popup-position';
 
 const props = defineProps<{
-  word: string; position: Position; visible: boolean; definition?: Definition;
+  word: string; context?: string; position: Position; visible: boolean; definition?: Definition;
   loading?: boolean; error?: string; saving?: boolean; recorded?: boolean; saveError?: string; inline?: boolean;
   englishLoading?: boolean; translationLoading?: boolean; englishError?: string; translationError?: string;
   savedWord?: WordEntry | null; recordsLoading?: boolean; recordsError?: string;
@@ -97,6 +99,7 @@ onUnmounted(stopGeometry);
       </div>
     </div>
     <div class="lookup-body" tabindex="0" role="region" aria-label="Translation and definitions">
+    <ContextExplanation v-if="CONTEXT_EXPLANATION_ENABLED && context !== undefined" :word="word" :context="context ?? ''" />
     <div v-if="definition && definition.word.toLowerCase() !== word.toLowerCase()" class="phonetic base-form">Base form: {{ definition.word }}</div>
     <div v-if="loading" class="lookup-status loading" role="status">
       <Refresh class="rm-spinner" width="18" height="18" aria-hidden="true" />

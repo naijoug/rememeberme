@@ -113,7 +113,7 @@ function ensureUi() {
   popupApp = createApp({
     render: () => h('div', { class: 'rm-theme', 'data-theme': state.theme }, [
       h(SelectionPopup, {
-        word: state.word, position: state.position, visible: state.visible, definition: state.definition,
+        word: state.word, context: state.context, position: state.position, visible: state.visible, definition: state.definition,
         loading: state.loading, error: state.error, saving: state.saving, recorded: state.recorded, saveError: state.saveError,
         englishLoading: state.englishLoading, translationLoading: state.translationLoading,
         englishError: state.englishError, translationError: state.translationError,
