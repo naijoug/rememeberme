@@ -75,7 +75,7 @@ describe('lookup card interaction and viewport fit', () => {
     card.dispatchEvent(new Event('pointerenter'));
     height = 480;
     window.dispatchEvent(new Event('resize'));
-    await nextTick();
+    await new Promise(requestAnimationFrame); await nextTick();
     expect(card.style.top).toBe('420px');
     expect(card.style.maxHeight).toBe('268px');
   });
@@ -103,4 +103,23 @@ describe('lookup card interaction and viewport fit', () => {
     host.querySelector<HTMLButtonElement>('.retry-btn')!.click();
     expect(retry).toHaveBeenCalledTimes(1);
   });
+});
+
+
+it('coalesces viewport events and removes geometry listeners and frames when hidden', async () => {
+  const viewport = new EventTarget();
+  const add = vi.spyOn(viewport, 'addEventListener');
+  const remove = vi.spyOn(viewport, 'removeEventListener');
+  const raf = vi.fn(() => 123); const cancel = vi.fn();
+  vi.stubGlobal('visualViewport', viewport); vi.stubGlobal('requestAnimationFrame', raf); vi.stubGlobal('cancelAnimationFrame', cancel);
+  const state = reactive({ visible: true });
+  host = document.createElement('div'); document.body.appendChild(host);
+  app = createApp({ render: () => h(SelectionPopup, { word: 'apple', visible: state.visible, position: { x: 200, y: 20 } }) });
+  app.mount(host); await nextTick();
+  viewport.dispatchEvent(new Event('scroll')); viewport.dispatchEvent(new Event('resize')); window.dispatchEvent(new Event('resize'));
+  expect(raf).toHaveBeenCalledTimes(1);
+  state.visible = false; await nextTick();
+  expect(cancel).toHaveBeenCalledWith(123);
+  for (const [event, listener] of add.mock.calls) expect(remove).toHaveBeenCalledWith(event, listener);
+  viewport.dispatchEvent(new Event('resize')); expect(raf).toHaveBeenCalledTimes(1);
 });

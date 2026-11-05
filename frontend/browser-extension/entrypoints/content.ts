@@ -6,6 +6,7 @@ import { requestDefinition, requestTranslation } from '~/services/lookup-client'
 import { isTranslation } from '~/services/definition-utils';
 import { watchTheme } from '~/services/theme';
 import { watchSiteAccess } from '~/services/site-settings';
+import { selectionPosition } from '~/services/popup-position';
 import { isEnglishWord } from '~/services/word-utils';
 import type { Definition, Position, WordEntry } from '~/types';
 import type { ResolvedTheme } from '~/types/theme';
@@ -138,12 +139,13 @@ function selectText(event: MouseEvent) {
   if (popupShadow && (selection.anchorNode?.getRootNode() === popupShadow || selection.focusNode?.getRootNode() === popupShadow)) return;
   if (state.visible && selectedRange && range.startContainer === selectedRange.startContainer && range.endContainer === selectedRange.endContainer &&
       range.startOffset === selectedRange.startOffset && range.endOffset === selectedRange.endOffset) return;
-  const rect = range.getBoundingClientRect();
+  const position = selectionPosition(range, { x: event.clientX, y: event.clientY });
+  if (!position) return;
   // Snapshot at mouseup. Later focus/copy/selection changes must not dismiss or
   // replace this lookup while the debounce timer is waiting.
   const captured = {
     word: selection.toString().trim(), context: contextExtractor.extractSentence(selection).context, url: location.href,
-    position: { x: rect.left + rect.width / 2, y: rect.bottom + 10, anchorTop: rect.top }, range: range.cloneRange(),
+    position, range: range.cloneRange(),
   };
   pendingSelection = captured;
   debounceTimer = context.setTimeout(() => {

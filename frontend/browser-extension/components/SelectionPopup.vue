@@ -7,6 +7,7 @@ import DefinitionSource from './DefinitionSource.vue';
 import TranslationText from './TranslationText.vue';
 import WordHistory from './WordHistory.vue';
 import WordPronunciation from './WordPronunciation.vue';
+import { coordinateSpace, positionPopup, visibleViewport } from '~/services/popup-position';
 
 const props = defineProps<{
   word: string; position: Position; visible: boolean; definition?: Definition;
@@ -17,48 +18,68 @@ const props = defineProps<{
 const emit = defineEmits<{ record: []; close: []; retry: [] }>();
 const card = ref<HTMLElement>();
 const coords = ref({ left: 12, top: 12 });
+const probe = ref<HTMLElement>();
+const maxWidth = ref(420);
+let frame: number | undefined;
+let viewport: VisualViewport | null;
+let listening = false;
 let observer: ResizeObserver | undefined;
 const interacted = ref(false);
 const maxHeight = ref(480);
 const displayedCount = computed(() => props.savedWord?.count ?? (props.recordsLoading || props.recordsError ? '—' : 0));
 const popupStyle = computed(() => props.inline
   ? { position: 'relative' as const, left: 'auto', top: 'auto' }
-  : { left: coords.value.left + 'px', top: coords.value.top + 'px', maxHeight: maxHeight.value + 'px' });
+  : { left: coords.value.left + 'px', top: coords.value.top + 'px', maxHeight: maxHeight.value + 'px', maxWidth: maxWidth.value + 'px' });
 
 function positionCard() {
   if (!props.visible || !card.value || props.inline) return;
   const box = card.value.getBoundingClientRect();
-  const width = box.width || Math.min(420, innerWidth - 24);
-  const height = box.height || 220;
-  if (interacted.value) {
-    // Once the reader reaches the card, late results must not move its controls.
-    coords.value = {
-      left: Math.max(12, Math.min(coords.value.left, innerWidth - width - 12)),
-      top: Math.max(12, Math.min(coords.value.top, innerHeight - 120)),
-    };
-    maxHeight.value = Math.min(480, Math.max(80, innerHeight - coords.value.top - 12));
-    return;
-  }
-  const left = Math.max(12, Math.min(props.position.x - width / 2, innerWidth - width - 12));
-  let top = props.position.y;
-  if (top + height > innerHeight - 12) top = (props.position.anchorTop ?? props.position.y) - height - 10;
-  coords.value = { left, top: Math.max(12, Math.min(top, innerHeight - height - 12)) };
-  maxHeight.value = Math.min(480, innerHeight - coords.value.top - 12);
+  const view = visibleViewport();
+  const space = coordinateSpace(probe.value);
+  const result = positionPopup(props.position, { width: box.width || Math.min(420, view.width - 24), height: box.height || 220 },
+    view, space, interacted.value ? coords.value : undefined);
+  coords.value = { left: result.left, top: result.top };
+  maxHeight.value = result.maxHeight;
+  maxWidth.value = result.maxWidth;
 }
+function schedulePosition() {
+  if (!props.visible || props.inline || frame !== undefined) return;
+  frame = requestAnimationFrame(() => { frame = undefined; positionCard(); });
+}
+function cancelPosition() { if (frame !== undefined) cancelAnimationFrame(frame); frame = undefined; }
+
 watch(() => [props.visible, props.word, props.position.x, props.position.y], () => { interacted.value = false; }, { flush: 'sync' });
 watch(card, value => { observer?.disconnect(); if (value) observer?.observe(value); positionCard(); }, { flush: 'post' });
 watch(() => [props.visible, props.position.x, props.position.y, props.loading, props.error], async () => { await nextTick(); positionCard(); });
-onMounted(() => {
-  observer = new ResizeObserver(positionCard);
+function startGeometry() {
+  if (listening || !props.visible || props.inline) return;
+  listening = true;
+  observer ??= new ResizeObserver(schedulePosition);
   if (card.value) observer.observe(card.value);
-  window.addEventListener('resize', positionCard);
+  window.addEventListener('resize', schedulePosition);
+  window.addEventListener('scroll', schedulePosition, true);
+  viewport = window.visualViewport;
+  viewport?.addEventListener('resize', schedulePosition);
+  viewport?.addEventListener('scroll', schedulePosition);
   positionCard();
-});
-onUnmounted(() => { observer?.disconnect(); window.removeEventListener('resize', positionCard); });
+}
+function stopGeometry() {
+  cancelPosition(); observer?.disconnect(); listening = false;
+  window.removeEventListener('resize', schedulePosition);
+  window.removeEventListener('scroll', schedulePosition, true);
+  viewport?.removeEventListener('resize', schedulePosition);
+  viewport?.removeEventListener('scroll', schedulePosition);
+  viewport = null;
+}
+watch(() => props.visible, visible => { if (visible) startGeometry(); else stopGeometry(); }, { flush: 'post' });
+onMounted(startGeometry);
+onUnmounted(stopGeometry);
+
 </script>
 
 <template>
   <IconoirProvider :icon-props="{ color: 'currentColor', 'stroke-width': 1.5 }">
+  <div v-if="visible && !inline" ref="probe" aria-hidden="true" style="position: fixed; left: 0; top: 0; width: 100px; height: 100px; visibility: hidden; pointer-events: none;"></div>
   <section v-if="visible" ref="card" class="vocab-counter-popup" :style="popupStyle" role="dialog" :aria-label="'Definition of ' + word" :aria-busy="loading || saving" @pointerenter="interacted = true" @focusin="interacted = true" @pointerdown.stop="interacted = true" @click.stop @dblclick.stop @mouseup.stop @keydown.esc.stop="emit('close')">
     <div class="lookup-header">
       <div class="lookup-heading">

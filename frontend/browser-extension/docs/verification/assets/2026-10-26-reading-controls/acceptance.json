@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "80/100/125/200 percent browser zoom, narrow viewport, transformed body and nested scrolling",
+    "Settings UI disables the active exact hostname immediately and across page reload; another hostname stays enabled",
+    "Process restart retains the rule; saved-host Enable restores lookup; vocabulary stays empty"
+  ],
+  "limitations": [
+    "Disposable extension popup tab, not native toolbar anchoring.",
+    "No live provider requests, account synchronization, real vocabulary or native browser context-menu click.",
+    "Browser zoom is tested via tabs.setZoom; mobile pinch is not a physical-device test."
+  ],
+  "browser": "151.0.7922.34"
+}
