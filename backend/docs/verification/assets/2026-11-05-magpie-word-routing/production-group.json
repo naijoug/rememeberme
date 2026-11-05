@@ -1,0 +1,204 @@
+{
+  "date": "2026-11-05",
+  "timezone": "America/Los_Angeles",
+  "results": [
+    {
+      "kind": "scope",
+      "mode": "group-check",
+      "samplesPerVariant": 8,
+      "timeoutMs": 3000,
+      "promptSha256": "dd6b46f6e323bcc4b96e666ce1033c47faaf79ab364a8be56a4a78d0eef60754",
+      "cache": "Each call uses a fresh adapter; no server/client result cache. Vendor prompt caching remains outside this test.",
+      "productionDatabaseUsed": false,
+      "order": "Rotate candidate order for each word; calls are sequential."
+    },
+    {
+      "kind": "sample",
+      "word": "bank",
+      "model": "group/translator",
+      "ms": 1469,
+      "ok": true,
+      "source": "magpie",
+      "text": "银行；岸；堤；库；一排；倾斜；存入银行；信赖",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-b6b2934d-b5fd-4e01-86db-8ad0a8c67c7e",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1468,
+        "outcome": "success",
+        "headersMs": 1466,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "charge",
+      "model": "group/translator",
+      "ms": 1581,
+      "ok": true,
+      "source": "magpie",
+      "text": "收费；电荷；指控；冲锋；负责；充电；装填",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-27cd923d-bdc9-46f0-9311-63ef5d6ec84b",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1581,
+        "outcome": "success",
+        "headersMs": 1580,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "issue",
+      "model": "group/translator",
+      "ms": 1318,
+      "ok": true,
+      "source": "magpie",
+      "text": "问题；议题；发行；发布；期号；发放",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-016c5d29-27c2-48ab-b564-7511d5568149",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1317,
+        "outcome": "success",
+        "headersMs": 1317,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "stalactite",
+      "model": "group/translator",
+      "ms": 1153,
+      "ok": true,
+      "source": "magpie",
+      "text": "钟乳石",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-0683b39a-8d8a-45a8-8770-43e6fa770102",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1153,
+        "outcome": "success",
+        "headersMs": 1152,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "meticulous",
+      "model": "group/translator",
+      "ms": 1290,
+      "ok": true,
+      "source": "magpie",
+      "text": "一丝不苟的；细致的；谨慎的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-d9529f00-9518-4dd1-bda8-0e7024a0d05c",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1290,
+        "outcome": "success",
+        "headersMs": 1290,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "tamarind",
+      "model": "group/translator",
+      "ms": 1108,
+      "ok": true,
+      "source": "magpie",
+      "text": "罗望子；酸豆",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-4e1c8ffd-4f62-4363-87e5-8229bf8af2ab",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1108,
+        "outcome": "success",
+        "headersMs": 1108,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "resilient",
+      "model": "group/translator",
+      "ms": 969,
+      "ok": true,
+      "source": "magpie",
+      "text": "有弹性的；能迅速恢复的；适应力强的；坚韧的",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-e94d6008-28bb-4641-8af0-21c6b21012ec",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 969,
+        "outcome": "success",
+        "headersMs": 969,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "sample",
+      "word": "benchmark",
+      "model": "group/translator",
+      "ms": 1311,
+      "ok": true,
+      "source": "magpie",
+      "text": "基准；基准测试；标准；标杆",
+      "meaningCheck": true,
+      "observation": {
+        "event": "word_translation",
+        "callId": "rm-word-5b71703c-82b8-4719-bbe2-6520dd4761fa",
+        "requestedModel": "group/translator",
+        "routeSource": "response-header",
+        "durationMs": 1311,
+        "outcome": "success",
+        "headersMs": 1310,
+        "upstreamStatus": 200,
+        "selectedModel": "deepseek/deepseek-flash",
+        "selectedProvider": "deepseek"
+      }
+    },
+    {
+      "kind": "summary",
+      "model": "group/translator",
+      "samples": 8,
+      "valid": 8,
+      "meaningChecks": 8,
+      "medianMs": 1300.5,
+      "maximumMs": 1581,
+      "selectedModels": [
+        "deepseek/deepseek-flash"
+      ]
+    }
+  ]
+}

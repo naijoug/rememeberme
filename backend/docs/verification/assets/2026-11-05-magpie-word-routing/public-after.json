@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-05",
+  "timezone": "America/Los_Angeles",
+  "results": [
+    {
+      "word": "brisk",
+      "ms": 2544,
+      "attempts": 1,
+      "ok": true,
+      "source": "magpie",
+      "requestIds": [
+        null
+      ]
+    },
+    {
+      "word": "equator",
+      "ms": 1949,
+      "attempts": 1,
+      "ok": true,
+      "source": "magpie",
+      "requestIds": [
+        null
+      ]
+    },
+    {
+      "word": "meadow",
+      "ms": 1654,
+      "attempts": 1,
+      "ok": true,
+      "source": "magpie",
+      "requestIds": [
+        null
+      ]
+    }
+  ]
+}

@@ -1,5 +1,16 @@
 # Tencent Lighthouse deployment
 
+## Word-routing activation — 2026-11-05
+
+Active runtime: `/opt/rememberme/releases/20261105-routing-8b3ca3f-4f083178/runtime`.
+Word requests retain `group/translator`, with tested DeepSeek-first/Zhipu fallback.
+Sentence explanation uses `group/rememberme-context-20261105`, an equivalent copy
+of the old outer policy; original nested groups and providers were not edited.
+Only the separate context environment setting was added. A verified SQLite backup,
+private gateway/config backups and the previous runtime are retained. Only the
+API restarted; migration bytes and neighboring service PIDs were unchanged.
+See [live acceptance and rollback order](verification/2026-11-05-magpie-word-routing.md).
+
 ## Translation resilience activation — 2026-11-04
 
 Active runtime: `/opt/rememberme/releases/20261104-translation-db61a6e-0fc87366/runtime`.

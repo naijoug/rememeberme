@@ -130,4 +130,72 @@ Verified documentation differences handled:
    `MAGPIE_MODEL`. It now carries and reports the separate context setting, so
    live acceptance actually exercises the preserved explanation route.
 
-Deployment acceptance and exact release identifiers will be added after activation.
+## Deployment acceptance
+
+Implementation commit `8b3ca3fd4e8756c7a6d6c1237eb212713889c22a` was pushed to
+`naijoug/rememeberme` before activation. GitHub identity was verified as `naijoug`.
+SSH verified `ubuntu` on `VM-0-9-ubuntu` using the dedicated strict host-key config.
+
+- Active runtime: `/opt/rememberme/releases/20261105-routing-8b3ca3f-4f083178/runtime`.
+- Previous runtime retained: `/opt/rememberme/releases/20261104-translation-db61a6e-0fc87366/runtime`.
+- Archive SHA-256: `4f08317876a0fb3bdd1fb55294217059b559f3d07326e31915effb5402b957df`.
+- Verified SQLite backup: `/var/lib/rememberme/backups/pre-word-routing-20261105-8b3ca3f.sqlite`.
+- Private configuration/group backups: `/etc/rememberme/routing-backup-20261105/`.
+- Activation completed at 2026-11-05T13:32:01Z (05:32:01 America/Los_Angeles).
+
+All seven migrations were byte-identical to the active release. Before switching,
+the candidate ran eight synthetic explanation cases with the preserved group and
+a disposable database: all passed, including finance/river bank, charge/issue
+sense differences, instruction-like text and a long sentence. No fixture account
+or vocabulary records were created.
+
+Activation appended only `MAGPIE_CONTEXT_MODEL=group/rememberme-context-20261105`
+to the private API environment, switched the runtime atomically and restarted
+only `rememberme-api`. The running process's word/context settings were verified.
+A live finance explanation passed before changing `translator`. Only then was
+the word group switched to the tested member order, and the same explanation
+passed again. Original nested groups, provider credentials/settings, account and
+database configuration remained unchanged. Neighboring service states and PIDs,
+including Magpie itself, did not change. No Cloudflare deployment was needed.
+
+Post-activation, the actual `group/translator` alias passed **8/8** fixture checks,
+selected `deepseek/deepseek-flash` every time, had a **1,300.5 ms median**, and a
+1,581 ms maximum. These are fresh adapter calls through the gateway, not browser
+or public-network timings. The temporary A/B group was then removed; the two
+production groups and provider settings were verified unchanged by cleanup.
+
+| Public fixture via the current HTTP client | End-to-end ms | Attempts | Source |
+| --- | ---: | ---: | --- |
+| brisk | 2,544 | 1 | magpie |
+| equator | 1,949 | 1 | magpie |
+| meadow | 1,654 | 1 | magpie |
+
+All public samples returned valid Chinese. Production journal entries for this
+acceptance window recorded `requestedModel: group/translator`,
+`selectedModel: deepseek/deepseek-flash`, `selectedProvider: deepseek`,
+`routeSource: response-header`, and success. Their primary durations were
+1,098 / 1,226 / 940 ms. No selected word or sentence appeared in those structured
+model events. The gateway does not forward the backend's request-ID header, so
+the public probe's `requestIds` are null; model traces use the opaque `callId`
+instead and are not claimed to be joined to public HTTP IDs.
+
+- [Deployment receipt](assets/2026-11-05-magpie-word-routing/deployment.json)
+- [Preserved explanation acceptance](assets/2026-11-05-magpie-word-routing/context-preflight.json)
+- [Production alias checks](assets/2026-11-05-magpie-word-routing/production-group.json)
+- [Public HTTP samples](assets/2026-11-05-magpie-word-routing/public-after.json)
+
+## Rollback
+
+Restore the original translator member order from the private group backup
+**before** rolling back the API runtime, since the previous runtime does not know
+the separate context setting. Restore the previous runtime pointer and private
+environment, restart only `rememberme-api`, and check health and explanation.
+Retain the current production database; no schema changed and restoring a backup
+would discard newer user data. The activation script had this rollback order
+built in; no rollback was needed.
+
+The current group is optimized for the tested short word prompt, not proven
+globally fastest. Provider availability and load can change. Sentence-explanation
+policy, prompt and limits are preserved, not a promise of identical generated
+text or identical latency on every future request. No installed-browser timing
+claim is made by these server/public-client checks.

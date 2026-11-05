@@ -1,0 +1,48 @@
+{
+  "candidate": "/opt/rememberme/releases/20261105-routing-8b3ca3f-4f083178/runtime",
+  "previous": "/opt/rememberme/releases/20261104-translation-db61a6e-0fc87366/runtime",
+  "archiveSha256": "4f08317876a0fb3bdd1fb55294217059b559f3d07326e31915effb5402b957df",
+  "migrationsUnchanged": true,
+  "contextPolicyEquivalent": true,
+  "contextPreflightPassed": true,
+  "sourceCommit": "8b3ca3fd4e8756c7a6d6c1237eb212713889c22a",
+  "activated": true,
+  "wordGroup": {
+    "id": "translator",
+    "name": "translator",
+    "members": [
+      "deepseek/deepseek-flash",
+      "zhipu/glm-5.3-flash"
+    ],
+    "routing": "order"
+  },
+  "explanationGroup": {
+    "id": "rememberme-context-20261105",
+    "name": "rememberme-context-20261105",
+    "members": [
+      "group/auto-glm-5-3-flash",
+      "group/auto-glm-5-3",
+      "group/auto-free",
+      "deepseek/deepseek-flash"
+    ],
+    "routing": "order"
+  },
+  "explanationBeforeWordSwitch": {
+    "status": 200,
+    "meaningMatched": true
+  },
+  "explanationAfterWordSwitch": {
+    "status": 200,
+    "meaningMatched": true
+  },
+  "environmentChangedKeys": [
+    "MAGPIE_CONTEXT_MODEL"
+  ],
+  "backup": "/var/lib/rememberme/backups/pre-word-routing-20261105-8b3ca3f.sqlite",
+  "privateConfigurationBackup": "/etc/rememberme/routing-backup-20261105",
+  "providerSettingsUnchanged": true,
+  "otherGroupsUnchanged": true,
+  "neighborServicesUnchanged": true,
+  "databaseRestored": false,
+  "utcCompleted": "2026-11-05T13:32:01Z"
+}

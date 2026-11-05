@@ -1,5 +1,14 @@
 # Remember Me API
 
+## Fast word routing deployed (2026-11-05)
+
+Active runtime: `/opt/rememberme/releases/20261105-routing-8b3ca3f-4f083178/runtime`.
+`group/translator` now prefers DeepSeek Flash, with Zhipu GLM Flash as fallback,
+following fixture A/B tests. Sentence explanation selects the preserved original
+policy through `MAGPIE_CONTEXT_MODEL=group/rememberme-context-20261105`. Structured
+word-model events record actual gateway selection without word/context text.
+See [measurements, activation and rollback](docs/verification/2026-11-05-magpie-word-routing.md).
+
 ## Translation resilience deployed (2026-11-04)
 
 The API now runs `/opt/rememberme/releases/20261104-translation-db61a6e-0fc87366/runtime`.
