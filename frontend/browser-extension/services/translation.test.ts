@@ -1,109 +1,103 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { IDBFactory, IDBKeyRange } from 'fake-indexeddb';
 import { TranslationService, TRANSLATION_TIMEOUT_MS } from './translation';
-import type { BackendClient, Connection } from './backend-client';
+import { TranslationCache, TRANSLATION_CACHE_MAX_AGE_MS } from './translation-cache';
 
-const api = vi.hoisted(() => {
-  const values = new Map<string, unknown>();
-  return { values, storage: {
-    getItem: vi.fn(async (key: string) => structuredClone(values.get(key) ?? null)),
-    setItem: vi.fn(async (key: string, value: unknown) => { values.set(key, structuredClone(value)); }),
-  } };
+const api = vi.hoisted(() => ({ getItem: vi.fn(async (): Promise<unknown> => null), setItem: vi.fn() }));
+vi.mock('wxt/utils/storage', () => ({ storage: api }));
+const caches: TranslationCache[] = [];
+const cache = () => { const value = new TranslationCache(); caches.push(value); return value; };
+const result = (text = '合成释义', source: 'magpie' | 'mymemory' = 'magpie') => ({ translation: { text, source, target: 'zh-CN' as const } });
+beforeEach(() => { vi.clearAllMocks(); api.getItem.mockResolvedValue(null); vi.stubGlobal('indexedDB', new IDBFactory()); vi.stubGlobal('IDBKeyRange', IDBKeyRange); });
+afterEach(async () => { vi.useRealTimers(); for (const value of caches.splice(0)) await value.close(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+
+it('coalesces network recovery and persists successes independently of vocabulary across service restarts', async () => {
+  const fetcher = vi.fn<typeof fetch>().mockRejectedValueOnce(new TypeError('network'))
+    .mockImplementation(async () => new Response(JSON.stringify(result()), { headers: { 'Content-Type': 'application/json' } }));
+  vi.stubGlobal('fetch', fetcher);
+  const firstCache = cache(); const service = new TranslationService(undefined, firstCache);
+  const [a, b] = await Promise.all([service.translate('synthetic'), service.translate('SYNTHETIC')]);
+  expect(a).toEqual(b); expect(fetcher).toHaveBeenCalledTimes(2);
+  await firstCache.flush(); await firstCache.close();
+  expect(await new TranslationService(undefined, cache()).translate('synthetic')).toEqual(a);
+  expect(fetcher).toHaveBeenCalledTimes(2); expect(api.setItem).not.toHaveBeenCalled();
+  const options = fetcher.mock.calls[0][1]!;
+  expect(options.credentials).toBe('omit'); expect(options.headers).not.toHaveProperty('Authorization');
+  expect(JSON.parse(String(options.body))).toEqual({ word: 'synthetic', target: 'zh-CN' });
 });
-vi.mock('wxt/utils/storage', () => ({ storage: api.storage }));
-const fetchMock = vi.fn<typeof fetch>();
 
-beforeEach(() => { vi.resetAllMocks(); api.values.clear(); vi.stubGlobal('fetch', fetchMock); });
-afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
+it('migrates current public and legacy anonymous successes without accepting older public/account namespaces', async () => {
+  api.getItem.mockResolvedValue({
+    'public:v1:synthetic': { text: '旧命名空间', timestamp: Date.now(), source: 'hermes' },
+    'account:private': { text: '私人', timestamp: Date.now(), source: 'magpie' },
+    curated: { text: '旧值', timestamp: Date.now() - 2 * 86_400_000 },
+    'public:v3:bank': { text: '银行', timestamp: Date.now(), source: 'magpie' },
+  });
+  const request = vi.fn().mockResolvedValue(result()); const service = new TranslationService({ request }, cache());
+  expect((await service.translate('curated')).text).toBe('旧值');
+  expect((await service.translate('bank')).text).toBe('银行'); expect(request).not.toHaveBeenCalled();
+  expect((await service.translate('synthetic')).source).toBe('magpie'); expect(request).toHaveBeenCalledOnce();
+  expect(api.setItem).not.toHaveBeenCalled();
+});
 
-describe('Chinese translation (mock provider and disposable cache)', () => {
-  it('shares one automatic network recovery for concurrent first lookups and never writes vocabulary', async () => {
-    fetchMock.mockRejectedValueOnce(new TypeError('Failed to fetch')).mockImplementation(async () => new Response(JSON.stringify({
-      translation: { text: '合成', source: 'magpie', target: 'zh-CN' },
-    }), { headers: { 'Content-Type': 'application/json' } }));
-    const service = new TranslationService();
-    const [first, second] = await Promise.all([service.translate('synthetic'), service.translate('SYNTHETIC')]);
-    expect(first).toEqual(second); expect(first.source).toBe('magpie');
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-    await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalledTimes(1));
-    expect(api.storage.setItem.mock.calls[0][0]).toBe('local:translationCache');
-    expect(api.values.has('local:words')).toBe(false);
-  });
-  it('uses the new cache namespace for Magpie and persists the actual source across restarts', async () => {
-    api.values.set('local:translationCache', { 'public:v1:synthetic': { text: '旧服务结果', source: 'hermes', timestamp: Date.now() } });
-    const request = vi.fn().mockResolvedValue({ translation: { text: '合成', target: 'zh-CN', source: 'magpie' } });
-    expect((await new TranslationService({ request }).translate('synthetic')).source).toBe('magpie');
-    await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalled());
-    expect((await new TranslationService({ request }).translate('synthetic')).source).toBe('magpie');
-    expect(request).toHaveBeenCalledTimes(1);
-  });
-  it('accepts server-side MyMemory fallback and retries the server after its shorter cache expires', async () => {
-    const request = vi.fn().mockResolvedValueOnce({ translation: { text: '精选', target: 'zh-CN', source: 'mymemory' } })
-      .mockResolvedValue({ translation: { text: '人工释义', target: 'zh-CN', source: 'hermes' } });
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
-    const service = new TranslationService(backend);
-    expect((await service.translate('curated')).source).toBe('mymemory');
-    await service.translate('curated'); expect(request).toHaveBeenCalledTimes(1);
-    vi.useFakeTimers(); await vi.advanceTimersByTimeAsync(3_600_001);
-    expect((await service.translate('curated')).source).toBe('hermes');
-    expect(fetchMock).not.toHaveBeenCalled();
-  });
-  it('uses public Hermes with persisted cache and sends only word/target', async () => {
-    const connection: Connection = { origin: 'https://api.example.test', credentials: {
-      userId: 'synthetic-user', deviceId: 'synthetic-device', accessToken: '', refreshToken: '',
-      accessExpiresAtMs: 0, refreshExpiresAtMs: 0,
-    } };
-    const request = vi.fn().mockResolvedValue({ translation: { text: '精选', target: 'zh-CN', source: 'hermes' } });
-    const backend = { current: async () => connection, request } as unknown as import('./public-lookup').PublicLookupClient;
-    const first = new TranslationService(backend);
-    expect((await first.translate(' Curated ')).source).toBe('hermes');
-    expect(request).toHaveBeenCalledExactlyOnceWith('/api/v1/public/lookup/translation', 'POST', { word: 'curated', target: 'zh-CN' }, expect.any(AbortSignal));
-    await vi.waitFor(() => expect(api.storage.setItem).toHaveBeenCalled());
-    expect((await new TranslationService(backend).translate('curated')).source).toBe('hermes');
-    expect(request).toHaveBeenCalledTimes(1);
-    expect(request).toHaveBeenCalledTimes(1); expect(fetchMock).not.toHaveBeenCalled();
-  });
-  it('keeps connected backend failures explicit without caching or switching to MyMemory', async () => {
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'synthetic-user' } }),
-      request: vi.fn().mockRejectedValue(new Error('TRANSLATION_NOT_CONFIGURED')) } as unknown as import('./public-lookup').PublicLookupClient;
-    await expect(new TranslationService(backend).translate('curated')).rejects.toThrow('TRANSLATION_NOT_CONFIGURED');
-    expect(fetchMock).not.toHaveBeenCalled(); expect(api.storage.setItem).not.toHaveBeenCalled();
-  });
-  it('uses the built-in service without login and retains legacy anonymous cached translations', async () => {
-    api.values.set('local:translationCache', { curated: { text: '旧值', timestamp: Date.now() - 2 * 86_400_000 } });
-    fetchMock.mockResolvedValue(new Response(JSON.stringify({ translation: { text: '合成释义', target: 'zh-CN', source: 'hermes' } }), { headers: { 'Content-Type': 'application/json' } }));
-    const service = new TranslationService();
-    expect(await service.translate('curated')).toEqual({ text: '旧值', target: 'zh-CN', source: 'mymemory' });
-    const [a, b] = await Promise.all([service.translate('synthetic'), service.translate('SYNTHETIC')]);
-    expect(a.source).toBe('hermes'); expect(a).toEqual(b); expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0][0]).toBe('https://rememberme-lookup.couplelabs.workers.dev/api/v1/public/lookup/translation');
-    const init = fetchMock.mock.calls[0][1]!;
-    expect(init.credentials).toBe('omit'); expect(init.headers).not.toHaveProperty('Authorization');
-    expect(JSON.parse(String(init.body))).toEqual({ word: 'synthetic', target: 'zh-CN' });
-    expect(api.values.has('local:backendConnection')).toBe(false); expect(api.values.has('local:words')).toBe(false);
-  });
+it('immediately publishes stale translations, coalesces refresh and retains the old result on failure with backoff', async () => {
+  const now = Date.now(); const clock = vi.spyOn(Date, 'now').mockReturnValue(now);
+  const request = vi.fn().mockResolvedValue(result('旧值')); const service = new TranslationService({ request }, cache());
+  await service.translate('synthetic'); clock.mockReturnValue(now + 8 * 86_400_000);
+  let finish!: (value: unknown) => void; request.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+  const a = vi.fn(), b = vi.fn();
+  const first = service.translate('synthetic', undefined, a), second = service.translate('synthetic', undefined, b);
+  await vi.waitFor(() => expect(a).toHaveBeenCalledWith(result('旧值').translation));
+  expect(b).toHaveBeenCalledWith(result('旧值').translation); expect(request).toHaveBeenCalledTimes(2);
+  finish(result('新值')); expect((await first).text).toBe('新值'); expect(await second).toEqual(await first);
+  clock.mockReturnValue(now + 16 * 86_400_000); request.mockRejectedValue(new Error('offline'));
+  expect((await service.translate('synthetic', undefined, a)).text).toBe('新值');
+  expect((await service.translate('synthetic', undefined, a)).text).toBe('新值'); expect(request).toHaveBeenCalledTimes(3);
+  clock.mockReturnValue(now + 16 * 86_400_000 + 60_001);
+  await service.translate('synthetic', undefined, a); expect(request).toHaveBeenCalledTimes(4);
+});
 
-  it('bounds stalled backend requests and permits later retries', async () => {
-    vi.useFakeTimers();
-    const request = vi.fn().mockImplementation(() => new Promise(() => {}));
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
-    const service = new TranslationService(backend);
-    const assertion = expect(service.translate('curated')).rejects.toThrow(/timed out/);
-    await vi.advanceTimersByTimeAsync(TRANSLATION_TIMEOUT_MS); await assertion;
-    request.mockResolvedValue({ translation: { text: '合成释义', source: 'hermes', target: 'zh-CN' } });
-    expect((await service.translate('curated')).source).toBe('hermes');
-    expect(fetchMock).not.toHaveBeenCalled();
-  });
+it('retains MyMemory attribution and refreshes it after one hour without blocking its cached preview', async () => {
+  const now = Date.now(); const clock = vi.spyOn(Date, 'now').mockReturnValue(now);
+  const request = vi.fn().mockResolvedValueOnce(result('备用', 'mymemory')).mockResolvedValue(result('主译文'));
+  const service = new TranslationService({ request }, cache()); await service.translate('synthetic');
+  clock.mockReturnValue(now + 3_600_001); const cached = vi.fn();
+  expect((await service.translate('synthetic', undefined, cached)).source).toBe('magpie');
+  expect(cached).toHaveBeenCalledWith(result('备用', 'mymemory').translation);
+});
 
-  it('rejects malformed server results and phrases, and works when cache storage fails', async () => {
-    api.storage.getItem.mockRejectedValue(new Error('Storage unavailable'));
-    api.storage.setItem.mockRejectedValue(new Error('Storage unavailable'));
-    const request = vi.fn().mockResolvedValueOnce({ translation: { text: '', source: 'hermes', target: 'zh-CN' } })
-      .mockResolvedValue({ translation: { text: '合成释义', source: 'hermes', target: 'zh-CN' } });
-    const backend = { current: async () => ({ origin: 'https://api.example.test', credentials: { userId: 'fixture' } }), request } as unknown as import('./public-lookup').PublicLookupClient;
-    const service = new TranslationService(backend);
-    await expect(service.translate('curated')).rejects.toThrow(/invalid translation/);
-    expect((await service.translate('curated')).text).toBe('合成释义');
-    await expect(service.translate('two words')).rejects.toThrow(/one English word/);
-    expect(request).toHaveBeenCalledTimes(2); expect(fetchMock).not.toHaveBeenCalled();
-  });
+it('serves stale data to one-shot callers without detached network work and never serves data older than 30 days', async () => {
+  const now = Date.now(); const clock = vi.spyOn(Date, 'now').mockReturnValue(now);
+  const request = vi.fn().mockResolvedValueOnce(result('旧值')).mockResolvedValue(result('新值'));
+  const service = new TranslationService({ request }, cache()); await service.translate('synthetic');
+  clock.mockReturnValue(now + 8 * 86_400_000);
+  expect((await service.translate('synthetic')).text).toBe('旧值'); expect(request).toHaveBeenCalledOnce();
+  clock.mockReturnValue(now + TRANSLATION_CACHE_MAX_AGE_MS + 1);
+  const cached = vi.fn(); expect((await service.translate('synthetic', undefined, cached)).text).toBe('新值');
+  expect(cached).not.toHaveBeenCalled(); expect(request).toHaveBeenCalledTimes(2);
+});
+
+it('cancels refresh without replacing stale data or swallowing cancellation', async () => {
+  const now = Date.now(); const clock = vi.spyOn(Date, 'now').mockReturnValue(now);
+  const request = vi.fn().mockResolvedValue(result('旧值')); const service = new TranslationService({ request }, cache());
+  await service.translate('synthetic'); clock.mockReturnValue(now + 8 * 86_400_000);
+  let finish!: (value: unknown) => void; request.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+  const controller = new AbortController(), preview = vi.fn();
+  const pending = service.translate('synthetic', controller.signal, preview);
+  const check = expect(pending).rejects.toMatchObject({ name: 'AbortError' });
+  await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(2)); controller.abort(); await check;
+  finish(result('不应保存')); await Promise.resolve();
+  expect((await service.translate('synthetic')).text).toBe('旧值');
+});
+
+it('bounds stalled network work and rejects malformed results and phrases even when storage is unavailable', async () => {
+  vi.stubGlobal('indexedDB', { open() { throw new Error('Unavailable'); } });
+  const request = vi.fn().mockResolvedValueOnce(result('')).mockResolvedValue(result());
+  const service = new TranslationService({ request }, cache());
+  await expect(service.translate('synthetic')).rejects.toThrow(/invalid translation/);
+  expect((await service.translate('synthetic')).text).toBe('合成释义');
+  await expect(service.translate('two words')).rejects.toThrow(/one English word/);
+  request.mockImplementation(() => new Promise(() => {})); vi.useFakeTimers();
+  const pending = service.translate('timeout'); const check = expect(pending).rejects.toThrow(/timed out/);
+  await vi.advanceTimersByTimeAsync(TRANSLATION_TIMEOUT_MS + 500); await check;
 });

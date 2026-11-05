@@ -10,8 +10,8 @@ export function requestDefinition(word: string, signal?: AbortSignal): Promise<D
   return request<Definition>('GET_DEFINITION', word, LOOKUP_DEADLINE_MS, signal);
 }
 
-export function requestTranslation(word: string, signal?: AbortSignal): Promise<Translation> {
-  return request<Translation>('GET_TRANSLATION', word, TRANSLATION_UI_TIMEOUT_MS, signal);
+export function requestTranslation(word: string, signal?: AbortSignal, onCached?: (translation: Translation) => void): Promise<Translation> {
+  return portLookup<Translation>('GET_TRANSLATION', { word }, TRANSLATION_UI_TIMEOUT_MS, signal, onCached);
 }
 
 export async function requestPhonetics(word: string, signal?: AbortSignal): Promise<PhoneticTranscriptions> {

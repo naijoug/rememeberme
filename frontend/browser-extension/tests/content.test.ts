@@ -50,7 +50,7 @@ function startSelection(word: string) {
 
 async function select(word: string) {
   startSelection(word);
-  await vi.advanceTimersByTimeAsync(300);
+  await vi.advanceTimersByTimeAsync(120);
 }
 
 async function resolve(lookup: Lookup) {
@@ -517,4 +517,36 @@ it('clears the delayed opening when settings disable the site', async () => {
   sitePolicy.callbacks[0]({ enabled: false, hostname: 'example.test' });
   await vi.advanceTimersByTimeAsync(400);
   expect(lookups).toHaveLength(0); expect(ui('.vocab-counter-popup')).toBeNull();
+});
+
+it('starts lookup at 120 ms and cancels a new selection before that deadline', async () => {
+  startSelection('apple');
+  await vi.advanceTimersByTimeAsync(119); expect(lookups).toHaveLength(0);
+  await vi.advanceTimersByTimeAsync(1); expect(lookups).toHaveLength(1);
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  startSelection('banana'); await vi.advanceTimersByTimeAsync(60);
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  await vi.advanceTimersByTimeAsync(120); expect(lookups).toHaveLength(1);
+});
+
+it('shows a cached translation before refresh completes and rejects old previews after changing words', async () => {
+  deferTranslation = true;
+  const previews: Array<(reply: any) => void> = [];
+  browser.runtime.connect = fixtureConnect(browser.runtime.sendMessage, (message, emit) => {
+    if (message.operation === 'GET_TRANSLATION') previews.push(emit);
+  }) as unknown as typeof browser.runtime.connect;
+  await select('apple');
+  previews[0]({ type: 'cached', data: { text: '缓存苹果', source: 'magpie', target: 'zh-CN' } });
+  await vi.advanceTimersByTimeAsync(1);
+  expect(ui('.translation-text')?.textContent).toBe('缓存苹果');
+  saveWord.mockResolvedValue(savedFixture('apple', 1));
+  ui<HTMLButtonElement>('.record-button')!.click();
+  await vi.advanceTimersByTimeAsync(1);
+  const savedDefinition = saveWord.mock.calls[0][1];
+  expect(savedDefinition.translation.text).toBe('缓存苹果');
+  translations[0].respond({ success: true, data: { text: '更新苹果', source: 'magpie', target: 'zh-CN' } });
+  await vi.advanceTimersByTimeAsync(1); expect(ui('.translation-text')?.textContent).toBe('更新苹果');
+  expect(saveWord).toHaveBeenCalledOnce(); expect(savedDefinition.translation.text).toBe('缓存苹果');
+  await select('banana'); previews[0]({ type: 'cached', data: { text: '过期回复', source: 'magpie', target: 'zh-CN' } });
+  await vi.advanceTimersByTimeAsync(1); expect(ui('.translation-text')?.textContent).not.toBe('过期回复');
 });

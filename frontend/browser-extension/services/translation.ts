@@ -1,61 +1,62 @@
-import { storage } from 'wxt/utils/storage';
 import type { Translation } from '~/types';
 import { isEnglishWord } from './word-utils';
 import { publicLookupClient, type PublicLookupClient } from './public-lookup';
 import { isTranslation } from './definition-utils';
 import { SharedLookup } from './shared-lookup';
 import { TRANSLATION_SERVICE_TIMEOUT_MS } from '../../../contracts/translation-policy';
+import { TranslationCache, translationCacheFresh } from './translation-cache';
 
-const CACHE_KEY = 'local:translationCache';
-const CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
-const MAX_CACHE_ENTRIES = 500;
 export const TRANSLATION_TIMEOUT_MS = TRANSLATION_SERVICE_TIMEOUT_MS;
-type CacheEntry = { text: string; timestamp: number; source?: Translation['source'] };
-const lifetime = (key: string, entry: CacheEntry) => key.startsWith('public:') && entry.source === 'mymemory' ? 3_600_000 : CACHE_TTL;
-
+const REFRESH_BACKOFF_MS = 60_000;
+interface Subscribers { users: number; listeners: Set<(value: Translation) => void>; cached?: Translation }
 export class TranslationService {
-  private cache = new Map<string, CacheEntry>();
   private pending = new SharedLookup<Translation>(TRANSLATION_TIMEOUT_MS, 'Chinese translation timed out. Please try again.');
-  private loaded?: Promise<void>;
-  private writes = Promise.resolve();
-  constructor(private backend: Pick<PublicLookupClient, 'request'> = publicLookupClient) {}
+  private subscribers = new Map<string, Subscribers>();
+  private retryAfter = new Map<string, number>();
+  constructor(private backend: Pick<PublicLookupClient, 'request'> = publicLookupClient,
+    private cache = new TranslationCache()) {}
 
-  async translate(input: string, signal?: AbortSignal): Promise<Translation> {
+  async translate(input: string, signal?: AbortSignal, onCached?: (translation: Translation) => void): Promise<Translation> {
     signal?.throwIfAborted();
     const word = input.trim().toLowerCase();
     if (!isEnglishWord(word) || word.length > 500) throw new Error('Select one English word to translate.');
-    await (this.loaded ??= this.loadCache());
-    signal?.throwIfAborted();
-    const key = 'public:v3:' + word;
-    const cacheKey = this.cache.has(key) ? key : word;
-    const cached = this.cache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < lifetime(cacheKey, cached)) return { text: cached.text, source: cached.source ?? 'mymemory', target: 'zh-CN' };
-    return this.pending.run(key, async requestSignal => {
-      const reply = await this.backend.request<{ translation: unknown }>('/api/v1/public/lookup/translation', 'POST', { word, target: 'zh-CN' }, requestSignal);
-      requestSignal.throwIfAborted();
-      if (!isTranslation(reply.translation)) throw new Error('The backend returned an invalid translation.');
-      const translation = reply.translation;
-      this.cache.delete(key);
-      this.cache.set(key, { text: translation.text, source: translation.source, timestamp: Date.now() });
-      if (this.cache.size > MAX_CACHE_ENTRIES) this.cache.delete(this.cache.keys().next().value!);
-      this.writes = this.writes.then(() => storage.setItem(CACHE_KEY, Object.fromEntries(this.cache))).catch(() => {});
-      return translation;
-    }, signal);
-  }
-
-  private async loadCache(): Promise<void> {
+    const subscribers = this.subscribers.get(word) ?? { users: 0, listeners: new Set<(value: Translation) => void>() };
+    this.subscribers.set(word, subscribers); subscribers.users++;
+    const preview = (value: Translation) => { if (!signal?.aborted) onCached?.(structuredClone(value)); };
+    if (onCached) subscribers.listeners.add(preview);
     try {
-      const stored = await storage.getItem<Record<string, CacheEntry>>(CACHE_KEY);
-      if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return;
-      for (const [word, entry] of Object.entries(stored).slice(-MAX_CACHE_ENTRIES)) {
-        if ((isEnglishWord(word) || word.startsWith('public:')) && entry && typeof entry.text === 'string' && entry.text.trim() && entry.text.length <= 2000 &&
-            (entry.source === undefined || entry.source === 'mymemory' || entry.source === 'hermes' || entry.source === 'magpie') &&
-            Number.isFinite(entry.timestamp) && entry.timestamp <= Date.now() && Date.now() - entry.timestamp < lifetime(word, entry)) {
-          this.cache.set(word, entry);
+      if (subscribers.cached) preview(subscribers.cached);
+      // Subscribe before asynchronous cache I/O: another caller's cancellation
+      // must not interrupt this caller or duplicate a fast cache-miss request.
+      return await this.pending.run(word, async requestSignal => {
+        const cached = await this.cache.get(word);
+        requestSignal.throwIfAborted();
+        if (cached && translationCacheFresh(cached)) return cached.translation;
+        if (cached) {
+          subscribers.cached = cached.translation;
+          for (const listener of subscribers.listeners) listener(cached.translation);
+          // Legacy/context-menu calls without a preview callback never start
+          // detached refresh work. Ports retain cancellation through final reply.
+          if (!subscribers.listeners.size || Date.now() < (this.retryAfter.get(word) ?? 0)) return cached.translation;
         }
-      }
-    } catch { /* Cache failure must not disable live translation. */ }
+        try {
+          const reply = await this.backend.request<{ translation: unknown }>('/api/v1/public/lookup/translation', 'POST', { word, target: 'zh-CN' }, requestSignal);
+          requestSignal.throwIfAborted();
+          if (!isTranslation(reply.translation)) throw new Error('The backend returned an invalid translation.');
+          this.cache.put(word, reply.translation); this.retryAfter.delete(word);
+          return reply.translation;
+        } catch (error) {
+          requestSignal.throwIfAborted();
+          if (!cached) throw error;
+          this.retryAfter.delete(word); this.retryAfter.set(word, Date.now() + REFRESH_BACKOFF_MS);
+          if (this.retryAfter.size > 256) this.retryAfter.delete(this.retryAfter.keys().next().value!);
+          return cached.translation;
+        }
+      }, signal);
+    } finally {
+      subscribers.listeners.delete(preview);
+      if (--subscribers.users === 0 && this.subscribers.get(word) === subscribers) this.subscribers.delete(word);
+    }
   }
 }
-
 export const translationService = new TranslationService();

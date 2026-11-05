@@ -41,3 +41,14 @@ it('rejects duplicate starts and vocabulary writes on lookup ports', async () =>
   const f=fixture(), run=vi.fn(); handleLookupPort(f.port,{ authorize: async()=>{}, run, subscribePolicy:()=>()=>{} });
   f.send({ ...f.start, operation:'SAVE_WORD' }); await tick(); expect(run).not.toHaveBeenCalled(); expect(f.port.disconnect).toHaveBeenCalledOnce();
 });
+
+it('keeps cached previews subscribed until refresh completes and cancels refresh on disconnect', async () => {
+  const f = fixture(); let publish!: (data: unknown) => void, signal!: AbortSignal, finish!: (data: unknown) => void;
+  handleLookupPort(f.port, { authorize: async () => {}, subscribePolicy: () => () => {},
+    run: async (_operation, _payload, s, cached) => { signal = s; publish = cached; return new Promise(resolve => { finish = resolve; }); } });
+  f.send(f.start); await tick(); publish({ text: '缓存', source: 'magpie', target: 'zh-CN' });
+  expect(f.port.postMessage).toHaveBeenCalledWith(expect.objectContaining({ type: 'cached' }));
+  expect(f.port.disconnect).not.toHaveBeenCalled(); expect(signal.aborted).toBe(false);
+  f.disconnect(); expect(signal.aborted).toBe(true);
+  publish({ text: '晚到' }); finish({ text: '晚到' }); await tick(); expect(f.port.postMessage).toHaveBeenCalledTimes(1);
+});

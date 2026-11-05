@@ -1,0 +1,91 @@
+{
+  "kind": "real-extension-live-provider",
+  "extension": "/tmp/rememberme-cache.fafmsZ/baseline/frontend/browser-extension/.output/chrome-mv3",
+  "samples": [
+    {
+      "word": "harbor",
+      "scenario": "first-client-lookup",
+      "popupMs": 1158,
+      "chineseMs": 4129,
+      "httpRequests": 1,
+      "requests": [
+        {
+          "word": "harbor",
+          "startedAt": 1836.3999999761581,
+          "status": 200,
+          "ms": 2913.100000023842
+        }
+      ]
+    },
+    {
+      "word": "harbor",
+      "scenario": "repeat-client-lookup",
+      "popupMs": 309,
+      "chineseMs": 333,
+      "httpRequests": 0,
+      "requests": []
+    },
+    {
+      "word": "orchard",
+      "scenario": "first-client-lookup",
+      "popupMs": 308,
+      "chineseMs": 2557,
+      "httpRequests": 1,
+      "requests": [
+        {
+          "word": "orchard",
+          "startedAt": 5524.899999976158,
+          "status": 200,
+          "ms": 2241.3000000715256
+        }
+      ]
+    },
+    {
+      "word": "orchard",
+      "scenario": "repeat-client-lookup",
+      "popupMs": 307,
+      "chineseMs": 308,
+      "httpRequests": 0,
+      "requests": []
+    },
+    {
+      "word": "copper",
+      "scenario": "first-client-lookup",
+      "popupMs": 305,
+      "chineseMs": 2599,
+      "httpRequests": 1,
+      "requests": [
+        {
+          "word": "copper",
+          "startedAt": 8424.5,
+          "status": 200,
+          "ms": 2281.2000000476837
+        }
+      ]
+    },
+    {
+      "word": "copper",
+      "scenario": "repeat-client-lookup",
+      "popupMs": 312,
+      "chineseMs": 313,
+      "httpRequests": 0,
+      "requests": []
+    },
+    {
+      "word": "copper",
+      "scenario": "restart-client-lookup",
+      "popupMs": 1132,
+      "chineseMs": 1155,
+      "httpRequests": 0,
+      "requests": []
+    }
+  ],
+  "limitations": [
+    "Disposable Chrome, not the user profile.",
+    "First means an empty client cache; upstream cache state is unknown.",
+    "DOM polling resolution is approximately 20 ms; not a p95 benchmark."
+  ],
+  "browser": "151.0.7922.34",
+  "noVocabularySaves": true,
+  "sourceScope": "Committed baseline"
+}

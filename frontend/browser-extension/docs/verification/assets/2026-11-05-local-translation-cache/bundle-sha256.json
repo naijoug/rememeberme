@@ -1,0 +1,12 @@
+{
+  "before": {
+    "background.js": "b0ac6f8d620e9ad7e86129226411fbe8b94551df7e53dd99870064c374b9012e",
+    "content-scripts/content.js": "50d6531c20c86e705f2cb83d0d514d164bebd73d67d2a6c85c51032469451c8d",
+    "manifest.json": "033234e1ce8b9551efacb60bc99a5892727a84fef2db2373381dfe5c718ad251"
+  },
+  "after": {
+    "background.js": "cb9277295894d6b3227d6de9b0bd75ca3886bbb52e1bad983756fbd85655dcb0",
+    "content-scripts/content.js": "a33cbf04753ff15f09b5f8fc71d69f89839db03983e9b5626c163d79d6d58c25",
+    "manifest.json": "033234e1ce8b9551efacb60bc99a5892727a84fef2db2373381dfe5c718ad251"
+  }
+}

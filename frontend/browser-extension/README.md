@@ -1,5 +1,17 @@
 # Remember Me browser extension
 
+## Faster local translation lookup (source update, 2026-11-05)
+
+Selection starts after 120 ms. A separate IndexedDB translation cache stores up
+to 10,000 word results, with 256 recent results in memory. Magpie remains the
+primary translation provider. Results are fresh for seven days (public MyMemory:
+one hour); valid stale results can be displayed for up to 30 days while the open
+card refreshes them. Closing/disabling the lookup cancels refresh; failed refresh
+keeps the cached result and backs off for one minute. Successful refreshes do not
+rewrite saved vocabulary or encounter snapshots. The old cache is read-only
+migration/rollback data. See [verification](docs/verification/2026-11-05-local-translation-cache.md).
+
+
 ## Word translation resilience (source update, 2026-11-04)
 
 Word translation keeps Magpie `group/translator`, with a three-second primary

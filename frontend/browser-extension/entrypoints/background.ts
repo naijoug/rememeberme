@@ -37,10 +37,10 @@ export default defineBackground(() => {
         await checkPageSitePolicy({ type: operation }, sender, siteSettings, browser.tabs, browser.runtime.getURL(''));
         if (operation === 'EXPLAIN_CONTEXT' && (!CONTEXT_EXPLANATION_ENABLED || !await hasExplanationConsent())) throw new Error('Sentence explanation is disabled.');
       },
-      run: async (operation, payload, signal) => {
+      run: async (operation, payload, signal, cached) => {
         switch (operation) {
           case 'GET_DEFINITION': return dictionaryService.getDefinition(String(payload.word), signal);
-          case 'GET_TRANSLATION': return translationService.translate(String(payload.word), signal);
+          case 'GET_TRANSLATION': return translationService.translate(String(payload.word), signal, cached);
           case 'GET_PHONETICS': return phoneticsService.getPhonetics(String(payload.word));
           case 'EXPLANATION_CAPABILITIES': return contextExplanationService.capabilities(signal);
           case 'EXPLAIN_CONTEXT':

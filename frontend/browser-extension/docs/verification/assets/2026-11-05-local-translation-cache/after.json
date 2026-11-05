@@ -1,0 +1,108 @@
+{
+  "kind": "real-extension-live-provider",
+  "extension": "/tmp/rememberme-cache.fafmsZ/after/frontend/browser-extension/.output/chrome-mv3",
+  "samples": [
+    {
+      "word": "harbor",
+      "scenario": "first-client-lookup",
+      "popupMs": 1467,
+      "chineseMs": 2836,
+      "httpRequests": 1,
+      "requests": [
+        {
+          "word": "harbor",
+          "startedAt": 3173.100000023842,
+          "status": 200,
+          "ms": 1305.8999999761581,
+          "source": "magpie"
+        }
+      ]
+    },
+    {
+      "word": "harbor",
+      "scenario": "repeat-client-lookup",
+      "popupMs": 139,
+      "chineseMs": 140,
+      "httpRequests": 0,
+      "requests": []
+    },
+    {
+      "word": "orchard",
+      "scenario": "first-client-lookup",
+      "popupMs": 142,
+      "chineseMs": 886,
+      "httpRequests": 1,
+      "requests": [
+        {
+          "word": "orchard",
+          "startedAt": 4824.799999952316,
+          "status": 200,
+          "ms": 752.6000000238419,
+          "source": "magpie"
+        }
+      ]
+    },
+    {
+      "word": "orchard",
+      "scenario": "repeat-client-lookup",
+      "popupMs": 139,
+      "chineseMs": 139,
+      "httpRequests": 0,
+      "requests": []
+    },
+    {
+      "word": "copper",
+      "scenario": "first-client-lookup",
+      "popupMs": 142,
+      "chineseMs": 780,
+      "httpRequests": 1,
+      "requests": [
+        {
+          "word": "copper",
+          "startedAt": 5901.399999976158,
+          "status": 200,
+          "ms": 637.7999999523163,
+          "source": "magpie"
+        }
+      ]
+    },
+    {
+      "word": "copper",
+      "scenario": "repeat-client-lookup",
+      "popupMs": 145,
+      "chineseMs": 145,
+      "httpRequests": 0,
+      "requests": []
+    },
+    {
+      "word": "copper",
+      "scenario": "restart-client-lookup",
+      "popupMs": 818,
+      "chineseMs": 843,
+      "httpRequests": 0,
+      "requests": []
+    },
+    {
+      "word": "harbor",
+      "scenario": "stale-preview",
+      "popupMs": 136,
+      "chineseMs": 136,
+      "httpRequests": 1,
+      "requests": [
+        {
+          "word": "harbor",
+          "startedAt": 1172.7000000476837
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Disposable Chrome, not the user profile.",
+    "First means an empty client cache; upstream cache state is unknown.",
+    "DOM polling resolution is approximately 20 ms; not a p95 benchmark."
+  ],
+  "browser": "151.0.7922.34",
+  "stalePreview": "Synthetic expired cache appeared while a held synthetic refresh was still pending; other timing samples used the live provider.",
+  "noVocabularySaves": true,
+  "sourceScope": "Isolated translation-cache change; unrelated typing-practice work excluded"
+}

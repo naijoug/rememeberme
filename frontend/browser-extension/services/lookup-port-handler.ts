@@ -11,7 +11,7 @@ export interface LookupPort {
 }
 export interface PortDependencies {
   authorize(operation: LookupOperation): Promise<void>;
-  run(operation: LookupOperation, payload: Record<string, unknown>, signal: AbortSignal): Promise<unknown>;
+  run(operation: LookupOperation, payload: Record<string, unknown>, signal: AbortSignal, cached: (data: unknown) => void): Promise<unknown>;
   subscribePolicy(recheck: () => void): () => void;
 }
 const operations = new Set<LookupOperation>(['GET_DEFINITION', 'GET_TRANSLATION', 'GET_PHONETICS', 'EXPLAIN_CONTEXT', 'EXPLANATION_CAPABILITIES']);
@@ -50,7 +50,11 @@ export function handleLookupPort(port: LookupPort, deps: PortDependencies): void
     if (operation.startsWith('GET_') && (typeof value.payload.word !== 'string' || value.payload.word.length > 500 || !isEnglishWord(value.payload.word))) { reply('error', 'Select one English word.'); return; }
     void (async () => {
       await deps.authorize(operation); controller.signal.throwIfAborted();
-      const result = await deps.run(operation, value.payload, controller.signal);
+      const result = await deps.run(operation, value.payload, controller.signal, data => {
+        if (!closed && operation === 'GET_TRANSLATION') {
+          try { port.postMessage({ type: 'cached', requestId, sessionId, data }); } catch { finish(); }
+        }
+      });
       controller.signal.throwIfAborted(); reply('result', result);
     })().catch(error => { if (!closed) reply('error', error instanceof Error ? error.message : 'Lookup unavailable.'); });
   };

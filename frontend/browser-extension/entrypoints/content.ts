@@ -163,7 +163,7 @@ function selectText(event: MouseEvent) {
     state.saveError = '';
     state.savedWord = undefined;
     void lookupWord();
-  }, 300);
+  }, 120);
 }
 
 function isInsidePopup(event: Event): boolean { return !!host && event.composedPath().includes(host); }
@@ -208,6 +208,12 @@ async function lookupWord() {
     if (!state.definition && !state.loading) state.error = [state.translationError, state.englishError].filter(Boolean).join(' ');
     if (!state.englishLoading && !state.translationLoading) activeLookup = undefined;
   };
+  const applyTranslation = (translation: import('~/types').Translation) => {
+    if (!current()) return;
+    if (!isTranslation(translation)) throw new Error('Chinese translation is unavailable. Please retry.');
+    state.definition = { ...(state.definition ?? { word, phonetics: [], meanings: [] }), translation };
+    updateStatus();
+  };
   await Promise.all([
     requestDefinition(word, controller.signal).then(definition => {
       if (!current()) return;
@@ -217,11 +223,7 @@ async function lookupWord() {
     }).finally(() => {
       if (current()) { state.englishLoading = false; updateStatus(); }
     }),
-    requestTranslation(word, controller.signal).then(translation => {
-      if (!current()) return;
-      if (!isTranslation(translation)) throw new Error('Chinese translation is unavailable. Please retry.');
-      state.definition = { ...(state.definition ?? { word, phonetics: [], meanings: [] }), translation };
-    }).catch(error => {
+    requestTranslation(word, controller.signal, applyTranslation).then(applyTranslation).catch(error => {
       if (current()) state.translationError = error instanceof Error ? error.message : 'Chinese translation unavailable.';
     }).finally(() => {
       if (current()) { state.translationLoading = false; updateStatus(); }
