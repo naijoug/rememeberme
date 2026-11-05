@@ -75,7 +75,7 @@ describe('Chinese translation (mock provider and disposable cache)', () => {
     expect(await service.translate('curated')).toEqual({ text: '旧值', target: 'zh-CN', source: 'mymemory' });
     const [a, b] = await Promise.all([service.translate('synthetic'), service.translate('SYNTHETIC')]);
     expect(a.source).toBe('hermes'); expect(a).toEqual(b); expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0][0]).toBe('https://lookup.couplelabs.cn/api/v1/public/lookup/translation');
+    expect(fetchMock.mock.calls[0][0]).toBe('https://rememberme-lookup.couplelabs.workers.dev/api/v1/public/lookup/translation');
     const init = fetchMock.mock.calls[0][1]!;
     expect(init.credentials).toBe('omit'); expect(init.headers).not.toHaveProperty('Authorization');
     expect(JSON.parse(String(init.body))).toEqual({ word: 'synthetic', target: 'zh-CN' });

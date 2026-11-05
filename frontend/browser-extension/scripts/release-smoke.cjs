@@ -130,12 +130,13 @@ const article = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Rem
     await popup.screenshot({ path: path.join(assets, 'popup-verification.png') });
     results.checks.push('Popup reset retains history; deletion cancel/confirm, export/import, malformed import, reload persistence and absent sync/API controls passed.');
     for (const req of proxyRequests) {
+      if (req.url.endsWith('/capabilities')) { assert.equal(req.method, 'GET'); assert.equal(req.body, null); continue; }
       assert.equal(req.method, 'POST'); const body = JSON.parse(req.body);
       assert.deepEqual(Object.keys(body).sort(), req.url.endsWith('/translation') ? ['target', 'word'] : ['word']);
     }
     assert.ok(proxyRequests.some(req => req.url.endsWith('/translation')));
     assert.deepEqual(directRequests, []);
-    results.checks.push('Live requests used only internal lookup paths and exact word/target bodies; no context/URL/vocabulary upload.');
+    results.checks.push('Live requests used only internal lookup paths and exact word/target bodies plus bodyless capability GET; no context/URL/vocabulary upload without explanation consent.');
     await context.close(); context = undefined;
     context = await chromium.launchPersistentContext(profile, { headless: true, channel: 'chromium', viewport: { width: 400, height: 600 }, args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`] });
     const reopened = await context.newPage(); await reopened.goto(`chrome-extension://${id}/popup.html`);

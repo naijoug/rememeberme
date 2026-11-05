@@ -1,9 +1,26 @@
 # Tencent Lighthouse deployment
 
+## Context explanation activation — 2026-10-27
+
+Runtime `/opt/rememberme/releases/20261027-context-fac9579f94d8/runtime` is active with sentence explanation enabled. The shared model routing group is unchanged. A consistent SQLite backup, previous runtime, environment and lookup-bridge backups are retained; no migration was added. Personal lookup now enters through the dedicated new tunnel/Worker, while existing account ingress remains intact. See [release verification and rollback](verification/2026-10-27-context-release.md).
+
+
 The Node/Hono server listens on loopback and uses SQLite with WAL, foreign keys,
 full synchronous commits and atomic conditional batches. The checked-in D1
 migrations are reused verbatim. Existing migrations are checked by digest; an
 edited applied migration stops startup.
+
+## Routing-group change activated (2026-10-27)
+
+Local defaults and the deployment example now use `MAGPIE_MODEL=group/translator`.
+The verified personal host advertises this group, and a direct request through
+its deployed `MagpieTranslator` returned valid Chinese in 2,585 ms using a synthetic
+word. With explicit user authorization, the live private environment was changed
+to `MAGPIE_MODEL=group/translator` and only `rememberme-api` was restarted. No
+backup was created, as requested. Health returned 200, the service was active,
+and a synthetic public translation returned Magpie Chinese output in 1,901 ms.
+The application release was unchanged.
+See [verification and activation](verification/2026-10-27-translator-group.md).
 
 ## Current recorded status — account sessions (2026-10-26)
 

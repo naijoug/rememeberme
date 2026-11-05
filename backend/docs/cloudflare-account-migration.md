@@ -1,5 +1,14 @@
 # Personal Cloudflare account migration
 
+## Current lookup-only release (2026-10-27)
+
+Personal identity and active account membership were reverified. A new personal lookup Tunnel (`1e84a055-cb45-4a10-adbc-e7ab7e3bfcfa`) and HTTP VPC service (`01a18092-88b0-7d51-899f-7dddc223daf1`, restricted to `127.0.0.1:8788`) now serve `https://rememberme-lookup.couplelabs.workers.dev`. The lookup gateway config contains that verified ID and was deployed only through `scripts/cloudflare.mjs`.
+
+This is a new personal lookup ingress, not a claim that the earlier cross-account domain/account migration completed. Old connectors and account/OAuth ingress are retained; no source-company account API access, domain release, DNS mutation or resource retirement occurred. The account-gateway VPC placeholder remains blocked. Lookup policy is published at the new Worker `/privacy`; the old account-entry policy asset was prepared locally but not published to its historical account.
+
+See [PR 7 release receipt](verification/2026-10-27-context-release.md). The following dated migration history remains historical.
+
+
 Status on 2026-10-16 (America/Los_Angeles): shared token created and identity verified; **no service
 resources migrated and no DNS/domain cutover performed by this correction**.
 The user requested migration from `guojian@hoxigames.com` to

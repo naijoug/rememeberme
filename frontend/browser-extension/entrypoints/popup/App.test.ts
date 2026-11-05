@@ -97,7 +97,7 @@ describe('mounted vocabulary popup', () => {
     expect(container.textContent).toContain('Export vocabulary');
     const privacy = container.querySelector<HTMLAnchorElement>('a[target="_blank"]')!;
     expect(privacy.textContent).toContain('Privacy & support');
-    expect(privacy.href).toBe('https://lookup.couplelabs.cn/privacy');
+    expect(privacy.href).toBe('https://rememberme-lookup.couplelabs.workers.dev/privacy');
     expect(privacy.rel).toBe('noopener noreferrer');
     expect(document.activeElement).toBe(container.querySelector('[aria-label="Back to vocabulary"]'));
     expect(storageApiMock.values.get('local:words')).toEqual(original);
