@@ -1,6 +1,6 @@
 # Extension architecture and data boundaries
 
-## Local typing practice (0.1.6)
+## Local typing practice (0.1.7)
 
 `entrypoints/practice/main.ts` mounts `components/practice/PracticeApp.vue` as
 `practice.html`. `practice-source.ts` projects identity and saved meanings without
@@ -39,6 +39,19 @@ unreplayable pending request before the user confirms repair. Completed rounds r
 meaning snapshots; records are excluded from sync
 and vocabulary export. `practice.html` is an explicit release-integrity root from
 0.1.6 onward, including transitive assets.
+
+The 0.1.7 interaction uses a focusable input over the rendered word. Copy completion
+sends an answer with optional `advance` and aggregate `mistakes`; the backend marks
+the next turn started in that same transaction. Old messages/records without these
+fields retain their earlier defaults. Corrected typos do not earn first-pass credit.
+The current Copy meaning is a presentation projection; durable question fingerprints
+and vocabulary snapshots retain their existing format.
+
+`PracticePronunciation` reads packaged IPA directly and speaks only with a local
+US device voice. `PracticeMeaning` may read the separate local translation cache;
+it never calls a provider, explanation route or vocabulary writer. A 2s nonblocking
+cache-display budget leaves the ordinary lookup cache's 150ms budget unchanged.
+Spelling prompts do not use this cache. See the [interaction record](verification/2026-11-05-typing-flow.md).
 
 ## Magpie update (2026-10-24)
 

@@ -3,7 +3,8 @@ import type { PracticeAttempt, PracticeMode, PracticeSession, PracticeSummary, P
 export const MAX_PRACTICE_WORDS = 10;
 export const asciiLower = (text: string) => text.replace(/[A-Z]/g, letter => letter.toLowerCase());
 export function newPracticeSession(owner: string, epoch: string | null, mode: PracticeMode, candidates: PracticeWord[], random = Math.random): PracticeSession {
-  const pool = structuredClone(candidates.filter(w => mode === 'copy' || w.prompt));
+  const pool = candidates.filter(w => mode === 'copy' || w.prompt)
+    .map(({ id, word, prompt, source, fingerprint }) => ({ id, word, prompt, source, fingerprint }));
   for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
   const words = pool.slice(0, MAX_PRACTICE_WORDS);
   if (!words.length) throw new Error(mode === 'recall' ? 'No saved meanings are available for spelling. Try Copy mode.' : 'No eligible words are available. Save a word or import a backup first.');
@@ -18,27 +19,31 @@ export function currentTurn(session: PracticeSession, turnId: string): PracticeT
   if (!turn || turn.id !== turnId) throw new Error('The practice question changed. Reload this session.');
   return turn;
 }
-export function answerPractice(session: PracticeSession, turnId: string, answer: string, assisted: boolean, skipped: boolean, elapsedMs: number): void {
+export function answerPractice(session: PracticeSession, turnId: string, answer: string, assisted: boolean, skipped: boolean, elapsedMs: number, mistakes = 0, advance = false): void {
   const turn = currentTurn(session, turnId);
   if (!turn.started) throw new Error('Continue the session before answering.');
   const word = session.words.find(w => w.id === turn.entryId)!;
   const correct = !skipped && asciiLower(answer.trim()) === asciiLower(word.word.trim());
   const attempt: PracticeAttempt = { turnId, entryId: turn.entryId, round: turn.round, correct, assisted, skipped, elapsedMs,
-    hinted: turn.hinted, interrupted: turn.interrupted };
+    hinted: turn.hinted, interrupted: turn.interrupted, mistakes };
   session.attempts.push(attempt); session.queue.shift();
-  if ((!correct || turn.hinted) && turn.round < 2) session.queue.splice(Math.min(2, session.queue.length), 0, newTurn(word.id, turn.round + 1));
+  if ((!correct || turn.hinted || mistakes > 0) && turn.round < 2) session.queue.splice(Math.min(2, session.queue.length), 0, newTurn(word.id, turn.round + 1));
+  if (advance && session.queue[0]) session.queue[0].started = true;
   if (!session.queue.length) for (const w of session.words) { w.prompt = ''; w.fingerprint = ''; w.source = ''; }
 }
 export function practiceSummary(session: PracticeSession): PracticeSummary {
   const first = session.attempts.filter(a => a.round === 0);
   const retries = session.attempts.filter(a => a.round > 0);
   return { total: session.words.length, answered: first.length,
-    firstCorrect: first.filter(a => a.correct && !a.hinted && !a.assisted && !a.interrupted).length,
+    firstCorrect: first.filter(a => a.correct && !a.hinted && !a.assisted && !a.interrupted && !a.mistakes).length,
     hinted: session.attempts.filter(a => a.hinted).length, assisted: session.attempts.filter(a => a.assisted).length,
     interrupted: session.attempts.filter(a => a.interrupted).length, skipped: session.attempts.filter(a => a.skipped).length,
     retries: retries.length, retryCorrect: retries.filter(a => a.correct).length,
     elapsedMs: session.attempts.reduce((sum, a) => sum + a.elapsedMs, 0),
-    needsWork: session.words.filter(w => { const last = session.attempts.filter(a => a.entryId === w.id).at(-1); return last && (!last.correct || last.hinted || last.assisted || last.interrupted); }).map(w => ({ id: w.id, word: w.word })),
+    mistakes: session.attempts.reduce((sum, a) => sum + (a.mistakes ?? 0), 0),
+    characters: session.attempts.reduce((sum, a) => sum + (a.correct && !a.assisted ? session.words.find(w => w.id === a.entryId)?.word.length ?? 0 : 0), 0),
+    turnsDone: session.attempts.length, turnsRemaining: session.queue.length,
+    needsWork: session.words.filter(w => { const last = session.attempts.filter(a => a.entryId === w.id).at(-1); return last && (!last.correct || last.hinted || last.assisted || last.interrupted || last.mistakes); }).map(w => ({ id: w.id, word: w.word })),
   };
 }
 /** Remove invalid source copies and their attempts; counts/reset times aren't fingerprints. */

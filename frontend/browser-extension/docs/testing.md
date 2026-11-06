@@ -1,13 +1,17 @@
 # Verification and browser checklist
 
-## Typing practice verification
+## Typing practice verification (0.1.7)
 
 Practice source/engine, store/account integration, client, input, page and confirmation
 tests use only fixtures. They cover source attribution/masking, finite retries,
 transaction aborts, unknown saves, boot scopes, hints across restart, remote tombstones
 with pending writes, same-ID owner isolation, stale reads/tabs and unchanged exports.
 Component checks cover IME Enter, paste, focus pause, literal markup and pinned clear
-confirmations. Release tests require practice.html and its transitive assets for
+confirmations. The 0.1.7 suite adds direct letter feedback, same-word typo reset,
+automatic completion/advancement, first-character focus forwarding, optional Spelling,
+local-only pronunciation and cached-meaning race handling. Review regressions cover
+Escape/blur/Settings during delayed saves, spelling result feedback and end-of-round
+difficult words and result breakdown. Release tests require practice.html and its transitive assets for
 0.1.6 while preserving historical permission sets.
 
 Review regressions also cover native IME Enter default behavior and button guards,
@@ -19,7 +23,10 @@ legacy optional source metadata. See [the review record](verification/2026-11-05
 for Testing profile. Set `REMEMBERME_PLAYWRIGHT_PATH`, `REMEMBERME_TYPING_ZIP`, optional
 `REMEMBERME_PREVIOUS_ZIP`, and `REMEMBERME_ACCEPTANCE_DIR`. Lookup/account hosts are
 blocked. Synthetic vocabulary alone is imported; no user profile/account is used.
-See [the acceptance record](verification/2026-11-05-typing-practice.md).
+See [the current interaction acceptance](verification/2026-11-05-typing-flow-review.md).
+The current harness checks Copy without Enter/Check/Next, local Chinese cache/IPA,
+continuous multi-word input, confirmed mode changes and visual fixtures. Earlier
+verification records retain their historical UI and artifact hashes.
 
 Physical IME, screen-reader speech and the everyday installed toolbar remain separate
 checks. Injected account tests are not hosted-sync acceptance. Watcher health alone

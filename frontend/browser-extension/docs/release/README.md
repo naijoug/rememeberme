@@ -1,5 +1,12 @@
 # Chrome release preparation
 
+## Continuous typing candidate (0.1.7)
+
+Copy now uses direct word-level input, typo reset and automatic progression. Local
+Chinese cache presentation and packaged IPA/device speech add no provider calls or
+permissions. The final [interaction acceptance](../verification/2026-11-05-typing-flow-review.md)
+uses an extracted ZIP and synthetic vocabulary. No Web Store submission is implied.
+
 ## Typing practice candidate (0.1.6)
 
 The package adds a local `practice.html` entry with Copy and Spelling modes. The

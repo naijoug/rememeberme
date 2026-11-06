@@ -34,14 +34,16 @@ export class TranslationCache {
   private memory = new Map<string, TranslationCacheEntry>();
   private writes = Promise.resolve();
   constructor(private name = TRANSLATION_CACHE_DATABASE, private limit = TRANSLATION_CACHE_LIMIT,
-    private legacyRead: () => Promise<unknown> = () => storage.getItem('local:translationCache')) {}
+    private legacyRead: () => Promise<unknown> = () => storage.getItem('local:translationCache'),
+    // Interactive lookup retains its short budget; a nonblocking local display may wait longer.
+    private readBudgetMs = READ_BUDGET_MS) {}
 
   async get(word: string): Promise<TranslationCacheEntry | undefined> {
     let entry = this.memory.get(word);
     if (!valid(entry, word)) {
       this.memory.delete(word);
       try {
-        entry = await bounded(this.open().then(db => this.transaction(db, 'readonly', stores => stores.entries.get(translationCacheKey(word)))), READ_BUDGET_MS);
+        entry = await bounded(this.open().then(db => this.transaction(db, 'readonly', stores => stores.entries.get(translationCacheKey(word)))), this.readBudgetMs);
       } catch { return; } // A broken cache must never stall a live lookup.
     }
     if (!valid(entry, word)) return;
@@ -83,7 +85,7 @@ export class TranslationCache {
       let finished = false;
       const request = indexedDB.open(this.name, 1);
       const fail = (error: unknown) => { if (!finished) { finished = true; clearTimeout(timer); reject(error); } };
-      const timer = setTimeout(() => fail(new Error('Translation cache unavailable')), 300);
+      const timer = setTimeout(() => fail(new Error('Translation cache unavailable')), Math.max(300, this.readBudgetMs));
       request.onupgradeneeded = () => {
         if (finished) { request.transaction?.abort(); return; }
         const entries = request.result.createObjectStore('entries', { keyPath: 'key' });

@@ -1,7 +1,8 @@
-# Chrome Web Store materials — 0.1.6 candidate
+# Chrome Web Store materials — 0.1.7 candidate
 
 Add to the current account-enabled listing: Practice your saved words in a full tab
-with Copy and Spelling modes, hints, limited retries and restart recovery. Practice
+with direct Copy typing, automatic word progression, pronunciation, optional Spelling,
+hints, limited retries and restart recovery. Practice
 records stay in this browser and do not change forgotten counts or review dates.
 They are not included in vocabulary backups; Settings provides confirmed clearing.
 

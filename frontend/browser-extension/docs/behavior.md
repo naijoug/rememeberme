@@ -1,23 +1,43 @@
 # Browser extension behavior
 
-## Typing practice (0.1.6)
+## Typing practice (0.1.7)
 
 - The main vocabulary opens a full practice tab using the currently selected owner.
   Initial account downloads block practice; completed caches work offline. Account
   recovery blocks that account. Opening practice never signs in or toggles sync.
-- Copy mode shows spelling and per-character feedback. Spelling mode hides it until
-  a hint or submitted answer. Enter or Check spelling submits the whole word; ASCII case
-  and outer whitespace are ignored, internal apostrophes/hyphens must match.
-  Backspace is available; IME confirmation keeps its native Enter behavior and does
-  not submit. Answer, hint and skip buttons are disabled during composition;
-  repeated Enter does not submit. Unicode compatibility characters are not ASCII letters.
-- Saved current definition takes precedence over the last history snapshot. Empty
-  meanings allow Copy only. Literal target/base-form matches are masked in prompts.
-  No cache or provider fills missing meanings; examples, notes and URLs are omitted.
-- Each round randomly selects up to ten eligible words. Wrong, skipped or hinted
-  turns retry after up to two intervening questions, at most twice per word.
-  First-attempt unassisted and retry results are separate; no WPM is displayed.
-- Blur/hidden documents pause time. Reconnecting to an unfinished started question
+- Fresh pages default to Copy; retained rounds preserve their mode. Copy uses the word
+  itself as the input surface, with a real invisible text input for keyboard/IME access.
+  Correct letters turn green. A wrong prefix flashes red and clears after 260ms;
+  the word remains current. Matching the full word commits and activates the next
+  turn atomically, without Enter or a Next button. Backspace remains available.
+- Optional Spelling hides the target until a hint or answer and uses Enter to check.
+  Its result shows Correct/Incorrect/Skipped and the saved spelling before Continue
+  (or Enter) starts the next hidden target. Copy keeps automatic progression.
+  Both modes fold ASCII case and outer whitespace only; internal punctuation must
+  match. IME Enter retains native composition behavior; no completion occurs until
+  composition ends. Repeated events cannot submit the same word twice.
+- Saved current definition takes precedence over the last history snapshot. Copy
+  displays a short saved meaning and can supplement missing Chinese with an existing
+  local translation-cache entry; provenance/full text are in its tooltip. Cache reads
+  are bounded and never block typing or trigger provider requests. Spelling still
+  uses the saved, masked prompt only. Empty meanings allow Copy only; examples,
+  notes and source URLs are omitted.
+- American IPA is read from packaged assets. The speaker or Alt+P uses only an
+  available en-US local device voice, never a remote voice; missing voices disable
+  playback without blocking typing. Changing words or pausing stops playback.
+- Each round randomly selects up to ten eligible words. Words with typos, wrong
+  answers, skips or hints return after up to two intervening turns, at most twice.
+  Copy typos reset the same word immediately; their aggregate count is saved on
+  completion/skip and prevents first-pass credit. Progress measures completed turns
+  against completed plus queued turns.
+- The bottom strip shows active time, WPM/first-pass, words and typos/hints. Copy WPM
+  is completed unassisted characters plus the current unassisted correct prefix,
+  divided by five per active minute (zero before one second). It is not a mastery
+  score. Spelling shows first-pass accuracy instead. No per-key log is retained.
+- Completed rounds show retry/hint/assistance/interruption/skip totals and the
+  remaining difficult-word list, with a button to practice those words again.
+- Blur/hidden documents pause time. Escape, blur or opening Settings while a save
+  is pending prevents that response from restarting input; explicit Resume is needed. Reconnecting to an unfinished started question
   marks it interrupted. Unsubmitted input is not restored. Hints commit before the
   answer appears; detectable paste/drop is assisted. Unknown saves retain one
   frozen tab request and offer explicit recovery, never automatic write retries.
@@ -38,7 +58,7 @@
   prior result; replacing an unfinished round and clearing records require confirmation.
   Completed rounds discard meaning snapshots. No per-keystroke log is retained.
 
-See [review and acceptance scope](verification/2026-11-05-typing-practice-review.md); automated
+See [review and acceptance scope](verification/2026-11-05-typing-flow-review.md); automated
 checks do not establish hosted account or physical-device accessibility acceptance.
 
 ## Magpie update (2026-10-24)

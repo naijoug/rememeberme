@@ -31,10 +31,11 @@ export function practiceWords(state: PracticeVocabulary): { words: PracticeWord[
       || state.outbox.some(p => p.operation.entryId === entry.id && p.error)) { excluded++; continue; }
     const pending = state.outbox.filter(p => p.operation.entryId === entry.id && ['create', 'seed', 'edit', 'legacyMerge'].includes(p.operation.kind)).at(-1);
     const definition = pending?.operation.payload.definition ?? entry.base?.definition ?? entry.value.history.at(-1)?.definition;
-    let prompt = '', source = '';
+    let prompt = '', source = '', meaning = '';
     if (isDefinition(definition)) {
       const translation = definition.translation;
       const raw = translation?.text.trim() || definition.meanings.flatMap(m => m.definitions.map(d => d.definition.trim())).filter(Boolean).join('; ');
+      meaning = (translation?.text.trim() || definition.meanings.flatMap(m => m.definitions.map(d => d.definition.trim())).find(Boolean) || '').slice(0, 2000);
       prompt = hidePracticeAnswers(raw.slice(0, 2000), [entry.value.word, definition.word]);
       if (!/[\p{L}\p{N}]/u.test(prompt)) prompt = '';
       // Legacy imports retain optional fields verbatim; only project known labels.
@@ -42,7 +43,7 @@ export function practiceWords(state: PracticeVocabulary): { words: PracticeWord[
       source = translation?.text.trim() ? translation.source : englishSource;
     }
     const word = entry.value.word;
-    words.push({ id: entry.id, word, prompt, source, fingerprint: JSON.stringify([word, prompt, source]) });
+    words.push({ id: entry.id, word, prompt, meaning, source, fingerprint: JSON.stringify([word, prompt, source]) });
   }
   return { words, excluded };
 }

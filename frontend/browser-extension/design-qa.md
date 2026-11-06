@@ -73,4 +73,55 @@ At the user's request, removed the footer Theme / System / Light / Dark row and 
 
 Chrome's sample preview at `?compare=codex&state=empty` was captured after the change: the empty popup ends after Import a backup without a footer row or leftover gap. The detail-view accessibility tree likewise has no theme group. Clicking the header button in both directions changed its action label between Use dark theme and Use light theme. This intentional layout simplification supersedes the original reference footer. No new visual defects were observed. The eight existing popup tests, TypeScript check and whitespace check passed; the existing local watcher rebuilt successfully. These observations cover sample components, not installed-extension activation.
 
+Historical result: passed
+
+
+# Continuous typing — 2026-11-05 (current QA)
+
+## Source, viewport and evidence
+
+Source truth: the user's two screenshots and the live Qwerty desktop interaction at https://qwerty.kaiyi.cool/. Saved reference: [reference-qwerty-partial.png](docs/verification/assets/2026-11-05-typing-flow/reference-qwerty-partial.png). Implementation: [copy-partial.png](docs/verification/assets/2026-11-05-typing-flow/copy-partial.png), rendered from the actual extension ZIP in disposable Chrome.
+
+Reference and implementation are both 1280×800 CSS pixels and 1280×800 screenshot pixels (1×). State: dark theme, `cancel`, correct prefix `ca`. No browser chrome or density rescaling. Timers, course/account chrome and progress differ because the reference has a course and the implementation has a synthetic personal-vocabulary round; these are not pixel-equivalence claims.
+
+Full side-by-side: [comparison-full.png](docs/verification/assets/2026-11-05-typing-flow/comparison-full.png), 2560×800. Focused side-by-side: [comparison-focus.png](docs/verification/assets/2026-11-05-typing-flow/comparison-focus.png), 960×220, the same (400,270)–(880,490) content crop from each source. Both combined images were opened and inspected, not inferred from paths. Light and 390px captures were also opened.
+
+## Findings and iteration history
+
+1. P1, original supplied implementation: prominent quiz form, large input box and Check/Next workflow missed the selected direct-typing interaction. Replaced with a centered inline target, per-letter feedback, automatic advance and compact statistics. The original screenshot is the before evidence; the saved full comparison is the final evidence.
+2. P2, first implementation comparison: an extra visible cache-provenance line cluttered the word/IPA/meaning group. Moved source/full text to the meaning tooltip. Before: [full-before-polish](docs/verification/assets/2026-11-05-typing-flow/comparison-full-before-polish.png) and [focus-before-polish](docs/verification/assets/2026-11-05-typing-flow/comparison-focus-before-polish.png). After: final full/focus comparisons above; both correct letters are green and the core group has three visual levels.
+3. Captures were repeated after letter/theme transitions settled, avoiding misleading intermediate colors. This is capture normalization, not another design defect.
+
+No actionable P0/P1/P2 visual mismatch remains in the inspected states.
+
+## Fidelity surfaces
+
+| Surface | Observed result |
+| --- | --- |
+| Typography | 48px maximum monospace target with .08em spacing; compact system-sans IPA/meaning/controls. Reference hierarchy is retained; system font rendering is an intentional available-font choice, not an exact font claim. |
+| Layout and spacing | Word/IPA/meaning centered with generous empty space; slim 360px progress, compact bottom metrics. Mobile header wraps without horizontal clipping; the input is integrated into the word rather than a form card. |
+| Colors | Dark navy `#111724`, panel `#192230`, pale text `#cbd0dc`, lavender accent `#bdc5fa`, green correct/red wrong. Light variant has settled dark text on a pale surface; both visibly readable. |
+| Assets | Existing Remember Me logo and library Iconoir controls; no generated raster, custom-drawn substitute artwork or Qwerty logo reuse. Speech icon is a standard control beside the word. |
+| Copy/content | Synthetic `cancel`, packaged IPA and cached Chinese meaning establish the selected focal hierarchy. Own-brand controls and personal-vocabulary semantics remain; no implementation/debug text in the central group. |
+| Interaction/accessibility | Real focusable input, accessible spelling label, target description, keyboard controls, focus indicator, manual pause/resume, reduced-motion styling. Browser harness exercised direct input, error reset, progression and confirmation. Screen-reader experience is not asserted. |
+
+Intentional differences: Remember Me branding and personal vocabulary instead of course chapters; four relevant metrics instead of the reference's five; round progress rather than course progress; local device pronunciation instead of remote audio. Light/mobile/results extend the desktop reference and were checked independently.
+
+## Verification and limits
+
+[Acceptance receipt](docs/verification/assets/2026-11-05-typing-flow/acceptance.json): direct Copy input, typo reset, automatic next, pause/resume, process restart, Spelling confirmation, unrelated updates and tab takeover passed. Zero captured external requests and page errors in the disposable fixture run. Actual audible speech and physical IME remain manual checks; local speech routing and composition safety have automated tests.
+
+- [x] Replace quiz form with direct typing.
+- [x] Compare source and implementation together, full view and focal crop.
+- [x] Fix provenance clutter and recapture.
+- [x] Inspect typography, spacing, palette, assets and content.
+- [x] Check light/dark, mobile and core keyboard states.
+
+final result: passed
+
+
+## 0.1.7 implementation review follow-up
+
+The [review record](docs/verification/2026-11-05-typing-flow-review.md) supersedes the earlier artifact receipt. New correct/incorrect Spelling feedback and end-of-round details were rendered and inspected in disposable Chrome. The first results capture placed actions too close to the progress bar; the final completion-only padding fixes that spacing, and the harness verifies at least 16px separation. Final [desktop results](docs/verification/assets/2026-11-05-typing-flow-review/results.png) (1280×800, 1×) and [mobile results](docs/verification/assets/2026-11-05-typing-flow-review/results-mobile.png) (390×844, 1×) show readable controls without horizontal clipping. [Incorrect feedback](docs/verification/assets/2026-11-05-typing-flow-review/spelling-incorrect.png) shows the saved answer and focused Continue action. These additional states extend the source reference; the centered Copy design and its prior comparison remain unchanged. No actionable visual issue remains in these inspected states.
+
 final result: passed

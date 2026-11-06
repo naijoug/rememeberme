@@ -4,6 +4,15 @@ import { hidePracticeAnswers, practiceWords, type PracticeVocabulary } from './p
 const words = ['apple', "can't", 'well-known'].map((word, i) => ({ id: `word-${i}`, word, prompt: 'A saved meaning', source: 'magpie', fingerprint: word }));
 const session = () => newPracticeSession('anonymous', null, 'recall', words, () => .999);
 describe('practice engine', () => {
+  it('records corrected typos without first-pass credit and activates the next turn in the same answer', () => {
+    const s = newPracticeSession('anonymous', null, 'copy', words, () => .999);
+    answerPractice(s, s.queue[0].id, 'apple', false, false, 1000, 2, true);
+    expect(s.queue[0].started).toBe(true); expect(s.queue[0].entryId).toBe('word-1');
+    expect(s.queue.at(-1)?.entryId).toBe('word-0');
+    expect(practiceSummary(s)).toMatchObject({ firstCorrect: 0, mistakes: 2, characters: 5, turnsDone: 1, turnsRemaining: 3 });
+    answerPractice(s, s.queue[0].id, "can't", true, false, 1000, 0, true);
+    expect(practiceSummary(s).characters).toBe(5);
+  });
   it('folds only ASCII case, without accepting Unicode compatibility characters', () => {
     const s = newPracticeSession('anonymous', null, 'recall', [{ id: 'kelvin', word: 'k', prompt: 'Letter', source: 'saved', fingerprint: 'k' }]);
     answerPractice(s, s.queue[0].id, 'K', false, false, 1);

@@ -1,5 +1,23 @@
 # Remember Me browser extension
 
+## Continuous typing (0.1.7, 2026-11-05)
+
+Open **Typing practice**, choose **Copy**, and press Enter once to start. Type directly
+on the centered word: correct letters turn green, a typo flashes red and resets the
+word, and completing it automatically starts the next word. There is no input box,
+Check spelling button or Next-word step in Copy mode.
+
+Packaged American IPA appears below the word; the speaker (Alt+P) uses an available
+local US device voice. Saved Chinese meanings are preferred; otherwise an existing
+local Chinese translation cache may supplement the short saved English meaning.
+This display never requests a new translation or rewrites vocabulary/history.
+
+Esc pauses, Resume continues, and Alt+Right skips. Spelling remains an optional mode
+with Enter to check and explicit result feedback before continuing. Existing rounds keep their mode and progress; switching away
+from an unfinished round asks before replacing it. Settings holds reload and clearing.
+See [interaction verification](docs/verification/2026-11-05-typing-flow-review.md) and
+[visual comparison](design-qa.md). Prior 0.1.6 sections below describe the earlier UI.
+
 ## Typing practice (0.1.6, 2026-11-05)
 
 Open the toolbar vocabulary and choose **Typing practice**. The full extension tab

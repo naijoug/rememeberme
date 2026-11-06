@@ -1,0 +1,22 @@
+{
+  "version": "0.1.7",
+  "archiveSha256": "d796e32df1d706faa42d83b93948c5534dcbf619a16d48bf04a28539247103bc",
+  "browser": "151.0.7922.34",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "checks": [
+    "Same-identity upgrade preserves synthetic vocabulary",
+    "Default Copy: direct letter coloring, typo flash/reset, no Enter/Next/Check, automatic advance and typo-aware scoring",
+    "Continuous multi-word input, explicit pause/resume, process restart, light/dark and 390px layout",
+    "Optional Spelling, confirmed mode switch, unrelated-word update and tab takeover preserve data boundaries"
+  ],
+  "requests": [],
+  "errors": [],
+  "limitations": [
+    "Disposable Chrome profile, synthetic vocabulary only.",
+    "Speech logic tested with mocked device voices; actual audio quality and physical IME remain manual checks.",
+    "No hosted account or real vocabulary used."
+  ]
+}

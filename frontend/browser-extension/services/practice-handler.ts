@@ -17,9 +17,11 @@ export function parsePracticeMessage(value: unknown): PracticeMessage {
     case 'reveal': valid = exact(a, ['kind', 'turnId']) && id(a.turnId); break;
     case 'start': valid = exact(a, ['kind', 'mode', 'replace', 'entryIds']) && ['copy', 'recall'].includes(String(a.mode)) && typeof a.replace === 'boolean'
       && (a.entryIds === undefined || Array.isArray(a.entryIds) && a.entryIds.length <= 10 && a.entryIds.every(id)); break;
-    case 'answer': valid = exact(a, ['kind', 'turnId', 'answer', 'assisted', 'skipped', 'elapsedMs']) && id(a.turnId)
+    case 'answer': valid = exact(a, ['kind', 'turnId', 'answer', 'assisted', 'skipped', 'elapsedMs', 'mistakes', 'advance']) && id(a.turnId)
       && typeof a.answer === 'string' && a.answer.length <= 500 && typeof a.assisted === 'boolean' && typeof a.skipped === 'boolean'
-      && Number.isFinite(a.elapsedMs) && (a.elapsedMs as number) >= 0 && (a.elapsedMs as number) <= 3_600_000; break;
+      && Number.isFinite(a.elapsedMs) && (a.elapsedMs as number) >= 0 && (a.elapsedMs as number) <= 3_600_000
+      && (a.mistakes === undefined || Number.isSafeInteger(a.mistakes) && (a.mistakes as number) >= 0 && (a.mistakes as number) <= 10_000)
+      && (a.advance === undefined || typeof a.advance === 'boolean'); break;
   }
   if (!valid) throw new Error('Invalid practice action.');
   return value as PracticeCommand;

@@ -1,11 +1,15 @@
 # Remember Me Privacy Policy
 
-## Local typing practice (0.1.6 source addition)
+## Local typing practice (0.1.7 source addition)
 
 Typing practice uses saved vocabulary/meanings locally. Starting, answering or
 resuming it sends no dictionary, translation or explanation request. Existing account
 vocabulary sync retains its separate controls; practice results are not uploaded and
 do not change forgotten counts or reading history.
+Copy may display a previously cached Chinese translation and packaged IPA. Cache
+presentation can refresh local cache-use metadata but never changes vocabulary.
+Pronunciation is user-triggered and limited to a local device voice; no remote voice
+or new translation/explanation request is used.
 
 The browser retains one session/result per vocabulary owner, with aggregate outcomes,
 hints, assistance/interruption flags and active time. An unknown save retains its

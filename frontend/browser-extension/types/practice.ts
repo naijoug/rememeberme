@@ -1,6 +1,8 @@
 export type PracticeMode = 'copy' | 'recall';
 export interface PracticeWord {
   id: string; word: string; prompt: string; source: string; fingerprint: string;
+  /** Read-only presentation; omitted from the durable question snapshot. */
+  meaning?: string;
 }
 export interface PracticeTurn {
   id: string; entryId: string; round: number; started: boolean; hinted: boolean; interrupted: boolean;
@@ -10,6 +12,7 @@ export interface PracticeTurn {
 export interface PracticeAttempt {
   turnId: string; entryId: string; round: number; correct: boolean; hinted: boolean;
   assisted: boolean; interrupted: boolean; skipped: boolean; elapsedMs: number;
+  mistakes?: number;
 }
 export interface PracticeSession {
   id: string; owner: string; epoch: string | null; mode: PracticeMode;
@@ -22,6 +25,7 @@ export interface PracticeRecord {
 export interface PracticeSummary {
   total: number; answered: number; firstCorrect: number; hinted: number; assisted: number;
   interrupted: number; skipped: number; retries: number; retryCorrect: number; elapsedMs: number;
+  mistakes: number; characters: number; turnsDone: number; turnsRemaining: number;
   needsWork: Array<{ id: string; word: string }>;
 }
 export interface PracticeView {
@@ -30,14 +34,14 @@ export interface PracticeView {
   available: { copy: number; recall: number; excluded: number };
   session: null | {
     id: string; mode: PracticeMode; completed: boolean; invalidated: number;
-    current: null | { turnId: string; activationId: string; round: number; prompt: string; source: string; word?: string; started: boolean; hinted: boolean; interrupted: boolean };
+    current: null | { turnId: string; activationId: string; round: number; prompt: string; meaning?: string; source: string; word?: string; started: boolean; hinted: boolean; interrupted: boolean };
     last: null | { word: string; correct: boolean; skipped: boolean };
     summary: PracticeSummary;
   };
 }
 export type PracticeAction =
   | { kind: 'start'; mode: PracticeMode; replace: boolean; entryIds?: string[] }
-  | { kind: 'answer'; turnId: string; answer: string; assisted: boolean; skipped: boolean; elapsedMs: number }
+  | { kind: 'answer'; turnId: string; answer: string; assisted: boolean; skipped: boolean; elapsedMs: number; mistakes?: number; advance?: boolean }
   | { kind: 'reveal'; turnId: string }
   | { kind: 'resume'; sessionId: string }
   | { kind: 'clear' };

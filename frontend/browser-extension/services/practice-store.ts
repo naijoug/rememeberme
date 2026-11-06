@@ -20,6 +20,7 @@ function validSession(value: unknown): value is PracticeSession {
     && typeof t.started === 'boolean' && typeof t.hinted === 'boolean' && typeof t.interrupted === 'boolean'
     && (t.activationId === undefined || id(t.activationId)))) return false;
   if (!value.attempts.every(a => object(a) && id(a.turnId) && words.has(a.entryId) && integer(a.round, 2)
+    && (a.mistakes === undefined || integer(a.mistakes, 10_000))
     && ['correct', 'hinted', 'assisted', 'interrupted', 'skipped'].every(k => typeof a[k] === 'boolean')
     && typeof a.elapsedMs === 'number' && Number.isFinite(a.elapsedMs) && a.elapsedMs >= 0 && a.elapsedMs <= 3_600_000)) return false;
   const turns = [...value.queue.map(t => t.id), ...value.attempts.map(a => a.turnId)];
@@ -86,7 +87,7 @@ export function applyPractice(r: PracticeRecord, owner: string, state: PracticeV
     }
     case 'answer': {
       if (!r.session) throw new Error('Start a session first.');
-      answerPractice(r.session, action.turnId, action.answer, action.assisted, action.skipped, action.elapsedMs); break;
+      answerPractice(r.session, action.turnId, action.answer, action.assisted, action.skipped, action.elapsedMs, action.mistakes ?? 0, action.advance ?? false); break;
     }
   }
   bumpPractice(r);
@@ -101,6 +102,7 @@ export function practiceView(r: PracticeRecord, owner: string, scope: string, st
     available: { copy: projected.words.length, recall: projected.words.filter(w => w.prompt).length, excluded: projected.excluded },
     session: !s || blocked ? null : { id: s.id, mode: s.mode, completed: s.queue.length === 0, invalidated: s.invalidated,
       current: !turn || !word ? null : { turnId: turn.id, activationId: turn.activationId ?? turn.id, round: turn.round, prompt: word.prompt, source: word.source,
+        ...(s.mode === 'copy' ? { meaning: projected.words.find(w => w.id === word.id)?.meaning ?? word.prompt } : {}),
         ...(s.mode === 'copy' || turn.hinted ? { word: word.word } : {}), started: turn.started, hinted: turn.hinted, interrupted: turn.interrupted },
       last: last && lastWord ? { word: lastWord.word, correct: last.correct, skipped: last.skipped } : null,
       summary: practiceSummary(s),
