@@ -282,3 +282,22 @@ accounts/SQLite; UI previews use in-memory fixtures, not the installed account.
 `shared-lookup.test.ts`, `lookup-port-handler.test.ts` and the expanded public-lookup suite cover refcounts, independent cancellation, late flights, pre-start/disconnect cleanup, settings changes and cancellation before/between/after recovery attempts. Existing word-only recovery, cache, storage and count tests remain in the full suite. `context-explanation.test.ts` covers build/consent/capability gates, independent sentence caches, clear/late-result races and malformed replies; `ContextExplanation.test.ts` covers disclosure, explicit triggering, literal rendering and selection/consent invalidation.
 
 For disposable browser acceptance, build normally and run `scripts/verify-reading-controls.cjs` for existing behavior. Build with `VITE_CONTEXT_EXPLANATION_ENABLED=true npm run build` only in an isolated source copy, then run `scripts/verify-context-explanation.cjs` with the external Playwright path. It loads real extension Ports/UI in a clean profile but replaces only its lookup responses with synthetic data, blocks real lookup/account host resolution and leaves vocabulary empty. It is not live AI quality, hosted rollout or signed-client acceptance. See [second-round evidence](verification/2026-10-26-context-explanation.md).
+
+## Reviewed learner dictionary acceptance
+
+`learner-dictionary.test.ts` covers pinned local assets, shared English/Chinese
+reads, exact-spelling misses, hash/size/approval failures, bounded stalls and
+WordNet recovery. Translation tests require local editions to beat older online
+caches without rewriting them. Component checks require local provenance and
+literal text; shared synthetic fixtures verify additive metadata through backend
+sync and native import/export.
+
+`scripts/verify-learner-dictionary.cjs` uses a fresh Chrome for Testing profile and
+a copy of the production build. It blocks external lookup traffic, reads all
+1,000 entries in English and Chinese, inspects the actual closed-shadow selection
+card, and checks synthetic save/export/reset/restart preservation. Set
+`REMEMBERME_PLAYWRIGHT_PATH` to an available Playwright installation. Screenshots
+and the local receipt stay under `.qa/learner-dictionary/`. This does not prove the
+everyday installed Chrome loaded the update, production account sync, or Apple UI.
+
+See [the executed review and browser receipt](verification/2026-11-06-reviewed-dictionary.md).

@@ -19,7 +19,7 @@ export interface Definition {
   /** Optional Chinese translation; legacy vocabulary remains compatible. */
   translation?: Translation;
   /** Optional provenance; old vocabulary and backups need no migration. */
-  source?: 'wordnet' | 'dictionary-api';
+  source?: 'wordnet' | 'dictionary-api' | 'rememberme-dict';
   phonetic?: string;
   phonetics: Array<{
     text?: string;
@@ -30,6 +30,9 @@ export interface Definition {
     definitions: Array<{
       definition: string;
       example?: string;
+      glossZh?: string;
+      exampleTranslation?: string;
+      collocations?: string[];
       synonyms?: string[];
       antonyms?: string[];
     }>;
@@ -40,6 +43,8 @@ export interface Translation {
   text: string;
   target: 'zh-CN';
   source: 'mymemory' | 'hermes' | 'magpie';
+  /** Additive publication provenance; source retains the original inference provider for legacy sync/import. */
+  dictionary?: { id: 'rememberme-dict'; version: string; entryHash: string; review: 'ai-assisted-v1' };
 }
 
 /** Independent display data from the packaged IPA dictionary; not vocabulary. */

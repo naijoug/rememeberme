@@ -378,5 +378,66 @@
         ]
       }
     ]
+  },
+  {
+    "name": "reviewed-dictionary-additive-provenance",
+    "valid": true,
+    "data": [
+      {
+        "word": " Having ",
+        "count": 0.5,
+        "createdAt": 0,
+        "updatedAt": 1700000000123.5,
+        "history": [
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "https://example.test/synthetic",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": []
+            }
+          },
+          {
+            "timestamp": 1700000000123.5,
+            "context": "same synthetic sentence",
+            "url": "javascript:alert(1)",
+            "definition": {
+              "word": "having",
+              "phonetics": [],
+              "meanings": [
+                {
+                  "partOfSpeech": "verb",
+                  "definitions": [
+                    {
+                      "definition": "A synthetic meaning.",
+                      "glossZh": "合成释义",
+                      "example": "This is a synthetic example.",
+                      "exampleTranslation": "这是一个合成例句。",
+                      "collocations": [
+                        "synthetic example"
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "translation": {
+                "text": "有",
+                "source": "magpie",
+                "target": "zh-CN",
+                "dictionary": {
+                  "id": "rememberme-dict",
+                  "version": "bbbbbbbbbbbbbbbbbbbbbbbb",
+                  "entryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "review": "ai-assisted-v1"
+                }
+              },
+              "source": "rememberme-dict"
+            }
+          }
+        ]
+      }
+    ]
   }
 ]

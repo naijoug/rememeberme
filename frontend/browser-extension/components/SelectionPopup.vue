@@ -116,11 +116,12 @@ onUnmounted(stopGeometry);
       <p v-else-if="translationError && !definition.translation" class="lookup-note">{{ translationError }} <button class="rm-text-action" @click="emit('retry')">Retry</button></p>
       <p v-if="englishLoading && !definition.meanings.length" class="lookup-note" role="status">Loading English definition…</p>
       <p v-else-if="englishError && !definition.meanings.length" class="lookup-note">English definition unavailable. The translation can still be saved.</p>
-      <div v-for="(meaning, index) in definition.meanings.slice(0, 2)" :key="index" class="lookup-meaning">
+      <div v-for="(meaning, index) in (definition.source === 'rememberme-dict' ? definition.meanings : definition.meanings.slice(0, 2))" :key="index" class="lookup-meaning">
         <div class="part-of-speech">{{ meaning.partOfSpeech }}</div>
-        <div v-for="(item, itemIndex) in meaning.definitions.slice(0, 2)" :key="itemIndex" class="definition-item">
+        <div v-for="(item, itemIndex) in (definition.source === 'rememberme-dict' ? meaning.definitions : meaning.definitions.slice(0, 2))" :key="itemIndex" class="definition-item">
           <p class="definition-text">{{ item.definition }}</p>
           <p v-if="item.example" class="example"><HighlightedText :text="item.example" :word="word" /></p>
+          <p v-if="typeof item.exampleTranslation === 'string'" class="example-translation" lang="zh-CN">{{ item.exampleTranslation }}</p>
         </div>
       </div>
       <DefinitionSource :source="definition.source" />

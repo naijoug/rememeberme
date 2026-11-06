@@ -9,6 +9,15 @@ afterEach(() => { app?.unmount(); app = undefined; host?.remove(); });
 const translation = (text: string): Translation => ({ text, source: 'mymemory', target: 'zh-CN' });
 
 describe('Chinese translation display', () => {
+  it('shows local publication provenance without mislabeling it as an online lookup', () => {
+    host = document.createElement('div');
+    app = createApp(TranslationText, { translation: { text: '<img src=x> 合成', target: 'zh-CN', source: 'magpie',
+      dictionary: { id: 'rememberme-dict', version: 'b'.repeat(24), entryHash: 'a'.repeat(64), review: 'ai-assisted-v1' } } });
+    app.mount(host);
+    expect(host.querySelector('.definition-source')?.textContent).toBe('Local dictionary · Remember Me');
+    expect(host.querySelector('.definition-source')?.getAttribute('title')).toContain('AI-assisted review');
+    expect(host.querySelector('img')).toBeNull();
+  });
   it('labels Magpie accurately while rendering its output as untrusted text', () => {
     host = document.createElement('div');
     app = createApp(TranslationText, { translation: { text: '<b>合成</b>', target: 'zh-CN', source: 'magpie' } });

@@ -1,5 +1,45 @@
 # Dictionary sources and offline coverage
 
+## Reviewed Remember Me edition (2026-11-06)
+
+The extension ships **1,000 exact spellings / 2,850 senses** in edition
+`a00fbaf0fcdcf2476b5c825d`. The 251 JSON shards total 1,057,860 bytes, excluding
+the manifest and notice. These are an editorial common-word selection, not an
+examination list or a measured top-1,000 corpus ranking. All entries have explicit
+AI-assisted review decisions; 203 entries changed from the pilot drafts. This is
+not human expert certification or a guarantee of error-free, exhaustive coverage.
+
+English and Chinese first read the same approved local entry. English then falls
+back to the existing WordNet lookup; Chinese then falls back to its online-result
+cache and public service. Exact hits do not send the word to a lookup provider.
+Generated forms are not automatic aliases. A corrupt, missing or slow learner
+shard falls through safely; reads have a 1.5-second deadline, byte/hash checks,
+shared pending reads and at most 24 cached shards. Only approved packaged entries
+can be returned. The ordinary overall lookup deadlines remain in force.
+
+The UI labels these entries **Local dictionary · Remember Me**, shows bilingual
+examples, and allows scrolling through all of the compact entry's senses. IPA
+and speech remain independent. Other spellings, optional sentence explanation,
+and some speech providers can still require network access; the extension is
+not fully offline. A capability check for sentence explanation can occur even
+when the word itself is served locally.
+
+Saved snapshots use `Definition.source = 'rememberme-dict'`. The existing
+`translation.source = 'magpie'` retains the original generation-service lineage;
+optional `translation.dictionary` identifies the actual publication with
+`{ id, version, entryHash, review: 'ai-assisted-v1' }`. This additive metadata and
+optional per-sense `glossZh`, `exampleTranslation`, and `collocations` survive
+current sync, legacy backups and Apple imports without a new provider enum.
+Older clients may display the generation provider. Imported provenance is stored
+metadata, not an authenticity certificate. Source links remain hardcoded.
+
+The published dictionary is separate from vocabulary and translation caches.
+Local entries take precedence over older online caches and are not written into
+those expiring caches. Updates do not rewrite saved definitions, counts or
+history. The backend master retains both original drafts and the immutable
+reviewed edition. See [review and acceptance](verification/2026-11-06-reviewed-dictionary.md)
+and [build/review commands](../../../backend/docs/dictionary-build.md).
+
 ## Magpie update (2026-10-24)
 
 Current source supports backend Magpie translation through the `group/translator` routing group
@@ -10,7 +50,7 @@ source. Older installed clients must be updated before consuming Magpie results.
 The descriptions and dated acceptance links below retain pre-Magpie context;
 use the new deployment record for current host acceptance.
 
-Chinese translation and English definitions are independent. English reads packaged WordNet first; local hits need no external English request. WordNet attribution uses **Dictionary · WordNet** for both local and service copies; it does not imply that every lookup stayed offline. Local misses or broken assets call the built-in service. Chinese uses a separate success cache, then the same service. No user API input or login is required. The plugin never directly calls third-party dictionary/translation providers. It is not completely offline.
+Chinese translation and English definitions are independent. English reads the reviewed local edition first, then packaged WordNet; local hits need no external English request. WordNet attribution uses **Dictionary · WordNet** for both local and service copies; it does not imply that every lookup stayed offline. Local misses or broken assets call the built-in service. After a reviewed-local miss, Chinese uses a separate success cache, then the same service. No user API input or login is required. The plugin never directly calls third-party dictionary/translation providers. It is not completely offline.
 
 ## Service dictionary, translation and API keys
 
@@ -38,7 +78,7 @@ Playback uses the browser's [SpeechSynthesis voice list](https://developer.mozil
 - The entire local lookup, including suffix candidates, has a 1.5-second deadline; individual file/body reads are also bounded. English fallback finishes within an 8.5-second total service budget, leaving headroom before the card's ten-second English-message deadline.
 - Unknown words are not assigned invented English definitions. For example, the packaged `curate` entry contains only the clergy noun sense, so it must not be used as the verb definition of `curated`. A successful Chinese result may still be shown and saved separately.
 
-The current source is [WordNet](https://wordnet.princeton.edu/), using the data distribution [wordnet-db 3.1.14](https://github.com/moos/wordnet-db). Original permission and copyright notices ship in [LICENSE.txt](../public/dictionary/wordnet/LICENSE.txt), [DATA-LICENSE.txt](../public/dictionary/wordnet/DATA-LICENSE.txt) and [NOTICE.txt](../public/dictionary/wordnet/NOTICE.txt). The checked-in [metadata](../public/dictionary/wordnet/metadata.json) identifies the pinned archive and SHA-512 integrity. The WordNet source does not endorse this extension.
+The WordNet source is [WordNet](https://wordnet.princeton.edu/), using the data distribution [wordnet-db 3.1.14](https://github.com/moos/wordnet-db). Original permission and copyright notices ship in [LICENSE.txt](../public/dictionary/wordnet/LICENSE.txt), [DATA-LICENSE.txt](../public/dictionary/wordnet/DATA-LICENSE.txt) and [NOTICE.txt](../public/dictionary/wordnet/NOTICE.txt). The checked-in [metadata](../public/dictionary/wordnet/metadata.json) identifies the pinned archive and SHA-512 integrity. The WordNet source does not endorse this extension.
 
 ## Reproduce the assets
 

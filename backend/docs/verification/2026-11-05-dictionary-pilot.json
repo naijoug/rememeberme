@@ -1,0 +1,102 @@
+{
+  "build": "e49d8bd831cac4d6caa719c3",
+  "wordCount": 1000,
+  "senseCount": 2839,
+  "states": [
+    {
+      "state": "draft",
+      "count": 999
+    },
+    {
+      "state": "rejected",
+      "count": 1
+    }
+  ],
+  "usage": {
+    "requests": 1022,
+    "reservedOutput": 1635200,
+    "reportedInput": 287071,
+    "reportedOutput": 713411,
+    "unknownUsageRequests": 2,
+    "firstStartedAt": 1793944886735,
+    "lastFinishedAt": 1793946680880
+  },
+  "errors": [
+    {
+      "error": "CANCELLED",
+      "count": 2
+    },
+    {
+      "error": "INVALID_COMPLETION",
+      "count": 17
+    },
+    {
+      "error": "INVALID_ENTRY",
+      "count": 3
+    }
+  ],
+  "models": [
+    {
+      "actual_model": null,
+      "provider": null,
+      "count": 2
+    },
+    {
+      "actual_model": "deepseek/deepseek-flash",
+      "provider": "deepseek",
+      "count": 1020
+    }
+  ],
+  "reviews": [
+    {
+      "word": "a",
+      "decision": "rejected",
+      "reviewer": "codex-sample-review",
+      "note": "The alphabet sense incorrectly says cat begins with a; cat begins with c. Reject this generated draft pending correction.",
+      "content_hash": "b57d49fd612760dcb084962db4d7a4862fd171f82ce806bf6c28aec69fcc9d72"
+    }
+  ],
+  "config": {
+    "model": "deepseek/deepseek-flash",
+    "baseURL": "http://127.0.0.1:3425/v1/",
+    "maxRequests": 1200,
+    "maxOutputTokens": 1600,
+    "outputBudget": 1920000,
+    "maxAttempts": 3
+  },
+  "datasetSha256": "40a22f68dad0240e05af06472d0ef358444bef076a9e7156dc05cb9c8e298bf8",
+  "promptHash": "1d22e9ff62d2e837b69a2569b8bf6d562d0d5e64ce68f2d0aa201d8f36868153",
+  "databaseBytes": 1630208,
+  "databaseSha256": "0f93f893fcd8f4228a61add9e5afc27cc9f55448db25a71d1cd3f0d525d47b8b",
+  "integrity": "ok",
+  "foreignKeyErrors": 0,
+  "published": false,
+  "semanticReview": "Nine purposive samples inspected; one verified error rejected. Remaining entries are unapproved drafts.",
+  "localNode": "22.22.3",
+  "generationHostNode": "22.23.2",
+  "tests": {
+    "files": 18,
+    "passed": 115,
+    "dictionaryTests": 16,
+    "typecheck": true,
+    "apiBuild": true,
+    "dictionaryBuild": true,
+    "npmCi": true,
+    "gitDiffCheck": true
+  },
+  "completedResumeCheck": {
+    "newAttempts": 0,
+    "totalRequestsBefore": 1022,
+    "totalRequestsAfter": 1022
+  },
+  "backupSha256": "984ed5b905977eb88260e7046e353e43feeaa20f7f7d90183401a4e3bf0d4125",
+  "reviewExportSha256": "1c48a841b3be440d7c582290e09feaa455a31fbeec4b7e9ce994dc7b0c7357bc",
+  "localArtifacts": [
+    "backend/data/dictionary/pilot-1000.sqlite",
+    "backend/data/dictionary/pilot-1000.backup.sqlite",
+    "backend/data/dictionary/pilot-1000.review.jsonl"
+  ],
+  "timeZone": "America/Los_Angeles",
+  "firstStartedAtLocal": "2026-11-05T22:01:26.735000-08:00",
+  "lastFinishedAtLocal": "2026-11-05T22:31:20.880000-08:00"
+}

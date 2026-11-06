@@ -28,6 +28,7 @@ const latestDefinition = computed(() => props.wordEntry.currentDefinition ?? pro
           <div v-for="(item, itemIndex) in meaning.definitions" :key="itemIndex" class="definition-item">
             <p class="definition-text">{{ item.definition }}</p>
             <p v-if="item.example" class="example"><HighlightedText :text="item.example" :word="wordEntry.word" /></p>
+            <p v-if="typeof item.exampleTranslation === 'string'" class="example-translation" lang="zh-CN">{{ item.exampleTranslation }}</p>
           </div>
         </div>
       </template>

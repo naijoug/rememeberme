@@ -4,7 +4,7 @@ Reviewed against the current working-tree source on 2026-10-14. This is an inven
 
 ## Current application boundary
 
-Remember Me has a WXT browser extension using Vue 3/TypeScript and native macOS/iOS clients using SwiftUI. The extension selects words from webpages, looks up definitions/translations and stores encounters locally. Native targets provide local vocabulary, lookup/editing, backup/restore, review and sharing-draft code; platform/device acceptance and the full release remain in progress. The Node/SQLite package implements shared authentication, conditional sync and private Hermes translation and is deployed on Tencent Lighthouse. A real authenticated synthetic HTTP request through the backend and isolated Hermes has passed. GitHub app credentials are configured and login-start checks pass, while canonical public domain access is blocked pending Tencent filing; temporary word-only HTTPS lookup has passed actual installed-Chrome acceptance; exact installed extension callbacks/CORS pass on the host; completed public OAuth remains blocked. Native Settings has explicit ownership/account-selection/sync paths; real Swift/HTTP-to-local-Node/SQLite integration passes with separate synthetic device processes. Hosted/signed-device acceptance and the full website remain unfinished. Current host evidence is in [Tencent deployment](../backend/docs/tencent-deployment.md).
+Remember Me has a WXT browser extension using Vue 3/TypeScript and native macOS/iOS clients using SwiftUI. The extension selects words from webpages, looks up definitions/translations and stores encounters locally. Native targets provide local vocabulary, lookup/editing, backup/restore, review and sharing-draft code; platform/device acceptance and the full release remain in progress. The Node/SQLite package implements shared authentication, conditional sync and configured private translation (Magpie or legacy Hermes) and is deployed on Tencent Lighthouse. A real authenticated synthetic HTTP request through the backend and isolated Hermes has passed. GitHub app credentials are configured and login-start checks pass, while canonical public domain access is blocked pending Tencent filing; temporary word-only HTTPS lookup has passed actual installed-Chrome acceptance; exact installed extension callbacks/CORS pass on the host; completed public OAuth remains blocked. Native Settings has explicit ownership/account-selection/sync paths; real Swift/HTTP-to-local-Node/SQLite integration passes with separate synthetic device processes. Hosted/signed-device acceptance and the full website remain unfinished. Current host evidence is in [Tencent deployment](../backend/docs/tencent-deployment.md).
 
 ```text
 rememberme/
@@ -56,19 +56,21 @@ flowchart TD
     Mac[macOS client and durable local store] -->|Authenticated sync| API
     API --> SQLite[SQLite WAL database]
     Background --> English[English lookup service]
-    English --> WordNet[Packaged WordNet shards]
-    English -->|Miss or local failure; no login| API
+    English --> Reviewed[Approved Remember Me shards]
+    Reviewed -->|English miss or failure| WordNet[Packaged WordNet shards]
+    WordNet -->|Miss or local failure; no login| API
     API --> Online[Free Dictionary API]
     Background --> Chinese[Chinese translation service]
-    Chinese --> Cache[Browser local storage: translationCache]
-    Chinese -->|Automatic; no login| API
-    API -->|Private translation profile| Hermes[Hermes API]
-    Hermes -->|Provider failure; server fallback| MyMemory[MyMemory API]
+    Chinese --> Reviewed
+    Reviewed -->|Chinese miss or failure| Cache[IndexedDB: rememberme-translation-cache-v1]
+    Cache -->|Miss or eligible refresh; no login| API
+    API -->|Configured private provider| Provider[Magpie or legacy Hermes]
+    Provider -->|Provider failure; server fallback| MyMemory[MyMemory API]
 ```
 
 The background is part of the installed extension. It owns the vocabulary queue and provider requests; it is not a remote server. The content script extracts the selected sentence and URL and mounts its Vue card inside a closed ShadowRoot. The toolbar popup uses the same UI components/styles for the vocabulary list and reading view. Both use runtime messages for vocabulary operations. The browser context-menu handler runs in the background and uses the same storage service.
 
-English and Chinese lookup are independent. Browser-packaged English hits stay local; all online browser lookup uses the fixed product service without a user API input or login. Public routes accept only the selected word and Chinese target, with exact CORS/IP limits. Server English uses the identical WordNet assets before Free Dictionary API; Chinese prefers Hermes with server-side MyMemory fallback. Account synchronization remains separately authenticated and opt-in. The automatic-lookup release is activated and passed host-local HTTPS acceptance; the canonical origin is still blocked by filing. A temporary lookup-only Cloudflare tunnel now serves browser lookup, with its internal origin separate from account sync. Actual Chrome selection passed. Native English/disconnected Chinese paths retain their existing providers. This extension is not fully offline.
+English and Chinese lookup are independent. Browser-packaged English hits stay local; all online browser lookup uses the fixed product service without a user API input or login. Public routes accept only the selected word and Chinese target, with exact CORS/IP limits. Server English uses the identical WordNet assets before Free Dictionary API; Chinese uses the configured private provider (Magpie, or legacy Hermes) with server-side MyMemory fallback. Account synchronization remains separately authenticated and opt-in. The automatic-lookup release is activated and passed host-local HTTPS acceptance; the canonical origin is still blocked by filing. A temporary lookup-only Cloudflare tunnel now serves browser lookup, with its internal origin separate from account sync. Actual Chrome selection passed. Native English/disconnected Chinese paths retain their existing providers. This extension is not fully offline.
 
 ## State ownership and compatibility
 
@@ -77,9 +79,10 @@ English and Chinese lookup are independent. Browser-packaged English hits stay l
 | IndexedDB partitions | Background cloud repository; anonymous/account entries, outbox/checkpoints and recovery archives | Selected live entries export as the compatible plain array |
 | `local:words` | Retained original upgrade snapshot | Migration retains it; not overwritten by later account/local writes |
 | `local:backendConnection` | Origin-scoped background device credentials | Excluded from exports |
-| `local:translationCache` | Background translation service; persistent success cache, seven-day TTL, at most 500 entries | Excluded from vocabulary exports |
+| IndexedDB `rememberme-translation-cache-v1` | Background translation service; at most 10,000 entries, seven-day primary / one-hour public MyMemory freshness, 30-day maximum age | Excluded from vocabulary exports |
+| `local:translationCache` | Retained one-time migration source for the IndexedDB translation cache | Excluded from vocabulary exports |
 | `local:appearance` | Theme service; read/watched by page and popup, written by the popup | Excluded from vocabulary exports |
-| English lookup results and parsed WordNet shards | Background memory; lost when that runtime restarts | Excluded from vocabulary exports |
+| English lookup results and parsed reviewed/WordNet shards | Background memory; lost when that runtime restarts | Excluded from vocabulary exports |
 | Selection, lookup state, list navigation and preview fixtures | UI memory; preview fixtures do not access vocabulary storage | Not exported |
 
 Every extension vocabulary mutation uses one background promise queue and a strict IndexedDB transaction for entries plus outbox. The aggregate partition still needs large-store memory/quota validation. A local lost reply cannot be blindly retried; the sync layer instead freezes a unique request/body/epoch before I/O and retries exactly those bytes after restart.
@@ -106,7 +109,7 @@ Chrome/Edge production output is in `frontend/browser-extension/.output/chrome-m
 
 ## Planned architecture
 
-The older Cloudflare plan is historical context. The current backend target is Tencent Lighthouse with Node/SQLite and private Hermes; both clients have explicit account sync. The full `frontend/website/` and root npm workspaces remain deferred. The [Apple implementation plan](apple-clients-implementation-plan.md) remains in progress: signed sharing, notifications, complete device/platform acceptance and hosted integration are outstanding. See [native architecture](../frontend/apple/docs/architecture.md), [native verification](../frontend/apple/docs/testing.md) and [deployment](../backend/docs/tencent-deployment.md). Client stores remain independent, with explicit account synchronization through the shared API.
+The older Cloudflare plan is historical context. The current backend target is Tencent Lighthouse with Node/SQLite and private Magpie/Hermes translation; both clients have explicit account sync. The full `frontend/website/` and root npm workspaces remain deferred. The [Apple implementation plan](apple-clients-implementation-plan.md) remains in progress: signed sharing, notifications, complete device/platform acceptance and hosted integration are outstanding. See [native architecture](../frontend/apple/docs/architecture.md), [native verification](../frontend/apple/docs/testing.md) and [deployment](../backend/docs/tencent-deployment.md). Client stores remain independent, with explicit account synchronization through the shared API.
 
 ## Documentation map
 
@@ -127,7 +130,7 @@ Archived specifications are historical context. Design references and dated veri
 
 The default backend is a single Node process behind an existing HTTPS reverse
 proxy with SQLite WAL on persistent disk, bounded in-memory request limiting and
-a private, isolated Hermes translation profile. SQL migrations/conditional guards
+a configured private translation provider, with Magpie and legacy Hermes support. SQL migrations/conditional guards
 and legacy number semantics are retained from the Worker implementation.
 [Deployment instructions](../backend/docs/tencent-deployment.md) include a service
 unit, config templates, packaging, consistent backup and epoch restore rules.
@@ -143,3 +146,14 @@ callback/origin allowlist, completed hosted OAuth and Mac/browser cross-client
 sync remain pending. TLS renewal is manual; the recorded certificate expires
 2027-01-12 at 09:40:43 Asia/Shanghai. Historical pre-deployment checks do not
 override these later records, and local tests do not establish hosted readiness.
+
+## Independent dictionary generation
+
+The standalone backend dictionary CLI uses a separate SQLite database for
+versioned word selections, build jobs, draft entries, provider attempts and review
+audits. It does not use the account/sync database or the disposable translation
+cache. The first selection contains 1,000 editorial common-word spellings.
+Approved editions produce immutable JSON shards. The browser now reads its
+reviewed 1,000-word edition before WordNet/online translation caches; other clients
+retain their existing lookup providers and preserve the additive snapshot metadata. See the
+[operating guide](../backend/docs/dictionary-build.md).

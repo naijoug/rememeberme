@@ -1,5 +1,15 @@
 # Remember Me API
 
+## Independent dictionary build pipeline
+
+`npm run dict:build` builds the standalone SQLite dictionary CLI. It includes a
+1,000-word editorial common-word pilot, resumable generation with durable
+request/token limits, explicit draft review, approved-only release artifacts and
+verified backups. The dictionary database is separate from accounts and sync;
+generation/audit do not change live lookup. The approved pilot is now packaged for browser-local lookup with additive, legacy-compatible snapshot metadata.
+See [commands, storage, limits and review workflow](docs/dictionary-build.md) and
+[the reviewed 1,000-word integration](docs/verification/2026-11-06-reviewed-dictionary.md).
+
 ## Fast word routing deployed (2026-11-05)
 
 Active runtime: `/opt/rememberme/releases/20261105-routing-8b3ca3f-4f083178/runtime`.

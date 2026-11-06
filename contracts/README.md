@@ -32,3 +32,17 @@ Account backup merge now uses a frozen native restoreAccount candidate with curr
 Source privacy adds an optional safe-integer `sourceRevision` to wire operations, plus an account-wide idempotent clear endpoint. Legacy omitted revisions mean 0; once sources are cleared, nonempty old writes are rejected even after re-enabling. Native consent is per-device in addition to account authorization. See [API privacy contract](api-v1.md) and [local privacy evidence](../frontend/apple/docs/verification/2026-10-09-source-privacy.md). Browser-extension legacy JSON is retained; sync identity/checkpoints/queues are kept outside that export.
 
 `reminder-device-v1.schema.json` and `fixtures/reminder-device-v1.json` describe the optional account reminder-device selection contract. The Node API and Swift tests share the selection fixture; this does not change legacy vocabulary or complete-backup formats. The capability requires SQLite migration 0006 and explicit client selection.
+
+## Reviewed dictionary publication metadata (2026-11-06)
+
+Reviewed browser snapshots use `definition.source = "rememberme-dict"` and may add
+`glossZh`, `exampleTranslation`, and `collocations` to senses. They retain
+`translation.source = "magpie"` for the original generation-service lineage and
+add `translation.dictionary = { id, version, entryHash, review }` for the actual
+reviewed publication. This preserves the existing three-provider translation enum
+and current v3-capable native/server validators. The legacy array shape is unchanged.
+
+`reviewed-dictionary-additive-provenance` in `fixtures/legacy-validation.json` is
+synthetic. The browser-to-HTTP-to-SQLite harness and native codec round-trip checks
+verify preservation of this metadata and bilingual examples. Older UI may show
+only the generation provider; no native local-dictionary integration is claimed.

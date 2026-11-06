@@ -6,7 +6,7 @@ const props = defineProps<{ word?: string; meaning: string; source: string }>();
 const cached = ref(''), cachedSource = ref(''), cache = new TranslationCache(undefined, undefined, undefined, 2000);
 watch(() => [props.word, props.meaning, props.source], async (_, _old, cleanup) => {
   let cancelled = false; cleanup(() => { cancelled = true; }); cached.value = ''; cachedSource.value = '';
-  if (!props.word || ['magpie', 'hermes', 'mymemory'].includes(props.source)) return;
+  if (!props.word || ['magpie', 'hermes', 'mymemory', 'rememberme-dict'].includes(props.source)) return;
   let entry = await cache.get(props.word.toLowerCase());
   // One more bounded local read can pick up a just-finished legacy migration.
   if (!entry && !cancelled) entry = await cache.get(props.word.toLowerCase());

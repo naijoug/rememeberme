@@ -16,6 +16,11 @@ const extension = resolve(backend, '../frontend/browser-extension');
 createRequire(join(extension, 'package.json'))('fake-indexeddb/auto');
 const directory = await mkdtemp(join(tmpdir(), 'rememberme-browser-http-'));
 const definition = { word: 'synthetic', phonetics: [], meanings: [] };
+const reviewedDefinition = { ...definition, source: 'rememberme-dict',
+  meanings: [{ partOfSpeech: 'adjective', definitions: [{ definition: 'A synthetic test meaning.', glossZh: '合成测试释义',
+    example: 'This is a synthetic example.', exampleTranslation: '这是一个合成例句。', collocations: ['synthetic example'] }] }],
+  translation: { text: '合成测试释义', target: 'zh-CN', source: 'magpie',
+    dictionary: { id: 'rememberme-dict', version: 'b'.repeat(24), entryHash: 'a'.repeat(64), review: 'ai-assisted-v1' } } };
 const legacy = [{ word: 'synthetic', count: 0.5, createdAt: 0.5, updatedAt: 1e100,
   history: Array.from({ length: 26 }, (_, index) => ({ timestamp: 26 - index, definition,
     context: 'Synthetic private context ' + index, url: 'https://example.test/private/' + index })) }];
@@ -81,7 +86,7 @@ try {
     export { MAX_BODY_BYTES, MAX_EVENTS } from '../../contracts/api-v1';
     export { fixtureDisk } from 'wxt/utils/storage';`, resolveDir: extension },
     outfile: bundle, bundle: true, platform: 'node', format: 'esm', target: 'node22',
-    define: { 'import.meta.env.DEV': 'true' },
+    define: { 'import.meta.env.DEV': 'true', 'import.meta.env.VITE_CONTEXT_EXPLANATION_ENABLED': '"false"' },
     plugins: [{ name: 'synthetic-extension-storage', setup(builder) {
       builder.onResolve({ filter: /^wxt\/utils\/storage$/ }, () => ({ path: 'fixture', namespace: 'fixture' }));
       builder.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: `
@@ -130,10 +135,12 @@ try {
   assert.equal((await b.repository.status()).enabled, true, 'Account activation enables sync without a second choice');
   assert.equal((await b.repository.getWord('synthetic')).history.length, 26);
   assert.deepEqual((await b.repository.getWord('synthetic')).history.map(row => row.timestamp), legacy[0].history.map(row => row.timestamp));
-  await b.repository.saveWord('synthetic', definition, 'Another synthetic private source', 'https://example.test/private/new', 30);
+  await b.repository.saveWord('synthetic', reviewedDefinition, 'Another synthetic private source', 'https://example.test/private/new', 30);
   await b.repository.synchronize(); await a.repository.synchronize();
   assert.equal((await a.repository.getWord('synthetic')).count, 1.5);
   assert.equal((await a.repository.getWord('synthetic')).history.length, 27);
+  assert.deepEqual((await a.repository.getWord('synthetic')).history.find(row => row.timestamp === 30).definition, reviewedDefinition);
+  assert.deepEqual(JSON.parse(await a.repository.exportData()).find(row => row.word === 'synthetic').history.find(row => row.timestamp === 30).definition, reviewedDefinition);
   assert.equal((await a.repository.getWord('synthetic')).history[0].context, legacy[0].history[0].context);
   assert.ok(bodies.every(body => !body.includes('example.test/private') && !body.includes('private context')));
   const translation = await a.client.request('/api/v1/lookup/translation', 'POST', { word: 'synthetic', target: 'zh-CN' });

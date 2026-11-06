@@ -7,6 +7,9 @@
     "node": "^22.22.3"
   },
   "scripts": {
+    "dict:build": "node scripts/build-dictionary.mjs",
+    "dict:package": "node scripts/package-dictionary.mjs",
+    "dict": "node .build/dictionary-cli.mjs",
     "dev": "npm run build && node .build/server.mjs",
     "types": "wrangler types worker-configuration.d.ts --strict-vars=false",
     "typecheck": "tsc -p tsconfig.node.json",

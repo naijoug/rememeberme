@@ -5,6 +5,7 @@ import { isTranslation } from './definition-utils';
 import { SharedLookup } from './shared-lookup';
 import { TRANSLATION_SERVICE_TIMEOUT_MS } from '../../../contracts/translation-policy';
 import { TranslationCache, translationCacheFresh } from './translation-cache';
+import { reviewedDictionary } from './reviewed-lookup';
 
 export const TRANSLATION_TIMEOUT_MS = TRANSLATION_SERVICE_TIMEOUT_MS;
 const REFRESH_BACKOFF_MS = 60_000;
@@ -14,7 +15,8 @@ export class TranslationService {
   private subscribers = new Map<string, Subscribers>();
   private retryAfter = new Map<string, number>();
   constructor(private backend: Pick<PublicLookupClient, 'request'> = publicLookupClient,
-    private cache = new TranslationCache()) {}
+    private cache = new TranslationCache(),
+    private localLookup: (word: string) => Promise<Translation | null> = word => reviewedDictionary.getTranslation(word)) {}
 
   async translate(input: string, signal?: AbortSignal, onCached?: (translation: Translation) => void): Promise<Translation> {
     signal?.throwIfAborted();
@@ -29,6 +31,9 @@ export class TranslationService {
       // Subscribe before asynchronous cache I/O: another caller's cancellation
       // must not interrupt this caller or duplicate a fast cache-miss request.
       return await this.pending.run(word, async requestSignal => {
+        const local = await this.localLookup(word).catch(() => null);
+        requestSignal.throwIfAborted();
+        if (local) return local;
         const cached = await this.cache.get(word);
         requestSignal.throwIfAborted();
         if (cached && translationCacheFresh(cached)) return cached.translation;

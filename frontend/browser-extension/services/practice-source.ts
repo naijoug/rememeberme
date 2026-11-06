@@ -1,6 +1,6 @@
 import type { WordEntry } from '~/types';
 import type { PracticeWord } from '~/types/practice';
-import { isDefinition } from './definition-utils';
+import { isDefinition, isRememberMeTranslation } from './definition-utils';
 import { isEnglishWord } from './word-utils';
 
 /** Structural view of the existing partition, not a second vocabulary schema. */
@@ -39,8 +39,8 @@ export function practiceWords(state: PracticeVocabulary): { words: PracticeWord[
       prompt = hidePracticeAnswers(raw.slice(0, 2000), [entry.value.word, definition.word]);
       if (!/[\p{L}\p{N}]/u.test(prompt)) prompt = '';
       // Legacy imports retain optional fields verbatim; only project known labels.
-      const englishSource = definition.source === 'wordnet' || definition.source === 'dictionary-api' ? definition.source : 'saved';
-      source = translation?.text.trim() ? translation.source : englishSource;
+      const englishSource = ['wordnet', 'dictionary-api', 'rememberme-dict'].includes(definition.source ?? '') ? definition.source! : 'saved';
+      source = translation?.text.trim() ? isRememberMeTranslation(translation) ? 'rememberme-dict' : translation.source : englishSource;
     }
     const word = entry.value.word;
     words.push({ id: entry.id, word, prompt, meaning, source, fingerprint: JSON.stringify([word, prompt, source]) });

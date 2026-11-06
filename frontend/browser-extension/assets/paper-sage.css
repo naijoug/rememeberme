@@ -77,6 +77,7 @@
 .rm-theme .definition-text { font-size: 15px; line-height: 1.6; color: var(--rm-text); overflow-wrap: anywhere; }
 .rm-theme .example { margin-top: 10px; padding-left: 12px; border-left: 2px solid var(--rm-primary); font: italic 16px/1.55 var(--rm-word-font); color: var(--rm-muted); overflow-wrap: anywhere; }
 .rm-theme .example mark { font: inherit; font-weight: 600; color: var(--rm-primary); background: transparent; padding: 0; }
+.rm-theme .example-translation { margin-top: 4px; padding-left: 14px; font-size: 14px; line-height: 1.55; color: var(--rm-muted); overflow-wrap: anywhere; }
 .rm-theme .meaning + .meaning { margin-top: 18px; }
 .rm-theme .definition-source { margin-top: 14px; color: var(--rm-muted); font-size: 11px; line-height: 1.5; }
 .rm-theme .definition-source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }

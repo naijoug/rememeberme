@@ -21,6 +21,18 @@ private let definition: JSONValue = .object(["word": .string("synthetic"), "phon
     }
 }
 
+@Test func reviewedDictionaryMetadataRoundTripsWithoutANewProviderEnum() throws {
+    let cases = try JSONDecoder().decode(JSONValue.self, from: fixture("legacy-validation.json")).items!
+    let sample = try #require(cases.first { $0["name"]?.text == "reviewed-dictionary-additive-provenance" })
+    let original = try #require(sample["data"])
+    let entries = try LegacyCodec.decode(JSONValue.encoder().encode(original))
+    let exported = try JSONDecoder().decode(JSONValue.self, from: LegacyCodec.export(entries))
+    #expect(exported.items?[0]["history"] == original.items?[0]["history"])
+    #expect(entries[0].history.last?.definition["source"]?.text == "rememberme-dict")
+    #expect(entries[0].history.last?.definition["translation"]?["source"]?.text == "magpie")
+    #expect(entries[0].history.last?.definition["translation"]?["dictionary"]?["review"]?.text == "ai-assisted-v1")
+}
+
 @Test func javascriptNormalizationUsesByteIdentity() throws {
     let cases = try JSONDecoder().decode(JSONValue.self, from: fixture("normalization.json")).items!
     for test in cases {

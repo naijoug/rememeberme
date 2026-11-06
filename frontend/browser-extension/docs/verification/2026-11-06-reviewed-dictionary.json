@@ -1,0 +1,36 @@
+{
+  "edition": "a00fbaf0fcdcf2476b5c825d",
+  "wordCount": 1000,
+  "revisedWords": 203,
+  "tests": {
+    "extensionFiles": 47,
+    "extensionTests": 411,
+    "backendFiles": 20,
+    "backendTests": 123,
+    "nativeCompatibilityTests": 2,
+    "schemaFixtures": "passed",
+    "extensionTypecheck": "passed",
+    "backendTypecheck": "passed",
+    "chromeBuild": "passed",
+    "httpSqliteSyncHarness": "passed",
+    "localFeedbackService": "healthy"
+  },
+  "browser": {
+    "version": "a00fbaf0fcdcf2476b5c825d",
+    "checked": 1000,
+    "checks": [
+      "All 1000 English and Chinese lookups hit approved local assets without online lookup calls or vocabulary writes.",
+      "Actual selection card shows local provenance and bilingual examples inside the closed shadow root.",
+      "Synthetic save/export/reset/restart preserves publication metadata, bilingual examples and history."
+    ],
+    "limitations": [
+      "Disposable Chrome profile; not the everyday installed extension.",
+      "No authenticated production sync or Apple UI verification."
+    ],
+    "browser": "151.0.7922.34",
+    "externalLookupCalls": 0,
+    "otherExternalAttempts": [
+      "https://rememberme-lookup.couplelabs.workers.dev/api/v1/public/lookup/capabilities"
+    ]
+  }
+}

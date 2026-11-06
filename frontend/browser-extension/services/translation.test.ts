@@ -11,6 +11,24 @@ const result = (text = '合成释义', source: 'magpie' | 'mymemory' = 'magpie')
 beforeEach(() => { vi.clearAllMocks(); api.getItem.mockResolvedValue(null); vi.stubGlobal('indexedDB', new IDBFactory()); vi.stubGlobal('IDBKeyRange', IDBKeyRange); });
 afterEach(async () => { vi.useRealTimers(); for (const value of caches.splice(0)) await value.close(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
+it('prefers a reviewed local edition over an older online cache without rewriting that cache', async () => {
+  const store = cache(); store.put('synthetic', result('旧在线释义').translation); await store.flush();
+  const get = vi.spyOn(store, 'get'), put = vi.spyOn(store, 'put'), request = vi.fn();
+  const local = { ...result('审核后的本地释义').translation, dictionary: {
+    id: 'rememberme-dict' as const, version: 'b'.repeat(24), entryHash: 'a'.repeat(64), review: 'ai-assisted-v1' as const,
+  } };
+  const service = new TranslationService({ request }, store, async () => local);
+  expect(await service.translate('synthetic')).toEqual(local);
+  expect(get).not.toHaveBeenCalled(); expect(put).not.toHaveBeenCalled(); expect(request).not.toHaveBeenCalled();
+  expect((await store.get('synthetic'))?.translation.text).toBe('旧在线释义');
+});
+
+it('retains the existing online recovery path if a local learner shard fails', async () => {
+  const request = vi.fn().mockResolvedValue(result());
+  const service = new TranslationService({ request }, cache(), async () => { throw new Error('corrupt local shard'); });
+  expect((await service.translate('synthetic')).text).toBe('合成释义'); expect(request).toHaveBeenCalledTimes(1);
+});
+
 it('coalesces network recovery and persists successes independently of vocabulary across service restarts', async () => {
   const fetcher = vi.fn<typeof fetch>().mockRejectedValueOnce(new TypeError('network'))
     .mockImplementation(async () => new Response(JSON.stringify(result()), { headers: { 'Content-Type': 'application/json' } }));

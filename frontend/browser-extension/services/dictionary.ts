@@ -1,7 +1,9 @@
-/** Packaged WordNet first; all online definitions go through the built-in service. */
+/** Approved learner entries, then packaged WordNet; online misses use the built-in service. */
 import type { Definition } from '~/types';
 import { isDefinition } from './definition-utils';
 import { offlineDictionary } from './offline-dictionary';
+import { lookupPackagedDefinition } from './learner-dictionary';
+import { reviewedDictionary } from './reviewed-lookup';
 import { publicLookupClient, type PublicLookupClient } from './public-lookup';
 import { isEnglishWord } from './word-utils';
 import { SharedLookup } from './shared-lookup';
@@ -11,7 +13,7 @@ export class DictionaryService {
   private readonly CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
   private cache = new Map<string, CacheEntry>();
   private pending = new SharedLookup<Definition>(8500, 'The dictionary is taking too long. Please try again.');
-  constructor(private readonly localLookup = (word: string) => offlineDictionary.getDefinition(word),
+  constructor(private readonly localLookup = (word: string) => lookupPackagedDefinition(word, reviewedDictionary, offlineDictionary),
     private readonly backend: Pick<PublicLookupClient, 'request'> = publicLookupClient) {}
 
   async getDefinition(input: string, signal?: AbortSignal): Promise<Definition> {
