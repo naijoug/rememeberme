@@ -71,7 +71,7 @@ empty and remains separate. Source-context and URL sharing stayed disabled.
 Quitting and relaunching the actual Mac app retained its Keychain login and account word, and synchronization completed again.
 A new synthetic word `synchronization`, with a clearly marked acceptance-test
 meaning and note, was created through the actual Mac UI and synchronized. It is
-not an existing vocabulary item used as a fixture. [Mac evidence](assets/2026-10-25-account/mac-synthetic-sync.png).
+not an existing vocabulary item used as a fixture. Mac evidence: `../../.qa/verification/2026-10-25-account/mac-synthetic-sync.png` (local-only).
 
 ## Browser checkpoint before manual sign-in
 
@@ -141,10 +141,10 @@ page contains only synthetic test text and no application/storage scripts.
 | Browser's periodic sync runs, then a fresh selection card opens | Count 0 with no saved Records section; the synthetic entry is no longer active |
 
 Evidence:
-- [Browser record 1 → 2](assets/2026-10-25-account/browser-recorded-two.png)
-- [Mac receives both records](assets/2026-10-25-account/mac-received-two.png)
-- [Browser reset retains history](assets/2026-10-25-account/browser-reset-retains-history.png)
-- [Browser after test cleanup](assets/2026-10-25-account/browser-test-cleaned.png)
+- Browser record 1 → 2: `../../.qa/verification/2026-10-25-account/browser-recorded-two.png` (local-only)
+- Mac receives both records: `../../.qa/verification/2026-10-25-account/mac-received-two.png` (local-only)
+- Browser reset retains history: `../../.qa/verification/2026-10-25-account/browser-reset-retains-history.png` (local-only)
+- Browser after test cleanup: `../../.qa/verification/2026-10-25-account/browser-test-cleaned.png` (local-only)
 
 SQLite confirmed zero active account words after cleanup, a tombstone for the
 test word and the retained two history records. Integrity returned `ok` and

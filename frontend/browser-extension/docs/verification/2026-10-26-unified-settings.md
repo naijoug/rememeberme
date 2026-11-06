@@ -32,8 +32,8 @@ navigate away. The empty-vocabulary import shortcut remains available.
 - Browser observations used synthetic in-memory messages; no real account or
   vocabulary was changed. They do not establish installed-extension activation.
 
-Screenshots: [dark top](assets/2026-10-26-unified-settings/dark-top.png),
-[light lower section](assets/2026-10-26-unified-settings/light-bottom.png).
+Screenshots: dark top: `../../.qa/verification/2026-10-26-unified-settings/dark-top.png` (local-only),
+light lower section: `../../.qa/verification/2026-10-26-unified-settings/light-bottom.png` (local-only).
 
 The previous grouped account-settings report remains a historical UI checkpoint;
 this unified page supersedes its More options navigation and separate heading.

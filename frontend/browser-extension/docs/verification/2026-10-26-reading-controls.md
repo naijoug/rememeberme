@@ -29,8 +29,8 @@ The first restricted `npm ci` could not resolve registry hosts; the same locked 
 The script loads the built extension into a new temporary profile, seeds only synthetic translation-cache values, blocks lookup/account host resolution, and keeps vocabulary empty. It checks 80%, 100%, 125%, 200% browser zoom; a 360px viewport; a translated/scaled body; nested scrolling; current-site disable; another hostname remaining enabled; page reload; process restart; and saved-host re-enable. Profile and fixture server are cleaned up.
 
 - [Acceptance receipt](assets/2026-10-26-reading-controls/acceptance.json).
-- [Narrow selection card](assets/2026-10-26-reading-controls/narrow-selection.png).
-- [Website settings](assets/2026-10-26-reading-controls/website-settings.png).
+- Narrow selection card: `../../.qa/verification/2026-10-26-reading-controls/narrow-selection.png` (local-only).
+- Website settings: `../../.qa/verification/2026-10-26-reading-controls/website-settings.png` (local-only).
 
 Reproduction after building the extension:
 

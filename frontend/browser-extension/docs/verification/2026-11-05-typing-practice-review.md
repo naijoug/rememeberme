@@ -63,10 +63,10 @@ occurred. It supersedes the earlier same-version local ZIP.
 - Artifact: `.output/remember-me-0.1.6-chrome.zip`.
 - SHA-256: `55b936221f86fe307d727eae8ca0912865f5130ec212077abaab8d564e8a349c`.
 - [Acceptance receipt](assets/2026-11-05-typing-practice-review/acceptance.json).
-- [Spelling](assets/2026-11-05-typing-practice-review/spelling.png).
-- [Copy](assets/2026-11-05-typing-practice-review/copy.png).
-- [Narrow dark layout](assets/2026-11-05-typing-practice-review/narrow-dark.png).
-- [Results](assets/2026-11-05-typing-practice-review/results.png).
+- Spelling: `../../.qa/verification/2026-11-05-typing-practice-review/spelling.png` (local-only).
+- Copy: `../../.qa/verification/2026-11-05-typing-practice-review/copy.png` (local-only).
+- Narrow dark layout: `../../.qa/verification/2026-11-05-typing-practice-review/narrow-dark.png` (local-only).
+- Results: `../../.qa/verification/2026-11-05-typing-practice-review/results.png` (local-only).
 
 Reproduce with `scripts/verify-typing-practice.cjs` and the same environment variables
 listed in the [initial verification](2026-11-05-typing-practice.md). Use a separate

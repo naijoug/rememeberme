@@ -85,9 +85,9 @@ No service address or login configuration is displayed. “Privacy & support” 
 - [128 × 128 icon](../../public/icon/128.png), [editable icon](assets/icon.svg).
 - [440 × 280 promotional tile](assets/promo-small.png).
 - [1280 × 800 installed selection screenshot](assets/screenshot-selection.png).
-- [400 × 600 popup verification image](assets/popup-verification.png), for engineering review rather than store upload.
+- 400 × 600 popup verification image: `../../.qa/release/popup-verification.png` (local-only), for engineering review rather than store upload.
 - [0.1.1 upgrade/offline popup acceptance](assets/upgrade-acceptance.json).
-- [Historical 0.1.0 native toolbar and right-click acceptance](assets/native-acceptance.json) and [native screenshot](assets/native-toolbar.jpg).
+- [Historical 0.1.0 native toolbar and right-click acceptance](assets/native-acceptance.json) and native screenshot: `../../.qa/release/native-toolbar.jpg` (local-only).
 - [Formal ZIP acceptance result](assets/release-acceptance.json) and the dated verification record distinguish actual checks from remaining manual/external steps.
 
 Official requirements checked 2026-10-15: [privacy fields](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy), [images](https://developer.chrome.com/docs/webstore/images). Prepared materials do not constitute store submission or approval.

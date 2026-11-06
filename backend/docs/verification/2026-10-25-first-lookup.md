@@ -91,8 +91,8 @@ browser end-to-end timings. No test word was saved, no vocabulary was cleared,
 and no network outage was imposed on the user's machine. Mac code/install was
 unchanged; its connected lookup benefits from the backend improvement.
 
-Evidence: [first luminous lookup](../../../frontend/browser-extension/docs/verification/assets/2026-10-25-first-lookup/first-lookup-luminous.png),
-[first ingenious lookup](../../../frontend/browser-extension/docs/verification/assets/2026-10-25-first-lookup/first-lookup-ingenious.png).
+Evidence: first luminous lookup: `../../../frontend/browser-extension/.qa/verification/2026-10-25-first-lookup/first-lookup-luminous.png` (local-only),
+first ingenious lookup: `../../../frontend/browser-extension/.qa/verification/2026-10-25-first-lookup/first-lookup-ingenious.png` (local-only).
 The temporary verification tab was closed. The 0.1.3 ZIP is in the extension's
 `.output/` directory; SHA-256
 `56f28ce284acdd3ad4071cfd146c137f05c75cb48f45e981e985d0a059c7ec39`.

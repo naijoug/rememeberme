@@ -73,18 +73,18 @@ The first iPad run failed because the hidden/covered detail definition still exi
 
 1. **Before reveal — passed.** Mac and iPad show the word and recall prompt without the meaning; Mac AX tree also has no underlying meaning.
 
-![Mac before reveal](assets/2026-10-09-source-privacy/mac-before-reveal.png)
-![iPad before reveal](assets/2026-10-09-source-privacy/ipad-before-reveal.png)
+Mac before reveal: `../../.qa/verification/2026-10-09-source-privacy/mac-before-reveal.png` (local-only)
+iPad before reveal: `../../.qa/verification/2026-10-09-source-privacy/ipad-before-reveal.png` (local-only)
 
 2. **Reveal — passed.** The manual literal definition becomes visible only after Space/click/tap, with three answer controls.
 
-![Mac after reveal](assets/2026-10-09-source-privacy/mac-after-reveal.png)
-![iPad after reveal](assets/2026-10-09-source-privacy/ipad-after-reveal.png)
+Mac after reveal: `../../.qa/verification/2026-10-09-source-privacy/mac-after-reveal.png` (local-only)
+iPad after reveal: `../../.qa/verification/2026-10-09-source-privacy/ipad-after-reveal.png` (local-only)
 
 3. **Answer/complete — passed.** Remembered changes the review queue and daily remaining allowance, while forgotten count/history remain independent.
 
-![Mac review complete](assets/2026-10-09-source-privacy/mac-review-completed.png)
-![iPad review complete](assets/2026-10-09-source-privacy/ipad-review-completed.png)
+Mac review complete: `../../.qa/verification/2026-10-09-source-privacy/mac-review-completed.png` (local-only)
+iPad review complete: `../../.qa/verification/2026-10-09-source-privacy/ipad-review-completed.png` (local-only)
 
 All screenshots were saved and visually inspected from the current run. Mac captures include the native sheet plus the capture surface's blank margin; no replacement/mock screenshot was used. The final iPad sidebar title truncates at this width but actions/search remain visible. This review did not measure contrast ratios, pointer target sizes, complete keyboard focus traversal, VoiceOver speech, accessibility text sizes, landscape/Split View or signed sharing. Source-account controls were tested through presentation models and real HTTP, not by a real signed-in platform UI session. No full accessibility compliance claim is made.
 

@@ -5,7 +5,7 @@ const { execFileSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
 const path = require('node:path'), os = require('node:os'), assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..'), version = require('../package.json').version;
-const output = process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root, '.output/typing-flow-acceptance');
+const output = process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root, '.qa/typing-flow');
 const archive = process.env.REMEMBERME_TYPING_ZIP || path.join(root, '.output', `remember-me-${version}-chrome.zip`);
 const oldArchive = process.env.REMEMBERME_PREVIOUS_ZIP;
 const word = (name, meaning) => ({ word: name, count: 3, createdAt: 1, updatedAt: 2, history: [{ timestamp: 2,
@@ -181,6 +181,6 @@ const words = [word('cancel', 'To stop or withdraw an action'), word("can't", 'C
           tx.oncomplete = () => { db.close(); resolve({ rows: request.result, now: Date.now() }); };
         };
       })).catch(e => String(e)) }));
-    await practice?.screenshot({ path: path.join(os.tmpdir(), 'rememberme-typing-flow-failure.png'), fullPage: true }).catch(() => {}); throw error;
+    await practice?.screenshot({ path: path.join(output, 'failure.png'), fullPage: true }).catch(() => {}); throw error;
   } finally { await context?.close(); await rm(fixture, { recursive: true, force: true }); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

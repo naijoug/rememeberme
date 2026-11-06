@@ -31,7 +31,7 @@ ZIP: `.output/remember-me-0.1.7-chrome.zip` (local ignored build artifact).
 
 SHA-256: `d796e32df1d706faa42d83b93948c5534dcbf619a16d48bf04a28539247103bc`.
 
-[Machine receipt](assets/2026-11-05-typing-flow/acceptance.json), [dark partial input](assets/2026-11-05-typing-flow/copy-partial.png), [light](assets/2026-11-05-typing-flow/copy-light.png), [mobile](assets/2026-11-05-typing-flow/copy-mobile.png), [results](assets/2026-11-05-typing-flow/results.png), [full comparison](assets/2026-11-05-typing-flow/comparison-full.png), [focused comparison](assets/2026-11-05-typing-flow/comparison-focus.png).
+[Machine receipt](assets/2026-11-05-typing-flow/acceptance.json), dark partial input: `../../.qa/verification/2026-11-05-typing-flow/copy-partial.png` (local-only), light: `../../.qa/verification/2026-11-05-typing-flow/copy-light.png` (local-only), mobile: `../../.qa/verification/2026-11-05-typing-flow/copy-mobile.png` (local-only), results: `../../.qa/verification/2026-11-05-typing-flow/results.png` (local-only), full comparison: `../../.qa/verification/2026-11-05-typing-flow/comparison-full.png` (local-only), focused comparison: `../../.qa/verification/2026-11-05-typing-flow/comparison-focus.png` (local-only).
 
 Reproduction: run `scripts/verify-typing-practice.cjs` with `REMEMBERME_PLAYWRIGHT_PATH`, `REMEMBERME_PREVIOUS_ZIP` (0.1.6), `REMEMBERME_TYPING_ZIP` (0.1.7) and `REMEMBERME_ACCEPTANCE_DIR` pointing to disposable fixture/output paths. The harness never uses the everyday Chrome profile or real vocabulary.
 

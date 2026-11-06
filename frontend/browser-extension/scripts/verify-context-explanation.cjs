@@ -6,7 +6,7 @@ const path = require('node:path'); const os = require('node:os'); const assert =
 const root=path.resolve(__dirname,'..');
 (async()=>{
   const directory=await mkdtemp(path.join(os.tmpdir(),'rememberme-explanation-'));
-  const output=process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root,'.output/context-explanation-acceptance');await mkdir(output,{recursive:true});
+  const output=process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root,'.qa/context-explanation');await mkdir(output,{recursive:true});
   const server=createServer((_req,res)=>{res.writeHead(200,{'Content-Type':'text/html'});res.end('<!doctype html><html><title>Sentence fixture</title><style>body{font:24px Georgia;background:#faf9f6;color:#243029;padding:80px}p{max-width:650px;line-height:1.7}</style><h1>Sentence fixture</h1><p>The <span id="word">bank</span> raised interest rates.</p></html>');});
   let context;
   const results={checks:[],limitations:['Disposable Chrome and synthetic model output; no real provider quality or billing verification.','Opt-in test build only; production build and backend defaults stay disabled.']};

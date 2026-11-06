@@ -21,8 +21,8 @@ Package tests cover the 20-record bound, literal repeated/case/apostrophe/hyphen
 
 The UI test observes the original sentence before reveal, verifies neither saved nor current meaning is present in the accessibility tree before reveal, shows the saved encounter meaning after reveal, submits Remembered, and verifies forgotten count 3 and one history record remain unchanged. It never opens the source URL or signs in.
 
-- [Before reveal](assets/2026-10-26-original-sentence-review/front.png).
-- [After reveal](assets/2026-10-26-original-sentence-review/revealed.png).
+- Before reveal: `../../.qa/verification/2026-10-26-original-sentence-review/front.png` (local-only).
+- After reveal: `../../.qa/verification/2026-10-26-original-sentence-review/revealed.png` (local-only).
 
 The first Swift command was issued outside the package and exited before running tests; rerunning in RememberMeUI passed. Restricted Xcode initially failed on simulator/cache access; the same unsigned build and targeted test passed with access. No source workaround or security-setting change was made for these environment failures.
 

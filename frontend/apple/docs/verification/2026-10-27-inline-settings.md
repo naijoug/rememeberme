@@ -19,7 +19,7 @@ The passing Xcode result is `/tmp/rememberme-inline-settings-ui-final.xcresult`.
 
 ## Visual evidence and limits
 
-![Settings within the vocabulary window](assets/2026-10-27-inline-settings/settings-window.png)
+Settings within the vocabulary window: `../../.qa/verification/2026-10-27-inline-settings/settings-window.png` (local-only)
 
 The screenshot is the actual test app window. Updater controls are intentionally disabled for disposable UI tests. The test did not authenticate, synchronize production vocabulary, change notification permission, or install an update. The installed application was not replaced during the initial settings change; the authorized follow-up installation is recorded below.
 

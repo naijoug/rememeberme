@@ -27,6 +27,12 @@
 - Keep user-facing deletion confirmation. That product requirement does not require approval for editing code or disposable test fixtures.
 - Distinguish observed implementation from intended behavior. Record unresolved differences instead of silently treating either code or an old plan as the product decision.
 
+## Local QA artifacts
+
+- Store verification screenshots, recordings and disposable capture output in the relevant package's `.qa/` directory (ignored by Git), never under tracked `docs/verification/assets/` or `docs/release/assets/`.
+- Keep review summaries and useful structured acceptance receipts in documentation when appropriate. Refer to local-only images with code-formatted paths; do not add Markdown image embeds or links that imply the files exist in a fresh clone.
+- Product icons, deliberate design references and approved store artwork are source assets, not disposable verification captures.
+
 ## Finish and verify
 
 - Continue authorized local edits and checks through completion. Current automated tests use disposable mocks with no production access; fix failures caused by the change and rerun affected checks without repeated approval.

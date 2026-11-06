@@ -42,7 +42,7 @@ Executed `scripts/release-smoke.cjs` with `REMEMBERME_PLAYWRIGHT_PATH` set to th
 - **Pass:** cancel deletion retains the word; confirmed deletion removes it.
 - **Pass:** downloaded JSON equals stored vocabulary; import into empty fixture storage restores count and history independently.
 - **Pass:** malformed JSON import displays an error and preserves existing data.
-- **Pass:** [store screenshot](../release/assets/screenshot-selection.png) and [popup evidence](../release/assets/popup-verification.png) captured from the real extension UI. Popup evidence opens `popup.html` as a page, not via the native toolbar.
+- **Pass:** [store screenshot](../release/assets/screenshot-selection.png) and popup evidence: `../../.qa/release/popup-verification.png` (local-only) captured from the real extension UI. Popup evidence opens `popup.html` as a page, not via the native toolbar.
 
 The temporary browser profile was removed after the run. No ordinary user browser profile, vocabulary, cookies or real page contents were read or modified.
 

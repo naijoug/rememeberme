@@ -24,8 +24,8 @@ Chrome → cloud creation and deletion passed. The Chrome pause was found and co
 
 Evidence:
 
-- [Chrome record count 1](assets/2026-10-26-sync-recheck/chrome-sync-count1.png)
-- [Final Chrome sync enabled, empty account, six device words retained](assets/2026-10-26-sync-recheck/chrome-sync-enabled-clean.png)
+- Chrome record count 1: `../../.qa/verification/2026-10-26-sync-recheck/chrome-sync-count1.png` (local-only)
+- Final Chrome sync enabled, empty account, six device words retained: `../../.qa/verification/2026-10-26-sync-recheck/chrome-sync-enabled-clean.png` (local-only)
 
 
 ## Completed round trip after explicit AppleScript authorization
@@ -68,9 +68,9 @@ and notes. Real dictionary content and existing vocabulary were not used as fixt
 
 Additional evidence:
 
-- [Mac receives the Chrome encounter](assets/2026-10-26-sync-recheck/mac-sync-received-one.png)
-- [Chrome receives the second Mac encounter](assets/2026-10-26-sync-recheck/chrome-sync-received-two.png)
-- [Mac reset preserves history](assets/2026-10-26-sync-recheck/mac-reset-keeps-history.png)
-- [Chrome reset preserves history](assets/2026-10-26-sync-recheck/chrome-reset-keeps-history.png)
-- [Final Chrome cleanup and retained device words](assets/2026-10-26-sync-recheck/chrome-sync-final-clean.png)
-- [Final Mac cleanup](assets/2026-10-26-sync-recheck/mac-sync-final-clean.png)
+- Mac receives the Chrome encounter: `../../.qa/verification/2026-10-26-sync-recheck/mac-sync-received-one.png` (local-only)
+- Chrome receives the second Mac encounter: `../../.qa/verification/2026-10-26-sync-recheck/chrome-sync-received-two.png` (local-only)
+- Mac reset preserves history: `../../.qa/verification/2026-10-26-sync-recheck/mac-reset-keeps-history.png` (local-only)
+- Chrome reset preserves history: `../../.qa/verification/2026-10-26-sync-recheck/chrome-reset-keeps-history.png` (local-only)
+- Final Chrome cleanup and retained device words: `../../.qa/verification/2026-10-26-sync-recheck/chrome-sync-final-clean.png` (local-only)
+- Final Mac cleanup: `../../.qa/verification/2026-10-26-sync-recheck/mac-sync-final-clean.png` (local-only)

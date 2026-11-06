@@ -20,7 +20,7 @@ The rebuilt final Mac candidate was checked again after the visual fixes, using 
 
 Test cleanup removed this task's temporary Mac app registration from LaunchServices and re-registered the verified existing `/Users/guojian/Applications/Remember Me.app` (`com.rememberme.app.mac`, version 0.2.0). Both commands succeeded; the installed app retains the `rememberme:` URL claim. The installed binary and user data were not replaced.
 
-Evidence: [Mac final front](assets/2026-10-27-pr7/mac-final-dark-front.png), [Mac revealed](assets/2026-10-27-pr7/mac-final-dark-revealed.png), [Mac count/history](assets/2026-10-27-pr7/mac-final-count-history.png), [simulator light front](assets/2026-10-27-pr7/ios-review-front.png), [simulator dark contrast](assets/2026-10-27-pr7/ios-dark-contrast.png), [maximum text](assets/2026-10-27-pr7/ios-maximum-text.png).
+Evidence: Mac final front: `../../.qa/verification/2026-10-27-pr7/mac-final-dark-front.png` (local-only), Mac revealed: `../../.qa/verification/2026-10-27-pr7/mac-final-dark-revealed.png` (local-only), Mac count/history: `../../.qa/verification/2026-10-27-pr7/mac-final-count-history.png` (local-only), simulator light front: `../../.qa/verification/2026-10-27-pr7/ios-review-front.png` (local-only), simulator dark contrast: `../../.qa/verification/2026-10-27-pr7/ios-dark-contrast.png` (local-only), maximum text: `../../.qa/verification/2026-10-27-pr7/ios-maximum-text.png` (local-only).
 
 ## Physical device and signing boundary
 

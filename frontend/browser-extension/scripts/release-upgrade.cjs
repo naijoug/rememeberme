@@ -6,6 +6,8 @@ const { createHash } = require('node:crypto');
 const path = require('node:path'), os = require('node:os'), assert = require('node:assert/strict');
 (async () => {
   const root = path.resolve(__dirname, '..');
+  const output = process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root, '.qa/release-upgrade');
+  await mkdir(output, { recursive: true });
   const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
   const previousZip = process.env.REMEMBERME_PREVIOUS_ZIP;
   assert.ok(previousZip, 'Set REMEMBERME_PREVIOUS_ZIP to the accepted 0.1.0 ZIP.');
@@ -96,12 +98,12 @@ const path = require('node:path'), os = require('node:os'), assert = require('no
     assert.equal(actionState.result.value.loaded, true);
     assert.deepEqual(JSON.parse(actionState.result.value.data.data), words);
     const screenshot = await command('Page.captureScreenshot', { format: 'png' });
-    await writeFile(path.join(root, 'docs/release/assets/upgrade-toolbar.png'), Buffer.from(screenshot.data, 'base64'));
+    await writeFile(path.join(output, 'upgrade-toolbar.png'), Buffer.from(screenshot.data, 'base64'));
     await debuggerSession.detach();
     checks.push('Chrome action.openPopup opened the real browser action popup offline after update/restart; packaged UI and retained vocabulary rendered.');
     assert.deepEqual(failures, []); assert.deepEqual(localhost, []);
     const result = { version, previousVersion: oldManifest.version, extensionId: id, browser: context.browser().version(), archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), checks: [...checks, 'Process restart offline retained vocabulary; no extension-file request failures or localhost dependency were observed.'], limits: ['Completed replacement while the test browser is closed; Chrome Web Store signing/update delivery is external.', 'The stalled-read case deliberately substitutes a test transport; it does not claim a real backend outage.'] };
-    await writeFile(path.join(root, 'docs/release/assets/upgrade-acceptance.json'), JSON.stringify(result, null, 2) + '\n');
+    await writeFile(path.join(output, 'upgrade-acceptance.json'), JSON.stringify(result, null, 2) + '\n');
     console.log(JSON.stringify(result, null, 2));
   } finally { await context?.close(); await rm(fixture, { recursive: true, force: true }); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

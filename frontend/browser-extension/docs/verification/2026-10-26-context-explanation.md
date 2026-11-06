@@ -38,7 +38,7 @@ Expanded regressions include cancelling before a retry timeout, cancelling betwe
 - Consent revocation cancels an active explanation and clears presentation; server capability false hides the entry on the next card.
 - Vocabulary and legacy export stay empty throughout.
 
-[Opt-in acceptance receipt](assets/2026-10-26-context-explanation/acceptance.json), [default-build receipt](assets/2026-10-26-context-explanation/default-build-acceptance.json), [literal-result screenshot](assets/2026-10-26-context-explanation/explanation.png). The screenshot was visually inspected; its HTML-like text is a deliberate synthetic security fixture.
+[Opt-in acceptance receipt](assets/2026-10-26-context-explanation/acceptance.json), [default-build receipt](assets/2026-10-26-context-explanation/default-build-acceptance.json), literal-result screenshot: `../../.qa/verification/2026-10-26-context-explanation/explanation.png` (local-only). The screenshot was visually inspected; its HTML-like text is a deliberate synthetic security fixture.
 
 The initial browser run caught site-policy checks rejecting a trusted extension page opened in a tab. Policy checks now exempt the verified extension URL while retaining page-host checks; unit and browser reruns passed. Review also caught first-round site watchers transiently closing enabled pages when another hostname changed; a policy recheck now keeps the existing enabled page open until its own result, with a regression. Existing tests used authenticated-client mock types for public queries; they now model the actual public transport's optional AbortSignal and preserve payload/retry assertions.
 

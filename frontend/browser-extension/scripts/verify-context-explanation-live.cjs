@@ -9,7 +9,7 @@ const root=path.resolve(__dirname,'..');const origin='https://rememberme-lookup.
  const extension=path.join(temporary,'extension');await mkdir(extension);
  const {version}=JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
  execFileSync('unzip',['-q',path.join(root,`.output/remember-me-${version}-chrome.zip`),'-d',extension]);
- const output=process.env.REMEMBERME_ACCEPTANCE_DIR||path.join(root,'.output/live-explanation-acceptance');await mkdir(output,{recursive:true});
+ const output=process.env.REMEMBERME_ACCEPTANCE_DIR||path.join(root,'.qa/live-explanation');await mkdir(output,{recursive:true});
  const disabled=process.argv.includes('--expect-disabled');let context,server;
  const report={version,mode:disabled?'disabled-gate':'live-enabled',origin,checks:[],productionVocabularyUsed:false};
  try{

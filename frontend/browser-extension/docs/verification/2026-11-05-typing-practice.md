@@ -63,10 +63,10 @@ The script blocks lookup/account host resolution and imports only synthetic word
 consent in that profile to verify practice still sends no requests.
 
 - [Acceptance receipt](assets/2026-11-05-typing-practice/acceptance.json).
-- [Spelling screen](assets/2026-11-05-typing-practice/spelling.png).
-- [Copy screen](assets/2026-11-05-typing-practice/copy.png).
-- [Narrow dark screen](assets/2026-11-05-typing-practice/narrow-dark.png).
-- [Results](assets/2026-11-05-typing-practice/results.png).
+- Spelling screen: `../../.qa/verification/2026-11-05-typing-practice/spelling.png` (local-only).
+- Copy screen: `../../.qa/verification/2026-11-05-typing-practice/copy.png` (local-only).
+- Narrow dark screen: `../../.qa/verification/2026-11-05-typing-practice/narrow-dark.png` (local-only).
+- Results: `../../.qa/verification/2026-11-05-typing-practice/results.png` (local-only).
 
 Reproduce from the extension package with an available Playwright runtime:
 

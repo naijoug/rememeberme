@@ -30,8 +30,8 @@ long previews, recovery choices or disconnect controls.
 - Existing copy confirmation, cancellation, literal imported text, recovery
   confirmation and fixed-origin sign-in tests continue to pass.
 
-Screenshots: [dark](assets/2026-10-26-account-settings/dark.png),
-[light](assets/2026-10-26-account-settings/light.png).
+Screenshots: dark: `../../.qa/verification/2026-10-26-account-settings/dark.png` (local-only),
+light: `../../.qa/verification/2026-10-26-account-settings/light.png` (local-only).
 
 Source and development assets are updated. These component previews and watcher
 checks do not establish that the installed Chrome extension loaded the new UI.

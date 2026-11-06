@@ -8,7 +8,7 @@ const path = require('node:path');
 const os = require('node:os');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
-const assets = process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root, 'docs/release/assets');
+const assets = process.env.REMEMBERME_ACCEPTANCE_DIR || path.join(root, '.qa/release-smoke');
 const article = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Remember Me release acceptance</title><style>body{margin:0;background:#f7f6f2;color:#273343;font-family:Georgia,serif}main{max-width:760px;margin:65px auto}small{font:13px system-ui;letter-spacing:2px;color:#526c91}h1{font-size:42px}p{font-size:24px;line-height:1.9}</style><main><small>READING NOTES · DISPOSABLE EXAMPLE</small><h1>A pleasant discovery</h1><p>A quiet afternoon brings a little <span id="target">serendipity</span>.</p><p>Some ideas are <span id="second">ephemeral</span>, but an encounter can stay in your vocabulary.</p></main></html>`;
 (async () => {
   const fixture = await mkdtemp(path.join(os.tmpdir(), 'rememberme-release-acceptance-'));

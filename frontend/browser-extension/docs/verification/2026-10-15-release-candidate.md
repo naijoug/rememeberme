@@ -48,7 +48,7 @@ The export comparison initially included UI metadata that the legacy JSON contra
 
 ## Native menu and toolbar acceptance
 
-`scripts/release-native.cjs` loaded the same extracted ZIP in a separate headed, disposable profile. Actual native UI actions selected serendipity, opened Chrome's right-click menu, clicked Remember Me, opened the real toolbar extension popup and its menu, and clicked Privacy & support. The notification and toolbar showed one saved word/count 1; a test-owned popup read verified exactly one history. Results: [native-acceptance.json](../release/assets/native-acceptance.json); [native toolbar screenshot](../release/assets/native-toolbar.jpg).
+`scripts/release-native.cjs` loaded the same extracted ZIP in a separate headed, disposable profile. Actual native UI actions selected serendipity, opened Chrome's right-click menu, clicked Remember Me, opened the real toolbar extension popup and its menu, and clicked Privacy & support. The notification and toolbar showed one saved word/count 1; a test-owned popup read verified exactly one history. Results: [native-acceptance.json](../release/assets/native-acceptance.json); native toolbar screenshot: `../../.qa/release/native-toolbar.jpg` (local-only).
 
 The first desktop attachment stalled, so that test window timed out without a pass record. A second attempt exposed an unsupported self-message from the service worker in the verifier; it was corrected to send from a test-owned extension page. The final native run and postcondition assertions passed. Extra empty Chrome for Testing windows opened by the desktop tool were closed; test profiles were disposed.
 

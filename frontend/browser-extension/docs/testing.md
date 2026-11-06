@@ -1,5 +1,13 @@
 # Verification and browser checklist
 
+## Local capture output
+
+Verification screenshots and recordings belong in this package's ignored `.qa/`
+directory. Capture scripts default there; keep any `REMEMBERME_ACCEPTANCE_DIR`
+override under an ignored `.qa/` location too. Local screenshot paths in dated
+reports are intentionally unavailable in fresh clones. Keep concise verification
+summaries and selected structured receipts in docs; do not commit disposable images.
+
 ## Typing practice verification (0.1.7)
 
 Practice source/engine, store/account integration, client, input, page and confirmation
