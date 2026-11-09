@@ -3,7 +3,6 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Bookmark, BookmarkSolid, Refresh, WarningTriangle, Xmark, IconoirProvider } from '@iconoir/vue';
 import type { Definition, Position, WordEntry } from '~/types';
 import HighlightedText from './HighlightedText.vue';
-import DefinitionSource from './DefinitionSource.vue';
 import TranslationText from './TranslationText.vue';
 import WordHistory from './WordHistory.vue';
 import WordPronunciation from './WordPronunciation.vue';
@@ -124,7 +123,6 @@ onUnmounted(stopGeometry);
           <p v-if="typeof item.exampleTranslation === 'string'" class="example-translation" lang="zh-CN">{{ item.exampleTranslation }}</p>
         </div>
       </div>
-      <DefinitionSource :source="definition.source" />
     </div>
     <details v-if="savedWord?.history.length" class="lookup-records">
       <summary class="records-toggle">Records · {{ savedWord.history.length }}</summary>

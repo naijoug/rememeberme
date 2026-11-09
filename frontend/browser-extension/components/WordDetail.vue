@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import type { WordEntry } from '~/types';
 import WordHistory from './WordHistory.vue';
 import HighlightedText from './HighlightedText.vue';
-import DefinitionSource from './DefinitionSource.vue';
 import TranslationText from './TranslationText.vue';
 import WordPronunciation from './WordPronunciation.vue';
 
@@ -33,7 +32,6 @@ const latestDefinition = computed(() => props.wordEntry.currentDefinition ?? pro
         </div>
       </template>
       <p v-else class="definition-text">{{ latestDefinition?.translation ? 'No English definition saved for this word.' : 'No definition saved for this word.' }}</p>
-      <DefinitionSource :source="latestDefinition?.source" />
     </div>
     <WordHistory :word="wordEntry.word" :history="wordEntry.history" />
   </div>

@@ -17,8 +17,8 @@ shard falls through safely; reads have a 1.5-second deadline, byte/hash checks,
 shared pending reads and at most 24 cached shards. Only approved packaged entries
 can be returned. The ordinary overall lookup deadlines remain in force.
 
-The UI labels these entries **Local dictionary · Remember Me**, shows bilingual
-examples, and allows scrolling through all of the compact entry's senses. IPA
+The UI shows bilingual examples and allows scrolling through all of the compact
+entry's senses, without a dictionary/provider footer. IPA
 and speech remain independent. Other spellings, optional sentence explanation,
 and some speech providers can still require network access; the extension is
 not fully offline. A capability check for sentence explanation can occur even
@@ -31,7 +31,7 @@ optional `translation.dictionary` identifies the actual publication with
 optional per-sense `glossZh`, `exampleTranslation`, and `collocations` survive
 current sync, legacy backups and Apple imports without a new provider enum.
 Older clients may display the generation provider. Imported provenance is stored
-metadata, not an authenticity certificate. Source links remain hardcoded.
+metadata, not an authenticity certificate. Source and license references remain in this document and the packaged notices.
 
 The published dictionary is separate from vocabulary and translation caches.
 Local entries take precedence over older online caches and are not written into
@@ -50,13 +50,13 @@ source. Older installed clients must be updated before consuming Magpie results.
 The descriptions and dated acceptance links below retain pre-Magpie context;
 use the new deployment record for current host acceptance.
 
-Chinese translation and English definitions are independent. English reads the reviewed local edition first, then packaged WordNet; local hits need no external English request. WordNet attribution uses **Dictionary · WordNet** for both local and service copies; it does not imply that every lookup stayed offline. Local misses or broken assets call the built-in service. After a reviewed-local miss, Chinese uses a separate success cache, then the same service. No user API input or login is required. The plugin never directly calls third-party dictionary/translation providers. It is not completely offline.
+Chinese translation and English definitions are independent. English reads the reviewed local edition first, then packaged WordNet; local hits need no external English request. Source metadata distinguishes WordNet results in data and exports; the lookup UI does not show a source footer. Local misses or broken assets call the built-in service. After a reviewed-local miss, Chinese uses a separate success cache, then the same service. No user API input or login is required. The plugin never directly calls third-party dictionary/translation providers. It is not completely offline.
 
 ## Service dictionary, translation and API keys
 
 Public `POST /api/v1/public/lookup/dictionary` sends `{ word }`; the fixed gateway tries [Free Dictionary API](https://dictionaryapi.dev/) through Cloudflare egress and recovers through the Tencent server’s checked-in WordNet/fallback chain. Private/direct API calls retain the server’s local-first order. Public `POST /api/v1/public/lookup/translation` sends `{ word, target: 'zh-CN' }`; the server prefers Magpie `group/translator` and falls back to MyMemory for timeout/busy/upstream errors or an open word circuit. Profile-isolation failures remain explicit. The built-in service origin is internal configuration, not a UI input. Routes are word-only, origin-checked, limited to 30 requests/minute per IP and eight distinct concurrent requests per service. Public requests omit credentials and never enable sync or create an account.
 
-Magpie/Hermes/model credentials remain server-side. [MyMemory](https://mymemory.translated.net/doc/spec.php) receives only the word and language pair. No page sentence/URL, email or vocabulary list is sent to lookup providers. Cloudflare carries that same selected word through HTTPS and a persistent private connection. The server shares its anonymous MyMemory quota; `MYMEMORY_ENABLED=false` disables fallback. Returned text displays actual **Magpie**, **Hermes**, **MyMemory**, **WordNet** or **Free Dictionary** attribution. Translation is word-level; quality and availability are not guaranteed.
+Magpie/Hermes/model credentials remain server-side. [MyMemory](https://mymemory.translated.net/doc/spec.php) receives only the word and language pair. No page sentence/URL, email or vocabulary list is sent to lookup providers. Cloudflare carries that same selected word through HTTPS and a persistent private connection. The server shares its anonymous MyMemory quota; `MYMEMORY_ENABLED=false` disables fallback. Returned data retains provider/source metadata, while translation and definition text display without provider/source footers. Translation is word-level; quality and availability are not guaranteed.
 
 IndexedDB `rememberme-translation-cache-v1` retains at most 10,000 successful word results, with an indexed per-entry store and a 256-entry memory LRU. Keys include the lookup origin, `public:v3`, target language and normalized word. Freshness is seven days for Magpie/Hermes/legacy anonymous results and one hour for public MyMemory. Valid results remain usable for at most 30 days: the page card receives a cached preview immediately while its cancellable Port awaits revalidation. Failures retain the old result and back off for one minute. One-shot legacy/context-menu callers reuse stale results without detached refresh work. Entries older than 30 days are never served; expired rows are pruned on cache writes. The old `local:translationCache` is imported once for current public-v3 and plain anonymous keys, retained unchanged for rollback, and never confused with account caches. Writes are best-effort, cache reads have a 150 ms budget, and storage failure falls back to live lookup. Both caches remain separate from vocabulary/exports. Chinese has a nineteen-second HTTP budget, twenty-second service deadline and twenty-two-second UI deadline. The first HTTP attempt has nine seconds, exceeding the three-second Magpie plus four-second MyMemory provider budgets. Two consecutive Magpie failures open a 30-second circuit; one probe then checks recovery. Local capacity rejection does not count. The circuit is separate from sentence explanation, and existing cached results remain usable. An eligible transport/upstream failure gets one retry; structured `retryable: false`, HTTP 4xx, malformed JSON and oversized responses do not. English keeps an 8.5-second service/ten-second UI budget; the server local dictionary has 1.5 seconds and the remote fallback six seconds.
 

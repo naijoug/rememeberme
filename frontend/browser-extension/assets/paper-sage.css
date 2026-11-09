@@ -86,12 +86,9 @@
 .rm-theme .example mark { font: inherit; font-weight: 600; color: var(--rm-primary); background: transparent; padding: 0; }
 .rm-theme .example-translation { margin-top: 4px; padding-left: 14px; font-size: 14px; line-height: 1.55; color: var(--rm-muted); overflow-wrap: anywhere; }
 .rm-theme .meaning + .meaning { margin-top: 18px; }
-.rm-theme .definition-source { margin-top: 14px; color: var(--rm-muted); font-size: 11px; line-height: 1.5; }
-.rm-theme .definition-source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .rm-theme .translation-section { padding: 12px 0; margin-bottom: 10px; border-bottom: 1px solid var(--rm-border); }
 .rm-theme .translation-label { color: var(--rm-muted); font-size: 11px; margin-bottom: 5px; }
 .rm-theme .translation-text { color: var(--rm-text); font-size: 19px; line-height: 1.6; overflow-wrap: anywhere; }
-.rm-theme .translation-section .definition-source { margin-top: 5px; }
 .rm-theme .lookup-note { margin: 10px 0; color: var(--rm-muted); font-size: 12px; line-height: 1.5; }
 .rm-theme .definition-item + .definition-item { margin-top: 14px; }
 .rm-theme .rm-banner { margin: 12px 20px 0; padding: 10px 12px; border-radius: 7px; font-size: 13px; line-height: 1.5; }

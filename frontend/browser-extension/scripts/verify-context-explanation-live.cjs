@@ -41,15 +41,15 @@ const root=path.resolve(__dirname,'..');const origin='https://rememberme-lookup.
    const cancelBox=(await cdp.send('DOM.getBoxModel',{backendNodeId:cancelNode.backendNodeId})).model.border;
    assert.ok(cancelBox[0]-enableBox[2]>=11,'Consent controls must have visible separation inside the closed shadow root');
    await click('Cancel');assert.equal(posts.length,0);
-   await click('Explain this sentence');await click('Enable and explain');await poll(async()=>/AI explanation/.test(await cardText()),'finance explanation');
+   await click('Explain this sentence');await click('Enable and explain');await poll(async()=>/Meaning in this sentence/.test(await cardText()),'finance explanation');
    assert.match(await cardText(),/银行|金融/);await page.screenshot({path:path.join(output,'live-finance.png')});
    await page.keyboard.press('Escape');await page.locator('p').evaluate(p=>{p.innerHTML='We sat on the <span id="word">bank</span> of the river.';});
-   await page.locator('#word').dblclick();await poll(async()=>/Explain this sentence/.test(await cardText()),'second entry');await click('Explain this sentence');await poll(async()=>/AI explanation/.test(await cardText()),'river explanation');
+   await page.locator('#word').dblclick();await poll(async()=>/Explain this sentence/.test(await cardText()),'second entry');await click('Explain this sentence');await poll(async()=>/Meaning in this sentence/.test(await cardText()),'river explanation');
    assert.match(await cardText(),/河岸|岸边|河畔/);await page.screenshot({path:path.join(output,'live-river.png')});
    assert.equal(posts.length,2);for(const item of posts){assert.equal(item.url,origin+'/api/v1/public/lookup/context-explanation');assert.deepEqual(Object.keys(item.body).sort(),['context','schemaVersion','target','word']);}
    assert.notEqual(posts[0].body.context,posts[1].body.context);report.checks.push('Exact ZIP: consent controls are separated, cancel sends no source; live finance/river meanings differ; exact source fields only');
    const popup=await context.newPage();await popup.goto(`chrome-extension://${id}/popup.html`);await popup.getByRole('button',{name:'Settings',exact:true}).click();await popup.getByRole('button',{name:'Disable sentence explanation',exact:true}).click();
-   await poll(async()=>!/AI explanation/.test(await cardText()),'clear after disable');
+   await poll(async()=>!/Meaning in this sentence/.test(await cardText()),'clear after disable');
    const words=await popup.evaluate(()=>chrome.runtime.sendMessage({type:'GET_WORDS'}));assert.deepEqual(words.data,[]);
    const exported=await popup.evaluate(()=>chrome.runtime.sendMessage({type:'EXPORT_DATA'}));assert.equal(exported.data,'[]');
    report.checks.push('Settings revocation clears explanation; no saved words or export changes');

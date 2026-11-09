@@ -9,21 +9,20 @@ afterEach(() => { app?.unmount(); app = undefined; host?.remove(); });
 const translation = (text: string): Translation => ({ text, source: 'mymemory', target: 'zh-CN' });
 
 describe('Chinese translation display', () => {
-  it('shows local publication provenance without mislabeling it as an online lookup', () => {
+  it('renders local translation literally without a source footer', () => {
     host = document.createElement('div');
     app = createApp(TranslationText, { translation: { text: '<img src=x> 合成', target: 'zh-CN', source: 'magpie',
       dictionary: { id: 'rememberme-dict', version: 'b'.repeat(24), entryHash: 'a'.repeat(64), review: 'ai-assisted-v1' } } });
     app.mount(host);
-    expect(host.querySelector('.definition-source')?.textContent).toBe('Local dictionary · Remember Me');
-    expect(host.querySelector('.definition-source')?.getAttribute('title')).toContain('AI-assisted review');
+    expect(host.querySelector('.definition-source')).toBeNull();
+    expect(host.querySelector('.translation-text')?.textContent).toBe('<img src=x> 合成');
     expect(host.querySelector('img')).toBeNull();
   });
-  it('labels Magpie accurately while rendering its output as untrusted text', () => {
+  it('renders online translation as untrusted text without a provider footer', () => {
     host = document.createElement('div');
     app = createApp(TranslationText, { translation: { text: '<b>合成</b>', target: 'zh-CN', source: 'magpie' } });
     app.mount(host);
-    expect(host.querySelector('.definition-source')?.textContent).toContain('Magpie');
-    expect(host.querySelector('.definition-source')?.textContent).not.toContain('MyMemory');
+    expect(host.querySelector('.definition-source')).toBeNull();
     expect(host.querySelector('b')).toBeNull();
     expect(host.querySelector('.translation-text')?.textContent).toBe('<b>合成</b>');
   });
@@ -36,7 +35,7 @@ describe('Chinese translation display', () => {
     expect(original.text).toBe('哄騙 哄骗 [hong3 pian4]');
     props.translation = translation('女 [nu:3]'); await nextTick();
     expect(host.querySelector('.translation-text')?.textContent).toBe('女 [nǚ]');
-    expect(host.querySelector('.definition-source')?.textContent).toContain('MyMemory');
+    expect(host.querySelector('.definition-source')).toBeNull();
   });
 
   it('keeps imported/provider markup as literal text after formatting', () => {

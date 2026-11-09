@@ -62,7 +62,6 @@ onUnmounted(() => { disposed = true; cancel(); capabilityController?.abort(); st
       <h3>Meaning in this sentence</h3><p>{{ result.contextualMeaning }}</p>
       <h3>Sentence translation</h3><p>{{ result.sentenceTranslation }}</p>
       <p v-if="result.usageNote">{{ result.usageNote }}</p>
-      <p class="definition-source">AI explanation · Magpie · Not saved</p>
     </div>
   </section>
 </template>

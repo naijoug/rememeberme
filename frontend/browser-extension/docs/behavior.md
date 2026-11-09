@@ -189,14 +189,14 @@ are preserved.
 
 Release 0.1.5 displays Explain this sentence only after the personal lookup service reports a compatible enabled capability. User consent remains off until accepted. Before first use, the card asks permission to send this word and its original sentence to the translation service/model provider. Cancel sends no context; later explanations still require an explicit click. URL, title, full page and saved vocabulary are excluded.
 
-Results show contextual meaning, sentence translation and an optional usage note as literal text. They remain separate from definitions, recording and exports. Closing/changing the card, selecting Cancel explanation, disabling the site or disabling sentence explanation in Settings clears the relevant presentation/subscription; another active caller can retain shared work. Errors allow manual retry without changing count/history. Capability errors/off hide the entry; server-side disable also rejects actual requests. No automatic explanation retry or MyMemory fallback is used.
+Results show contextual meaning, sentence translation and an optional usage note as literal text, without a provider/not-saved footer. The first-use consent still explains transmission and temporary storage. They remain separate from definitions, recording and exports. Closing/changing the card, selecting Cancel explanation, disabling the site or disabling sentence explanation in Settings clears the relevant presentation/subscription; another active caller can retain shared work. Errors allow manual retry without changing count/history. Capability errors/off hide the entry; server-side disable also rejects actual requests. No automatic explanation retry or MyMemory fallback is used.
 
 PR 7 additionally passed eight bounded live-model samples, public off/on checks and an exact-ZIP finance/river explanation flow. The published policy describes local metadata and upstream retention limits; no zero-retention claim is made. These samples are not a general accuracy or availability guarantee. See the 2026-10-27 release record for the remaining native-device checks.
 
 ## Reviewed dictionary snapshots
 
-The 1,000-word reviewed edition shows Local dictionary · Remember Me and bilingual
-examples. The compact approved entry's full senses are available in the scrolling
+Reviewed entries show bilingual examples without dictionary/provider source footers.
+The selection card, vocabulary detail and history translation share this presentation. The compact approved entry's full senses are available in the scrolling
 card; legacy/WordNet card previews retain their existing limits. A published hit
 precedes an older online translation cache. It does not rewrite a saved encounter.
 Definitions retain source/version/hash metadata through save, reset and export.

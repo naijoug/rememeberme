@@ -55,7 +55,7 @@ Physical IME, screen-reader speech and the everyday installed toolbar remain sep
 checks. Injected account tests are not hosted-sync acceptance. Watcher health alone
 cannot prove an installed browser loaded the practice entry.
 
-Magpie regressions cover persisted v3 caches, literal source rendering, all
+Magpie regressions cover persisted v3 caches, literal translation rendering without source footers, all
 three translation sources through import/export, unchanged reset/history
 semantics, and real loopback HTTP through the backend Magpie adapter with a
 synthetic provider. Older installed clients require the 0.1.2 update before
@@ -144,7 +144,7 @@ Mark each case **Not run**, **Pass**, **Fail**, or **Blocked**, with evidence. T
 | Select text and open its right-click menu | Remember Me appears; a valid word saves and reports the new count |
 | Select multiple words or non-English text, then use the menu | Validation error; no lookup or save |
 | Open the context menu without selected text | Remember Me selection item is absent |
-| Select `serendipity` when external services are unavailable | Real packaged English definition remains usable with WordNet attribution; Chinese failure is separate |
+| Select `serendipity` when external services are unavailable | Real packaged English definition remains usable without a source footer; Chinese failure is separate |
 | Select Having, then close and select it again | Offline `have` verb definition, Having title and Base form: have caption; no Vue attribute warning; saving retains the selected word |
 | Open technical, scroll its long reading body to the end and continue scrolling | The bookmark counter stays beside the word; internal edge scrolling does not move the page or dismiss the card |
 | Scroll the page, or drag text from inside the card and release outside | Card remains open; a subsequent deliberate outside click still dismisses it |
@@ -304,8 +304,7 @@ For disposable browser acceptance, build normally and run `scripts/verify-readin
 `learner-dictionary.test.ts` covers pinned local assets, shared English/Chinese
 reads, exact-spelling misses, hash/size/approval failures, bounded stalls and
 WordNet recovery. Translation tests require local editions to beat older online
-caches without rewriting them. Component checks require local provenance and
-literal text; shared synthetic fixtures verify additive metadata through backend
+caches without rewriting them. Component checks require literal text and no source/status footers; shared synthetic fixtures verify additive metadata through backend
 sync and native import/export.
 
 `scripts/verify-learner-dictionary.cjs` uses a fresh Chrome for Testing profile and

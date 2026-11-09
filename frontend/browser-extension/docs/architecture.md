@@ -281,7 +281,8 @@ existing paths. App-wide network independence is not claimed.
 The optional dictionary publication metadata is additive. The original Magpie
 generation identifier stays in `Translation.source` for current wire/native
 compatibility; `Translation.dictionary` and `Definition.source` identify Remember
-Me's reviewed publication. New labels read that metadata; raw text stays literal.
+Me's reviewed publication. Source metadata is retained in data/exports; the UI omits
+dictionary, translation-provider and explanation-status footers. Raw text stays literal.
 The separate backend SQLite master owns draft/review history and approved editions.
 Its database and private review evidence never ship to the extension.
 

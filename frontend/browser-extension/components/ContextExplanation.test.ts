@@ -16,6 +16,8 @@ it('requires confirmation and preserves untrusted model text literally',async()=
   expect(mocks.port).toHaveBeenCalledTimes(1);click('Cancel');await nextTick();expect(mocks.port).toHaveBeenCalledTimes(1);
   click('Explain this sentence');await nextTick();click('Enable and explain');
   await vi.waitFor(()=>expect(root.textContent).toContain(result.contextualMeaning));expect(root.querySelector('img')).toBeNull();
+  expect(root.querySelector('.definition-source')).toBeNull();
+  expect(root.textContent).toContain(result.sentenceTranslation);
   expect(mocks.port.mock.calls[1][1]).toEqual({schemaVersion:1,word:'bank',context:'The bank raised interest rates.',target:'zh-CN'});
 });
 it('cancels on selection changes and consent revocation, keeping late results hidden',async()=>{
