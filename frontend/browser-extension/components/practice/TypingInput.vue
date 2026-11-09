@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { asciiLower } from '~/services/practice-engine';
-const props = withDefaults(defineProps<{ modelValue: string; target?: string; disabled: boolean; auto?: boolean }>(), { auto: false });
+const props = withDefaults(defineProps<{ modelValue: string; target?: string; disabled: boolean; auto?: boolean; obscured?: boolean }>(), { auto: false, obscured: false });
 const emit = defineEmits<{
   'update:modelValue': [value: string]; submit: []; complete: []; mistake: []; assisted: []; composing: [value: boolean];
 }>();
@@ -9,7 +9,9 @@ const composing = ref(false), failed = ref(false);
 const input = ref<HTMLInputElement>();
 let reset: ReturnType<typeof setTimeout> | undefined, completing = false;
 const typed = computed(() => props.modelValue.trim());
-const letters = computed(() => [...(props.target || typed.value)]);
+const letters = computed(() => Array.from({ length: Math.max(props.target?.length ?? 0, typed.value.length) }, (_, index) => ({
+  reference: props.target?.[index] ?? '', entered: typed.value[index] ?? '',
+})));
 defineExpose({ focus: () => input.value?.focus(), insert });
 function insert(character: string) {
   const element = input.value;
@@ -42,20 +44,20 @@ onUnmounted(() => clearTimeout(reset));
 </script>
 <template>
   <div class="typing-surface" :class="{ 'typing-error': failed, 'typing-disabled': disabled }" @click="input?.focus()">
-    <span v-if="target" id="practice-target" class="practice-sr-only">Saved spelling: {{ target }}</span>
+    <span v-if="target && !obscured" id="practice-target" class="practice-sr-only">参考拼写：{{ target }}</span>
     <div class="typing-word" aria-hidden="true">
-      <span v-if="!target && !typed" class="typing-placeholder">Type the word</span>
-      <span v-for="(letter, index) in letters" :key="index" :class="{
-        'letter-correct': !!target && index < typed.length && asciiLower(typed[index] ?? '') === asciiLower(letter),
-        'letter-wrong': !!target && index < typed.length && asciiLower(typed[index] ?? '') !== asciiLower(letter),
+      <span v-if="!target && !typed" class="typing-placeholder">输入单词</span>
+      <span v-for="(letter, index) in letters" :key="index" class="typing-letter" :class="{
+        'letter-correct': !!target && !!letter.entered && asciiLower(letter.entered) === asciiLower(letter.reference),
+        'letter-wrong': !!target && !!letter.entered && asciiLower(letter.entered) !== asciiLower(letter.reference),
         'letter-cursor': !disabled && !failed && index === typed.length,
-      }">{{ letter }}</span>
+      }"><span class="letter-reference" :class="{ 'is-frosted': obscured, 'is-covered': !!letter.entered }">{{ letter.reference || '\u00a0' }}</span><span v-if="letter.entered" class="letter-entered">{{ letter.entered }}</span></span>
     </div>
-    <label for="practice-answer" class="practice-sr-only">Your spelling</label>
+    <label for="practice-answer" class="practice-sr-only">输入拼写</label>
     <input id="practice-answer" ref="input" class="typing-capture" type="text" :value="modelValue" :disabled="disabled" maxlength="500"
-      autocomplete="off" autocapitalize="off" autocorrect="off" :spellcheck="false" :aria-describedby="target ? 'practice-target practice-input-help' : 'practice-input-help'"
+      autocomplete="off" autocapitalize="off" autocorrect="off" :spellcheck="false" :aria-describedby="target && !obscured ? 'practice-target practice-input-help' : 'practice-input-help'"
       @input="update" @compositionstart="composition(true)" @compositionend="composition(false); update($event)"
       @paste="emit('assisted')" @drop="emit('assisted')" @keydown="keydown" />
-    <span id="practice-input-help" class="practice-sr-only">{{ auto ? 'Type the displayed word. Correct words advance automatically. A typo resets this word.' : 'Type the saved word from memory, then press Enter.' }}</span>
+    <span id="practice-input-help" class="practice-sr-only">{{ obscured ? '听发音输入单词。Alt+P 重听。' : '照着单词输入。' }}{{ auto ? '输入正确后自动继续，输入错误会重置当前单词。' : '按 Enter 确认。' }}</span>
   </div>
 </template>

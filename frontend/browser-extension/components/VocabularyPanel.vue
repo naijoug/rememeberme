@@ -145,7 +145,7 @@ async function importFile(event: Event) {
         </div>
       </div>
       <template v-else-if="words.length">
-        <button class="rm-button" :disabled="busy || loading" @click="emit('practice')">Typing practice</button>
+        <button class="rm-button" :disabled="busy || loading" @click="emit('practice')">单词听写</button>
         <div class="list-tools">
           <label class="search-field"><Search width="17" height="17" aria-hidden="true" /><input v-model="query" type="search" aria-label="Search vocabulary" placeholder="Find a word" /></label>
           <div class="list-heading"><div><strong>Vocabulary</strong><span class="word-total">{{ words.length }} {{ words.length === 1 ? 'word' : 'words' }}</span></div>

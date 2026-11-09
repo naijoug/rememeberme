@@ -52,9 +52,10 @@ describe('practice engine', () => {
     expect(s.invalidated).toBe(2);
     reconcilePractice(s, []); expect(practiceSummary(s).total).toBe(0);
   });
-  it('caps rounds at ten words and rejects empty recall sources', () => {
+  it('caps rounds at ten words and permits audio dictation without a saved meaning', () => {
     expect(newPracticeSession('a', null, 'copy', Array.from({ length: 40 }, (_, i) => ({ ...words[0], id: String(i) }))).words).toHaveLength(10);
-    expect(() => newPracticeSession('a', null, 'recall', [{ ...words[0], prompt: '' }])).toThrow('No saved meanings');
+    expect(newPracticeSession('a', null, 'recall', [{ ...words[0], prompt: '' }]).words).toHaveLength(1);
+    expect(() => newPracticeSession('a', null, 'recall', [])).toThrow('No eligible words');
   });
 });
 describe('practice source', () => {

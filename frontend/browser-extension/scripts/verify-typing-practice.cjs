@@ -39,11 +39,15 @@ const words = [word('cancel', 'To stop or withdraw an action'), word("can't", 'C
     assert.ok(reply?.success, JSON.stringify(reply)); return reply.data;
   };
   const get = () => send(practice, { type: 'PRACTICE_GET' });
-  async function click(page, label) { await page.bringToFront(); await page.getByRole('button', { name: label, exact: true }).click(); }
+  async function click(page, label) {
+    await page.bringToFront();
+    if (label === '开始新一轮' && !await page.getByRole('button', { name: label, exact: true }).count()) await page.getByRole('button', { name: '听写设置', exact: true }).click();
+    await page.getByRole('button', { name: label, exact: true }).click();
+  }
   async function poll(check, name) { for (let n = 0; n < 120; n++) { if (await check()) return; await new Promise(r => setTimeout(r, 50)); } throw new Error('Timed out: ' + name); }
-  const input = () => practice.getByLabel('Your spelling', { exact: true });
+  const input = () => practice.getByLabel('输入拼写', { exact: true });
   async function ready() { await practice.bringToFront(); await poll(() => input().isEnabled(), 'active typing input'); }
-  async function resume() { await click(practice, 'Resume'); await ready(); }
+  async function resume() { await click(practice, '继续'); await ready(); }
   async function finishCopy() {
     for (let n = 0; n < 35; n++) {
       const v = await get(); if (v.session.completed) return;
@@ -55,8 +59,8 @@ const words = [word('cancel', 'To stop or withdraw an action'), word("can't", 'C
     throw new Error('Round did not terminate');
   }
   async function openSettingsClear(confirm = true) {
-    await click(practice, 'Practice settings'); await click(practice, 'Clear practice records');
-    await click(practice, confirm ? 'Clear records' : 'Cancel');
+    await click(practice, '听写设置'); await click(practice, '清除练习记录');
+    await click(practice, confirm ? '清除记录' : '取消');
   }
   try {
     await unpack(oldArchive || archive); await launch();
@@ -85,18 +89,18 @@ const words = [word('cancel', 'To stop or withdraw an action'), word("can't", 'C
         tx.oncomplete = () => { db.close(); resolve(); }; tx.onerror = () => { db.close(); reject(tx.error); };
       };
     }), lookupOrigin);
-    const newPage = context.waitForEvent('page'); await click(popup, 'Typing practice'); practice = await newPage;
+    const newPage = context.waitForEvent('page'); await click(popup, '单词听写'); practice = await newPage;
     await practice.waitForURL(`chrome-extension://${id}/practice.html`);
-    await practice.getByRole('heading', { name: 'Ready to type?' }).waitFor();
-    assert.equal(await practice.getByRole('button', { name: 'Copy', exact: true }).getAttribute('aria-pressed'), 'true');
+    await practice.getByRole('heading', { name: '准备好听写了吗？' }).waitFor();
+    assert.equal(await practice.getByRole('button', { name: '看词跟写', exact: true }).getAttribute('aria-pressed'), 'true');
     await practice.bringToFront(); await practice.keyboard.press('Enter'); await ready();
     await practice.locator('.practice-meaning').filter({ hasText: '取消，撤销；删去' }).waitFor();
-    await practice.locator('.practice-ipa').filter({ hasText: 'AmE:' }).waitFor();
+    await practice.locator('.practice-ipa').filter({ hasText: 'AmE' }).waitFor();
     assert.equal(await input().evaluate(el => getComputedStyle(el).opacity), '0');
     assert.equal(await practice.getByRole('button', { name: 'Check spelling', exact: true }).count(), 0);
     assert.equal(await practice.getByRole('button', { name: 'Next word', exact: true }).count(), 0);
     await input().pressSequentially('ca'); assert.equal(await practice.locator('.letter-correct').count(), 2);
-    await poll(() => practice.locator('.letter-correct').evaluateAll(letters => letters.every(el => getComputedStyle(el).color === 'rgb(120, 201, 151)')), 'settled correct-letter colors');
+    await poll(() => practice.locator('.letter-correct').evaluateAll(letters => letters.every(el => getComputedStyle(el).color === 'rgb(97, 183, 130)')), 'settled correct-letter colors');
     await practice.screenshot({ path: path.join(output, 'copy-partial.png'), fullPage: false });
     await input().press('z'); await poll(() => practice.locator('.typing-error').isVisible(), 'red typo feedback');
     await poll(async () => await input().inputValue() === '', 'automatic word reset');
@@ -107,17 +111,17 @@ const words = [word('cancel', 'To stop or withdraw an action'), word("can't", 'C
     await finishCopy(); assert.equal(await send(popup, { type: 'EXPORT_DATA' }), baseline);
     checks.push('Default Copy: direct letter coloring, typo flash/reset, no Enter/Next/Check, automatic advance and typo-aware scoring');
     await send(popup, { type: 'IMPORT_DATA', jsonData: JSON.stringify(words.slice(1)) }); baseline = await send(popup, { type: 'EXPORT_DATA' });
-    await click(practice, 'Practice again'); await ready();
+    await click(practice, '再练一轮'); await ready();
     const before = (await get()).session.current;
     await input().pressSequentially(before.word); await poll(async () => (await get()).session.current?.turnId !== before.turnId, 'next distinct word'); await ready();
     const current = (await get()).session.current;
     await input().pressSequentially(current.word.slice(0, 2));
-    await click(practice, 'Pause'); assert.equal(await input().isEnabled(), false); await resume(); assert.equal(await input().inputValue(), current.word.slice(0, 2));
+    await click(practice, '暂停'); assert.equal(await input().isEnabled(), false); await resume(); assert.equal(await input().inputValue(), current.word.slice(0, 2));
     await practice.evaluate(() => chrome.storage.local.set({ appearance: 'light' })); await practice.locator('[data-theme="light"]').waitFor();
-    await poll(() => practice.locator('.typing-word > span:not(.letter-correct):not(.letter-wrong)').evaluateAll(letters => letters.every(el => getComputedStyle(el).color === 'rgb(49, 56, 75)')), 'settled light-theme word contrast');
+    await poll(() => practice.locator('.typing-word > span:not(.letter-correct):not(.letter-wrong)').evaluateAll(letters => letters.every(el => getComputedStyle(el).color === 'rgb(102, 114, 105)')), 'settled light-theme word contrast');
     await practice.screenshot({ path: path.join(output, 'copy-light.png'), fullPage: false });
     await practice.evaluate(() => chrome.storage.local.set({ appearance: 'dark' })); await practice.locator('[data-theme="dark"]').waitFor();
-    await poll(() => practice.locator('.letter-correct').evaluateAll(letters => letters.every(el => getComputedStyle(el).color === 'rgb(120, 201, 151)')), 'settled dark-theme colors');
+    await poll(() => practice.locator('.letter-correct').evaluateAll(letters => letters.every(el => getComputedStyle(el).color === 'rgb(97, 183, 130)')), 'settled dark-theme colors');
     await practice.setViewportSize({ width: 390, height: 844 }); assert.ok(await practice.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await practice.screenshot({ path: path.join(output, 'copy-mobile.png'), fullPage: true }); await practice.setViewportSize({ width: 1280, height: 800 });
     const sid = (await get()).session.id; await context.close(); context = undefined; await launch();
@@ -125,42 +129,40 @@ const words = [word('cancel', 'To stop or withdraw an action'), word("can't", 'C
     assert.equal((await get()).session.id, sid); assert.equal((await get()).session.current.interrupted, true);
     await input().fill(''); await finishCopy(); assert.equal(await send(popup, { type: 'EXPORT_DATA' }), baseline);
     checks.push('Continuous multi-word input, explicit pause/resume, process restart, light/dark and 390px layout');
-    await click(practice, 'Spelling'); await click(practice, 'New round'); await ready();
-    assert.equal((await get()).session.current.word, undefined);
+    await click(practice, '模糊听写'); await click(practice, '开始新一轮'); await ready();
     const recalled = (await get()).session.current;
-    const correct = words.find(w => w.history[0].definition.meanings[0].definitions[0].definition === recalled.prompt).word;
-    await input().fill(correct); assert.equal((await get()).session.current.turnId, recalled.turnId); await input().press('Enter');
-    await poll(async () => (await get()).session.current?.turnId !== recalled.turnId, 'spelling Enter result');
-    await practice.locator('.practice-answer-feedback').filter({ hasText: correct }).waitFor();
-    assert.equal(await input().count(), 0);
-    await practice.screenshot({ path: path.join(output, 'spelling-feedback.png'), fullPage: false });
-    await click(practice, 'Continue'); await ready();
-    assert.equal(await practice.locator('.practice-answer-feedback').count(), 0);
-    assert.equal((await get()).session.current.word, undefined);
-    await input().fill('wrong'); await input().press('Enter');
-    await practice.locator('.practice-answer-feedback').filter({ hasText: 'Incorrect' }).waitFor();
-    await practice.screenshot({ path: path.join(output, 'spelling-incorrect.png'), fullPage: false });
-    await click(practice, 'Copy'); await click(practice, 'Cancel'); assert.equal((await get()).session.mode, 'recall');
-    await click(practice, 'Copy'); await click(practice, 'Start new round'); await ready();
+    assert.ok(recalled.word);
+    assert.equal(await practice.locator('.letter-reference.is-frosted').count(), recalled.word.length);
+    assert.equal(await practice.locator('#practice-target').count(), 0);
+    assert.equal(await practice.locator('.practice-meaning').getAttribute('aria-hidden'), 'true');
+    await input().pressSequentially(recalled.word.slice(0, 1));
+    assert.equal(await practice.locator('.letter-entered').evaluate(el => getComputedStyle(el).filter), 'none');
+    await practice.screenshot({ path: path.join(output, 'dictation-partial.png'), fullPage: false });
+    await input().fill(recalled.word);
+    await poll(async () => (await get()).session.current?.turnId !== recalled.turnId, 'dictation automatic advance');
+    await ready();
+    const next = (await get()).session.current;
+    assert.equal(await practice.locator('.letter-reference.is-frosted').count(), next.word.length);
+    await click(practice, '看词跟写'); await click(practice, '取消'); assert.equal((await get()).session.mode, 'recall');
+    await click(practice, '看词跟写'); await click(practice, '开始新一轮'); await ready();
     const activeWord = (await get()).session.current.word; await input().pressSequentially(activeWord.slice(0, 2));
     const entries = await send(popup, { type: 'GET_WORDS' }), otherWord = entries.find(e => e.word !== activeWord);
     await send(popup, { type: 'DELETE_WORD', word: otherWord.id });
-    await practice.getByText('1 changed or removed words excluded', { exact: true }).waitFor(); assert.equal(await input().inputValue(), activeWord.slice(0, 2));
-    const tab = await context.newPage(); await tab.goto(practice.url()); await click(tab, 'Resume'); await poll(async () => !await input().isEnabled(), 'second tab takeover');
+    await practice.getByText('已排除 1 个已更改或删除的单词', { exact: true }).waitFor(); assert.equal(await input().inputValue(), activeWord.slice(0, 2));
+    const tab = await context.newPage(); await tab.goto(practice.url()); await click(tab, '继续'); await poll(async () => !await input().isEnabled(), 'second tab takeover');
     await tab.close(); await resume(); await input().fill(''); await finishCopy();
-    await practice.getByText(/Retries .*Hints .*Assisted .*Interrupted .*Skipped/).waitFor();
+    await practice.getByText(/重练 .*提示 .*辅助 .*中断 .*跳过/).waitFor();
     const finalSummary = (await get()).session.summary;
     if (finalSummary.needsWork.length) {
-      for (const word of finalSummary.needsWork) assert.ok((await practice.getByRole('list', { name: 'Words to practice again' }).innerText()).includes(word.word));
+      for (const word of finalSummary.needsWork) assert.ok((await practice.getByRole('list', { name: '需要巩固的单词' }).innerText()).includes(word.word));
     }
-    await poll(() => practice.locator('.practice-progress').evaluate(el => Math.abs(el.firstElementChild.getBoundingClientRect().width - el.getBoundingClientRect().width) < 1), 'settled completed progress');
-    assert.ok(await practice.locator('.practice-progress').evaluate(el => el.getBoundingClientRect().top - document.querySelector('.practice-end-actions').getBoundingClientRect().bottom >= 16));
+    assert.equal(await practice.locator('.practice-progress .is-done').count(), (await get()).session.summary.total);
     await practice.screenshot({ path: path.join(output, 'results.png'), fullPage: false });
     await practice.setViewportSize({ width: 390, height: 844 });
     assert.ok(await practice.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await practice.screenshot({ path: path.join(output, 'results-mobile.png'), fullPage: true });
     await practice.setViewportSize({ width: 1280, height: 800 });
-    checks.push('Spelling feedback before continuing, confirmed mode switch, unrelated-word update and tab takeover preserve data boundaries');
+    checks.push('Frosted dictation, sharp entered letters, automatic advance, confirmed mode switch, unrelated-word update and tab takeover preserve data boundaries');
     await openSettingsClear(false); assert.ok((await get()).session); await openSettingsClear(true);
     await poll(async () => (await get()).session === null, 'confirmed clearing');
     assert.equal((await send(popup, { type: 'GET_WORDS' })).length, 2);

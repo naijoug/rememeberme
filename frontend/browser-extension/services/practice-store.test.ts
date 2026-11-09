@@ -27,7 +27,7 @@ it('commits a practice receipt and cursor exactly once while preserving vocabula
   let view = await get(repo); const create = start(view);
   view = await repo.practice(create); expect(await repo.practice(create)).toEqual(view);
   const turn = view.session!.current!;
-  expect(turn.word).toBeUndefined(); expect(JSON.stringify(view)).not.toContain('private.test');
+  expect(fixtureWords.map(w => w.word)).toContain(turn.word); expect(turn.meaning).toBe('合成测试释义'); expect(JSON.stringify(view)).not.toContain('private.test');
   const answer = command(view, { kind: 'answer', turnId: turn.turnId, answer: 'wrong', assisted: false, skipped: false, elapsedMs: 20 });
   view = await repo.practice(answer); expect(await repo.practice(answer)).toEqual(view);
   await expect(repo.practice({ ...answer, action: { ...answer.action, answer: 'different' } as PracticeAction })).rejects.toThrow('reused');
@@ -47,7 +47,7 @@ it('keeps hints and marks unfinished questions interrupted across worker restart
 });
 it('rejects stale tabs, retains reset questions, atomically removes deleted words and never inherits a recreated ID', async () => {
   const { repo, db } = fixture(); let view = await repo.practice(start(await get(repo)));
-  // Read the backend session ID without exposing hidden answers in the public view.
+  // Inspect the durable entry ID to verify lifecycle fencing.
   const record = await db.read<PracticeRecord>(practiceKey('anonymous'));
   const current = record!.session!.queue[0].entryId, word = record!.session!.words.find(w => w.id === current)!.word;
   await repo.resetCount(current); expect((await get(repo)).revision).toBe(view.revision);

@@ -1,3 +1,4 @@
+/** Durable IDs retained: copy = 看词跟写; recall = 模糊听写. */
 export type PracticeMode = 'copy' | 'recall';
 export interface PracticeWord {
   id: string; word: string; prompt: string; source: string; fingerprint: string;

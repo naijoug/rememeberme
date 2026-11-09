@@ -23,3 +23,23 @@ it('does not submit IME confirmation or repeated Enter; preserves text edits and
   await nextTick(); expect(root.querySelector('.practice-letters')).toBeNull();
   expect(input.autocomplete).toBe('off'); expect(input.getAttribute('spellcheck')).toBe('false');
 });
+
+it('keeps typed characters sharp and literal over a frosted reference without accessible answer hints', async () => {
+  const value = ref(''), obscured = ref(true), disabled = ref(false);
+  const root = document.createElement('div'); document.body.append(root);
+  const app = createApp({ render: () => h(TypingInput, { modelValue: value.value, target: 'humble', obscured: obscured.value, disabled: disabled.value,
+    'onUpdate:modelValue': (v: string) => { value.value = v; } }) });
+  app.mount(root); cleanup = () => { app.unmount(); root.remove(); };
+  const input = root.querySelector('input')!;
+  input.value = 'h'; input.dispatchEvent(new Event('input', { bubbles: true })); await nextTick();
+  expect(root.querySelectorAll('.typing-letter')).toHaveLength(6);
+  expect(root.querySelector('.letter-entered')?.textContent).toBe('h');
+  expect(root.querySelector('.letter-entered')?.classList.contains('is-frosted')).toBe(false);
+  expect(root.querySelectorAll('.letter-reference.is-frosted:not(.is-covered)')).toHaveLength(5);
+  expect(root.querySelector('#practice-target')).toBeNull();
+  expect(input.getAttribute('aria-describedby')).toBe('practice-input-help');
+  input.value = '<img>'; input.dispatchEvent(new Event('input', { bubbles: true })); await nextTick();
+  expect(root.querySelector('img')).toBeNull(); expect(root.querySelectorAll('.letter-wrong')).toHaveLength(4);
+  obscured.value = false; await nextTick(); expect(root.querySelector('#practice-target')?.textContent).toContain('humble');
+  disabled.value = true; await nextTick(); expect(root.querySelector('.letter-cursor')).toBeNull();
+});

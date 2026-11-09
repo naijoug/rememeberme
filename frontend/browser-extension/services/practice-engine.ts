@@ -3,11 +3,11 @@ import type { PracticeAttempt, PracticeMode, PracticeSession, PracticeSummary, P
 export const MAX_PRACTICE_WORDS = 10;
 export const asciiLower = (text: string) => text.replace(/[A-Z]/g, letter => letter.toLowerCase());
 export function newPracticeSession(owner: string, epoch: string | null, mode: PracticeMode, candidates: PracticeWord[], random = Math.random): PracticeSession {
-  const pool = candidates.filter(w => mode === 'copy' || w.prompt)
+  const pool = candidates
     .map(({ id, word, prompt, source, fingerprint }) => ({ id, word, prompt, source, fingerprint }));
   for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
   const words = pool.slice(0, MAX_PRACTICE_WORDS);
-  if (!words.length) throw new Error(mode === 'recall' ? 'No saved meanings are available for spelling. Try Copy mode.' : 'No eligible words are available. Save a word or import a backup first.');
+  if (!words.length) throw new Error('No eligible words are available. Save a word or import a backup first.');
   return { id: crypto.randomUUID(), owner, epoch, mode, words, attempts: [], invalidated: 0,
     queue: words.map((w, i) => newTurn(w.id, 0, i === 0)) };
 }

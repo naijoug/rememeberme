@@ -125,3 +125,55 @@ final result: passed
 The [review record](docs/verification/2026-11-05-typing-flow-review.md) supersedes the earlier artifact receipt. New correct/incorrect Spelling feedback and end-of-round details were rendered and inspected in disposable Chrome. The first results capture placed actions too close to the progress bar; the final completion-only padding fixes that spacing, and the harness verifies at least 16px separation. Final desktop results: `.qa/verification/2026-11-05-typing-flow-review/results.png` (local-only) (1280×800, 1×) and mobile results: `.qa/verification/2026-11-05-typing-flow-review/results-mobile.png` (local-only) (390×844, 1×) show readable controls without horizontal clipping. Incorrect feedback: `.qa/verification/2026-11-05-typing-flow-review/spelling-incorrect.png` (local-only) shows the saved answer and focused Continue action. These additional states extend the source reference; the centered Copy design and its prior comparison remain unchanged. No actionable visual issue remains in these inspected states.
 
 final result: passed
+
+## Word dictation redesign — 2026-11-08
+
+Selected targets: `../designs/rememberme-extension/dictation/light-follow.png`,
+`dark-follow.png`, and `dark-dictation.png` (the corrected selected dark designs).
+The discarded blurred follow-along draft was not used. Implementation is the
+production extension's `practice.html`, loaded in an isolated Chrome for Testing
+profile with synthetic words.
+
+**final result: passed**
+
+Reference images and implementation captures were compared together, side by side
+in `.qa/dictation-redesign/compare-light.png`, `compare-dark-follow.png` and
+`compare-dark-dictation.png`. Sources are 1586 × 990 or within two pixels of that
+size; the browser viewport is 1586 × 990 at DPR 1. Full comparisons normalize each
+side to 1000 × 624. A second, focused comparison (`compare-input-detail.png`) uses
+the same 640 × 300 central crop from each image, scaled equally to 800 × 375.
+
+The reference depicts three of ten words; the matched `humble` typing capture uses
+one synthetic word, so the counter and number of progress segments intentionally
+differ. The same first-character entry and selected mode/theme were compared.
+
+### Findings and fixes
+
+- P2, initial light comparison: the word, toolbar and supporting text were too small
+  relative to the selected design. Increased desktop word size to 96px maximum,
+  enlarged the brand/mode controls, aligned the header rule and moved the prompt
+  to the target vertical band. Recaptured light/dark follow-along states.
+- P2, initial dark dictation comparison: 7px blur left the large reference letters
+  too recognizable. Increased desktop reference blur to 12px with lower opacity;
+  retained 7px for mobile's smaller letters and the supporting hints. Recaptured
+  dictation and inspected the word/IPA/meaning crop. Entered glyphs stay sharp.
+- P2, paused keyboard state: the speaker remained focusable inside an aria-hidden
+  blurred prompt. Disable it while inactive and guard the replay shortcut. The
+  actual paused extension now disables both speaker and input.
+
+### Fidelity and usability
+
+| Surface | Result |
+| --- | --- |
+| Fonts/typography | System monospace word with direct green entered glyph, thin next-letter cursor, small inline library speaker, subordinate IPA/meaning. Readable desktop and mobile. |
+| Spacing/layout | Quiet header, two modes, compact progress, centered word, lower skip and footer. No separate input/hint card or statistics dashboard. 390px layout wraps controls without horizontal overflow. |
+| Colors/tokens | Imports popup Paper & Sage tokens: warm light `#fafbf8`, charcoal dark `#1e1e1e`, sage/green success, neutral controls. Shared theme changes retain input. |
+| Assets | Existing blue product logo retained intentionally rather than replacing it with the generated green logo; Iconoir icons remain vector assets. No decorative rasters are needed in runtime. |
+| Copy/content | Chinese mode/interaction labels match the selected concept; existing settings and explicit hint reveal remain available as small controls. Packaged IPA is the real local spelling variant, rather than generated mock text. |
+
+P3 accepted differences: supporting copy and controls are slightly more compact
+than the generated mock; the speaker is the existing outline icon, not the generated
+shape; the original product logo and existing settings/reveal actions are retained.
+These preserve product conventions without changing the selected interaction.
+
+See `docs/verification/2026-11-08-dictation-redesign.md` for executed checks and limits.

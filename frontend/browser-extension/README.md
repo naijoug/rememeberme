@@ -1,5 +1,20 @@
 # Remember Me browser extension
 
+## Word dictation (source update, 2026-11-08)
+
+Open **单词听写** from the vocabulary popup. **看词跟写** highlights letters directly
+on the word; **模糊听写** frosts the underlying reference letters, IPA and meaning
+while keeping entered characters sharp. Both modes play local American speech on
+start/resume and automatically continue after a complete correct word. Alt+P
+replays, Esc pauses, and Alt+Right skips. Missing device voices show setup guidance.
+
+The page follows the popup's light/dark appearance; its theme toggle persists that
+same setting. Existing rounds and local history remain compatible. The active view
+uses compact word progress; aggregate results appear at the end. No vocabulary
+counts, history, backups or sync data are changed. See [verification](docs/verification/2026-11-08-dictation-redesign.md).
+
+The versioned sections below describe historical releases.
+
 ## Continuous typing (0.1.7, 2026-11-05)
 
 Open **Typing practice**, choose **Copy**, and press Enter once to start. Type directly

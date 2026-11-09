@@ -99,11 +99,13 @@ export function practiceView(r: PracticeRecord, owner: string, scope: string, st
   const s = r.session, turn = s?.queue[0], word = s?.words.find(w => w.id === turn?.entryId);
   const last = s?.attempts.at(-1), lastWord = s?.words.find(w => w.id === last?.entryId);
   return { owner, scope, revision: r.revision, label: owner === 'anonymous' ? 'On this device' : state.displayName ? `GitHub · ${state.displayName}` : 'Account vocabulary', blocked,
-    available: { copy: projected.words.length, recall: projected.words.filter(w => w.prompt).length, excluded: projected.excluded },
+    available: { copy: projected.words.length, recall: projected.words.length, excluded: projected.excluded },
     session: !s || blocked ? null : { id: s.id, mode: s.mode, completed: s.queue.length === 0, invalidated: s.invalidated,
       current: !turn || !word ? null : { turnId: turn.id, activationId: turn.activationId ?? turn.id, round: turn.round, prompt: word.prompt, source: word.source,
-        ...(s.mode === 'copy' ? { meaning: projected.words.find(w => w.id === word.id)?.meaning ?? word.prompt } : {}),
-        ...(s.mode === 'copy' || turn.hinted ? { word: word.word } : {}), started: turn.started, hinted: turn.hinted, interrupted: turn.interrupted },
+        // Both modes need the word for device speech and the in-place reference layer.
+        // Recall obscures that layer in the UI; this is not an answer-security boundary.
+        meaning: projected.words.find(w => w.id === word.id)?.meaning ?? word.prompt,
+        word: word.word, started: turn.started, hinted: turn.hinted, interrupted: turn.interrupted },
       last: last && lastWord ? { word: lastWord.word, correct: last.correct, skipped: last.skipped } : null,
       summary: practiceSummary(s),
     },

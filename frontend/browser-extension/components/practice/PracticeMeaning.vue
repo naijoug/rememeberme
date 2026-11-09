@@ -2,7 +2,7 @@
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { TranslationCache } from '~/services/translation-cache';
 import { formatChineseTranslation } from '~/services/pinyin-format';
-const props = defineProps<{ word?: string; meaning: string; source: string }>();
+const props = defineProps<{ word?: string; meaning: string; source: string; obscured?: boolean }>();
 const cached = ref(''), cachedSource = ref(''), cache = new TranslationCache(undefined, undefined, undefined, 2000);
 watch(() => [props.word, props.meaning, props.source], async (_, _old, cleanup) => {
   let cancelled = false; cleanup(() => { cancelled = true; }); cached.value = ''; cachedSource.value = '';
@@ -17,5 +17,5 @@ const brief = computed(() => full.value.length > 180 ? full.value.slice(0, 177) 
 onUnmounted(() => { void cache.close(); });
 </script>
 <template>
-  <p class="practice-meaning" :title="`${cached ? 'Cached Chinese meaning' : 'Saved meaning'} · ${cached ? cachedSource : source}\n${full || 'No saved meaning'}`">{{ brief || 'No meaning saved for this word' }}</p>
+  <p class="practice-meaning" :class="{ 'is-frosted': obscured }" :aria-hidden="obscured || undefined" :title="obscured ? undefined : `${cached ? 'Cached Chinese meaning' : 'Saved meaning'} · ${cached ? cachedSource : source}\n${full || 'No saved meaning'}`">{{ brief || '暂无已保存的释义' }}</p>
 </template>

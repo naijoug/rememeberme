@@ -1,39 +1,41 @@
 # Browser extension behavior
 
-## Typing practice (0.1.7)
+## Word dictation (source update, 2026-11-08)
 
-- The main vocabulary opens a full practice tab using the currently selected owner.
-  Initial account downloads block practice; completed caches work offline. Account
-  recovery blocks that account. Opening practice never signs in or toggles sync.
-- Fresh pages default to Copy; retained rounds preserve their mode. Copy uses the word
-  itself as the input surface, with a real invisible text input for keyboard/IME access.
-  Correct letters turn green. A wrong prefix flashes red and clears after 260ms;
-  the word remains current. Matching the full word commits and activates the next
-  turn atomically, without Enter or a Next button. Backspace remains available.
-- Optional Spelling hides the target until a hint or answer and uses Enter to check.
-  Its result shows Correct/Incorrect/Skipped and the saved spelling before Continue
-  (or Enter) starts the next hidden target. Copy keeps automatic progression.
-  Both modes fold ASCII case and outer whitespace only; internal punctuation must
-  match. IME Enter retains native composition behavior; no completion occurs until
-  composition ends. Repeated events cannot submit the same word twice.
-- Saved current definition takes precedence over the last history snapshot. Copy
-  displays a short saved meaning and can supplement missing Chinese with an existing
-  local translation-cache entry; provenance/full text are in its tooltip. Cache reads
-  are bounded and never block typing or trigger provider requests. Spelling still
-  uses the saved, masked prompt only. Empty meanings allow Copy only; examples,
-  notes and source URLs are omitted.
-- American IPA is read from packaged assets. The speaker or Alt+P uses only an
-  available en-US local device voice, never a remote voice; missing voices disable
-  playback without blocking typing. Changing words or pausing stops playback.
-- Each round randomly selects up to ten eligible words. Words with typos, wrong
-  answers, skips or hints return after up to two intervening turns, at most twice.
-  Copy typos reset the same word immediately; their aggregate count is saved on
-  completion/skip and prevents first-pass credit. Progress measures completed turns
-  against completed plus queued turns.
-- The bottom strip shows active time, WPM/first-pass, words and typos/hints. Copy WPM
-  is completed unassisted characters plus the current unassisted correct prefix,
-  divided by five per active minute (zero before one second). It is not a mastery
-  score. Spelling shows first-pass accuracy instead. No per-key log is retained.
+- The vocabulary entry is **单词听写**. It opens the existing practice tab using the
+  currently selected owner. Initial account downloads/recovery still block practice;
+  opening it never signs in or toggles sync.
+- Exactly two modes are available: **看词跟写** (`copy`) and **模糊听写** (`recall`).
+  Fresh pages default to follow-along; existing rounds retain their IDs, mode and
+  progress. Switching an unfinished round still asks before replacing it.
+- Both modes use the word itself as the input surface, with an invisible native text
+  input for keyboard/IME access. Entered letters render sharply over the reference
+  at the same character positions. Correct letters turn green. In dictation, untyped
+  reference letters, IPA and meaning are frosted; entered letters and the speaker
+  stay sharp. Hidden hints have no tooltip or screen-reader answer description.
+  **显示提示** commits a hint before revealing the reference for the current turn.
+- A wrong prefix flashes the actual entered character red and clears after 260ms;
+  the same word stays current and its aggregate mistake count is retained. Completing
+  the full word commits and activates the next turn atomically in either mode,
+  without Enter/Check/Next. Backspace remains available. Only ASCII case and outer
+  whitespace are folded; internal punctuation must match. IME Enter keeps native
+  composition behavior and cannot complete a word before composition ends.
+- Both modes display a short saved meaning and may supplement missing Chinese with
+  an existing local translation-cache entry. Reads are bounded and never trigger
+  provider requests. Dictation also accepts words without saved meanings because
+  its prompt is speech. Examples, notes and source URLs are omitted.
+- American IPA comes from packaged assets. Starting/resuming an active turn plays
+  its word using only an available local `en-US` voice. The inline speaker or Alt+P
+  replays it. Missing voices show guidance; no remote voice is substituted. Pause,
+  word changes and unmount stop speech; late voice callbacks cannot animate a new
+  turn. The speaker's waves animate during speech, except with reduced motion.
+- The page uses the same light/dark tokens and persisted appearance setting as the
+  popup. The sun/moon control switches theme without discarding input. The active
+  screen has compact word progress, not a time/WPM dashboard. Its segmented progress
+  counts initial words answered; retry rounds are labeled separately.
+- Each round randomly selects up to ten eligible words. Words with mistakes, skips
+  or hints return after up to two intervening turns, at most twice. Correcting a typo
+  prevents first-pass credit. No per-key log is retained.
 - Completed rounds show retry/hint/assistance/interruption/skip totals and the
   remaining difficult-word list, with a button to practice those words again.
 - Blur/hidden documents pause time. Escape, blur or opening Settings while a save

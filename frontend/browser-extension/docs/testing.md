@@ -8,6 +8,21 @@ override under an ignored `.qa/` location too. Local screenshot paths in dated
 reports are intentionally unavailable in fresh clones. Keep concise verification
 summaries and selected structured receipts in docs; do not commit disposable images.
 
+## Word dictation verification (2026-11-08)
+
+Run `npm test -- components/practice services/practice-engine.test.ts services/practice-store.test.ts services/practice-client.test.ts entrypoints/popup/App.test.ts`
+and `npm run compile`. Dictation checks cover automatic progression, local-voice
+start/pause/retry, delayed voice discovery, stale callbacks, exact overlay characters,
+hidden accessible hints/tooltips, explicit reveal, theme persistence, missing meanings,
+unchanged exports and existing concurrency/recovery boundaries.
+
+Browser checks should exercise the real extension in a disposable profile: both
+modes in light/dark, typing/backspace/typo reset, hint reveal, pause/resume, automatic
+advance, reload recovery, missing voices and 390px layout. Compare the accepted
+references under `frontend/designs/rememberme-extension/dictation/` against captures
+under `.qa/dictation-redesign/`. Speech events establish local engine operation,
+not subjective audible quality. See [the executed record](verification/2026-11-08-dictation-redesign.md).
+
 ## Typing practice verification (0.1.7)
 
 Practice source/engine, store/account integration, client, input, page and confirmation

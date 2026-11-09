@@ -1,6 +1,6 @@
 # Extension architecture and data boundaries
 
-## Local typing practice (0.1.7)
+## Local word dictation (source update, 2026-11-08)
 
 `entrypoints/practice/main.ts` mounts `components/practice/PracticeApp.vue` as
 `practice.html`. `practice-source.ts` projects identity and saved meanings without
@@ -40,18 +40,30 @@ meaning snapshots; records are excluded from sync
 and vocabulary export. `practice.html` is an explicit release-integrity root from
 0.1.6 onward, including transitive assets.
 
-The 0.1.7 interaction uses a focusable input over the rendered word. Copy completion
-sends an answer with optional `advance` and aggregate `mistakes`; the backend marks
-the next turn started in that same transaction. Old messages/records without these
-fields retain their earlier defaults. Corrected typos do not earn first-pass credit.
-The current Copy meaning is a presentation projection; durable question fingerprints
-and vocabulary snapshots retain their existing format.
+The dictation UI keeps the durable `copy` / `recall` mode IDs and schema 1. Both
+modes now send automatic answers with `advance` and aggregate `mistakes`; the next
+turn starts in the same transaction. Old messages/records keep their defaults.
+The current view supplies the word and display meaning in both modes for local
+speech and the in-place reference layer. Recall no longer omits the spelling from
+the extension-only view: frosting is a learning aid, not an answer-security boundary.
+Missing meanings no longer exclude a word from recall. No vocabulary, backup or
+outbox format changes.
 
-`PracticePronunciation` reads packaged IPA directly and speaks only with a local
-US device voice. `PracticeMeaning` may read the separate local translation cache;
-it never calls a provider, explanation route or vocabulary writer. A 2s nonblocking
-cache-display budget leaves the ordinary lookup cache's 150ms budget unchanged.
-Spelling prompts do not use this cache. See the [interaction record](verification/2026-11-05-typing-flow.md).
+`TypingInput` renders a reference and entered glyph in the same character cell;
+only the reference gets a blur filter. Accessible input descriptions omit the target
+when obscured. `PracticeMeaning` and the IPA line suppress hidden tooltip/ARIA hints.
+The explicit reveal command still records assistance durably before unblurring.
+`PracticeApp` imports the shared Paper & Sage theme tokens, watches appearance, and
+uses `saveTheme` for its toggle. Settings and pause/recovery keep their existing
+scope, activation, revision and write-recovery boundaries.
+
+`PracticePronunciation` reads packaged IPA and uses a local US voice, including
+one automatic playback per active turn/resume once voices become available. It
+cancels on pause/word change/unmount, fences callbacks, and bounds stalls at 8s.
+`PracticeMeaning` may read the separate local translation cache in either mode;
+it never calls a provider, explanation route or vocabulary writer. Its 2s
+nonblocking budget leaves ordinary lookup's 150ms budget unchanged.
+See [dictation verification](verification/2026-11-08-dictation-redesign.md).
 
 ## Magpie update (2026-10-24)
 
