@@ -272,3 +272,7 @@ compatibility; `Translation.dictionary` and `Definition.source` identify Remembe
 Me's reviewed publication. New labels read that metadata; raw text stays literal.
 The separate backend SQLite master owns draft/review history and approved editions.
 Its database and private review evidence never ship to the extension.
+
+Category badge layout belongs in `assets/paper-sage.css`, which
+`entrypoints/content.ts` injects into its closed ShadowRoot; Vue component-scoped
+styles alone do not reach that root.

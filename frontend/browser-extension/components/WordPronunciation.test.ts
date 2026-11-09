@@ -25,7 +25,7 @@ beforeEach(() => {
   vi.stubGlobal('speechSynthesis', synth);
   vi.stubGlobal('SpeechSynthesisUtterance', class {
     constructor(public text: string) {}
-    lang = ''; voice = null; rate = 1; onend = null; onerror = null;
+    lang = ''; voice = null; rate = 1; onstart = null; onend = null; onerror = null;
   });
 });
 afterEach(() => {
@@ -79,26 +79,41 @@ describe('word pronunciation', () => {
     expect(spoken[0]!.lang).toBe('en-US');
     expect(spoken[0]!.voice).toBe(voices[0]);
     expect(button('US').getAttribute('aria-pressed')).toBe('true');
+    expect(button('US').querySelector('.pronunciation-speaker')).not.toBeNull();
+    expect(button('US').classList.contains('is-speaking')).toBe(false);
+    const lateStart = spoken[0]!.onstart;
+    spoken[0]!.onstart?.call(spoken[0]!, {} as SpeechSynthesisEvent); await nextTick();
+    expect(button('US').classList.contains('is-speaking')).toBe(true);
+    expect(button('UK').classList.contains('is-speaking')).toBe(false);
     const lateEnd = spoken[0]!.onend;
     button('UK').click(); await nextTick();
     expect(synth.cancel).toHaveBeenCalledTimes(1);
     expect(spoken[1]!.voice).toBe(voices[1]);
     expect(spoken[1]!.lang).toBe('en-GB');
+    lateStart?.call(spoken[0]!, {} as SpeechSynthesisEvent); await nextTick();
+    expect(host.querySelector('.is-speaking')).toBeNull();
+    spoken[1]!.onstart?.call(spoken[1]!, {} as SpeechSynthesisEvent); await nextTick();
+    expect(button('UK').classList.contains('is-speaking')).toBe(true);
     lateEnd?.call(spoken[0]!, {} as SpeechSynthesisEvent);
     expect(button('UK').getAttribute('aria-pressed')).toBe('true');
     spoken[1]!.onend?.call(spoken[1]!, {} as SpeechSynthesisEvent); await nextTick();
     expect(button('UK').getAttribute('aria-pressed')).toBe('false');
+    expect(host.querySelector('.is-speaking')).toBeNull();
   });
 
   it('stops on repeat click, word change and unmount, without cancelling unrelated speech on idle teardown', async () => {
     const props = await mount();
     button('US').click(); await nextTick();
+    spoken[0]!.onstart?.call(spoken[0]!, {} as SpeechSynthesisEvent); await nextTick();
     button('US').click(); await nextTick();
     expect(synth.speak).toHaveBeenCalledTimes(1);
     expect(button('US').getAttribute('aria-pressed')).toBe('false');
+    expect(host.querySelector('.is-speaking')).toBeNull();
     button('US').click();
+    spoken[1]!.onstart?.call(spoken[1]!, {} as SpeechSynthesisEvent);
     props.word = 'apple'; await nextTick();
     expect(button('US').getAttribute('aria-pressed')).toBe('false');
+    expect(host.querySelector('.is-speaking')).toBeNull();
     button('UK').click();
     app!.unmount(); app = undefined;
     expect(synth.cancel).toHaveBeenCalledTimes(3);
@@ -124,14 +139,18 @@ describe('word pronunciation', () => {
     vi.useFakeTimers();
     await mount();
     button('US').click();
+    spoken[0]!.onstart?.call(spoken[0]!, {} as SpeechSynthesisEvent);
     spoken[0]!.onerror?.call(spoken[0]!, {} as SpeechSynthesisErrorEvent); await nextTick();
     expect(host.textContent).toContain('Could not play pronunciation');
+    expect(host.querySelector('.is-speaking')).toBeNull();
     button('US').click(); await nextTick();
     expect(host.textContent).not.toContain('Could not play pronunciation');
+    spoken[1]!.onstart?.call(spoken[1]!, {} as SpeechSynthesisEvent); await nextTick();
     await vi.advanceTimersByTimeAsync(8000);
     expect(host.textContent).toContain('Pronunciation timed out');
     expect(button('US').disabled).toBe(false);
     expect(button('US').getAttribute('aria-pressed')).toBe('false');
+    expect(host.querySelector('.is-speaking')).toBeNull();
     expect(synth.cancel).toHaveBeenCalledTimes(1);
   });
 

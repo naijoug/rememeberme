@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { SoundHigh, Square } from '@iconoir/vue';
+import { SoundHigh } from '@iconoir/vue';
 import type { Definition, PhoneticTranscriptions } from '~/types';
 import { isEnglishWord } from '~/services/word-utils';
 import { requestPhonetics } from '~/services/lookup-client';
@@ -17,6 +17,7 @@ type Accent = typeof accents[number];
 const voices = shallowRef<SpeechSynthesisVoice[]>([]);
 const supported = ref(false);
 const playing = ref('');
+const speaking = ref(false);
 const error = ref('');
 const transcriptions = ref<PhoneticTranscriptions>({});
 const phoneticsLoading = ref(false);
@@ -67,9 +68,10 @@ const unavailable = computed(() => {
 function clearPlayback() {
   clearTimeout(deadline);
   deadline = undefined;
-  if (current) { current.onend = null; current.onerror = null; }
+  if (current) { current.onstart = null; current.onend = null; current.onerror = null; }
   current = undefined;
   playing.value = '';
+  speaking.value = false;
 }
 function stop() {
   const owned = current;
@@ -89,6 +91,7 @@ function play(accent: Accent) {
     utterance.rate = 0.85;
     current = utterance;
     playing.value = accent.id;
+    utterance.onstart = () => { if (current === utterance) speaking.value = true; };
     utterance.onend = () => { if (current === utterance) clearPlayback(); };
     utterance.onerror = () => {
       if (current !== utterance) return;
@@ -127,12 +130,11 @@ onUnmounted(() => { stop(); synth?.removeEventListener('voiceschanged', updateVo
         <AccentFlag :accent="accent.id" />
         <span v-if="transcriptions[accent.id === 'US' ? 'us' : 'uk']" class="phonetic">{{ transcriptions[accent.id === 'US' ? 'us' : 'uk'] }}</span>
         <button type="button" class="pronunciation-button" :data-accent="accent.id"
-          :class="{ 'is-playing': playing === accent.id }" :disabled="!supported || !validWord || !voiceFor(accent)"
+          :class="{ 'is-playing': playing === accent.id, 'is-speaking': playing === accent.id && speaking }" :disabled="!supported || !validWord || !voiceFor(accent)"
           :aria-label="(playing === accent.id ? 'Stop' : 'Play') + ' ' + accent.label + ' pronunciation of ' + word"
           :aria-pressed="playing === accent.id" :title="voiceFor(accent) ? accent.label + ' pronunciation' : accent.label + ' voice unavailable on this device'"
           @click="play(accent)">
-          <Square v-if="playing === accent.id" width="12" height="12" aria-hidden="true" />
-          <SoundHigh v-else width="14" height="14" aria-hidden="true" />
+          <SoundHigh class="pronunciation-speaker" width="14" height="14" aria-hidden="true" />
         </button>
       </div>
     </div>
