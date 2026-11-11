@@ -1,0 +1,107 @@
+{
+  "checkedAt": "2026-11-07T04:12:42.907313+00:00",
+  "status": "partial-rollout-generation-and-review-continuing",
+  "targetUniqueWords": 15434,
+  "publishedEntries": 3000,
+  "publishedSenses": 7746,
+  "catalog": "f5b41d0c1d6f704900313972",
+  "baseEdition": "a00fbaf0fcdcf2476b5c825d",
+  "expansionEdition": "3b9867b8cbbfd3a72767eff8",
+  "baseEntriesUnchanged": 1000,
+  "expansionRevisedEntries": 52,
+  "firstExpansionReview": {
+    "independent": 984,
+    "directFullEntry": 16,
+    "method": "ai-assisted-v1"
+  },
+  "categories": [
+    {
+      "category": "cet4",
+      "target": 3846,
+      "covered": 2310,
+      "missing": 1536,
+      "excluded": 3
+    },
+    {
+      "category": "cet6",
+      "target": 5406,
+      "covered": 2287,
+      "missing": 3119,
+      "excluded": 1
+    },
+    {
+      "category": "ielts",
+      "target": 5038,
+      "covered": 1672,
+      "missing": 3366,
+      "excluded": 2
+    },
+    {
+      "category": "ket",
+      "target": 1606,
+      "covered": 825,
+      "missing": 781,
+      "excluded": 146
+    },
+    {
+      "category": "tem8",
+      "target": 12197,
+      "covered": 2847,
+      "missing": 9350,
+      "excluded": 0
+    },
+    {
+      "category": "toefl",
+      "target": 6970,
+      "covered": 1570,
+      "missing": 5400,
+      "excluded": 4
+    }
+  ],
+  "browser": {
+    "version": "f5b41d0c1d6f704900313972",
+    "checked": 3000,
+    "checks": [
+      "All 3000 English and Chinese lookups hit approved local assets without online lookup calls or vocabulary writes.",
+      "Actual selection card shows local provenance and bilingual examples inside the closed shadow root.",
+      "Synthetic save/export/reset/restart preserves publication metadata, bilingual examples and history."
+    ],
+    "limitations": [
+      "Disposable Chrome profile; not the everyday installed extension.",
+      "No authenticated production sync or Apple UI verification."
+    ],
+    "browser": "151.0.7922.34",
+    "externalLookupCalls": 0,
+    "otherExternalAttempts": [
+      "https://rememberme-lookup.couplelabs.workers.dev/api/v1/public/lookup/capabilities"
+    ]
+  },
+  "tests": {
+    "extension": 416,
+    "backend": 137,
+    "pythonHelpers": 12,
+    "appleImport": 1
+  },
+  "generationRecovery": {
+    "original": "deepseek/deepseek-flash",
+    "error": "HTTP_402",
+    "userAuthorizedAlternative": "zhipu/glm-5.3-flash",
+    "budgetReset": false
+  },
+  "limitations": [
+    "Not all 15,434 words are generated or approved yet.",
+    "Exam coverage is scoped to pinned source single-word lists; source phrases and unsupported spellings are reported separately.",
+    "No live authenticated account sync or Apple UI run."
+  ],
+  "expansionEditions": [
+    "215b3bb51300b1f2ff99b7ba",
+    "3b9867b8cbbfd3a72767eff8",
+    "a00fbaf0fcdcf2476b5c825d"
+  ],
+  "secondExpansionReview": {
+    "independent": 924,
+    "directFullEntry": 76,
+    "revisedEntries": 118,
+    "method": "ai-assisted-v1"
+  }
+}

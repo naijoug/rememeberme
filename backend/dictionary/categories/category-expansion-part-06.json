@@ -1,0 +1,3085 @@
+{
+  "id": "category-expansion-part-06-v2",
+  "metadata": {
+    "title": "Category coverage expansion",
+    "source": {
+      "id": "ecdict",
+      "repository": "https://github.com/skywind3000/ECDICT",
+      "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+      "csvUrl": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+      "csvGitBlob": "0e527e22e0e0d22f012b0ed251a8dddd5891773b",
+      "csvSha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+      "license": "MIT",
+      "licenseSha256": "f8552dd246f61a4e064569eae6194a01c6b3d63b03bf27c6ca863593c549ed0f",
+      "limitations": "Source-provided frequency ranks and exam tags, not current official exam certification. Definitions and generated forms are reference clues requiring review."
+    },
+    "wordlistIds": [
+      "ket-cambridge-2025-alphabetical-v1",
+      "cet4-ecdict-39cfb967-v1",
+      "cet6-ecdict-39cfb967-v1",
+      "tem8-lslab-f69f627f-v2",
+      "toefl-ecdict-39cfb967-v1",
+      "ielts-ecdict-39cfb967-v1"
+    ],
+    "referenceSha256": "107847a771aab767f2e14283a4f7b1f60709caf8a01b71cd9493ba3b3a2e9b14",
+    "count": 434,
+    "wordsSha256": "9d8ba164afe3f1c63dba5cbef597b3017d84632d97b7b834fb564e78c4740301",
+    "selection": "Union of pinned category single-word spellings minus approved pilot and the existing 9,000-word expansion; no level inference."
+  },
+  "words": [
+    {
+      "word": "difficulties",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "diplomas",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "directions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "discompose",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "diseases",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "disenchant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dishes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "disputes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "distent",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "disunite",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "doctors",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "documents",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "doldrums",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "donations",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "donator",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "doors",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "draws",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "drinks",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dripstone",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "drop-off",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "drop-out",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "drugs",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dungarees",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dustcart",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "duties",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dvd",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "eaves",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "edentate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "educable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "educe",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "effects",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "effervesce",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "electroscope",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "elements",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "embosom",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "emergencies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "employees",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "endotherm",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "endue",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "endways",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "energies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "engineers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "enthrone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "equiangular",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "etceteras",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "examples",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "exams",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "exhilarate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "exocrine",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "expenses",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "experiments",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "expurgate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "extremities",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eye-catching",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "facilities",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "factories",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "factors",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fagot",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fainthearted",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "falcons",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "families",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "famish",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "far-reaching",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "farmers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "farms",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "featherbrained",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "features",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "feebleminded",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "feelings",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "fees",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "feet",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "ferries",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "figures",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fingers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "firebrick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "firedamp",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "firms",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "first-aid",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "flagella",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "flats",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "floors",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "flourishment",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "flyspeck",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "folivore",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "forebode",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "forms",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fossils",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "frontbench",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "frowzy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fuddle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "full-time",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fund-raising",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fungi",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "galvanization",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "garrulity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "gerund",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "glasses",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "goals",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "good-looking",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "governments",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "graduates",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "groups",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "guest-house",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "guests",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "habits",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hacked",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "half-price",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "handiness",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "handpicked",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hands-on",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hangings",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hard-working",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hardbitten",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hardheaded",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hats",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "headphones",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heartrending",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "henpecked",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hens",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hieroglyphics",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "high-rise",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "highhanded",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hindquarters",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hints",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hits",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hobbies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hobbyhorse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hobnail",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hoggish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "horseracing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "horses",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "horsewhip",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hotpot",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "housecraft",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "households",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "housewifery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "humans",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hydrosphere",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "ideas",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "identities",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "imports",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "imprecate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "indiscrimination",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "indite",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "inducible",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "inquiries",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "insects",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "insomuch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "institutes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "institutions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "instructions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "instructors",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "instruments",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "intersected",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "interviews",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "investigators",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "invigilate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "invigilator",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "isotherm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "issues",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "items",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "jewels",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "jobs",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "jocose",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "keywords",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "kids",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "kilograms",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "kindhearted",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "kits",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "kymograph",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "lakes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "larvae",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "latest",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "laurels",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "left-hand",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "leftovers",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lessons",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "levels",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "libraries",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "lights",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "limner",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "lions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "loans",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "locations",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "locomote",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "locoweed",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "long-lasting",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "long-range",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "long-standing",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "low-risk",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "machines",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "mails",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "majors",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "make-up",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "manful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "materials",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "meals",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "measurements",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "measures",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mechanise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "methods",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "midair",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "midmorning",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "mileometer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "milligramme",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mincing",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "minutes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "misapprehend",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mores",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "movies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "multistory",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "muscles",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "nationalities",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "nets",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "newspapers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "non-drinker",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "nonhuman",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "nonprofessional",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "notes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "nuclei",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "nutriment",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "objectives",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "occupants",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "ohp",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "open-book",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "opportunities",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "options",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "oversea",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "oversecretion",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "oxen",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "pages",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "papers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "parents",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "part-time",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "participants",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "parties",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "passengers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "passerby",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "patients",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "patricide",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "patterns",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "peasants",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "peculate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "pendent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "penfriend",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "pennies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "petrifaction",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "pets",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "phenomena",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "phone-in",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "photocopies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "photographs",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "photos",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "pictures",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "pilferage",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "pills",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "places",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "plainspoken",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "planners",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "plants",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "plash",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "platelike",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "positions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "pounds",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "precautions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "prefabricate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "priorities",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "prizes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "problems",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "products",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "professions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "profits",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "prorogue",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "psycholinguistics",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "purest",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "qualifications",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "questions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "radiochemical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rainproof",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "readers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "reasons",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "recompose",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "records",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "referees",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "refreshments",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "regulations",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "relations",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "rentable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "reorient",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "repine",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reports",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "requital",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "residents",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "resources",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "respondents",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "restaurants",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "results",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "retails",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "riders",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "risks",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "robots",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "rocks",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "rows",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "ruins",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "rules",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sapience",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "savings",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "scathe",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "scatterbrain",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scientists",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "scurf",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "seals",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "seamen",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "seats",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "secretin",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "self-defense",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "self-discipline",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "self-sufficient",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "selfie",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "semiarid",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "semicolon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "semiliterate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "semimolten",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sentences",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "shockproof",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shoes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "short-range",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "shortchange",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "singlehood",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sites",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sizes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "skills",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "slacks",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "slimnastics",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "smokers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "snacks",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sources",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "souvenirs",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "spectra",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "spined",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "spoons",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sports",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "springlock",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "standards",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "stations",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "steps",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "stereophotograph",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stimuli",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stones",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "stores",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "straitlaced",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "strata",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "strings",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stripes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "stronger",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "studies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "styles",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "subdiscipline",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "subduct",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "subjected",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "subjects",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "subtitles",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sufferable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "suggestions",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sunbath",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "superheat",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "surfboarding",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "suspender",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "systems",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "t-shirt",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "tables",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "tablets",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "takings",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "teams",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "techniques",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "teens",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "teeth",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "telecommuter",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "temples",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "thereabout",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thoughts",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "thousand-fold",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "threadlike",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "threats",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "three-dimensional",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tickets",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "tiles",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "time-consuming",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "toed",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tones",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "tools",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "topics",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "tourists",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "toys",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "travelers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "trees",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "trends",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "tributes",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "tumid",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tunnels",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "types",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "ultrasonics",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "undercharge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "underdone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "universities",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "unscrupulously",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "utensils",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "vacancies",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "values",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "veining",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "versed",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "videos",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "visas",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "visitors",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "vitalist",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "vocative",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "volunteers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "warrantable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "washing-up",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "water-clock",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "water-proof",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "water-skiing",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "weaverbird",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "wedge-shaped",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "weeds",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "weekdays",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "weekends",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "well-being",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "whales",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "wheels",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "wifi",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "wollongong",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "words",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "workshops",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7288 @@
+{
+  "id": "category-expansion-part-03-v2",
+  "metadata": {
+    "title": "Category coverage expansion",
+    "source": {
+      "id": "ecdict",
+      "repository": "https://github.com/skywind3000/ECDICT",
+      "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+      "csvUrl": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+      "csvGitBlob": "0e527e22e0e0d22f012b0ed251a8dddd5891773b",
+      "csvSha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+      "license": "MIT",
+      "licenseSha256": "f8552dd246f61a4e064569eae6194a01c6b3d63b03bf27c6ca863593c549ed0f",
+      "limitations": "Source-provided frequency ranks and exam tags, not current official exam certification. Definitions and generated forms are reference clues requiring review."
+    },
+    "wordlistIds": [
+      "ket-cambridge-2025-alphabetical-v1",
+      "cet4-ecdict-39cfb967-v1",
+      "cet6-ecdict-39cfb967-v1",
+      "tem8-lslab-f69f627f-v2",
+      "toefl-ecdict-39cfb967-v1",
+      "ielts-ecdict-39cfb967-v1"
+    ],
+    "referenceSha256": "4e92470d995f66ac79d4cc59bc10281275028870594f4081b924d8f3428bb578",
+    "count": 1000,
+    "wordsSha256": "e0a8a38fde0fbd2e8308c871af7bcff961aefbab0ecea252f2b79f9bfccfddd4",
+    "selection": "Union of pinned category single-word spellings minus approved pilot and the existing 9,000-word expansion; no level inference."
+  },
+  "words": [
+    {
+      "word": "surly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "abolitionist",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "harrowing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reticent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "gregarious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hulking",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "enmity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "retainer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "preservative",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "wristwatch",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "reversible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "blackmail",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "disinfectant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "claimant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overcast",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "cabaret",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fortitude",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "finch",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "organically",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "alight",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "defraud",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "baste",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "dictum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "courtly",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hardcore",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "incurable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "subsist",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "derogatory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "counterfeit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "technicality",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sapphire",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "cog",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "gipsy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dehydrate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "spiky",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "incipient",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "exalt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "confederate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "setter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "afield",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "untenable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pester",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "resigned",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grapevine",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "innermost",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "aggregation",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "christen",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "capricious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "horrid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disparage",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hotbed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cobra",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "magnolia",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unicorn",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stampede",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "undaunted",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "treachery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scorpion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "brainwash",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "genial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "knapsack",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "afoot",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "forego",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "meteorological",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hemorrhage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "incendiary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hearsay",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "idiotic",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "retool",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "catchy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "teak",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shackle",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sparingly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "indulgent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ineffectual",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thistle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "solicitor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "consonant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "idealize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chateau",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "monopolize",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "informer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inordinate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fluff",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "disavow",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pancreas",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "imperialist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "contort",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "protectionist",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "outmoded",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "inlaid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "loll",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "chartered",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hemlock",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "roulette",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "misbehave",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chieftain",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "defensible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grumpy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "delude",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "chargeable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "acidity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "enviable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gripe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "germinate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "respiration",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "maggot",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "redraw",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "luminosity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "minefield",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "microchip",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "boldness",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lacquer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "infatuation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stalwart",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mallet",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "wick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sidle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "imperil",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sectional",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "excise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chopsticks",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "teacup",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lullaby",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scavenge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hyperactive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "skimpy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "deleterious",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "absorbing",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hideaway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dike",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unexplored",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "oracle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "misdeed",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "elation",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "blemish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "illuminating",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "extraneous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "bandanna",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sieve",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "zigzag",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "polemic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wrought",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "indecision",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "semantics",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "introspective",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "amiss",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vaporize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "denizen",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crass",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "cobbler",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "favoritism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hinduism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heretic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "demean",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "connote",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bawl",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "infest",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "uninformed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "demented",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sheikh",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "exterminate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "profane",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "cannibal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "whoop",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "festoon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "planetarium",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dowry",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hardness",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sicken",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "talkative",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "distinctively",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "trawl",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cola",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "inexorable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "foodstuff",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "valor",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "ferment",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "homily",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "amplification",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mermaid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "auctioneer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "neurotransmitter",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stopper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "premonition",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "antagonize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "counterbalance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "forerunner",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "interlocking",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tasteless",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "eulogy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "trinket",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "familiarize",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "exponential",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "irk",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "photosynthesis",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "antipathy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "lynch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gratify",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "waddle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mildew",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "abbey",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "airstrip",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nuzzle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bountiful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "equivalence",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hatchet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "quotient",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "whizz",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "insular",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "grime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "infertile",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "cauliflower",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "coronation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "halting",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "readjust",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sequester",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "showy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nettle",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sac",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "prohibitive",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "acumen",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "intoxication",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "homesick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "snub",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "midget",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "amphibious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "floodplain",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "nonviolence",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "gloat",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "valentine",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tumult",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "habitation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pathos",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "mannerism",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "biochemistry",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "bequest",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "furtive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unsettled",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sully",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "heartless",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "deadlock",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "millet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "introspection",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "measles",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "terse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "lumbering",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "yuppie",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "decadence",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "cyclone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "veracity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "indigo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "antiseptic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "steeple",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rebut",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "vandal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "indisputable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "infighting",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lithe",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "schism",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "accede",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "submissive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sizeable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cobble",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "earthen",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wily",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "repugnant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prospector",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "innkeeper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "statistician",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "idealist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "humanly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inoculate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "forester",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shanty",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "boarder",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "supplementation",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "pillowcase",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "smokestack",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "deliverance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "untapped",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "travesty",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "invertebrate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "commercialize",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "downtime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "windswept",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "scaffold",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "irritant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "supposition",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "unscrew",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "salinity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "snorkel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "receptacle",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stethoscope",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spindle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pimple",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "untimely",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "whir",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "derelict",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "vertebrate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "underbrush",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "buzzword",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "permissive",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "trawler",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ascetic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "orator",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "devolve",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "upkeep",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "encore",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "subconscious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "aurora",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "haunch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "delirious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "repulse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "demote",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reticence",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "capitulate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vengeful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "illogical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stricture",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sleet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hiccup",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hurried",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "artifice",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gong",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fishy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "clang",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rancid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "devious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "flammable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "countenance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scuff",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "frill",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "morphology",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mortuary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heartbroken",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vindictive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "jubilant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "abut",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "pessimist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unfaithful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "untouchable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "resumption",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "driftwood",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "spar",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "abrasion",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "tutelage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stag",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "payable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "staccato",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "aggrieved",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crypt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "embellishment",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "quash",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "titanic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "vastness",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unabashed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "misfit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lotus",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "derision",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cobweb",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "facsimile",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "yummy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tertiary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dilate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "plagiarism",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "soapy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "carnation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unpretentious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "delectable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "archway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "immunize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hew",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "foolproof",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "photocopy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fallow",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "negation",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "behead",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bye",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stubbornness",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "impinge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "temperamental",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "asterisk",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unwitting",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dragonfly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "foregoing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "malleable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "portend",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sardonic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "scoundrel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "suitability",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spurious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dapper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "evince",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "rubbery",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "herder",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "caustic",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "gentry",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mammalian",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "impersonate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "rabies",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "viola",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "habitable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lark",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "proclivity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "settee",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unintelligible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ostrich",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "savagery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "percolate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "seagull",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "superhuman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hologram",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "laborious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "disembark",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gambit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "corporal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "alder",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "inadvertent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "effigy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "disfigure",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sideboard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "regressive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stingy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "macabre",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dusky",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sedative",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inculcate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "monolith",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "duster",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crafty",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "conservatory",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "suspenders",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "extinguisher",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "acrid",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "dimensional",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "damper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hinterland",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "spleen",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "curd",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flagrant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unfathomable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "jetty",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prophesy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "benevolence",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mimetic",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "spatter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fragmentary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sportsmanship",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pensive",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "forefather",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unkempt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overjoyed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "languid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sheathe",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "menial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "incomparable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "congruence",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cuticle",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "raiser",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hitchhike",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "incubate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "monochrome",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "jellyfish",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mete",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "keel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scuffle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "renown",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "implacable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "romanticism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cremate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "staid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dislocate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sulk",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "godmother",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "kindred",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "registrar",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dilution",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "disgraceful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "repute",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "savoury",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hereby",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "coddle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "malignancy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "servitude",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "granny",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "expedite",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "daybreak",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fawn",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "deciduous",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "flattery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fluidity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "joystick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nicety",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "uproot",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "precipice",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "adjudicate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "walls",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "comma",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "firstborn",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "synopsis",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "snicker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pacify",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "perceptible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "upmarket",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stirrup",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dumbfound",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "glassware",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "climactic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "interlocutor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "muddle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "shunt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "docile",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "contented",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "bookkeeping",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "impassive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "gastric",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "transitory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "innovate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "intercede",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fanaticism",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "dexterity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rapprochement",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cackle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "memorise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "unevenly",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "dissenting",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "crinkle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inbuilt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "concerto",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hardworking",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "enthral",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "adornment",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "billiards",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "python",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "isle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "shapely",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "accost",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "wanton",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "idiosyncrasy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fuzz",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sloth",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "dogged",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "plaintive",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "portraiture",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "overbearing",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "threadbare",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "conscript",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nirvana",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "numeral",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prospectus",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dais",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bereaved",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "constable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "visage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "incensed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unoccupied",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prologue",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "livid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unanimity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "abdicate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "plumb",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "moribund",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "perfunctory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "posthumous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dutiful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "banister",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heiress",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cajole",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "patter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unsubstantiated",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "elixir",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "dentistry",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "impregnate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mangle",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "imperious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "glib",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "confection",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "calligraphy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "oscillate",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "comprehensible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "acrobat",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grandstand",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "transpose",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "abode",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "incapacitate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "laudable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "formalise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "carnal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "anesthetic",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sniffle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "horned",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "canary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "faze",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "succinct",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "buoyancy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "canny",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "absenteeism",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "conflate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "incinerate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "alphabetical",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "businesswoman",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "toleration",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "viewfinder",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "plankton",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "philosophic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "subspecies",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sentinel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "facile",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "protruding",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fortuitous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fermentation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "storehouse",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "incubation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "revile",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "undergrowth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ponderous",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "jest",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "airlift",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unrestrained",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "earl",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "confetti",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sedate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "salvo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sawmill",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ravenous",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "lass",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "glum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "anytime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "customarily",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "disbelieve",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vulgarity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "debit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "waltz",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tangerine",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ceaseless",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tacitly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "extort",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "workbook",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "recant",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "ewe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "atheism",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "countess",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tyrannical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "inflamed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vaulted",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "kaleidoscope",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lusty",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "haystack",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prawn",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "presumptuous",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "conical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "froth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "commandant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dorsal",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "squalid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bookkeeper",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "pervert",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "inhumane",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rehouse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "irreconcilable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "rancor",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "undifferentiated",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "impale",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "infallible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "exponent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "redemptive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scrupulous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "simile",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "silica",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "middleman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overcrowd",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hulk",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "imperceptible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spaniel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scrounge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "waxy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "uninhabited",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "restful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "naught",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "quibble",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unadorned",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "malign",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "chaste",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hibernation",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "irrevocable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fiddly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "trumpeter",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "interconnected",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "expressway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "drumstick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "squall",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sheepish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ode",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sinuous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "reclamation",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "messiah",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "piecemeal",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "diction",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "foretell",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "flout",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "immaterial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "familiarise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mandarin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "expedient",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "monotone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "porcupine",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "incarnate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "strenuously",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "delirium",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "mercantile",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "negotiable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "yankee",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rasp",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disjointed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "atrophy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "uncooperative",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hydrant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fractious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stoneware",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "houseboat",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "legible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "rancour",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "epitaph",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rampart",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "atrocious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "henchman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lustrous",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "incongruity",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fiend",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shrubbery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "truism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eskimo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "haggard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "willpower",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "venomous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "magma",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stupor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gullible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ungrateful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "monopolise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nomenclature",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "apathetic",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unspoiled",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "issuance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gurgle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chalet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pulsate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "pelican",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prodigal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "whit",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "authenticate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "dissension",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "monotony",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "keyhole",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "personage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "centralise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ruckus",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disorganize",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "disagreeable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "draughty",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "squalor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "domesticity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "convulse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cornea",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "auspicious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sos",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scrupulously",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "bisect",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "turnpike",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hazel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "nebulous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "almanac",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vicarious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "jovial",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "jeer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dispensation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "progenitor",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "surging",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "beget",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "consort",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "salutary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unaided",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "inexhaustible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "selenium",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dossier",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "executor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "icicle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "brevity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "totter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "castigate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "psychoanalyst",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eminence",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "resurgent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "switchboard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "exhume",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "crustacean",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mechanized",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stagecoach",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "bronchitis",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "elector",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pollinator",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "distinguishable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "attache",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grievous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "drudgery",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "exult",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crevasse",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "thatch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sprain",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "superman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "suburbanite",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unsightly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "upsurge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "foreword",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "citadel",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "confining",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "culpable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mauve",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "presage",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "concave",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "herbivore",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disown",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "secretariat",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dieter",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "assuredly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unseemly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "bossy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cursor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heredity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "astrophysics",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "germane",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "alimony",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "interloper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "armada",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "platitude",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "sociable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fastidious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "incantation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "verbatim",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "seashore",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "deathly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mesmerise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cranial",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "bellows",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unobtrusive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "olfactory",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "stoppage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "carcase",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "subsection",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "granular",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "neurosis",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "popularise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "demur",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "eardrum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "straggle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "insolvent",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "listless",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "swampy",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "mime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "trombone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "anchorman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hearse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cellist",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "diode",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "impressionable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "resuscitation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "begrudge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "capsize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "exorcise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ardor",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unabated",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "traveller",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "invigorate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ungainly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "whiten",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "aground",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "averse",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "serrated",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "irrepressible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hallucinate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ingrained",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "underprivileged",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "carnivorous",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fractional",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "oxford",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "eggshell",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "subjugation",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tadpole",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "doomsday",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "foible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "burnish",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "decibel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "irreparable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "outwit",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "headlamp",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "equivocal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "militarism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "indigestion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tuba",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cleave",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "serviceable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prototypical",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "vehement",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "vermin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "botany",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "cask",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "manger",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "harshness",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "demagogue",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "monochromatic",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "jailer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "obviate",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "tweezers",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "lithograph",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "ensconce",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "larynx",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hubbub",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "dismember",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "repatriate",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "hundredth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "insured",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hairpin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "resplendent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sorghum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "emir",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sportswear",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "requiem",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sonata",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "propellant",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "perishable",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "potluck",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sanctify",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unsophisticated",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "circumspect",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "ostentatious",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "devilish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "monogamy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disloyal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dawdle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "unprofessional",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "colossus",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hippo",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heretical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "upholster",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "consecrate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "microbiology",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "handyman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pinhead",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "fluster",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "ferret",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "leniency",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lethargic",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "granule",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stealthy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overburden",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "shrinkage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "starfish",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "hearten",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "renunciation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "trundle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disallow",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "rosette",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cleft",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "persimmon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tortuous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "gallows",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "escapee",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "faithfulness",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "girder",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "handcrafted",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "millennia",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "rotational",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bestseller",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "symbiosis",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "nonchalant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "infantile",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "brotherly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "azure",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "misbehaviour",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cogent",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "sanctum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "excrement",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "fag",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "facing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "solvency",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "plenary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "swathe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "transgress",
+      "tags": [
+        "category-expansion",
+        "wordlist:ielts"
+      ]
+    },
+    {
+      "word": "circuitous",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "symphonic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "valour",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rector",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unobstructed",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "cellulose",
+      "tags": [
+        "category-expansion",
+        "wordlist:toefl"
+      ]
+    },
+    {
+      "word": "empress",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dote",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    }
+  ]
+}

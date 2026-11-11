@@ -1,17 +1,23 @@
 # Dictionary sources and offline coverage
 
-## Reviewed Remember Me edition (2026-11-06)
+## Reviewed Remember Me catalog (2026-11-09)
 
-The extension ships **1,000 exact spellings / 2,850 senses** in edition
-`a00fbaf0fcdcf2476b5c825d`. The 251 JSON shards total 1,057,860 bytes, excluding
-the manifest and notice. These are an editorial common-word selection, not an
-examination list or a measured top-1,000 corpus ranking. All entries have explicit
-AI-assisted review decisions; 203 entries changed from the pilot drafts. This is
-not human expert certification or a guarantee of error-free, exhaustive coverage.
+The extension ships **15,434 exact spellings / 29,399 senses** in catalog
+`627b40fb6ca5ca2e4c763b0e`, combining amended pilot edition
+`9a0d1938f1db80952aa0ead7` and fifteen reviewed expansion editions. The 256 JSON
+shards total 12,330,112 bytes, excluding the manifest and notices. All entries
+have explicit AI-assisted review decisions. Proposed revisions and incomplete
+independent reviews received separate editorial adjudication before admission.
+The final 3,434 entries include 303 corrections relative to their drafts.
+These are selected common and study-list spellings, not 15,434 distinct lemmas
+or a measured frequency ranking. Review is not human expert certification or a
+guarantee of error-free, exhaustive senses.
 
 English and Chinese first read the same approved local entry. English then falls
 back to the existing WordNet lookup; Chinese then falls back to its online-result
-cache and public service. Exact hits do not send the word to a lookup provider.
+cache and public service. Lookup trims whitespace and folds the input to lowercase before exact-key matching;
+capitalized homographs therefore share an entry. Exact hits do not send the word
+to a lookup provider.
 Generated forms are not automatic aliases. A corrupt, missing or slow learner
 shard falls through safely; reads have a 1.5-second deadline, byte/hash checks,
 shared pending reads and at most 24 cached shards. Only approved packaged entries
@@ -25,7 +31,8 @@ not fully offline. A capability check for sentence explanation can occur even
 when the word itself is served locally.
 
 Saved snapshots use `Definition.source = 'rememberme-dict'`. The existing
-`translation.source = 'magpie'` retains the original generation-service lineage;
+`translation.source = 'magpie'` remains a legacy wire/native compatibility value,
+not a claim about the provider of every entry;
 optional `translation.dictionary` identifies the actual publication with
 `{ id, version, entryHash, review: 'ai-assisted-v1' }`. This additive metadata and
 optional per-sense `glossZh`, `exampleTranslation`, and `collocations` survive
@@ -39,6 +46,40 @@ those expiring caches. Updates do not rewrite saved definitions, counts or
 history. The backend master retains both original drafts and the immutable
 reviewed edition. See [review and acceptance](verification/2026-11-06-reviewed-dictionary.md)
 and [build/review commands](../../../backend/docs/dictionary-build.md).
+
+## Exam word-list categories
+
+The local catalog carries KET, 四级 (CET4), 六级 (CET6), 专八 (TEM8), TOEFL and
+IELTS as overlapping memberships. Word details and selection cards show matching
+labels; the saved vocabulary view can filter by a list. Unclassified old imports
+remain in All word lists. Settings shows approved local coverage against each
+selected source list and links to that source. Changing a filter never changes
+counts, history, imports or sync payloads. Membership is local catalog metadata,
+not a field written into a saved word.
+
+KET uses the pinned Cambridge August 2025 alphabetical headwords; other categories
+use pinned community study-list membership. These are source-scoped classifications,
+not a guarantee of every exam word or automatic inheritance between levels.
+Labels apply to spellings, not to the difficulty of every individual sense.
+Phrases and unsupported spellings/abbreviations are reported separately. The original
+1,000 entries retain their existing senses; May and Turkey each add a common
+capitalized homograph sense. All 14,434 additional entries are now reviewed and
+packaged. The final addition preserves the preceding 12,000 entries exactly.
+
+| Category | Approved / supported source words | Missing | Excluded source items |
+| --- | ---: | ---: | ---: |
+| KET | 1,606 / 1,606 | 0 | 146 |
+| 四级 | 3,846 / 3,846 | 0 | 3 |
+| 六级 | 5,406 / 5,406 | 0 | 1 |
+| 专八 | 12,197 / 12,197 | 0 | 0 |
+| 托福 | 6,970 / 6,970 | 0 | 4 |
+| 雅思 | 5,038 / 5,038 | 0 | 2 |
+
+Coverage is complete for the pinned supported single-word sets. Excluded phrases,
+unsupported spellings/abbreviations and the open-ended KET Appendix 1 sets are not
+part of these denominators. Categories overlap, so their counts must not be added
+to obtain the catalog size. All 15,434 English and Chinese local lookups passed
+in disposable Chrome; see the [completion receipt](../../../backend/docs/verification/2026-11-09-dictionary-progress.md).
 
 ## Magpie update (2026-10-24)
 
@@ -103,3 +144,5 @@ The persistent personal `workers.dev` lookup gateway routes through a dedicated 
 Live fixed-gateway Hermes translation and Free Dictionary results have been observed. Tencent egress to Free Dictionary timed out, so the public gateway uses Cloudflare egress first for English misses. Uncovered inflections such as curated may still return provider failure; Chinese remains independent. WordNet and IPA coverage remain bounded. Current source enables account controls and sync on sign-in; dated release records establish the separately verified account-ingress and browser acceptance.
 
 See [release materials](release/README.md) for package acceptance and [deployment](../../../backend/docs/tencent-deployment.md) for host recovery. Historical [temporary lookup verification](verification/2026-10-14-temporary-lookup.md) describes the replaced random Quick Tunnel, not the current configuration.
+
+Latest completion and acceptance: [November 9 receipt](../../../backend/docs/verification/2026-11-09-dictionary-progress.md).

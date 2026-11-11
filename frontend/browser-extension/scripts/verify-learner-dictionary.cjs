@@ -10,7 +10,9 @@ const output = path.join(root, '.qa/learner-dictionary');
   const extension = path.join(fixture, 'extension'), profile = path.join(fixture, 'profile');
   await cp(path.join(root, '.output/chrome-mv3'), extension, { recursive: true });
   const catalog = JSON.parse(await readFile(path.join(extension, 'dictionary/rememberme/manifest.json'), 'utf8'));
-  assert.equal(catalog.entries, 1000); assert.equal(catalog.reviewMethod, 'ai-assisted-v1');
+  const expectedCount = Number(process.env.REMEMBERME_EXPECTED_WORDS || catalog.entries);
+  assert.ok(Number.isSafeInteger(expectedCount) && expectedCount > 0);
+  assert.equal(catalog.entries, expectedCount); assert.equal(Object.keys(catalog.words).length, expectedCount); assert.equal(catalog.reviewMethod, 'ai-assisted-v1');
   await mkdir(output, { recursive: true });
   const article = '<!doctype html><meta charset="utf-8"><title>Dictionary fixture</title><style>body{max-width:760px;margin:80px auto;font:24px/1.8 Georgia;background:#f7f6f2;color:#273343}h1{font-size:36px}</style><h1>Disposable dictionary test</h1><p>We saw an interesting <span id="target">play</span> at the theatre.</p>';
   const server = createServer((_request, response) => { response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); response.end(article); });
@@ -54,11 +56,11 @@ const output = path.join(root, '.qa/learner-dictionary');
       }
       return checked;
     }, { words: Object.keys(catalog.words), version: catalog.version });
-    receipt.checked = checked; assert.equal(checked, 1000);
+    receipt.checked = checked; assert.equal(checked, expectedCount);
     let external = await current.worker.evaluate(() => globalThis.fixtureExternalRequests);
     assert.equal(external.filter(url => /\/lookup\/(dictionary|translation)/.test(url)).length, 0);
     assert.deepEqual(await current.send({ type: 'GET_WORDS' }), []);
-    receipt.checks.push('All 1000 English and Chinese lookups hit approved local assets without online lookup calls or vocabulary writes.');
+    receipt.checks.push(`All ${expectedCount} English and Chinese lookups hit approved local assets without online lookup calls or vocabulary writes.`);
     const page = await context.newPage(); await page.goto(`http://127.0.0.1:${server.address().port}/fixture`);
     const cdp = await context.newCDPSession(page);
     const cardText = async () => {

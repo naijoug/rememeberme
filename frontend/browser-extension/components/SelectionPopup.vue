@@ -6,6 +6,7 @@ import HighlightedText from './HighlightedText.vue';
 import TranslationText from './TranslationText.vue';
 import WordHistory from './WordHistory.vue';
 import WordPronunciation from './WordPronunciation.vue';
+import DictionaryCategoryBadges from './DictionaryCategoryBadges.vue';
 import ContextExplanation from './ContextExplanation.vue';
 import { CONTEXT_EXPLANATION_ENABLED } from '~/config/backend';
 import { coordinateSpace, positionPopup, visibleViewport } from '~/services/popup-position';
@@ -98,6 +99,7 @@ onUnmounted(stopGeometry);
       </div>
     </div>
     <div class="lookup-body" tabindex="0" role="region" aria-label="Translation and definitions">
+    <DictionaryCategoryBadges :word="word" />
     <ContextExplanation v-if="CONTEXT_EXPLANATION_ENABLED && context !== undefined" :word="word" :context="context ?? ''" />
     <div v-if="definition && definition.word.toLowerCase() !== word.toLowerCase()" class="phonetic base-form">Base form: {{ definition.word }}</div>
     <div v-if="loading" class="lookup-status loading" role="status">

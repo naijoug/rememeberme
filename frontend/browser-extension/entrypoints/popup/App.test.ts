@@ -95,7 +95,7 @@ describe('mounted vocabulary popup', () => {
     expect(container.querySelector('[aria-label="Theme"]')).not.toBeNull();
     expect(container.textContent).toContain('Import backup');
     expect(container.textContent).toContain('Export vocabulary');
-    const privacy = container.querySelector<HTMLAnchorElement>('a[target="_blank"]')!;
+    const privacy = [...container.querySelectorAll<HTMLAnchorElement>('a[target="_blank"]')].find(link => link.textContent?.includes('Privacy & support'))!;
     expect(privacy.textContent).toContain('Privacy & support');
     expect(privacy.href).toBe('https://rememberme-lookup.couplelabs.workers.dev/privacy');
     expect(privacy.rel).toBe('noopener noreferrer');

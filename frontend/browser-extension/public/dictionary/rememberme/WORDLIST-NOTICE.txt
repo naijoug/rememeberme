@@ -1,0 +1,29 @@
+四级: ECDICT 39cfb967
+https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv
+MIT
+Source-provided tag membership; not an official, exhaustive or current examination syllabus.
+
+六级: ECDICT 39cfb967
+https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv
+MIT
+Source-provided tag membership; not an official, exhaustive or current examination syllabus.
+
+雅思: ECDICT 39cfb967
+https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv
+MIT
+Source-provided tag membership; not an official, exhaustive or current examination syllabus.
+
+KET: August 2025 alphabetical list
+https://www.cambridgeenglish.org/images/506886-a2-key-2020-vocabulary-list.pdf
+Copyright UCLES 2025; headword index only
+Alphabetical headwords only, with explicit spelling variants expanded. Examples/definitions are not copied. Phrases and unsupported spellings are listed separately. Open-ended Appendix 1 word sets are outside this finite index; this is not all possible exam vocabulary.
+
+专八: lslab f69f627f
+https://github.com/lslab/words-learner-vscode/blob/f69f627f14c5d810ef90580d298f46ed2ac7ec94/assets/dicts/Level8luan_2_T.json
+MIT (upstream repository)
+Community TEM8 learning list. Only headwords/class membership extracted; translations and pronunciation not copied. Not an official or current examination syllabus. Editorial spelling correction: barometre to barometer; checked against the Cambridge English headword.
+
+托福: ECDICT 39cfb967
+https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv
+MIT
+Source-provided tag membership; not an official, exhaustive or current examination syllabus.

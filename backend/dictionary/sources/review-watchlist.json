@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "note": "Known editorial concerns found in this build. This is not an exhaustive quality guarantee or an exam-level classification.",
+  "items": [
+    {
+      "word": "temper",
+      "reason": "Distinguish tempering from hardening; check the steel-treatment example."
+    },
+    {
+      "word": "peripheral",
+      "reason": "Distinguish spinal cord from spine in the medical sense."
+    },
+    {
+      "word": "gallon",
+      "reason": "Check US/imperial volume conversions and avoid confusing volume with milk weight."
+    },
+    {
+      "word": "momentum",
+      "reason": "Distinguish momentum, force and speed; qualify the classical mass-times-velocity formula."
+    },
+    {
+      "word": "voluntary",
+      "reason": "Do not describe ordinary automatic breathing as normally voluntary."
+    },
+    {
+      "word": "crane",
+      "reason": "Check lifting and neck-stretching example translations precisely."
+    },
+    {
+      "word": "may",
+      "reason": "Case-folded lookup also needs the capitalized month May."
+    },
+    {
+      "word": "march",
+      "reason": "Case-folded lookup also needs the capitalized month March."
+    },
+    {
+      "word": "august",
+      "reason": "Case-folded lookup also needs the capitalized month August."
+    },
+    {
+      "word": "china",
+      "reason": "Distinguish porcelain from capitalized China."
+    },
+    {
+      "word": "turkey",
+      "reason": "Distinguish the bird/meat from capitalized Turkey."
+    },
+    {
+      "word": "polish",
+      "reason": "Distinguish polishing from the capitalized adjective/language Polish."
+    },
+    {
+      "word": "welsh",
+      "reason": "Include the capitalized Wales-related adjective and language meaning; check usage labels."
+    },
+    {
+      "word": "colored",
+      "reason": "Check physical-colour senses and regional/historical labels for references to people."
+    },
+    {
+      "word": "negro",
+      "reason": "Require appropriate historical/dated/offensive labels and a neutral educational example."
+    },
+    {
+      "word": "gipsy",
+      "reason": "Check dated/offensive usage labels and distinguish references to Roma people from generic travelling stereotypes."
+    },
+    {
+      "word": "eskimo",
+      "reason": "Check regional use and objections; do not treat Inuit and Yupik identities as interchangeable."
+    },
+    {
+      "word": "aborigine",
+      "reason": "Check generic indigenous meaning versus Australian Aboriginal usage and appropriate dated/offensive labels."
+    },
+    {
+      "word": "spinster",
+      "reason": "Mark the old-fashioned and potentially disparaging unmarried-woman sense; do not present it as a neutral modern label."
+    },
+    {
+      "word": "heathen",
+      "reason": "Mark religious and often derogatory usage; do not define other religions as objectively inferior."
+    },
+    {
+      "word": "hag",
+      "reason": "Mark the insulting person sense and distinguish it from a witch in traditional stories."
+    },
+    {
+      "word": "fag",
+      "reason": "Distinguish regional cigarette/tedious-work meanings from the offensive anti-gay slur and label each."
+    },
+    {
+      "word": "softwood",
+      "reason": "Classify by botanical source; softwoods are not necessarily soft or uniformly easy to cut."
+    },
+    {
+      "word": "mesozoic",
+      "reason": "Check geological period boundaries against current primary geological sources, not stale lexical-reference dates."
+    },
+    {
+      "word": "endemic",
+      "reason": "Distinguish native species from species naturally restricted to an area; disease endemic does not imply geographic exclusivity."
+    },
+    {
+      "word": "virulent",
+      "reason": "Check medical virulence (severity of harmful effects) separately from infectivity and speed of spread; the reviewer previously conflated them."
+    },
+    {
+      "word": "creole",
+      "reason": "Check linguistic and regional/cultural senses; do not restrict modern Creole identities to a single ancestry everywhere."
+    },
+    {
+      "word": "paddy",
+      "reason": "Distinguish rice/tantrum usages, offensive generic Irish labelling, and the ordinary personal nickname Paddy."
+    }
+  ]
+}

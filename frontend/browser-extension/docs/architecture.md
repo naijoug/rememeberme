@@ -278,13 +278,22 @@ to 1.5 seconds. It never interprets generated forms as aliases or writes vocabul
 checks this pack before any stale online cache. Corruption recovers through those
 existing paths. App-wide network independence is not claimed.
 
-The optional dictionary publication metadata is additive. The original Magpie
-generation identifier stays in `Translation.source` for current wire/native
-compatibility; `Translation.dictionary` and `Definition.source` identify Remember
+The optional dictionary publication metadata is additive. The legacy `magpie` value stays in `Translation.source` for wire/native
+compatibility, including explicitly attributed editorial drafts; it does not
+identify the generator of every entry. `Translation.dictionary` and `Definition.source` identify Remember
 Me's reviewed publication. Source metadata is retained in data/exports; the UI omits
 dictionary, translation-provider and explanation-status footers. Raw text stays literal.
 The separate backend SQLite master owns draft/review history and approved editions.
 Its database and private review evidence never ship to the extension.
+
+`dictionary-categories.ts` builds a bounded many-to-many membership index from
+the packaged catalog manifest. Only keys present in its approved word index are
+accepted. Six fixed category IDs/labels, valid counts and HTTPS source URLs are
+required; malformed categories fail closed without blocking lookup. Badges,
+vocabulary filters and coverage rows use this index, never imported provenance.
+Membership is not synced or embedded in saved definitions. Catalog identities
+include the exact wordlist digests; SQLite retains immutable list revisions and
+per-word membership independently of lexical entry content hashes.
 
 Category badge layout belongs in `assets/paper-sage.css`, which
 `entrypoints/content.ts` injects into its closed ShadowRoot; Vue component-scoped

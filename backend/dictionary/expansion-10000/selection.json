@@ -1,0 +1,81 @@
+{
+  "baseEdition": "a00fbaf0fcdcf2476b5c825d",
+  "baseCount": 1000,
+  "newCount": 9000,
+  "target": 10000,
+  "source": {
+    "id": "ecdict",
+    "repository": "https://github.com/skywind3000/ECDICT",
+    "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+    "csvUrl": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+    "csvGitBlob": "0e527e22e0e0d22f012b0ed251a8dddd5891773b",
+    "csvSha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+    "license": "MIT",
+    "licenseSha256": "f8552dd246f61a4e064569eae6194a01c6b3d63b03bf27c6ca863593c549ed0f",
+    "limitations": "Source-provided frequency ranks and exam tags, not current official exam certification. Definitions and generated forms are reference clues requiring review."
+  },
+  "sourceTagCountsInNewWords": {
+    "cet4": 3318,
+    "cet6": 4916,
+    "ielts": 4039,
+    "toefl": 5375
+  },
+  "batches": [
+    {
+      "dataset": "expansion-10000-part-01.json",
+      "references": "expansion-10000-part-01.references.json",
+      "count": 1000,
+      "referenceSha256": "73d9df824fce9b3a280baad9cea2b5a835c79d976d157342406c5771bed1e20d"
+    },
+    {
+      "dataset": "expansion-10000-part-02.json",
+      "references": "expansion-10000-part-02.references.json",
+      "count": 1000,
+      "referenceSha256": "d38c1950e3b27b3c4a19ee7dc4d75c05e42502ca29588bc2a796c65c76ed1e05"
+    },
+    {
+      "dataset": "expansion-10000-part-03.json",
+      "references": "expansion-10000-part-03.references.json",
+      "count": 1000,
+      "referenceSha256": "ad7946a232acea285bd650dba2e544bc2a0ecda6a3a3ce495e20ce56b20b1ebc"
+    },
+    {
+      "dataset": "expansion-10000-part-04.json",
+      "references": "expansion-10000-part-04.references.json",
+      "count": 1000,
+      "referenceSha256": "8ba90e67ff8c491b8ca118916ff04868fc51b7edb002bfa5b275574b3e7bca59"
+    },
+    {
+      "dataset": "expansion-10000-part-05.json",
+      "references": "expansion-10000-part-05.references.json",
+      "count": 1000,
+      "referenceSha256": "ca90c92226d6015e109029a49ec62bff6b393c8dcd851b264b845e03362e274a"
+    },
+    {
+      "dataset": "expansion-10000-part-06.json",
+      "references": "expansion-10000-part-06.references.json",
+      "count": 1000,
+      "referenceSha256": "84ec5d2967ac1e952768c7fd8c915796392ad0967107c92a27277e53148243cf"
+    },
+    {
+      "dataset": "expansion-10000-part-07.json",
+      "references": "expansion-10000-part-07.references.json",
+      "count": 1000,
+      "referenceSha256": "762b0234ce77cf7c9ff23ecd3bd5fbaf2f431838d8cee0414a9857322fcfb32f"
+    },
+    {
+      "dataset": "expansion-10000-part-08.json",
+      "references": "expansion-10000-part-08.references.json",
+      "count": 1000,
+      "referenceSha256": "a3d881e058d1994fd3bf6f69d8f7c9cd70480edc8b6761ac7a25ba1e89ed15aa"
+    },
+    {
+      "dataset": "expansion-10000-part-09.json",
+      "references": "expansion-10000-part-09.references.json",
+      "count": 1000,
+      "referenceSha256": "7ca614081c06dd82f9946df18af2525f0ea17ea38dea419cd7c384bc20e053fd"
+    }
+  ],
+  "overlap": 0,
+  "newWordsSha256": "8d0d3ecb244191483f2fcb6df05138d52aaa9f385e59afe2c15959db0e243253"
+}

@@ -1,7 +1,8 @@
 Remember Me learner dictionary
-Edition: a00fbaf0fcdcf2476b5c825d
-1000 reviewed English entries.
-AI-generated through Magpie, independently reviewed with AI assistance and editorial checks.
+Edition: 627b40fb6ca5ca2e4c763b0e
+15434 reviewed English entries.
+Prepared with AI assistance, using provider drafts and explicitly attributed editorial drafts; independently reviewed with AI assistance and editorial checks.
 This is not an official examination list or a claim of error-free human lexicography.
 Original selection and complete review provenance are retained in the project dictionary database.
 Existing WordNet assets are separate and retain their own notices.
+Expansion selection and lexical reference clues use ECDICT (https://github.com/skywind3000/ECDICT), revision 39cfb9672c0906b63569e0453c2e6abfb9ab182a. See ECDICT-LICENSE.txt. Source exam tags are not official exam certification.

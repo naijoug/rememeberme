@@ -4,11 +4,11 @@ import { DictionaryStore } from './store';
 
 export async function runBuild(store: DictionaryStore, build: string,
   generator: { generate(word: string, signal?: AbortSignal): Promise<Generated> },
-  options: { limit?: number; delayMs?: number; concurrency?: number; signal?: AbortSignal; emit?: (event: unknown) => void } = {}) {
+  options: { limit?: number; delayMs?: number; concurrency?: number; routeId?: string; signal?: AbortSignal; emit?: (event: unknown) => void } = {}) {
   const limit = options.limit ?? 1000, pause = options.delayMs ?? 1000, concurrency = options.concurrency ?? 1;
   if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100_000 || !Number.isSafeInteger(pause) || pause < 0 || pause > 60_000
-    || !Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 4) throw new Error('Invalid run limits');
-  store.config(build, true); store.acquire();
+    || !Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 16) throw new Error('Invalid run limits');
+  store.routeConfig(build, options.routeId); store.acquire();
   const controller = new AbortController();
   const abort = () => controller.abort();
   options.signal?.addEventListener('abort', abort, { once: true });
@@ -16,10 +16,10 @@ export async function runBuild(store: DictionaryStore, build: string,
   let leaseError: unknown;
   const heartbeat = setInterval(() => { try { store.heartbeat(); } catch (error) { leaseError = error; abort(); } }, 15_000);
   let completed = 0, claimed = 0, consecutiveFailures = 0;
-  let stopped = 'limit-or-exhausted';
+  let stopped = 'limit-or-exhausted', draining = false;
   const worker = async () => {
-    while (claimed < limit && !controller.signal.aborted) {
-      const job = store.reserve(build); if (!job) break;
+    while (claimed < limit && !controller.signal.aborted && !draining) {
+      const job = store.reserve(build, options.routeId); if (!job) break;
       claimed++;
       let failure: GenerationError | undefined;
       let result: Generated | undefined;
@@ -27,12 +27,16 @@ export async function runBuild(store: DictionaryStore, build: string,
       catch (error) { failure = error instanceof GenerationError ? error : new GenerationError('GENERATOR_ERROR'); }
       if (leaseError) throw leaseError;
       store.complete(build, job, result, failure);
+      if (failure?.code === 'HTTP_429') {
+        store.cooldown(failure.retryAfter ?? Date.now() + 60000);
+        draining = true; stopped = 'provider-cooldown';
+      }
       completed++; consecutiveFailures = result ? 0 : consecutiveFailures + 1;
       options.emit?.({ event: 'dictionary_attempt', completed, word: job.word, state: result ? 'draft' : 'failed',
         model: result?.model ?? failure?.observation?.model ?? null, error: failure?.code ?? null });
       // Stop on credentials/configuration faults, cancellation or a sustained outage.
       if (failure && (!failure.retryable || consecutiveFailures >= 5)) { stopped = 'provider-failures'; abort(); }
-      if (controller.signal.aborted) break;
+      if (controller.signal.aborted || draining) break;
       if (claimed < limit) await delay(failure ? Math.max(pause, 2000 * consecutiveFailures) : pause, undefined,
         { signal: controller.signal }).catch(() => {});
     }
@@ -42,6 +46,6 @@ export async function runBuild(store: DictionaryStore, build: string,
     const workers = await Promise.allSettled(Array.from({ length: concurrency }, () => worker().catch(error => { abort(); throw error; })));
     const failed = workers.find(result => result.status === 'rejected');
     if (failed?.status === 'rejected') throw failed.reason;
-    return { completed, stopped: stopped === 'provider-failures' ? stopped : controller.signal.aborted ? 'cancelled' : stopped, ...store.status(build) };
+    return { completed, stopped: controller.signal.aborted && stopped === 'limit-or-exhausted' ? 'cancelled' : stopped, ...store.status(build) };
   } finally { clearInterval(heartbeat); options.signal?.removeEventListener('abort', abort); store.release(); }
 }

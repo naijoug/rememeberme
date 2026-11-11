@@ -308,11 +308,12 @@ caches without rewriting them. Component checks require literal text and no sour
 sync and native import/export.
 
 `scripts/verify-learner-dictionary.cjs` uses a fresh Chrome for Testing profile and
-a copy of the production build. It blocks external lookup traffic, reads all
-1,000 entries in English and Chinese, inspects the actual closed-shadow selection
+a copy of the production build. It blocks external lookup traffic, reads every entry in the packaged manifest in English and Chinese, inspects the actual closed-shadow selection
 card, and checks synthetic save/export/reset/restart preservation. Set
 `REMEMBERME_PLAYWRIGHT_PATH` to an available Playwright installation. Screenshots
 and the local receipt stay under `.qa/learner-dictionary/`. This does not prove the
 everyday installed Chrome loaded the update, production account sync, or Apple UI.
 
 See [the executed review and browser receipt](verification/2026-11-06-reviewed-dictionary.md).
+
+Classified expansion and current packaged-count acceptance: [category review receipt](../../../backend/docs/verification/2026-11-06-dictionary-categories.md).

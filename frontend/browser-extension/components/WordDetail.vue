@@ -5,6 +5,7 @@ import WordHistory from './WordHistory.vue';
 import HighlightedText from './HighlightedText.vue';
 import TranslationText from './TranslationText.vue';
 import WordPronunciation from './WordPronunciation.vue';
+import DictionaryCategoryBadges from './DictionaryCategoryBadges.vue';
 
 const props = defineProps<{ wordEntry: WordEntry }>();
 const latestDefinition = computed(() => props.wordEntry.currentDefinition ?? props.wordEntry.history.at(-1)?.definition);
@@ -13,6 +14,7 @@ const latestDefinition = computed(() => props.wordEntry.currentDefinition ?? pro
 <template>
   <div class="word-detail">
     <h2 class="word-title rm-word">{{ wordEntry.word }}</h2>
+    <DictionaryCategoryBadges :word="wordEntry.word" />
     <div class="word-meta">
       <span v-if="wordEntry.countKnown === false" class="count">Not recorded</span>
       <span v-else class="count">Forgotten {{ wordEntry.count }} {{ wordEntry.count === 1 ? 'time' : 'times' }}</span>

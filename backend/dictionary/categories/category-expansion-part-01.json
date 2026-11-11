@@ -1,0 +1,7066 @@
+{
+  "id": "category-expansion-part-01-v2",
+  "metadata": {
+    "title": "Category coverage expansion",
+    "source": {
+      "id": "ecdict",
+      "repository": "https://github.com/skywind3000/ECDICT",
+      "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+      "csvUrl": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+      "csvGitBlob": "0e527e22e0e0d22f012b0ed251a8dddd5891773b",
+      "csvSha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+      "license": "MIT",
+      "licenseSha256": "f8552dd246f61a4e064569eae6194a01c6b3d63b03bf27c6ca863593c549ed0f",
+      "limitations": "Source-provided frequency ranks and exam tags, not current official exam certification. Definitions and generated forms are reference clues requiring review."
+    },
+    "wordlistIds": [
+      "ket-cambridge-2025-alphabetical-v1",
+      "cet4-ecdict-39cfb967-v1",
+      "cet6-ecdict-39cfb967-v1",
+      "tem8-lslab-f69f627f-v2",
+      "toefl-ecdict-39cfb967-v1",
+      "ielts-ecdict-39cfb967-v1"
+    ],
+    "referenceSha256": "68aa106c949b9477c2c2b1b268e4e21d33bb72d6d25ebe9dd10ee7ffd40a4ec0",
+    "count": 1000,
+    "wordsSha256": "6a29483977b322a27f6718db02d98ba4fccd05b534654eec8258ae5ff7274602",
+    "selection": "Union of pinned category single-word spellings minus approved pilot and the existing 9,000-word expansion; no level inference."
+  },
+  "words": [
+    {
+      "word": "to",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "for",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "with",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "from",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "into",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "something",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mr",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "during",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "without",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "among",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "anything",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "everything",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "including",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "else",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "everyone",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "everybody",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dr",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "ok",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "mrs",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "ms",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "february",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "am",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "anybody",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "hey",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "russian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "english",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "jew",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "beside",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "israeli",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mexican",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "asian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rome",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "muslim",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "israel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "irish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "roger",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pc",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "etc",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ah",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cm",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "christianity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dutch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "switzerland",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "persian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "considering",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "creator",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nazi",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "arabia",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "battlefield",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nicely",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prostitute",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shopper",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tattoo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "telecommunications",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rationale",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "insurer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "copyright",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "amazed",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "overly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "halloween",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "villager",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "watercolor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "trustee",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "protestant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "moving",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "freeway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "newsletter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "yank",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bookstore",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "don",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "encouragement",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "selective",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rep",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "drape",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "evangelical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "archaeologist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bastard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "provincial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "whisk",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pastry",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "constituency",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "awesome",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lesbian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "evidently",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "novelist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "implant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vintage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fairy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "freezing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "squint",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "racist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "download",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "tricky",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "brazilian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "situate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thinker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spirituality",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "briefing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "entertaining",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "marked",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "indict",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "singing",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "archive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unacceptable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "asthma",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "golfer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "firearm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mule",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "parsley",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overweight",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "basics",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tab",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sergeant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bipartisan",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "smoker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "detention",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "parole",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "happening",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "poetic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scoring",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "backwards",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bunker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inhale",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lush",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "translator",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "strategist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "homosexual",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "theologian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "desktop",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "premiere",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "paperwork",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dice",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "finished",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "patio",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tout",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vaguely",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "understandable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "salon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "descriptive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pity",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bureaucrat",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heck",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sedan",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "apartheid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overview",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "earring",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reluctance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inequality",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "preschool",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "plaque",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sleek",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "deduction",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "whiskey",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dune",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grilled",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "shipping",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inconsistent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "massage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "authoritarian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disparity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dire",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "allocation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dismantle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "infrared",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "saucepan",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "informant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "metro",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crap",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "secrecy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "abusive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "daytime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "precinct",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pressing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tribunal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "civilisation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pornography",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "urine",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "obesity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "takeover",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tactical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sweetheart",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reversal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disappointing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "felony",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "freezer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "adversary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "filling",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pastoral",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fingerprint",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sideline",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "theatrical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shack",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "showcase",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "insurgent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "severity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crusade",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "torso",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stump",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fuzzy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pancake",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "segregation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "forensic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unleash",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "climbing",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "multimedia",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prostate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "seizure",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spa",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bracelet",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disbelief",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "madame",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pub",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "peek",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "camping",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "roadside",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "constructive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crest",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mumble",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "readiness",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rhetorical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "desperation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "anonymity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "topple",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reinforcement",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reminiscent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "undercover",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "comedian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crunch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fig",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cruiser",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "genocide",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tenth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blueprint",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "animation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nude",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ranger",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "directive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "creamy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "binoculars",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bra",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rewrite",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "enjoyment",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rightly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sitcom",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cracker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dictatorship",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gosh",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "catholicism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "repression",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "watershed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wartime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "multinational",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "snapshot",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nasal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nudge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spicy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "recess",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blog",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "surf",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "alcoholic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "newborn",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "opener",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fingernail",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "adulthood",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "loft",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scottish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "penis",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "compassionate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "parlour",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "landowner",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pardon",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fiery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "slick",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hog",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "capitalist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "helping",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ineffective",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fumble",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cardboard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "erotic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "forearm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grenade",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shudder",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "outreach",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "perpetrator",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fetus",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "extremist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "silhouette",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "node",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "moonlight",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "china",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "villain",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "capitalize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bail",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "deliberation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hoop",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prostitution",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "famed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "turnout",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rabbi",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inaugural",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hindu",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "atrocity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cooler",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blessed",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "angrily",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "benchmark",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lousy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "monastery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sniper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "headlight",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bakery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hesitation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "apron",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bodyguard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thug",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "arrears",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "misunderstanding",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "swap",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sierra",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cadet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "striped",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eighteenth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disciplinary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "poker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sandal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ubiquitous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "swimmer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "liberalism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dissent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "drunken",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "celery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "luckily",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "designation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "boxer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "socket",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "clump",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eerie",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "colon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hack",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "irrational",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "boutique",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "redemption",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "danish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "recognizable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "monumental",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ninety",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "alga",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nightclub",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stint",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cosmetic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pony",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grapple",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "synagogue",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pod",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "modernization",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vodka",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "farmhouse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hype",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "programmer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "footprint",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "churn",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thankful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "drummer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "darken",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unpopular",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hefty",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dictionary",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rove",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dresser",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "enrol",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stigma",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "digit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "deceased",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "canon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sociologist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "transparency",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "charismatic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "enthusiast",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stink",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "doctorate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "quake",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "foreground",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "muffin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "clout",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "athletics",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heavyweight",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ghetto",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cavalry",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "piss",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "furnishings",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "zoom",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eh",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wig",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "electorate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "attest",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pneumonia",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "duct",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "helm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "woo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nostril",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crook",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "paranoid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scalp",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "curry",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "relish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thou",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "censorship",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eyelid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "farmland",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "classified",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "municipality",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "groom",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nestle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stylish",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gunfire",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tier",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reunite",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fugitive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "battalion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "contestant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "brokerage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sag",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "buffer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "delightful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "conditioner",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "makeshift",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "goodwill",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "covert",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "beckon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "freelance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "handgun",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chuck",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "buddhist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "suicidal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mole",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wince",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "collegiate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "differential",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "antibody",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "graffiti",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hierarchical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "clench",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flute",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "barracks",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "preoccupied",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nipple",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flex",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "id",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "culprit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "kinship",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sequel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cache",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "zip",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "surrogate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "introductory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disadvantaged",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disparate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "entree",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "misconduct",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dismissal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disgusting",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "autograph",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "orchestrate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cocoa",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "discredit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bun",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "procedural",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fern",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inscription",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hardwood",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pajamas",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tidal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mailbox",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spaniard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ivy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "enjoyable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "duo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "clone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bladder",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "knuckle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "checklist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reappear",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "damned",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sighting",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "demanding",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gram",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "depressing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crossroads",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "enclave",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gadget",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "alcoholism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "intuitive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "undercut",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "binding",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "racer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "horrific",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "liken",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rocker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "irritation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ostensibly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "arabic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reaffirm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "coma",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gala",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "jumper",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "crib",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "outnumber",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pentagon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inflammation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inscribe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hypocrisy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "outpost",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "belongings",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bedtime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "textual",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reprint",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "drugstore",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fraternity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "kg",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "strangle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unofficial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hunch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "firsthand",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "twitch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "brigade",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "aesthetics",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cactus",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "horseback",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pouch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hebrew",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "orphanage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lad",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "satin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "salty",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tenor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stud",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "platoon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "testament",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ballad",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "motorist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "screenplay",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unison",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "beet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fairway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flier",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flurry",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "plume",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "infantry",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "transcribe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "predicament",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "biotechnology",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bony",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wizard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "freshwater",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "waterway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "skyline",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lunge",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "downhill",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eldest",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overshadow",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "halo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unsettle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "subtly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "jeep",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "incarnation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "caretaker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "juggle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "limousine",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "horrify",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dryer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "perk",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "swollen",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "loophole",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bash",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pollster",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "apiece",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cyclist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hippie",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "oppressive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mow",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "unnatural",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "poignant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "swoop",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "statutory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dissident",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hiker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eclectic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "geologist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hairy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "abdomen",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "speculative",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "communion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "checkpoint",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "iris",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "platinum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "immoral",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "armchair",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bathtub",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "coercion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fatality",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "splendour",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "walkway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chaplain",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "finale",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mahogany",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "diocese",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cynicism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grandma",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "tenet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "straddle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cornerstone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "seductive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disposable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sling",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "warhead",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gothic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "umpire",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flop",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "revel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "insofar",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "decor",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "divisive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "smoky",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vineyard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flinch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pulpit",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "waterfront",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "levee",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tart",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "injunction",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "marking",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rapist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "kitten",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "realist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "runaway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "chromosome",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "espouse",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "showdown",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "serum",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "graveyard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "congratulations",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "strew",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wilt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "divinity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "forceful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gateway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hegemony",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "palpable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "denim",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "imperfect",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bikini",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hospitalize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "appointee",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ulcer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sensual",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hoof",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rosy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "downstream",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "squadron",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ramification",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "engaged",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "baker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pathology",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blurt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vigil",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "suppression",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "orthodoxy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "broke",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cerebral",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "modernism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "earthly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "finalist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dope",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "braille",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "obsessive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rhyme",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "euro",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "penguin",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "caravan",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "highland",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gambler",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sectarian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "resurrection",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "handicapped",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "coastline",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cloudy",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sixteenth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "festivity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reflex",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "barrage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "township",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "honorary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "operative",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hacker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wares",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "apricot",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "herring",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nigger",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thirsty",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "skid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hospice",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inception",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "clad",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lecturer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "estimation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pharmacist",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "convertible",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "squirm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "anew",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tendon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "plaid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sublime",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ecstatic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "decency",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rover",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cub",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inflammatory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "visitation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hypertension",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "conceivable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "entrust",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "taut",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "exploratory",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "remedial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sacrament",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "zipper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heartland",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "narrate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "saloon",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "curfew",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "glisten",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "orgasm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "margarine",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lookout",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "neural",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nostalgic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pedestal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "abdominal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "omission",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "annoyance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mathematician",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "surreal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lotion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cadre",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "encircle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dynasty",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "burglary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "coroner",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thee",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rink",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "resurrect",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "deli",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "backfire",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "downright",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "menopause",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "derail",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "individuality",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "revitalize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "teddy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "manageable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ornate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "funky",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "anxiously",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inexperienced",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "airy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "neurological",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "syringe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stylistic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "handshake",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "kindly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "distrust",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wiggle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overstate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cringe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "choral",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "czar",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "roadway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wrapper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "victimize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "suggestive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "humiliating",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "centimeter",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "satan",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fillet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flyer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "substitution",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "mare",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inconvenience",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sleeper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "racing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "foothill",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "macho",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "strained",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "picket",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "combatant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "twirl",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "recapture",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "frontal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blatant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "overboard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pictorial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "airway",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "remembrance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "detachment",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "repercussion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "frivolous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "familial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "decoy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "baton",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vial",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "admiral",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "debacle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blare",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "headteacher",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "gobble",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "appalling",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "metaphysical",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "teller",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "grimace",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "exporter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "baggy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ailing",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "felicity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "reinstate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "plutonium",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "trafficker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "craftsman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "eyeball",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "byte",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stricken",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "adultery",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "foreman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "corpus",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "intrusive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sweatshirt",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "leukemia",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "schoolchild",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "beige",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pitfall",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "revolver",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "subtlety",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thicket",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prowess",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "booze",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hamstring",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spearhead",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "goggle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "medicaid",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "underside",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "misty",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hanger",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "repository",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vaccination",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "housekeeper",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sinner",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "imperialism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bedding",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "homecoming",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blister",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hindsight",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "butler",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "imposition",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sliver",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "whereabouts",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "swivel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hitch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "binary",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bulldozer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fad",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "heady",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blackout",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "sociological",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "handcuff",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fervour",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "espionage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "headset",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "giddy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bogus",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "prenatal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "delve",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ethos",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ghostly",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "afloat",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "riding",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "imaginable",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "covenant",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hepatitis",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dichotomy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bog",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tinker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "quartet",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dummy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "truthful",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fieldwork",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "edgy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "penalize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rut",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "upstream",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "entourage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rummage",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "impatience",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "semantic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "connotation",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "campsite",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "anarchy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "scrutinise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "oily",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "oats",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spore",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flagship",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "whack",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "palate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "recurrent",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "seminal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "gruesome",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rodeo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "abnormality",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "repressive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crackle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "materialise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tablecloth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "secretive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "drone",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "teeter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "bale",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "slay",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "strut",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "destroyer",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "vertically",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "manpower",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "rebirth",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "birch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "antidote",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lunchtime",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket"
+      ]
+    },
+    {
+      "word": "legitimize",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lobe",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "kilo",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "antelope",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "birthplace",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "replay",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "disarmament",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "totalitarian",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "blockade",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shin",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "lemonade",
+      "tags": [
+        "category-expansion",
+        "wordlist:ket",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ligament",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "boulevard",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stench",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "thematic",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "crutch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "insensitive",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "baptism",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "shawl",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "peddle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "symbolise",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spoken",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "occupancy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "planter",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "subjectivity",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "knack",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fiddle",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "frenchman",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "stretcher",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "easel",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "flawless",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "staunch",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "spasm",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "tripod",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "wicker",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "ketchup",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "immature",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dishwasher",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "hobble",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "squeal",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "inadequacy",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "dribble",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "volatility",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "silky",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "humankind",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "nitrate",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "fiance",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "groundwork",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cyberspace",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "midwife",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "protracted",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "pavilion",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "cod",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    },
+    {
+      "word": "horrendous",
+      "tags": [
+        "category-expansion",
+        "wordlist:tem8"
+      ]
+    }
+  ]
+}

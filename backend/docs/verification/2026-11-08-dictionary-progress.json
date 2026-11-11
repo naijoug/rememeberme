@@ -1,0 +1,107 @@
+{
+  "checkedAt": "2026-11-09T03:51:49.692706+00:00",
+  "status": "partial-rollout-work-continuing",
+  "targetUniqueWords": 15434,
+  "publishedEntries": 5000,
+  "publishedSenses": 12297,
+  "catalog": "0ab8942e9e253786b6bde307",
+  "editions": [
+    "215b3bb51300b1f2ff99b7ba",
+    "3b9867b8cbbfd3a72767eff8",
+    "9a0d1938f1db80952aa0ead7",
+    "9adfdc2f84674a1bccef51f5",
+    "a3b9d7e037b6f24a6d6974ca"
+  ],
+  "categories": [
+    {
+      "category": "cet4",
+      "target": 3846,
+      "covered": 3426,
+      "missing": 420,
+      "excluded": 3
+    },
+    {
+      "category": "cet6",
+      "target": 5406,
+      "covered": 4210,
+      "missing": 1196,
+      "excluded": 1
+    },
+    {
+      "category": "ielts",
+      "target": 5038,
+      "covered": 2895,
+      "missing": 2143,
+      "excluded": 2
+    },
+    {
+      "category": "ket",
+      "target": 1606,
+      "covered": 937,
+      "missing": 669,
+      "excluded": 146
+    },
+    {
+      "category": "tem8",
+      "target": 12197,
+      "covered": 4696,
+      "missing": 7501,
+      "excluded": 0
+    },
+    {
+      "category": "toefl",
+      "target": 6970,
+      "covered": 2857,
+      "missing": 4113,
+      "excluded": 4
+    }
+  ],
+  "browser": {
+    "version": "0ab8942e9e253786b6bde307",
+    "checked": 5000,
+    "checks": [
+      "All 5000 English and Chinese lookups hit approved local assets without online lookup calls or vocabulary writes.",
+      "Actual selection card shows local provenance and bilingual examples inside the closed shadow root.",
+      "Synthetic save/export/reset/restart preserves publication metadata, bilingual examples and history."
+    ],
+    "limitations": [
+      "Disposable Chrome profile; not the everyday installed extension.",
+      "No authenticated production sync or Apple UI verification."
+    ],
+    "browser": "151.0.7922.34",
+    "externalLookupCalls": 0,
+    "otherExternalAttempts": [
+      "https://rememberme-lookup.couplelabs.workers.dev/api/v1/public/lookup/capabilities"
+    ]
+  },
+  "newReviews": {
+    "part03": {
+      "independent": 996,
+      "direct": 4,
+      "changed": 187,
+      "senses": 2357
+    },
+    "part04": {
+      "independent": 948,
+      "direct": 52,
+      "changed": 185,
+      "senses": 2192
+    }
+  },
+  "pilotAmendment": {
+    "inheritedEntries": 1000,
+    "changedWords": [
+      "may",
+      "turkey"
+    ],
+    "change": "One new capitalized homograph sense each; all prior senses and forms retained.",
+    "replaces": "a00fbaf0fcdcf2476b5c825d",
+    "current": "9a0d1938f1db80952aa0ead7"
+  },
+  "limitations": [
+    "Not all category words generated/reviewed yet.",
+    "Category membership is pinned word-list spelling coverage, not certification of every possible sense.",
+    "AI-assisted review, not human certification.",
+    "No live authenticated sync or Apple UI tested this session."
+  ]
+}

@@ -1,0 +1,7176 @@
+{
+  "id": "expansion-10000-part-09-v1",
+  "metadata": {
+    "title": "Remember Me expansion toward 10000 words: part 9",
+    "baseEdition": "a00fbaf0fcdcf2476b5c825d",
+    "source": {
+      "id": "ecdict",
+      "repository": "https://github.com/skywind3000/ECDICT",
+      "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+      "csvUrl": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+      "csvGitBlob": "0e527e22e0e0d22f012b0ed251a8dddd5891773b",
+      "csvSha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+      "license": "MIT",
+      "licenseSha256": "f8552dd246f61a4e064569eae6194a01c6b3d63b03bf27c6ca863593c549ed0f",
+      "limitations": "Source-provided frequency ranks and exam tags, not current official exam certification. Definitions and generated forms are reference clues requiring review."
+    },
+    "count": 1000,
+    "referenceSha256": "7ca614081c06dd82f9946df18af2525f0ea17ea38dea419cd7c384bc20e053fd",
+    "selection": "CET4/CET6 source-tagged words, then source frequency rank <=6000, then IELTS/TOEFL source tags, then remaining frequency-ranked candidates; exact lowercase spellings, case-sensitive source preference, ASCII selection alphabet, no baseline duplicates. Not an official exam list or a claim of unique lemmas.",
+    "wordsSha256": "2ca8dbceda76f4b93e8cec336164851f4ea2b4b387179325f9cf432994427d9f"
+  },
+  "words": [
+    {
+      "word": "unruly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "eschew",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "piety",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "uniqueness",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "carnival",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cancellation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stratum",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ransom",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "meticulously",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "circumvent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "digestive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tamper",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "conservationist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "recital",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "exodus",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "swerve",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "compulsive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "postoperative",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "bliss",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "assemblage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "snug",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "adjoining",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ravage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "illegitimate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "plumber",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "clamor",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "instill",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "disarray",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "impersonal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sculpt",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "creed",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "misuse",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "pervade",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "unimaginable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "suspense",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "anesthesia",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "literate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "resin",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fresco",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fender",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "supplant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "diagonal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tonic",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "nobility",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "metropolis",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rudimentary",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "affectionate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "detached",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "clutter",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "burrow",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "delinquency",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "camouflage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cove",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "replenish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "agitate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "utterance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "birds",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "bent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "hectic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "polarize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stagnant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "gorge",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "exude",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "interdependence",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "magnesium",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "crimson",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "gull",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "migratory",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "potassium",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "proliferate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cadence",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "civility",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "overrule",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "crisscross",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unfavorable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pertain",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "joyous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "utilitarian",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cumbersome",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "engraving",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "agrarian",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "concurrent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "squeak",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "maverick",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "prerogative",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "wand",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "heyday",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "wry",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "engrave",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "haunted",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "malignant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "snarl",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "crayon",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "guild",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "clinch",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "originality",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "oblivion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "evict",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "wording",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "exertion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "hijack",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "negate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "reddish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "juxtaposition",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "transpire",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "exuberant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sunflower",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "virtuous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "snowflake",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "abort",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "concoct",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "fateful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "mania",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "admonish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "skyrocket",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "acclaim",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "tentacle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "industrialization",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "arduous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "securely",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pedagogy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "temperate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "aptitude",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "healthful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "incarcerate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "alaska",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "bedrock",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "flickering",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tundra",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "irritating",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "legislate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "pounce",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "glimmer",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "conclusive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "calamity",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "exhaustive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "lighthouse",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "bookcase",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "insulting",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "congregate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "aloft",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "irreversible",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "placid",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "smug",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "aperture",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "adversely",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "influenza",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "revoke",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pinnacle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "dizzying",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "accuser",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "reverberate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "embellish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "detergent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "exhilarating",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "undue",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "atheist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "vacate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "loathe",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "provocation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fauna",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "glaring",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sheath",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "underwrite",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "rivers",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "pocketbook",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "forfeit",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "momentous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "millimeter",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "captivate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chimpanzee",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "nook",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "strenuous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "appall",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "substantiate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "entrenched",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cosmopolitan",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "pessimism",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "enactment",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "checkup",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "foggy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "aversion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chronology",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "coalesce",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "accomplice",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "insomnia",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "serenity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "colossal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "scuttle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "crease",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "compressed",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fortify",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "shoal",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "composure",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "culmination",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dramatize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "perilous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cork",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "astound",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "imbue",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "meander",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pitiful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stamina",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dreary",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "aggregate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "promulgate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "gale",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "paraphrase",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "venom",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "annuity",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "teapot",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "gamma",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "impeccable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dependable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "manually",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "nonverbal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "onlooker",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "forbes",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "drench",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "raucous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cohesive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "approaching",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "droplet",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "precedence",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "computation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "quell",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enrage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "flimsy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cello",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rendezvous",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "childcare",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "bigotry",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "auspice",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "furry",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "lax",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "toil",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "inundate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "absentee",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "repress",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pungent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sarcastic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "trilogy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "panorama",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "untold",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "stardom",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "miscarriage",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "scapegoat",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "topography",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "mire",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "shellfish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "trustworthy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sidestep",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "courier",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "recoil",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "evasion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ovation",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "undisturbed",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "complimentary",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "astute",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "archaic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "vestige",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "quail",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "discernible",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "vindicate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "din",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "caterpillar",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ply",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "err",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "hoax",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "newscast",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "semblance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "primordial",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "allot",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "seaweed",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "thorny",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "memento",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "encase",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "antarctica",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "clot",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "nutritious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "healthcare",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "increment",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "heterogeneous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "calorie",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "abate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "inconceivable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dole",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sheltered",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "minuscule",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tropics",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "observance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "molten",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "scuba",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "colonize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "impromptu",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "repertory",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unquestionably",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pamper",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "unrestricted",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "levy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "procure",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "nocturnal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "lull",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "misgiving",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "pendant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "climatic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "flaunt",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "impulsive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "beset",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "philharmonic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "overture",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "slant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chide",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "adventurer",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "debtor",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "leisurely",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "apex",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chronological",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "garb",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "inconvenient",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "buggy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "diversification",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "bustle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sarcasm",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "fertilize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ruffle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "upland",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "finesse",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "surmise",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "acronym",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "vigilance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "feign",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "kerosene",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "confluence",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unbroken",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "conversational",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "jeweler",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "laurel",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "complicity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "starch",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "puzzling",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "condolence",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "forbidding",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fanciful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "extremity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "porous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "melodic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "populous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "perseverance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "methodically",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "choreographer",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "piracy",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "deflate",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "repudiate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "crevice",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "flamboyant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "brandish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tarnish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "tacit",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "expressly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "benefactor",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "allegory",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "outgrow",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "propriety",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "affliction",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "penetrating",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "laud",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "carver",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sloping",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "divulge",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "melodrama",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "abolition",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "wavy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sanitary",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "screwdriver",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "embroider",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "penal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "safari",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "hereditary",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "transfix",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "idyllic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "maize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "abstain",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "physique",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "defection",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "obnoxious",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "mistrust",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tactile",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "malnutrition",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "typify",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "skating",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "genesis",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "disband",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "bonanza",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "affix",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "hump",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "regeneration",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "dilapidated",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "impeach",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "retract",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "inert",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "jumble",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "obligatory",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "uniformity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unparalleled",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "percussion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "farce",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "diligently",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "digestion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "inept",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "craze",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "urbanization",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "paternity",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "bravado",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "impassioned",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "amble",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "wholesaler",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "deplore",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "antagonism",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "scaffolding",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ultimatum",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "falcon",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "turquoise",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dearth",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "negligent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ethically",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "codify",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "resonant",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "grudge",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "bibliography",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "checkout",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chubby",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "glacial",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "galvanize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "blot",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "inconclusive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "outcast",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "emphatic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "aromatic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "meek",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "mishap",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "warp",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "buzzer",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "graft",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ambience",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "omen",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "aristocrat",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "septic",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "glazed",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ephemeral",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "fervent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "rainwater",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "ghastly",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "beaded",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "felt",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "agile",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sustenance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "psychoanalysis",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "prodigious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "compensatory",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "supersede",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "chirp",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "prune",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "vertigo",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "elasticity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "prodigy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enigma",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "entangle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "resentful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stylized",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "irritable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "duly",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "gape",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "detriment",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "effluent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "choreograph",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "credence",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "deride",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "practicality",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "raven",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "nimble",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "acidic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "diminutive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sculptural",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "heresy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tenement",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "detract",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "predisposition",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sparsely",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "foresight",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rivet",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "antiquated",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "saline",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "aloof",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ranching",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "shimmer",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "textured",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "husk",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "microcosm",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "dominion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "instinctive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "painstaking",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "flattering",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "clamour",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "booking",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "neurotic",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "brawl",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cryptic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "reigning",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "hospitable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "harmonic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "choreography",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "subterranean",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "reek",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "seethe",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "conjecture",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pretension",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "invalidate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sear",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "palatable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "spurt",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "revitalization",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "archipelago",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "connoisseur",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tingle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "optic",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "inextricably",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "feverish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "accordion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dehydration",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "extant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "congested",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "soloist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "freighter",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "spinning",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "barbarian",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "interviewee",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "custodian",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "extol",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "freshness",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stimulant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tinge",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sumptuous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tenacious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "newsstand",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "austerity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sap",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "incessant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "vogue",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "disrespect",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "divergence",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "annex",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "edifice",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "supple",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "squirt",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "attached",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fraternal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "odyssey",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "smelly",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "innuendo",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "spontaneity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "comical",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "belie",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "apologetic",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "escalator",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "shyness",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enslave",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "discord",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "puncture",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "additive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fictitious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "methodical",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tycoon",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "agility",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "discouraging",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sentry",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "categorical",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rigidity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "naturalistic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "malfunction",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dizziness",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "nuts",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "cower",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "adaptable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "interdependent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "concomitant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "impunity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "deft",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "mercenary",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "infringe",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "masonry",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "accelerating",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sterilize",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "besiege",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "housekeeping",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "stocky",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "crystalline",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "leaky",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rattlesnake",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "harmonize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rekindle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "jogging",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "adobe",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "crystallize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fallacy",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "exhausting",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "invincible",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "forlorn",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "zealot",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "oblique",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "ebb",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ascending",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "selfishness",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "amnesia",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "impotence",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dingy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "shale",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "hummingbird",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "potted",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tint",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "null",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "gaudy",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "tranquility",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "nomadic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "secrete",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "submerged",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "carnivore",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "nectar",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enumerate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "maniac",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "diversified",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "whittle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stipend",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "refurbish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pueblo",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "paleontologist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stub",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "elated",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "spectacularly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "scalpel",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "aggressiveness",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "scotch",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "paraphernalia",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "bicker",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "moisten",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "obsess",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "forthright",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "varnish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "invocation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "outlying",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "disinterested",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "raincoat",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "blazing",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "meteorologist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "holocaust",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "depreciation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fleck",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "twine",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "potion",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "moron",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "lucid",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "impervious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "lyric",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "anarchist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "exhort",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "scum",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "buoyant",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "humanist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "acupuncture",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "syllabus",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "censure",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "colt",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "perceptive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "slimy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "condensation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "wistful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dispersal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "retriever",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "intrepid",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "neoclassical",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "encroach",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "scavenger",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "libel",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "clergyman",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "converter",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fussy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pivot",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "catering",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "noxious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "defunct",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "agonize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "detectable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "annihilate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "exacting",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "indelible",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "cottonwood",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "entanglement",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "impropriety",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "spout",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "purification",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "astounding",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "luster",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "decomposition",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ineligible",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "octopus",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "gaunt",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "urchin",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "synchronize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "placard",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "phobia",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "dissenter",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "barter",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "conventionally",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "conciliatory",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "stanza",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "emigrant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fruitless",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "consign",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "emancipation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "particulate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "aviator",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "inkling",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "multifaceted",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "steadfast",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "predictability",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "reliant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "malady",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cardinal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "quandary",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "minimalist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sensuous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "hilly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "departmental",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "abiding",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "morbid",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "trepidation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "mason",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "altruism",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "flint",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "instigate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "insinuate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "cursory",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "glassy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "congenital",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sultry",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "linguistics",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "contiguous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "foreshadow",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enormity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "amenable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "lichen",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "kangaroo",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "preponderance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fickle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "maxim",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tolerable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "boundless",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "hatchery",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "gash",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "slime",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "mournful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "aria",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "saber",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "repulsive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "amiable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "adage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "atlas",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "springboard",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "berate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "recline",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "syndicate",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "domesticated",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "zenith",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unbiased",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "trapper",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "panacea",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "insurmountable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "outdo",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "silt",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fragility",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "disprove",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "relapse",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "genteel",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "refrigeration",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chafe",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "assail",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "baboon",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "mirage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "tantalize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "forebear",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tepid",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "constrict",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "depose",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "belittle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "eccentricity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "kennel",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "antagonist",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "tutorial",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "indigent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fetish",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "trespass",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "incongruous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "downpour",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "pseudonym",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "belligerent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "consternation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enthrall",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "surcharge",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "nautical",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "stipulation",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pretentious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "dank",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "abundantly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "lenient",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "placate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "engross",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "convection",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "disrespectful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "incoherent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "arbitrator",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "jettison",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chagrin",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "gruff",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "parasitic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "corrosive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "shrivel",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "baroque",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "shameless",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "forestall",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "elaborately",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "haphazard",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "touchy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sojourn",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "bondage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "itinerant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "asymmetrical",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "superfluous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "congenial",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fanatical",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "affable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enterprising",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unwieldy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "outstrip",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "indignity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "uncharted",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dissimilar",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "magnate",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "misrepresent",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "deluge",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "indecent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "roost",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "woolly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "wager",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "detest",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "elucidate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "diagonally",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "weariness",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "burdensome",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "spotless",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dissonance",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dietitian",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "irrigate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "moustache",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "yelp",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "flounder",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "kiln",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "trying",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "audacious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "conifer",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "abrasive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "interlude",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chum",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "despicable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "snippet",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "feudal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "inanimate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "geologic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "frenetic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "antecedent",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "wispy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "expound",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "dogmatic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "adjourn",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "amphibian",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "collusion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "valiant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "barb",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "callous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "concentric",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "illustrious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "carelessly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "evasive",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "abject",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "accredit",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "trove",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "decadent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "suffrage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "posterity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "monsoon",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "exorbitant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "liberally",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "frugal",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "intoxicate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "armament",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "voracious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "remittance",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "extricate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "fruition",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "equestrian",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "decrepit",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "seclusion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "redress",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "immobile",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "surmount",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "immobilize",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "televise",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "synthesizer",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unbridled",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "woolen",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "outgrowth",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "paucity",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "revered",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "meddle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "irreverent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "congruent",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "abhor",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unscrupulous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "underdeveloped",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "perplexing",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "malevolent",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "assuage",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "glut",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "patronizing",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "gratuitous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sunburn",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "goad",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "distasteful",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pique",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "sporadically",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "exalted",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "layering",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "haggle",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "anomalous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "legume",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ajar",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "outlast",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "maim",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "monotonous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "scraping",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "humanistic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "secretion",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "moat",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "depositor",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "enunciate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "progeny",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "daze",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "choppy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "topsoil",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rationing",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "judicious",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "symbiotic",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "merciless",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "condor",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "satirical",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "ablaze",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "synonym",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "precipitous",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "rote",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "raze",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "harmonica",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "circumscribe",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "hermit",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "yardstick",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "condiment",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "reschedule",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "loath",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "sunlit",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "impel",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "debatable",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "intricately",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "supremely",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "justly",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "discerning",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "chisel",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "cannibalism",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "alchemy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "harry",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "pompous",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "drowsy",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "exasperate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "absolve",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "postgraduate",
+      "tags": [
+        "expansion",
+        "ecdict:toefl",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "nullify",
+      "tags": [
+        "expansion",
+        "ecdict:ielts"
+      ]
+    },
+    {
+      "word": "gallant",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "decorum",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "squabble",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "unmatched",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "suffuse",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    },
+    {
+      "word": "inflexible",
+      "tags": [
+        "expansion",
+        "ecdict:toefl"
+      ]
+    }
+  ]
+}

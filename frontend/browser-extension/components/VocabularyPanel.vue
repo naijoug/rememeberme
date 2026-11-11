@@ -8,6 +8,7 @@ import WordDetail from './WordDetail.vue';
 import PracticeRecords from './practice/PracticeRecords.vue';
 import ConfirmDelete from './ConfirmDelete.vue';
 import { PRIVACY_POLICY_URL } from '~/config/backend';
+import { dictionaryCategories } from '~/services/dictionary-categories';
 
 const props = withDefaults(defineProps<{
   words: WordEntry[]; loading?: boolean; busy?: boolean; error?: string; success?: string;
@@ -20,6 +21,7 @@ const emit = defineEmits<{
 }>();
 const selected = ref<string | null>(props.initialWord || null);
 const query = ref('');
+const category = ref('');
 const listScrollTop = ref(0);
 const sortBy = ref<'count' | 'updatedAt'>('count');
 const settingsOpen = ref(false);
@@ -30,7 +32,7 @@ const settingsBackButton = ref<HTMLButtonElement>();
 const backButton = ref<HTMLButtonElement>();
 const importError = ref('');
 const selectedEntry = computed(() => props.words.find(entry => (entry.id ?? entry.word) === selected.value));
-const displayedWords = computed(() => props.words.filter(entry => entry.word.toLowerCase().includes(query.value.trim().toLowerCase()))
+const displayedWords = computed(() => props.words.filter(entry => entry.word.toLowerCase().includes(query.value.trim().toLowerCase()) && dictionaryCategories.matches(entry.word, category.value))
   .slice().sort((a, b) => sortBy.value === 'count' ? b.count - a.count : b.updatedAt - a.updatedAt));
 watch(selectedEntry, entry => { if (!entry) { selected.value = null; confirmWord.value = null; listScrollTop.value = 0; } });
 async function openWord(word: string) { selected.value = word; await nextTick(); backButton.value?.focus(); }
@@ -46,6 +48,7 @@ async function closeSettings() {
 async function showVocabulary() {
   selected.value = null;
   query.value = '';
+  category.value = '';
   listScrollTop.value = 0;
   await closeSettings();
 }
@@ -111,6 +114,15 @@ async function importFile(event: Event) {
       <slot name="account" :show-vocabulary="showVocabulary" />
       <slot name="websites" />
       <PracticeRecords />
+      <section v-if="dictionaryCategories.categories.length" class="settings-section" aria-labelledby="dictionary-coverage-heading">
+        <h3 id="dictionary-coverage-heading">Local word lists</h3>
+        <div class="settings-group">
+          <a v-for="item in dictionaryCategories.categories" :key="item.category" class="setting-row" :href="item.sourceUrl" target="_blank" rel="noopener noreferrer">
+            <span>{{ item.label }}</span><span>{{ item.covered.toLocaleString() }} / {{ item.target.toLocaleString() }}<small v-if="item.excluded" class="dictionary-excluded">{{ item.excluded }} other source entries excluded</small></span>
+          </a>
+        </div>
+        <p class="settings-note">Single-word entries reviewed with AI assistance. Lists overlap and are not a complete exam syllabus. Source phrases and unsupported abbreviations are counted separately.</p>
+      </section>
 
       <section class="settings-section" aria-labelledby="backups-heading">
         <h3 id="backups-heading">Backups</h3>
@@ -148,12 +160,13 @@ async function importFile(event: Event) {
         <button class="rm-button" :disabled="busy || loading" @click="emit('practice')">单词听写</button>
         <div class="list-tools">
           <label class="search-field"><Search width="17" height="17" aria-hidden="true" /><input v-model="query" type="search" aria-label="Search vocabulary" placeholder="Find a word" /></label>
-          <div class="list-heading"><div><strong>Vocabulary</strong><span class="word-total">{{ words.length }} {{ words.length === 1 ? 'word' : 'words' }}</span></div>
+          <div class="list-heading"><div><strong>Vocabulary</strong><span class="word-total"><template v-if="query.trim() || category">{{ displayedWords.length }} of </template>{{ words.length }} {{ words.length === 1 ? 'word' : 'words' }}</span></div>
             <label class="sort-control"><select v-model="sortBy" aria-label="Sort vocabulary"><option value="count">Most forgotten</option><option value="updatedAt">Last updated</option></select></label>
+            <label v-if="dictionaryCategories.categories.length" class="sort-control"><select v-model="category" aria-label="Filter vocabulary by word list"><option value="">All word lists</option><option v-for="item in dictionaryCategories.categories" :key="item.category" :value="item.category">{{ item.label }}</option></select></label>
           </div>
         </div>
         <WordList v-if="displayedWords.length" :words="displayedWords" :initial-scroll-top="listScrollTop" @scroll-position="listScrollTop = $event" @select="openWord" />
-        <div v-else class="empty"><h2>No matching words</h2><p>Try a different word or clear your search.</p><button class="rm-button rm-secondary" @click="query = ''">Clear search</button></div>
+        <div v-else class="empty"><h2>No matching words</h2><p>Try a different word or clear your filters.</p><button class="rm-button rm-secondary" @click="query = ''; category = ''">Clear filters</button></div>
       </template>
       <div v-else class="empty">
         <Bookmark width="32" height="32" stroke-width="1.3" aria-hidden="true" />

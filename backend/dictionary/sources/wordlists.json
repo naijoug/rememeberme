@@ -1,0 +1,65 @@
+{
+  "cet4": {
+    "id": "cet4-ecdict-39cfb967-v1",
+    "version": "ECDICT 39cfb967",
+    "url": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+    "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+    "sha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+    "license": "MIT",
+    "note": "Source-provided tag membership; not an official, exhaustive or current examination syllabus."
+  },
+  "cet6": {
+    "id": "cet6-ecdict-39cfb967-v1",
+    "version": "ECDICT 39cfb967",
+    "url": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+    "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+    "sha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+    "license": "MIT",
+    "note": "Source-provided tag membership; not an official, exhaustive or current examination syllabus."
+  },
+  "toefl": {
+    "id": "toefl-ecdict-39cfb967-v1",
+    "version": "ECDICT 39cfb967",
+    "url": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+    "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+    "sha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+    "license": "MIT",
+    "note": "Source-provided tag membership; not an official, exhaustive or current examination syllabus."
+  },
+  "ielts": {
+    "id": "ielts-ecdict-39cfb967-v1",
+    "version": "ECDICT 39cfb967",
+    "url": "https://raw.githubusercontent.com/skywind3000/ECDICT/39cfb9672c0906b63569e0453c2e6abfb9ab182a/ecdict.csv",
+    "revision": "39cfb9672c0906b63569e0453c2e6abfb9ab182a",
+    "sha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+    "license": "MIT",
+    "note": "Source-provided tag membership; not an official, exhaustive or current examination syllabus."
+  },
+  "ket": {
+    "id": "ket-cambridge-2025-alphabetical-v1",
+    "version": "August 2025 alphabetical list",
+    "url": "https://www.cambridgeenglish.org/images/506886-a2-key-2020-vocabulary-list.pdf",
+    "revision": "August 2025",
+    "sha256": "2abe174d067cd17ffa061cfc4bbbc0e5a55185ac696a5ef8ba49372c753a3ad6",
+    "textSha256": "6fcf04af7bb0bc53a8776b009f5ae93c7208a56c2c2ea453006de3e04c0e348c",
+    "license": "Copyright UCLES 2025; headword index only",
+    "note": "Alphabetical headwords only, with explicit spelling variants expanded. Examples/definitions are not copied. Phrases and unsupported spellings are listed separately. Open-ended Appendix 1 word sets are outside this finite index; this is not all possible exam vocabulary."
+  },
+  "tem8": {
+    "id": "tem8-lslab-f69f627f-v2",
+    "version": "lslab f69f627f",
+    "url": "https://github.com/lslab/words-learner-vscode/blob/f69f627f14c5d810ef90580d298f46ed2ac7ec94/assets/dicts/Level8luan_2_T.json",
+    "revision": "f69f627f14c5d810ef90580d298f46ed2ac7ec94",
+    "sha256": "1e8649dc586ae06734f620cd5b5ac186b6ceead4e082c89a22d59623e2847f26",
+    "gitBlob": "0a69c68c8697ffb16d57bdccce175259fdff4004",
+    "license": "MIT (upstream repository)",
+    "note": "Community TEM8 learning list. Only headwords/class membership extracted; translations and pronunciation not copied. Not an official or current examination syllabus. Editorial spelling correction: barometre to barometer; checked against the Cambridge English headword.",
+    "normalizations": {
+      "barometre": {
+        "word": "barometer",
+        "evidence": "https://dictionary.cambridge.org/dictionary/english/barometer"
+      }
+    },
+    "licenseText": "MIT License\n\nCopyright (c) 2021 Kaiyi ZHANG\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+  }
+}

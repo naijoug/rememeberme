@@ -122,8 +122,10 @@
 .rm-theme .search-field input { border: 0; outline: 0; min-width: 0; width: 100%; background: transparent; padding: 8px 0; font-size: 14px; }
 .rm-theme .search-field:focus-within { outline: 2px solid var(--rm-primary); outline-offset: 2px; }
 .rm-theme .search-field input::placeholder { color: var(--rm-muted); }
-.rm-theme .list-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 16px; font-size: 13px; }
+.rm-theme .list-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 16px; font-size: 13px; }
 .rm-theme .list-heading strong { font-weight: 600; }
+.rm-theme .dictionary-excluded { display: block; margin-top: 3px; font-size: 10px; color: var(--rm-muted); text-align: right; }
+.rm-theme .settings-note { margin: 8px 12px; font-size: 11px; line-height: 1.5; color: var(--rm-muted); }
 .rm-theme .word-total { margin-left: 8px; color: var(--rm-muted); }
 .rm-theme .sort-control select { background: transparent; border: 0; font-size: 12px; color: var(--rm-muted); padding: 4px; max-width: 140px; }
 .rm-theme .word-list { min-height: 0; overflow-y: auto; flex: 1; max-height: 370px; position: relative; scrollbar-width: thin; scrollbar-color: var(--rm-border) transparent; }

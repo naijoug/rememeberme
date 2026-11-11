@@ -1,0 +1,94 @@
+{
+  "existingSelected": 10000,
+  "categoryUnion": 15011,
+  "additional": 5434,
+  "targetUnion": 15434,
+  "lists": [
+    {
+      "id": "ket-cambridge-2025-alphabetical-v1",
+      "category": "ket",
+      "target": 1606,
+      "alreadySelected": 1465,
+      "missingFromSelection": 141,
+      "excluded": 146
+    },
+    {
+      "id": "cet4-ecdict-39cfb967-v1",
+      "category": "cet4",
+      "target": 3846,
+      "alreadySelected": 3846,
+      "missingFromSelection": 0,
+      "excluded": 3
+    },
+    {
+      "id": "cet6-ecdict-39cfb967-v1",
+      "category": "cet6",
+      "target": 5406,
+      "alreadySelected": 5406,
+      "missingFromSelection": 0,
+      "excluded": 1
+    },
+    {
+      "id": "tem8-lslab-f69f627f-v2",
+      "category": "tem8",
+      "target": 12197,
+      "alreadySelected": 8105,
+      "missingFromSelection": 4092,
+      "excluded": 0
+    },
+    {
+      "id": "toefl-ecdict-39cfb967-v1",
+      "category": "toefl",
+      "target": 6970,
+      "alreadySelected": 5707,
+      "missingFromSelection": 1263,
+      "excluded": 4
+    },
+    {
+      "id": "ielts-ecdict-39cfb967-v1",
+      "category": "ielts",
+      "target": 5038,
+      "alreadySelected": 4502,
+      "missingFromSelection": 536,
+      "excluded": 2
+    }
+  ],
+  "batches": [
+    {
+      "dataset": "category-expansion-part-01.json",
+      "references": "category-expansion-part-01.references.json",
+      "count": 1000,
+      "referenceSha256": "68aa106c949b9477c2c2b1b268e4e21d33bb72d6d25ebe9dd10ee7ffd40a4ec0"
+    },
+    {
+      "dataset": "category-expansion-part-02.json",
+      "references": "category-expansion-part-02.references.json",
+      "count": 1000,
+      "referenceSha256": "62c3ad960021a5f1c283781e70ada2aba74f09b42626dcd7df4bde256803e15a"
+    },
+    {
+      "dataset": "category-expansion-part-03.json",
+      "references": "category-expansion-part-03.references.json",
+      "count": 1000,
+      "referenceSha256": "4e92470d995f66ac79d4cc59bc10281275028870594f4081b924d8f3428bb578"
+    },
+    {
+      "dataset": "category-expansion-part-04.json",
+      "references": "category-expansion-part-04.references.json",
+      "count": 1000,
+      "referenceSha256": "e1777ac6311ca5105d7d28e199b1ab62c7f913043843f786d614f4e92cec88b7"
+    },
+    {
+      "dataset": "category-expansion-part-05.json",
+      "references": "category-expansion-part-05.references.json",
+      "count": 1000,
+      "referenceSha256": "4ff2a4efd047339923b6180a0ae7714b8141cb9c1ed1dcfe4ccf990aa8c34ea5"
+    },
+    {
+      "dataset": "category-expansion-part-06.json",
+      "references": "category-expansion-part-06.references.json",
+      "count": 434,
+      "referenceSha256": "107847a771aab767f2e14283a4f7b1f60709caf8a01b71cd9493ba3b3a2e9b14"
+    }
+  ]
+}

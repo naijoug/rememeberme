@@ -1,0 +1,250 @@
+{
+  "status": "complete",
+  "target": 15434,
+  "catalog": "627b40fb6ca5ca2e4c763b0e",
+  "entries": 15434,
+  "senses": 29399,
+  "shardBytes": 12330112,
+  "categories": [
+    {
+      "category": "cet4",
+      "target": 3846,
+      "covered": 3846,
+      "missing": 0,
+      "excluded": 3
+    },
+    {
+      "category": "cet6",
+      "target": 5406,
+      "covered": 5406,
+      "missing": 0,
+      "excluded": 1
+    },
+    {
+      "category": "ielts",
+      "target": 5038,
+      "covered": 5038,
+      "missing": 0,
+      "excluded": 2
+    },
+    {
+      "category": "ket",
+      "target": 1606,
+      "covered": 1606,
+      "missing": 0,
+      "excluded": 146
+    },
+    {
+      "category": "tem8",
+      "target": 12197,
+      "covered": 12197,
+      "missing": 0,
+      "excluded": 0
+    },
+    {
+      "category": "toefl",
+      "target": 6970,
+      "covered": 6970,
+      "missing": 0,
+      "excluded": 4
+    }
+  ],
+  "browser": {
+    "version": "627b40fb6ca5ca2e4c763b0e",
+    "checked": 15434,
+    "checks": [
+      "All 15434 English and Chinese lookups hit approved local assets without online lookup calls or vocabulary writes.",
+      "Actual selection card shows bilingual examples without source footers inside the closed shadow root.",
+      "Synthetic save/export/reset/restart preserves publication metadata, bilingual examples and history."
+    ],
+    "limitations": [
+      "Disposable Chrome profile; not the everyday installed extension.",
+      "No authenticated production sync or Apple UI verification."
+    ],
+    "browser": "151.0.7922.34",
+    "externalLookupCalls": 0,
+    "otherExternalAttempts": [
+      "https://rememberme-lookup.couplelabs.workers.dev/api/v1/public/lookup/capabilities"
+    ]
+  },
+  "part06": {
+    "edition": "6e7a098b697beea1f3beaa63",
+    "independent": 1000,
+    "direct": 0,
+    "revised": 199,
+    "senses": 2249
+  },
+  "part07": {
+    "edition": "4d5b953d7240b1ff99cdc58b",
+    "independent": 998,
+    "direct": 2,
+    "revised": 156,
+    "senses": 1724,
+    "packaged": true
+  },
+  "tests": {
+    "node": "22.22.3",
+    "backend": 153,
+    "backendTypecheck": "passed",
+    "dictionaryBuild": "passed",
+    "extensionTargetedFinal": 20,
+    "extensionCompile": "passed",
+    "chromeBuild": "passed",
+    "pythonEarlier": 12,
+    "browserAllWordCount": 15434,
+    "localFeedback": "running; assets reachable; not proof everyday profile loaded update",
+    "sandboxRetry": "First backend run had 7 loopback listen EPERM failures; same full suite passed with loopback permission."
+  },
+  "limitations": [
+    "AI-assisted review and editorial adjudication, not human expert certification or exhaustive senses.",
+    "Zero missing means every supported single-word key in the six pinned source lists; exclusions and open-ended KET appendix sets remain outside scope.",
+    "Categories overlap and are not official exhaustive exam syllabi.",
+    "No everyday-profile update, authenticated production sync or Apple UI claim."
+  ],
+  "part05": {
+    "edition": "43e25a7fdb9b4876bbd581a2",
+    "independent": 866,
+    "direct": 134,
+    "revised": 205,
+    "senses": 1947,
+    "packaged": true
+  },
+  "part08": {
+    "edition": "b71b85f2035c755c9061530d",
+    "independent": 912,
+    "direct": 88,
+    "revised": 125,
+    "senses": 1664,
+    "packaged": true
+  },
+  "part09": {
+    "edition": "f30745f3264ceeb6902fb10d",
+    "independent": 1000,
+    "direct": 0,
+    "revised": 79,
+    "senses": 1538,
+    "packaged": true
+  },
+  "completedAt": "2026-11-09T13:47:35.545424+00:00",
+  "packageIntegrity": {
+    "priorVersion": "c45cb6de743c30b691a01ad2",
+    "priorEntries": 12000,
+    "unchangedPriorEntries": 12000,
+    "version": "627b40fb6ca5ca2e4c763b0e",
+    "entries": 15434,
+    "senses": 29399,
+    "shardBytes": 12330112,
+    "categories": [
+      {
+        "category": "cet4",
+        "target": 3846,
+        "covered": 3846,
+        "missing": 0,
+        "excluded": 3
+      },
+      {
+        "category": "cet6",
+        "target": 5406,
+        "covered": 5406,
+        "missing": 0,
+        "excluded": 1
+      },
+      {
+        "category": "ielts",
+        "target": 5038,
+        "covered": 5038,
+        "missing": 0,
+        "excluded": 2
+      },
+      {
+        "category": "ket",
+        "target": 1606,
+        "covered": 1606,
+        "missing": 0,
+        "excluded": 146
+      },
+      {
+        "category": "tem8",
+        "target": 12197,
+        "covered": 12197,
+        "missing": 0,
+        "excluded": 0
+      },
+      {
+        "category": "toefl",
+        "target": 6970,
+        "covered": 6970,
+        "missing": 0,
+        "excluded": 4
+      }
+    ]
+  },
+  "server": {
+    "version": "627b40fb6ca5ca2e4c763b0e",
+    "entries": 15434,
+    "backup": "/home/ubuntu/.local/share/rememberme-dictionary/expansion-10000-20261106/final-15434-approved-20261109.sqlite",
+    "backupSha256": "d1810e152af784ea45b8223f02444693ffdbe49909eaa2520718c4ec6143b8fb",
+    "integrity": "ok",
+    "foreignKeyErrors": 0
+  },
+  "localBackup": {
+    "path": "/Users/guojian/Workspace/naijoug/rememberme/backend/data/dictionary/final-15434-approved-local-20261109.sqlite",
+    "sha256": "8d4251c4253fd2b8d8b01541e8b0249c3ce77f42ccf76ca7248e75e147d03127",
+    "integrity": "ok",
+    "foreignKeyErrors": 0
+  },
+  "part10": {
+    "edition": "06bf73294a37a82707d1eb21",
+    "independent": 984,
+    "direct": 16,
+    "revised": 128,
+    "senses": 1680,
+    "packaged": true,
+    "approvedLocalAndServer": true
+  },
+  "part11": {
+    "edition": "8a22126cd84a42613b1384b0",
+    "independent": 1000,
+    "direct": 0,
+    "revised": 109,
+    "senses": 1564,
+    "packaged": true,
+    "approvedLocalAndServer": true
+  },
+  "part12": {
+    "edition": "89bc34f6329fe3d301e72b2e",
+    "independent": 1000,
+    "direct": 0,
+    "revised": 84,
+    "senses": 1393,
+    "packaged": true,
+    "approvedLocalAndServer": true
+  },
+  "part13": {
+    "edition": "e9e3e50a3fd8586bce38edb4",
+    "independent": 998,
+    "direct": 2,
+    "revised": 87,
+    "senses": 1377,
+    "packaged": true,
+    "approvedLocalAndServer": true
+  },
+  "part14": {
+    "edition": "04e5e88ed2cdd3d12764cd60",
+    "independent": 1000,
+    "direct": 0,
+    "revised": 73,
+    "senses": 1286,
+    "packaged": true,
+    "approvedLocalAndServer": true
+  },
+  "part15": {
+    "edition": "fe9db7e84316620a9cf44b71",
+    "independent": 434,
+    "direct": 0,
+    "revised": 59,
+    "senses": 680,
+    "packaged": true,
+    "approvedLocalAndServer": true
+  }
+}

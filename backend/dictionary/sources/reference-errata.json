@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "word": "potential",
+      "source": "Packaged WordNet electrical sense",
+      "faultyDefinitionPrefixes": ["the difference in electrical charge between two points"],
+      "correction": "Electric potential concerns energy per unit charge at a location, relative to a reference; it is not a difference in charge.",
+      "reference": "https://openstax.org/books/university-physics-volume-2/pages/7-2-electric-potential-and-potential-difference"
+    },
+    {
+      "word": "voltage",
+      "source": "Packaged WordNet electrical senses",
+      "faultyDefinitionPrefixes": [
+        "the rate at which energy is drawn from a source",
+        "the difference in electrical charge between two points"
+      ],
+      "correction": "Voltage is electric potential difference between points, measured in volts. Energy transfer per time is power, not voltage.",
+      "reference": "https://openstax.org/books/university-physics-volume-2/pages/7-2-electric-potential-and-potential-difference"
+    }
+  ]
+}
